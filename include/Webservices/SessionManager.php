@@ -91,7 +91,7 @@ class SessionManager extends Vtiger_Session
             $sid = null;
         }
 
-        self::start(null, $sid);
+        self::start('SessionID', $sid);
 
         $newSID = Vtiger_Session::id();
 

@@ -23,37 +23,49 @@
                 <input type="hidden" name="pickListValues" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SELECTED_PICKLISTFIELD_EDITABLE_VALUES))}' />
                 <input type="hidden" name="picklistColorMap" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode(Settings_Picklist_Module_Model::getPicklistColorMap($FIELD_MODEL->get('name'))))}' />
                 <div class="modal-body tabbable container-fluid">
-                    <div class="form-group row my-3">
-                        <div class="control-label col-sm-3">{vtranslate('LBL_ITEM_TO_RENAME',$QUALIFIED_MODULE)}</div>
-                        <div class="controls col-sm-4">
-                            {assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_EDITABLE_VALUES}
-                            <select class="select2 form-control" name="oldValue">
-                                {foreach from=$PICKLIST_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
-                                    <option {if $FIELD_VALUE eq $PICKLIST_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_VALUE)}" data-id={$PICKLIST_VALUE_KEY}>{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
-                                {/foreach}
-                                {if $SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES}
-                                    {foreach from=$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES key=NON_EDITABLE_VALUE_KEY item=NON_EDITABLE_VALUE}
-                                        <option data-edit-disabled="true" {if $FIELD_VALUE eq $NON_EDITABLE_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($NON_EDITABLE_VALUE)}" data-id={$NON_EDITABLE_VALUE_KEY}>{vtranslate($NON_EDITABLE_VALUE,$SOURCE_MODULE)}</option>
-                                    {/foreach}
-                                {/if}
-                            </select>	
-                        </div><br>
-                    </div>
-                    <div class="form-group row my-3">
-                        <div class="control-label col-sm-3">
-                            <span>{vtranslate('LBL_ENTER_NEW_NAME',$QUALIFIED_MODULE)}</span>
-                            <span class="text-danger ms-2">*</span>
-                        </div>
-                        <div class="controls col-sm-4">
-                            <input class="form-control" type="text"  name="renamedValue" {if in_array($FIELD_VALUE,$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES)} disabled='disabled' {/if} data-rule-required="true" value="{Vtiger_Util_Helper::toSafeHTML($FIELD_VALUE)}">
-                        </div>
-                    </div>
-                    <div class="form-group row my-3">
-                        <div class="control-label col-sm-3">{vtranslate('LBL_SELECT_COLOR', $QUALIFIED_MODULE)}</div>
-                        <div class="controls col-sm-3">
-                            <input type="hidden" name="selectedColor" value="{Settings_Picklist_Module_Model::getPicklistColor($FIELD_MODEL->get('name'), $FIELD_VALUE_ID)}" />
-                            <div class="colorPicker">
+                    {if $PICKLIST_COLOR_EDIT}
+                        <div class="form-group row py-2">
+                            <div class="control-label col-sm-4">
+                                <span>{vtranslate('LBL_ITEM_VALUE',$QUALIFIED_MODULE)}</span>
                             </div>
+                            <div class="controls col-sm">
+                                <input type="text" value="{Vtiger_Util_Helper::toSafeHTML($FIELD_VALUE)}" disabled="disabled" class="form-control">
+                                <input type="hidden" name="oldValue" value="{Vtiger_Util_Helper::toSafeHTML($FIELD_VALUE)}" data-id="{$FIELD_VALUE_ID}">
+                                <input type="hidden" name="renamedValue" value="{Vtiger_Util_Helper::toSafeHTML($FIELD_VALUE)}">
+                            </div>
+                        </div>
+                    {else}
+                        <div class="form-group row py-2">
+                            <div class="control-label col-sm-4">{vtranslate('LBL_ITEM_TO_RENAME',$QUALIFIED_MODULE)}</div>
+                            <div class="controls col-sm">
+                                {assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_EDITABLE_VALUES}
+                                <select class="select2 form-control" name="oldValue" data-width="100%">
+                                    {foreach from=$PICKLIST_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
+                                        <option {if $FIELD_VALUE eq $PICKLIST_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_VALUE)}" data-id={$PICKLIST_VALUE_KEY}>{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
+                                    {/foreach}
+                                    {if $SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES}
+                                        {foreach from=$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES key=NON_EDITABLE_VALUE_KEY item=NON_EDITABLE_VALUE}
+                                            <option data-edit-disabled="true" {if $FIELD_VALUE eq $NON_EDITABLE_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($NON_EDITABLE_VALUE)}" data-id={$NON_EDITABLE_VALUE_KEY}>{vtranslate($NON_EDITABLE_VALUE,$SOURCE_MODULE)}</option>
+                                        {/foreach}
+                                    {/if}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row py-2">
+                            <div class="control-label col-sm-4">
+                                <span>{vtranslate('LBL_ENTER_NEW_NAME',$QUALIFIED_MODULE)}</span>
+                                <span class="text-danger ms-2">*</span>
+                            </div>
+                            <div class="controls col-sm">
+                                <input class="form-control" type="text"  name="renamedValue" {if in_array($FIELD_VALUE,$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES)} disabled='disabled' {/if} data-rule-required="true" value="{Vtiger_Util_Helper::toSafeHTML($FIELD_VALUE)}">
+                            </div>
+                        </div>
+                    {/if}
+                    <div class="form-group row py-2">
+                        <div class="control-label col-sm-4">{vtranslate('LBL_SELECT_COLOR', $QUALIFIED_MODULE)}</div>
+                        <div class="controls col-sm">
+                            {assign var=COLOR_VALUE value=Settings_Picklist_Module_Model::getPicklistColor($FIELD_MODEL->get('name'), $FIELD_VALUE_ID)}
+                            {include file='uitypes/Color.tpl'|vtemplate_path:$qualifiedName FIELD_NAME='selectedColor'}
                         </div>
                     </div>
                 </div>

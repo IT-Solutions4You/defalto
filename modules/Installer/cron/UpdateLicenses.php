@@ -9,3 +9,4 @@
  */
 
 Installer_License_Model::updateAll();
+Installer_Notification_Model::updateAll();

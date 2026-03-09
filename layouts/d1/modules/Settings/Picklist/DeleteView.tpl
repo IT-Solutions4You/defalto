@@ -22,8 +22,8 @@
                 <input type="hidden" name="picklistName" value="{$FIELD_MODEL->get('name')}" />
                 <div class="modal-body tabbable">
                     <div class="form-group row">
-                        <div class="control-label col-sm-3">{vtranslate('LBL_ITEMS_TO_DELETE',$QUALIFIED_MODULE)}</div>
-                        <div class="controls col-sm-4">
+                        <div class="control-label col-sm-4">{vtranslate('LBL_ITEMS_TO_DELETE',$QUALIFIED_MODULE)}</div>
+                        <div class="controls col-sm">
                             <select class="select2 form-control" multiple="" id="deleteValue" name="delete_value[]" >
                                 {foreach from=$SELECTED_PICKLISTFIELD_EDITABLE_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
                                     <option {if in_array($PICKLIST_VALUE,$FIELD_VALUES)} selected="" {/if} value="{$PICKLIST_VALUE_KEY}">{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
@@ -34,8 +34,8 @@
                     </div>
                     <br>
                     <div class="form-group row">
-                        <div class="control-label col-sm-3">{vtranslate('LBL_REPLACE_IT_WITH',$QUALIFIED_MODULE)}</div>
-                        <div class="controls  col-sm-4">
+                        <div class="control-label col-sm-4">{vtranslate('LBL_REPLACE_IT_WITH',$QUALIFIED_MODULE)}</div>
+                        <div class="controls  col-sm">
                             <select id="replaceValue" name="replace_value" class="select2 form-control" data-validation-engine="validate[required]">
                                 {foreach from=$SELECTED_PICKLISTFIELD_EDITABLE_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
                                     {if !(in_array($PICKLIST_VALUE, $FIELD_VALUES))}
@@ -53,8 +53,8 @@
                     {if $SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES}
                         <br>
                         <div class="form-group row">
-                            <div class="control-label col-sm-3 col-xs-3">{vtranslate('LBL_NON_EDITABLE_PICKLIST_VALUES',$QUALIFIED_MODULE)}</div>
-                            <div class="controls col-sm-4 col-xs-4 nonEditableValuesDiv">
+                            <div class="control-label col-sm-4">{vtranslate('LBL_NON_EDITABLE_PICKLIST_VALUES',$QUALIFIED_MODULE)}</div>
+                            <div class="controls col-sm nonEditableValuesDiv">
                                 <ul class="nonEditablePicklistValues p-0" style="list-style-type: none;">
                                 {foreach from=$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES key=NON_EDITABLE_VALUE_KEY item=NON_EDITABLE_VALUE}
                                     <li>{vtranslate($NON_EDITABLE_VALUE,$SOURCE_MODULE)}</li>
@@ -65,12 +65,12 @@
                     {/if}
                 </div>
                 <div class="modal-footer">
-                    <div class="container-fluid">
+                    <div class="container-fluid p-0">
                         <div class="row">
-                            <div class="col text-end">
+                            <div class="col">
                                 <a href="#" class="btn btn-primary cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                             </div>
-                            <div class="col">
+                            <div class="col text-end">
                                 <button class="btn btn-danger" type="submit" name="saveButton"><strong>{vtranslate('LBL_DELETE', $MODULE)}</strong></button>
                             </div>
                         </div>

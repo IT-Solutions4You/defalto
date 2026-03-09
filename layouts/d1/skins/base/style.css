@@ -138,7 +138,7 @@
     --bs-btn-disabled-bg: #fff;
     --bs-btn-disabled-border-color: #8181a5;
     --bs-gradient: none;
-    --bs-btn-border-color: #ECECF2;
+    --bs-btn-border-color: var(--bs-border-color);
     --bs-btn-color: #8181A5;
     --bs-btn-hover-color: #1c1d21;
     --bs-btn-hover-bg: #fff;
@@ -1942,6 +1942,7 @@ input[type=checkbox]:checked {
 .step {
     position: relative;
 }
+
 .step:after {
     position: absolute;
     top: 0;
@@ -1954,7 +1955,7 @@ input[type=checkbox]:checked {
     border-bottom: 1.5rem solid transparent;
 
     border-left: 1.5rem solid var(--dt-light-blue-color);
-    margin-right: -1.48rem;
+    margin-right: -1.4rem;
 }
 
 .crumbs .step.active:after {
@@ -1963,11 +1964,6 @@ input[type=checkbox]:checked {
 
     border-left: 1.5rem solid var(--dt-blue-color);
 }
-
-.importBlockContainer {
-    color: #596875;
-}
-
 /*******************************************
 ************* Updates Timeline ***************
 ********************************************/
@@ -3218,7 +3214,7 @@ div.tooltip-inner {
 }
 
 .cursorDrag {
-    cursor: move;
+    cursor: move !important;
 }
 
 .google-import-container {
@@ -4485,6 +4481,9 @@ input[type=number] {
 .word-break-all {
     word-break: break-all;
 }
+.h-1rem {
+    height: 1rem;
+}
 .h-2rem {
     min-height: 2rem;
 }
@@ -4511,6 +4510,9 @@ input[type=number] {
 }
 .w-25vw-max {
     max-width: 25vw;
+}
+.w-100-max {
+    max-width: 100%;
 }
 .w-30rem {
     width: 30rem;
@@ -4595,6 +4597,15 @@ input[type=number] {
 
 .MultiFile-label * {
     display: inline;
+}
+.sectionTagContainer {
+    height: 0;
+    position: relative;
+}
+.sectionTag {
+    height: var(--header-height);
+    position: absolute;
+    bottom: 0;
 }
 
 @media (max-width: 991.98px) {

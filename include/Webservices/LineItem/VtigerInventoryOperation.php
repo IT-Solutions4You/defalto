@@ -19,6 +19,7 @@
 
 require_once 'include/Webservices/VtigerModuleOperation.php';
 require_once 'include/Webservices/Utils.php';
+require_once 'include/Webservices/LineItem/InventoryItemHelpers.php';
 
 /**
  * Description of VtigerInventoryOperation
@@ -37,7 +38,9 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         $element = $this->sanitizeInventoryForInsert($element);
         $element = $this->sanitizeShippingTaxes($element);
         $lineItems = $element['LineItems'];
+
         if (!empty($lineItems)) {
+            $useInventoryItems = $this->isInventoryItemModule($elementType);
             $eventManager = new VTEventsManager(vglobal('adb'));
             $sanitizedData = DataTransform::sanitizeForInsert($element, $this->meta);
             $this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
@@ -56,18 +59,24 @@ class VtigerInventoryOperation extends VtigerModuleOperation
 
             vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
 
-            $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
-            $handler->setLineItems('LineItem', $lineItems, $element);
-            $parent = $handler->getParentById($element['id']);
-            $handler->updateParent($lineItems, $parent);
-            $updatedParent = $handler->getParentById($element['id']);
-            //since subtotal and grand total is updated in the update parent api
-            $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['grand_total'] = $updatedParent['grand_total'];
-            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
-            $components = vtws_getIdComponents($element['id']);
-            $parentId = $components[1];
-            $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+            if ($useInventoryItems) {
+                $parentId = vtws_getIdComponents($element['id'])[1];
+                $parent = parent::retrieve($element['id']);
+                $parent['LineItems'] = $this->setInventoryItems($lineItems, $element, $parentId);
+            } else {
+                $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+                $handler->setLineItems('LineItem', $lineItems, $element);
+                $parent = $handler->getParentById($element['id']);
+                $handler->updateParent($lineItems, $parent);
+                $updatedParent = $handler->getParentById($element['id']);
+                //since subtotal and grand total is updated in the update parent api
+                $parent['subtotal'] = $updatedParent['subtotal'];
+                $parent['grand_total'] = $updatedParent['grand_total'];
+                $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
+                $components = vtws_getIdComponents($element['id']);
+                $parentId = $components[1];
+                $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+            }
 
             $currentValue = vglobal('updateInventoryProductRel_deduct_stock');
             vglobal('updateInventoryProductRel_deduct_stock', false);
@@ -88,7 +97,9 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         $element = $this->sanitizeInventoryForInsert($element);
         $element = $this->sanitizeShippingTaxes($element);
         $lineItemList = $element['LineItems'];
-        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+        $useInventoryItems = $this->isInventoryItemModule($this->webserviceObject->getEntityName());
+        $handler = $useInventoryItems ? null : vtws_getModuleHandlerFromName('LineItem', $this->user);
+
         if (!empty($lineItemList)) {
             $eventManager = new VTEventsManager(vglobal('adb'));
             $sanitizedData = DataTransform::sanitizeForInsert($element, $this->meta);
@@ -107,15 +118,21 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedElement = parent::update($element);
             vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
 
-            $handler->setLineItems('LineItem', $lineItemList, $updatedElement);
-            $parent = $handler->getParentById($element['id']);
-            $handler->updateParent($lineItemList, $parent);
-            $updatedParent = $handler->getParentById($element['id']);
-            //since subtotal and grand total is updated in the update parent api
-            $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['grand_total'] = $updatedParent['grand_total'];
-            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
-            $updatedElement = array_merge($updatedElement, $parent);
+            if ($useInventoryItems) {
+                $parentId = vtws_getIdComponents($element['id'])[1];
+                $this->clearInventoryItems($parentId);
+                $updatedElement['LineItems'] = $this->setInventoryItems($lineItemList, $updatedElement, $parentId);
+            } else {
+                $handler->setLineItems('LineItem', $lineItemList, $updatedElement);
+                $parent = $handler->getParentById($element['id']);
+                $handler->updateParent($lineItemList, $parent);
+                $updatedParent = $handler->getParentById($element['id']);
+                //since subtotal and grand total is updated in the update parent api
+                $parent['subtotal'] = $updatedParent['subtotal'];
+                $parent['grand_total'] = $updatedParent['grand_total'];
+                $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
+                $updatedElement = array_merge($updatedElement, $parent);
+            }
 
             $currentValue = vglobal('updateInventoryProductRel_deduct_stock');
             vglobal('updateInventoryProductRel_deduct_stock', false);
@@ -137,7 +154,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation
     {
         $element = $this->sanitizeInventoryForInsert($element);
         $element = $this->sanitizeShippingTaxes($element);
-        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+        $useInventoryItems = $this->isInventoryItemModule($this->webserviceObject->getEntityName());
+        $handler = $useInventoryItems ? null : vtws_getModuleHandlerFromName('LineItem', $this->user);
         $components = vtws_getIdComponents($element['id']);
         $parentId = $components[1];
 
@@ -159,17 +177,22 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $updatedElement = parent::revise($element);
             vglobal('VTIGER_BULK_SAVE_MODE', $currentBulkSaveMode);
 
-            $handler->setLineItems('LineItem', $lineItemList, $updatedElement);
-            $parent = $handler->getParentById($element['id']);
-            $handler->updateParent($lineItemList, $parent);
-            $updatedParent = $handler->getParentById($element['id']);
-            //since subtotal and grand total is updated in the update parent api
-            $parent['subtotal'] = $updatedParent['subtotal'];
-            $parent['grand_total'] = $updatedParent['grand_total'];
-            $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
-            $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+            if ($useInventoryItems) {
+                $this->clearInventoryItems($parentId);
+                $updatedElement['LineItems'] = $this->setInventoryItems($lineItemList, $updatedElement, $parentId);
+            } else {
+                $handler->setLineItems('LineItem', $lineItemList, $updatedElement);
+                $parent = $handler->getParentById($element['id']);
+                $handler->updateParent($lineItemList, $parent);
+                $updatedParent = $handler->getParentById($element['id']);
+                //since subtotal and grand total is updated in the update parent api
+                $parent['subtotal'] = $updatedParent['subtotal'];
+                $parent['grand_total'] = $updatedParent['grand_total'];
+                $parent['price_after_overall_discount'] = $updatedParent['price_after_overall_discount'];
+                $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+                $updatedElement = array_merge($updatedElement, $parent);
+            }
 
-            $updatedElement = array_merge($updatedElement, $parent);
             $currentValue = vglobal('updateInventoryProductRel_deduct_stock');
             vglobal('updateInventoryProductRel_deduct_stock', false);
             $original_update_product_array = vglobal('updateInventoryProductRel_update_product_array');
@@ -195,7 +218,12 @@ class VtigerInventoryOperation extends VtigerModuleOperation
             $parent = parent::revise($element);
             $_REQUEST['action'] = $prevAction;
             $_REQUEST['ajxaction'] = $prevAjaxAction;
-            $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+
+            if ($useInventoryItems) {
+                $parent['LineItems'] = $this->getInventoryItemsForParent($parentId);
+            } else {
+                $parent['LineItems'] = $handler->getAllLineItemForParent($parentId);
+            }
         }
 
         return array_merge($element, $parent);
@@ -213,13 +241,24 @@ class VtigerInventoryOperation extends VtigerModuleOperation
                 unset($element[$field]);
             }
         }
-        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+
+        $useInventoryItems = $this->isInventoryItemModule($this->webserviceObject->getEntityName());
         $idComponents = vtws_getIdComponents($id);
-        $lineItems = $handler->getAllLineItemForParent($idComponents[1]);
+
+        if ($useInventoryItems) {
+            $lineItems = $this->getInventoryItemsForParent($idComponents[1]);
+        } else {
+            $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+            $lineItems = $handler->getAllLineItemForParent($idComponents[1]);
+        }
+
         $element['LineItems'] = $lineItems;
-        $recordCompoundTaxesElement = $this->getCompoundTaxesElement($element, $lineItems);
-        $element = array_merge($element, $recordCompoundTaxesElement);
-        $element['productid'] = $lineItems[0]['productid'];
+
+        if (!$useInventoryItems) {
+            $recordCompoundTaxesElement = $this->getCompoundTaxesElement($element, $lineItems);
+            $element = array_merge($element, $recordCompoundTaxesElement);
+            $element['productid'] = $lineItems[0]['productid'];
+        }
 
         return $element;
     }
@@ -228,13 +267,193 @@ class VtigerInventoryOperation extends VtigerModuleOperation
     {
         $components = vtws_getIdComponents($id);
         $parentId = $components[1];
-        $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
-        $handler->cleanLineItemList($id);
-        $result = parent::delete($id);
+        $useInventoryItems = $this->isInventoryItemModule($this->webserviceObject->getEntityName());
 
-        return $result;
+        if ($useInventoryItems) {
+            $this->clearInventoryItems($parentId);
+        } else {
+            $handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
+            $handler->cleanLineItemList($id);
+        }
+
+        return parent::delete($id);
     }
 
+    /**
+     * @param string $moduleName
+     * @return bool
+     */
+    private function isInventoryItemModule(string $moduleName): bool
+    {
+        try {
+            return InventoryItem_Utils_Helper::isInventoryModule($moduleName);
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param int $parentId
+     * @return void
+     */
+    private function clearInventoryItems(int $parentId): void
+    {
+        $items = InventoryItem_Module_Model::fetchItemsForId($parentId, true);
+
+        foreach ($items as $item) {
+            $itemModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+            $itemModel->delete();
+        }
+    }
+
+    /**
+     * @param array $lineItems
+     * @param array $parentElement
+     * @param int $parentId
+     * @return array
+     */
+    private function setInventoryItems(array $lineItems, array $parentElement, int $parentId): array
+    {
+        $created = [];
+        $sequence = 1;
+        $assignedUserId = InventoryItem_Webservice_Helpers::getCrmIdFromWsId($parentElement['assigned_user_id'] ?? null);
+
+        foreach ($lineItems as $lineItem) {
+            $itemModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
+            $productId = InventoryItem_Webservice_Helpers::getCrmIdFromWsId($lineItem['productid'] ?? null);
+            $itemText = InventoryItem_Webservice_Helpers::resolveItemText(
+                $lineItem,
+                $productId,
+                ['include_description' => true, 'default' => 'Item']
+            );
+            $price = $lineItem['listprice'] ?? $lineItem['price'] ?? null;
+            $quantity = $lineItem['quantity'] ?? null;
+            $sequenceValue = $lineItem['sequence_no'] ?? $sequence;
+            $description = $lineItem['description'] ?? $lineItem['comment'] ?? null;
+            $priceBookId = InventoryItem_Webservice_Helpers::getCrmIdFromWsId($lineItem['pricebookid'] ?? ($parentElement['pricebookid'] ?? null));
+            $unit = $lineItem['unit'] ?? null;
+
+            $taxData = InventoryItem_Webservice_Helpers::resolveTaxForLineItem($lineItem, $productId);
+
+            if ($itemText !== null) {
+                $itemModel->set('item_text', $itemText);
+            }
+
+            if ($productId) {
+                $itemModel->set('productid', $productId);
+            }
+
+            if ($quantity !== null) {
+                $itemModel->set('quantity', $quantity);
+            }
+
+            if ($price !== null) {
+                $itemModel->set('price', $price);
+            }
+
+            if ($unit !== null) {
+                $itemModel->set('unit', $unit);
+            }
+
+            if ($description !== null) {
+                $itemModel->set('description', $description);
+            }
+
+            if ($sequenceValue !== null) {
+                $itemModel->set('sequence', $sequenceValue);
+            }
+
+            if ($priceBookId) {
+                $itemModel->set('pricebookid', $priceBookId);
+            }
+
+            if ($assignedUserId) {
+                $itemModel->set('assigned_user_id', $assignedUserId);
+            }
+
+            if ($taxData['percentage'] !== null) {
+                $itemModel->set('tax', $taxData['percentage']);
+            }
+
+            InventoryItem_Webservice_Helpers::applyDiscountData($itemModel, $lineItem);
+
+            $itemModel->set('parentid', $parentId);
+
+            if (!empty($lineItem['parentitemid'])) {
+                $itemModel->set('parentitemid', InventoryItem_Webservice_Helpers::getCrmIdFromWsId($lineItem['parentitemid']));
+            }
+
+            $itemModel->save();
+
+            if (!empty($taxData['taxId'])) {
+                $itemModel->saveTaxId((int)$taxData['taxId']);
+            }
+
+            $created[] = $this->formatInventoryItemForWs($itemModel, $parentId);
+            $sequence++;
+        }
+
+        InventoryItem_ParentEntity_Model::updateTotals($parentId);
+
+        return $created;
+    }
+
+    /**
+     * @param int $parentId
+     * @return array
+     */
+    private function getInventoryItemsForParent(int $parentId): array
+    {
+        $items = InventoryItem_Module_Model::fetchItemsForId($parentId, true);
+        $lineItems = [];
+
+        foreach ($items as $item) {
+            $itemModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
+            $lineItems[] = $this->formatInventoryItemForWs($itemModel, $parentId);
+        }
+
+        return $lineItems;
+    }
+
+    /**
+     * @param Vtiger_Record_Model $itemModel
+     * @param int $parentId
+     * @return array
+     */
+    private function formatInventoryItemForWs(Vtiger_Record_Model $itemModel, int $parentId): array
+    {
+        $itemId = (int)$itemModel->getId();
+        $productId = (int)$itemModel->get('productid');
+        $entityType = '';
+        $productName = '';
+        $productWsId = null;
+
+        if ($productId) {
+            $entityType = getSalesEntityType($productId);
+            $productName = getEntityName($entityType, $productId)[$productId] ?? '';
+            $productWsId = vtws_getWebserviceEntityId($entityType, $productId);
+        }
+
+        return [
+            'id' => vtws_getWebserviceEntityId('InventoryItem', $itemId),
+            'parent_id' => vtws_getWebserviceEntityId($this->webserviceObject->getEntityName(), $parentId),
+            'productid' => $productWsId,
+            'product_name' => $productName,
+            'entity_type' => $entityType ?: 'Text',
+            'item_text' => $itemModel->get('item_text'),
+            'description' => $itemModel->get('description'),
+            'quantity' => $itemModel->get('quantity'),
+            'listprice' => $itemModel->get('price'),
+            'tax1' => $itemModel->get('tax'),
+            'sequence_no' => $itemModel->get('sequence'),
+        ];
+    }
+
+    /**
+     * @param array $lineItem
+     * @param int|null $productId
+     * @return string|null
+     */
     /**
      * function to display discounts,taxes and adjustments
      *
@@ -276,6 +495,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation
         if (isset($element['region_id'])) {
             $_REQUEST['region_id'] = $element['region_id'];
         }
+
         if (empty($element['conversion_rate']) && !$_REQUEST['conversion_rate']) {
             $element['conversion_rate'] = 1;
             $_REQUEST['conversion_rate'] = 1;

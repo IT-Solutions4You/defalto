@@ -11,47 +11,40 @@
         {assign var=TITLE value="{'LBL_DELETION_COMPLETED'|@vtranslate:$MODULE}"}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
     </div>
-    <div class='modal-body' id ="importContainer" style="margin-bottom:390px">
-        <div style="padding-left: 15px;">
+    <div class='modal-body' id ="importContainer">
+        <div>
             <input type="hidden" name="module" value="{$FOR_MODULE}" />
             <div class='importBlockContainer'>
-                <span>
-                    <h4>&nbsp;&nbsp;&nbsp;{'LBL_DELETION_SUMMARY'|@vtranslate:$MODULE}</h4>
-                </span>
-                <hr style="margin-top:12px;margin-bottom:12px;">
-                <table class = "table table-borderless">
-                    {if $ERROR_MESSAGE neq ''}
-                        <span>
-                            <h4>
-                                {$ERROR_MESSAGE}
-                            </h4>
-                        </span>
-                    {/if}
-                    <tr>
-                        <td >
-                            <table cellpadding="10" cellspacing="0" class = "table table-bordered importResultsTable">
-                                <tr>
-                                    <td  width="40%">{'LBL_TOTAL_RECORDS'|@vtranslate:$MODULE}</td>
-                                    <td  width="50%">{$TOTAL_RECORDS}</td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">{'LBL_NUMBER_OF_RECORDS_DELETED'|@vtranslate:$MODULE}</td>
-                                    <td width="60%">{$DELETED_RECORDS_COUNT}</td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="right" colspan="2">
-                        </td>
-                    </tr>
-                </table>
+                <div class="container">
+                    <div class="row py-2">
+                        <div class="col">
+                            <h4>{'LBL_DELETION_SUMMARY'|@vtranslate:$MODULE}</h4>
+                            <hr>
+                            {if !empty($ERROR_MESSAGE)}
+                                <span class="alert alert-danger">{$ERROR_MESSAGE}</span>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col">{'LBL_TOTAL_RECORDS'|@vtranslate:$MODULE}</div>
+                        <div class="col">{$TOTAL_RECORDS}</div>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col">{'LBL_NUMBER_OF_RECORDS_DELETED'|@vtranslate:$MODULE}</div>
+                        <div class="col">{$DELETED_RECORDS_COUNT}</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class='modal-footer overlayFooter'>
-        <footer>
-            <center><button class='btn-primary btn-lg undoDoneButton' data-bs-dismiss="modal" onclick="Vtiger_Import_Js.finishUndoOperation();">{vtranslate('LBL_DONE_BUTTON', $MODULE)}</button></center>
-        </footer>
+    <div class='modal-overlay-footer modal-footer'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <button class='btn btn-primary active undoDoneButton' data-bs-dismiss="modal" onclick="Vtiger_Import_Js.finishUndoOperation();">{vtranslate('LBL_DONE_BUTTON', $MODULE)}</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

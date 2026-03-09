@@ -54,7 +54,7 @@
                     {elseif isset($RECORD) and $REQUEST_INSTANCE.view eq 'Detail'}
                         <a class="col fs-4 text-truncate text-secondary" href="{$RECORD->getDetailViewUrl()}" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'Edit'}
-                        <a class="col-auto fs-4 text-secondary">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
+                        <a class="col-auto fs-4 text-secondary">{vtranslate('LBL_ADD_RECORD', $MODULE)}</a>
                     {elseif $REQUEST_INSTANCE.view eq 'List' and isset($MODULE_MODEL) and $MODULE_MODEL->isEntityModule()}
                         {include file="partials/CustomView.tpl"|vtemplate_path:$MODULE}
                     {else}
@@ -215,6 +215,7 @@
                             </li>
                         {/if}
                     {/if}
+                    {include file="partials/TopbarInstaller.tpl"|vtemplate_path:$MODULE}
                     <li class="ms-2">
                         <div class="dropdown">
                             <a href="#" class="userName" data-bs-toggle="dropdown">

@@ -44,17 +44,17 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
     ];
     const MULTI_COMPANY = 'ITS4YouMultiCompany';
     public static $metaVariables = [
-        'Current Date'                 => '(general : (__VtigerMeta__) date) ($_DATE_FORMAT_)',
-        'Current Time'                 => '(general : (__VtigerMeta__) time)',
-        'System Timezone'              => '(general : (__VtigerMeta__) dbtimezone)',
-        'User Timezone'                => '(general : (__VtigerMeta__) usertimezone)',
-        'CRM Detail View URL'          => '(general : (__VtigerMeta__) crmdetailviewurl)',
-        'Portal Detail View URL'       => '(general : (__VtigerMeta__) portaldetailviewurl)',
-        'Site Url'                     => '(general : (__VtigerMeta__) siteurl)',
-        'Portal Url'                   => '(general : (__VtigerMeta__) portalurl)',
-        'Record Id'                    => '(general : (__VtigerMeta__) recordId)',
-        'LBL_HELPDESK_SUPPORT_NAME'    => '(general : (__VtigerMeta__) supportName)',
-        'LBL_HELPDESK_SUPPORT_EMAILID' => '(general : (__VtigerMeta__) supportEmailid)',
+        'Current Date'                 => '(general : (__Meta__) date) ($_DATE_FORMAT_)',
+        'Current Time'                 => '(general : (__Meta__) time)',
+        'System Timezone'              => '(general : (__Meta__) dbtimezone)',
+        'User Timezone'                => '(general : (__Meta__) usertimezone)',
+        'CRM Detail View URL'          => '(general : (__Meta__) crmdetailviewurl)',
+        'Portal Detail View URL'       => '(general : (__Meta__) portaldetailviewurl)',
+        'Site Url'                     => '(general : (__Meta__) siteurl)',
+        'Portal Url'                   => '(general : (__Meta__) portalurl)',
+        'Record Id'                    => '(general : (__Meta__) recordId)',
+        'LBL_HELPDESK_SUPPORT_NAME'    => '(general : (__Meta__) supportName)',
+        'LBL_HELPDESK_SUPPORT_EMAILID' => '(general : (__Meta__) supportEmailid)',
     ];
     public $log;
     public $db;

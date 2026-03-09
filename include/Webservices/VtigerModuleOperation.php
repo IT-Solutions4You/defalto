@@ -17,6 +17,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+require_once 'include/Webservices/LineItem/InventoryItemHelpers.php';
+
 class VtigerModuleOperation extends WebserviceEntityOperation
 {
     protected $tabId;
@@ -44,6 +46,9 @@ class VtigerModuleOperation extends WebserviceEntityOperation
         $crmObject = new VtigerCRMObject($elementType, false);
 
         $element = DataTransform::sanitizeForInsert($element, $this->meta);
+        $this->logCurrencyDebug('create_sanitized', $elementType, $element);
+        $element = $this->ensureCurrencyId($element);
+        $this->logCurrencyDebug('create_currency', $elementType, $element);
 
         $error = $crmObject->create($element);
         if (!$error) {
@@ -78,6 +83,104 @@ class VtigerModuleOperation extends WebserviceEntityOperation
         return DataTransform::filterAndSanitize($crmObject->getFields(), $this->meta);
     }
 
+    /**
+     * @param array $element
+     * @return array
+     */
+    protected function ensureCurrencyId(array $element): array
+    {
+        $currencyId = $element['currency_id'] ?? null;
+        $currencyInfo = $this->resolveCurrencyInfo($currencyId);
+        $element['currency_id'] = $currencyInfo['id'];
+        $_REQUEST['currency_id'] = $currencyInfo['id'];
+
+        if (empty($element['conversion_rate'])) {
+            $element['conversion_rate'] = $currencyInfo['conversion_rate'];
+        }
+
+        if (empty($_REQUEST['conversion_rate'])) {
+            $_REQUEST['conversion_rate'] = $element['conversion_rate'];
+        }
+
+        $this->logCurrencyDebug('ensure_currency', $this->webserviceObject->getEntityName(), [
+            'currency_id' => $currencyId,
+            'resolved' => $currencyInfo['id'],
+            'conversion_rate' => $element['conversion_rate'],
+        ]);
+
+        return $element;
+    }
+
+    /**
+     * @param string $stage
+     * @param string $elementType
+     * @param array $element
+     * @return void
+     */
+    protected function logCurrencyDebug(string $stage, string $elementType, array $element): void
+    {
+        $logFile = 'logs/webservice_currency_debug.log';
+        $currency = $element['currency_id'] ?? null;
+        $message = sprintf(
+            '[%s] stage=%s module=%s currency=%s keys=%s',
+            date('Y-m-d H:i:s'),
+            $stage,
+            $elementType,
+            is_scalar($currency) ? (string)$currency : gettype($currency),
+            implode(',', array_keys($element))
+        );
+        error_log($message . PHP_EOL, 3, $logFile);
+    }
+
+    /**
+     * @param $currencyId
+     * @return array|int[]
+     * @throws Exception
+     */
+    protected function resolveCurrencyInfo($currencyId): array
+    {
+        if (empty($currencyId)) {
+            $this->logCurrencyDebug('resolve_currency_default', $this->webserviceObject->getEntityName(), [
+                'currency_id' => $currencyId,
+            ]);
+
+            return ['id' => 1, 'conversion_rate' => 1];
+        }
+
+        $lookup = $currencyId;
+        $id = InventoryItem_Webservice_Helpers::getCrmIdFromWsId($currencyId);
+
+        if (!empty($id)) {
+            $lookup = $id;
+        }
+
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            'SELECT id, conversion_rate FROM vtiger_currency_info WHERE (id = ? OR currency_code = ?) AND deleted = 0 AND currency_status = ?',
+            [$lookup, $lookup, 'Active']
+        );
+
+        if ($result && $db->num_rows($result) > 0) {
+            $this->logCurrencyDebug('resolve_currency_hit', $this->webserviceObject->getEntityName(), [
+                'currency_id' => $currencyId,
+                'lookup' => $lookup,
+            ]);
+
+            return [
+                'id' => (int)$db->query_result($result, 0, 'id'),
+                'conversion_rate' => (float)$db->query_result($result, 0, 'conversion_rate'),
+            ];
+        }
+
+        $this->logCurrencyDebug('resolve_currency_miss', $this->webserviceObject->getEntityName(), [
+            'currency_id' => $currencyId,
+            'lookup' => $lookup,
+        ]);
+
+        return ['id' => 1, 'conversion_rate' => 1];
+    }
+
+
     public function retrieve($id)
     {
         $ids = vtws_getIdComponents($id);
@@ -103,12 +206,13 @@ class VtigerModuleOperation extends WebserviceEntityOperation
         $ids = vtws_getIdComponents($id);
         $sourceModule = $this->webserviceObject->getEntityName();
         global $currentModule;
+        $db = PearDatabase::getInstance();
         $currentModule = $sourceModule;
         $sourceRecordModel = Vtiger_Record_Model::getInstanceById($ids[1], $sourceModule);
         $targetModel = Vtiger_RelationListView_Model::getInstance($sourceRecordModel, $relatedModule, $relatedLabel);
         $sql = $targetModel->getRelationQuery();
 
-        $relatedWebserviceObject = VtigerWebserviceObject::fromName($adb, $relatedModule);
+        $relatedWebserviceObject = VtigerWebserviceObject::fromName($db, $relatedModule);
         $relatedModuleWSId = $relatedWebserviceObject->getEntityId();
 
         // Rewrite query to pull only crmid transformed as webservice id.

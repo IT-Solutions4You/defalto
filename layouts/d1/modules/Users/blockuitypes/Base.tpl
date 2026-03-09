@@ -71,7 +71,7 @@
                                                 {vtranslate($FIELD_MODEL->get('fieldvalue'),$FIELD_MODEL->get('fieldvalue'))}
                                             {/if}
                                         </span>
-                                    {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() eq 'true' && $FIELD_MODEL->isAjaxEditable() eq 'true'}
+                                    {if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() && $FIELD_MODEL->isAjaxEditable()}
                                         <span class="hide edit">
                                             {if $fieldDataType eq 'multipicklist'}
                                                 <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}"/>

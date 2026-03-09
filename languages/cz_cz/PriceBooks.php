@@ -9,7 +9,6 @@
  */
 
 $languageStrings = [
-    'PriceBooks' => 'Price Books',
     'SINGLE_PriceBooks' => 'Ceník',
     'LBL_ADD_RECORD' => 'Přidat ceník',
     'LBL_RECORDS_LIST' => 'Seznam ceníků',
@@ -17,9 +16,10 @@ $languageStrings = [
     'LBL_EDIT_LIST_PRICE' => 'Editovat ceníkovou cenu',
     'Price Book Name' => 'Název ceníku',
     'PriceBook No' => 'Číslo ceníku',
-    'LBL_UNIT_PRICE' => 'Unit Price',
     'LBL_ADD_TO' => 'Přidat do',
     'Unit Price' => 'Cena za jednotku',
+    'PriceBooks' => 'Ceníky',
+    'LBL_UNIT_PRICE' => 'Jednotková cena',
 ];
 $jsLanguageStrings = [
 ];

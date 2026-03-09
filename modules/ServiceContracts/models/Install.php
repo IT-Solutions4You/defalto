@@ -146,12 +146,12 @@ class ServiceContracts_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_servicecontracts',
                     'label' => 'Status',
                     'picklist_values' => [
-                        'Undefined',
-                        'In Planning',
-                        'In Progress',
-                        'On Hold',
-                        ['Complete', '', 0],
-                        'Archived',
+                        ['Undefined', '#E5E7EB'],
+                        ['In Planning', '#D1D5DB'],
+                        ['In Progress', '#5FA6FF'],
+                        ['On Hold', '#F0D98B'],
+                        ['Complete', '#5CE573', 0],
+                        ['Archived', '#6B7280'],
                     ],
                 ],
                 'account_id' => [

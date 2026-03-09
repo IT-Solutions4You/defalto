@@ -134,8 +134,8 @@ class Assets_Install_Model extends Core_Install_Model
                     'typeofdata' => 'V~M',
                     'quickcreate' => 2,
                     'picklist_values' => [
-                        'In Service',
-                        'Out-of-service',
+                        ['In Service', '#5CE573'],
+                        ['Out-of-service', '#F0D98B'],
                     ],
                 ],
                 'product' => [

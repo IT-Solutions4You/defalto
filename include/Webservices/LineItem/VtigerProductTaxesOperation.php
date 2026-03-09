@@ -19,6 +19,7 @@
  */
 
 require_once 'include/Webservices/VtigerActorOperation.php';
+require_once 'include/Webservices/LineItem/InventoryItemHelpers.php';
 
 /**
  * Description of VtigerProductTaxesOperation
@@ -27,23 +28,32 @@ class VtigerProductTaxesOperation extends VtigerActorOperation
 {
     public function create($elementType, $element)
     {
-        $db = PearDatabase::getInstance();
-        $sql = 'SELECT * FROM vtiger_producttaxrel WHERE productid =? AND taxid=?';
-        [$typeId, $productId] = vtws_getIdComponents($element['productid']);
-        [$typeId, $taxId] = vtws_getIdComponents($element['taxid']);
-        $params = [$productId, $taxId];
-        $result = $db->pquery($sql, $params);
-        $rowCount = $db->num_rows($result);
-        if ($rowCount > 0) {
-            $id = $db->query_result($result, 0, $this->meta->getObectIndexColumn());
-            $meta = $this->getMeta();
-            $element['id'] = vtws_getId($meta->getEntityId(), $id);
-
-            return $this->update($element);
-        } else {
-            unset($element['id']);
-
-            return parent::create($elementType, $element);
+        $productRaw = $element['productid'] ?? $element['record_id'] ?? null;
+        $taxRaw = $element['taxid'] ?? $element['tax_id'] ?? null;
+        $productId = InventoryItem_Webservice_Helpers::getCrmIdFromWsId($productRaw);
+        $taxId = InventoryItem_Webservice_Helpers::getCrmIdFromWsId($taxRaw);
+        if (empty($productId) || empty($taxId)) {
+            throw new WebServiceException(WebServiceErrorCode::$MANDFIELDSMISSING, 'productid and taxid are required');
         }
+        $percentage = $element['taxpercentage'] ?? $element['percentage'] ?? null;
+        if ($percentage === null) {
+            $taxModel = Core_Tax_Model::getInstanceById((int)$taxId);
+            if ($taxModel) {
+                $percentage = $taxModel->getTax();
+            }
+        }
+
+        $record = Core_TaxRecord_Model::getInstance((int)$productId);
+        $record->set('record_id', (int)$productId);
+        $record->set('tax_id', (int)$taxId);
+        $record->set('percentage', $percentage ?? 0);
+        $record->set('region_id', $element['region_id'] ?? null);
+        $record->retrieveId();
+        $record->save();
+
+        $meta = $this->getMeta();
+        $element['id'] = vtws_getId($meta->getEntityId(), (int)$record->getId());
+
+        return $this->retrieve($element['id']);
     }
 }

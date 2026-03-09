@@ -28,8 +28,8 @@ class Appointments_Detail_View extends Vtiger_Detail_View
      *
      * @return string
      */
-    public function isAjaxEnabled($recordModel): string
+    public function isAjaxEnabled($recordModel)
     {
-        return 'false';
+        return false;
     }
 }

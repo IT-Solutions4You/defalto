@@ -18,11 +18,11 @@ class Campaigns_Install_Model extends Core_Install_Model {
     ];
 
     public static array $PICKLIST_CAMPAIGN_STATUS = [
-        'Planning',
-        'Active',
-        'Inactive',
-        'Completed',
-        'Cancelled',
+        ['Planning', '#E5E7EB'],
+        ['Active', '#5FA6FF'],
+        ['Inactive', '#F0D98B'],
+        ['Completed', '#5CE573'],
+        ['Cancelled', '#F5587D'],
     ];
     public static array $PICKLIST_CAMPAIGN_TYPE = [
         'Conference',
@@ -69,6 +69,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
         $this->updateRelatedList();
         $this->updateHistory();
         $this->updateToStandardModule();
+        $this->updateWorkflowTasks();
     }
 
     /**
@@ -515,6 +516,7 @@ class Campaigns_Install_Model extends Core_Install_Model {
         
         $this->createPicklistTable('vtiger_campaigntype', 'campaigntypeid', 'campaigntype');
         $this->createPicklistTable('vtiger_expectedresponse', 'expectedresponseid', 'expectedresponse');
+        $this->createPicklistTable('vtiger_campaignstatus', 'campaignstatusid', 'campaignstatus');
     }
 
     /**
