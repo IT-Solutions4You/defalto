@@ -178,7 +178,6 @@ $languageStrings = [
                     <br/>- /Smarty_setup.php
                     <br/>- /Smarty/templates/DetailView.tpl
                     <br/>- /Smarty/templates/ComposeEmail.tpl
-                    <br/>- /Smarty/templates/Inventory/InventoryActions.tpl
                     </b>",
     "LBL_FINISH"                              => "Terminé",
     "LBL_NEXT"                                => "Suivant",
