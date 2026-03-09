@@ -1942,6 +1942,7 @@ input[type=checkbox]:checked {
 .step {
     position: relative;
 }
+
 .step:after {
     position: absolute;
     top: 0;
@@ -1954,7 +1955,7 @@ input[type=checkbox]:checked {
     border-bottom: 1.5rem solid transparent;
 
     border-left: 1.5rem solid var(--dt-light-blue-color);
-    margin-right: -1.48rem;
+    margin-right: -1.4rem;
 }
 
 .crumbs .step.active:after {
@@ -1963,11 +1964,6 @@ input[type=checkbox]:checked {
 
     border-left: 1.5rem solid var(--dt-blue-color);
 }
-
-.importBlockContainer {
-    color: #596875;
-}
-
 /*******************************************
 ************* Updates Timeline ***************
 ********************************************/
@@ -4486,7 +4482,7 @@ input[type=number] {
     word-break: break-all;
 }
 .h-1rem {
-    min-height: 2rem;
+    height: 1rem;
 }
 .h-2rem {
     min-height: 2rem;
@@ -4601,6 +4597,15 @@ input[type=number] {
 
 .MultiFile-label * {
     display: inline;
+}
+.sectionTagContainer {
+    height: 0;
+    position: relative;
+}
+.sectionTag {
+    height: var(--header-height);
+    position: absolute;
+    bottom: 0;
 }
 
 @media (max-width: 991.98px) {

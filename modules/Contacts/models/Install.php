@@ -29,6 +29,95 @@ class Contacts_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $registerWorkflowTasks = [
+        [
+            'Send Email to user when Notifyowner is True',
+            'Contacts',
+            '2',
+            '2',
+            [
+                [
+                    'fieldname' => 'notify_owner',
+                    'operation' => 'is',
+                    'value' => '1',
+                    'valuetype' => 'rawtext',
+                    'joincondition' => '',
+                    'groupjoin' => 'and',
+                    'groupid' => '0',
+                ],
+            ],
+            [
+                [
+                    'modules/com_vtiger_workflow/tasks/VTEmailTask.inc',
+                    'A contact has been created ',
+                    'VTEmailTask',
+                    [
+                        'content' => 'A Contact has been assigned to you on Defalto CRM<br>Details of Contact are :<br><br>Contact Id:<b>$contact_no</b><br>LastName:<b>$lastname</b><br>FirstName:<b>$firstname</b><br>Lead Source:<b>$leadsource</b><br>Department:<b>$department</b><br>Description:<b>$description</b><br><br><br>Thank You<br>Admin',
+                        'subject' => 'Regarding Contact Creation',
+                        'recepient' => '$(assigned_user_id : (Users) email1)',
+                        'methodName' => 'NotifyOwner',
+                    ],
+                ],
+            ],
+        ],
+        [
+            'Send Email to user when Portal User is True',
+            'Contacts',
+            '3',
+            '3',
+            [
+                [
+                    'fieldname' => 'portal',
+                    'operation' => 'is',
+                    'value' => '1',
+                    'valuetype' => 'rawtext',
+                    'joincondition' => 'and',
+                    'groupjoin' => 'and',
+                    'groupid' => '0',
+                ],
+                [
+                    'fieldname' => 'email',
+                    'operation' => 'is not empty',
+                    'value' => '',
+                    'valuetype' => 'rawtext',
+                    'joincondition' => '',
+                    'groupjoin' => 'and',
+                    'groupid' => '0',
+                ],
+            ],
+            [
+                [
+                    'modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc',
+                    'Email Customer Portal Login Details',
+                    'VTEntityMethodTask',
+                    [
+                        'executeImmediately' => true,
+                        'methodName' => 'SendPortalLoginDetails',
+                    ],
+                ],
+            ],
+        ],
+        [
+            'Workflow for Contact Creation or Modification',
+            'Contacts',
+            '3',
+            '3',
+            [],
+            [
+                [
+                    'modules/com_vtiger_workflow/tasks/VTEmailTask.inc',
+                    'A contact has been created ',
+                    'VTEmailTask',
+                    [
+                        'content' => 'A Contact has been assigned to you on Defalto CRM<br>Details of Contact are :<br><br>Contact Id:<b>$contact_no</b><br>LastName:<b>$lastname</b><br>FirstName:<b>$firstname</b><br>Lead Source:<b>$leadsource</b><br>Department:<b>$department</b><br>Description:<b>$description</b><br><br><br>And <b>CustomerPortal Login Details</b> is sent to the EmailID :-$email<br><br>Thank You<br>Admin',
+                        'subject' => 'Regarding Contact Assignment',
+                        'recepient' => '$(assigned_user_id : (Users) email1)',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
     /**
      * @return void
      */
@@ -37,6 +126,7 @@ class Contacts_Install_Model extends Core_Install_Model
         $this->updateHistory();
         $this->updateComments();
         $this->updateRelatedList();
+        $this->updateWorkflowTasks();
     }
 
     /**

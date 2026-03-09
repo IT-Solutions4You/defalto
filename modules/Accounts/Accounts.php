@@ -40,8 +40,13 @@ class Accounts extends CRMEntity
         'vtiger_account' => 'accountid',
         'vtiger_accountbillads' => 'accountaddressid',
         'vtiger_accountshipads' => 'accountaddressid',
-        'vtiger_accountscf' => 'accountid'
+        'vtiger_accountscf' => 'accountid',
+        'vtiger_campaignrelstatus' => 'campaignrelstatusid',
     ];
+    public array $tab_name_left_join = [
+        'vtiger_campaignrelstatus'
+    ];
+
     /**
      * Mandatory table for supporting custom fields.
      */

@@ -13,48 +13,35 @@
     </div>
     <div class='modal-body' style="margin-bottom:380px" id = "landingPageDiv">
         <input type="hidden" name="module" value="{$FOR_MODULE}" />
-        <div class = "alert alert-danger">
-            {$ERROR_MESSAGE}
+        <div class="container">
+            <div class="row py-2">
+                <div class="col">
+                    <h4>{'ERR_DETAILS_BELOW'|vtranslate:$MODULE}</h4>
+                    <hr>
+                    <div class="alert alert-danger">{$ERROR_MESSAGE}</div>
+                </div>
+            </div>
+            {if $ERROR_DETAILS neq ''}
+                {foreach key=_TITLE item=_VALUE from=$ERROR_DETAILS}
+                    <div class="row">
+                        <div class="col">{$_TITLE}</div>
+                        <div class="col">{$_VALUE}</div>
+                    </div>
+                {/foreach}
+            {/if}
         </div>
-        <table class = "table table-borderless">
-            <tr>
-                <td valign="top">
-                    <table  class="table table-borderless">
-                        
-                        {if $ERROR_DETAILS neq ''}
-                            <tr>
-                                <td>
-                                    {'ERR_DETAILS_BELOW'|@vtranslate:$MODULE}
-                                    <table cellpadding="5" cellspacing="0">
-                                        {foreach key=_TITLE item=_VALUE from=$ERROR_DETAILS}
-                                            <tr>
-                                                <td>{$_TITLE}</td>
-                                                <td>-</td>
-                                                <td>{$_VALUE}</td>
-                                            </tr>
-                                        {/foreach}
-                                    </table>
-                                </td>
-                            </tr>
-                        {/if}
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td align="right">
-
-                </td>
-            </tr>
-        </table>
-    </div> 
-    <div class='modal-overlay-footer border1px clearfix'>
-        <div class="row clearfix">
-            <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-                {if $CUSTOM_ACTIONS neq ''}
-                    {foreach key=_LABEL item=_ACTION from=$CUSTOM_ACTIONS}
-                        <button name="{$_LABEL}" onclick="return Vtiger_Import_Js.clearSheduledImportData()" class="btn btn-danger btn-lg">{$_LABEL|@vtranslate:$MODULE}</button>
-                    {/foreach}
-                {/if}
+    </div>
+    <div class='modal-footer modal-overlay-footer'>
+        <div class="container-fluid">
+            <div class="row clearfix">
+                <div class="col"></div>
+                <div class='col'>
+                    {if $CUSTOM_ACTIONS neq ''}
+                        {foreach key=_LABEL item=_ACTION from=$CUSTOM_ACTIONS}
+                            <button name="{$_LABEL}" onclick="return Vtiger_Import_Js.clearSheduledImportData()" class="btn btn-danger me-2">{$_LABEL|@vtranslate:$MODULE}</button>
+                        {/foreach}
+                    {/if}
+                </div>
             </div>
         </div>
     </div>

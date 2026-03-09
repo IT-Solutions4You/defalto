@@ -10,6 +10,8 @@
 
 class PDFMaker_Module_Model extends Vtiger_Module_Model
 {
+    protected string $fontIcon = 'fa fa-file-pdf';
+
     public $UrlAttributes;
 
     public static $BROWSER_MERGE_TAG = '$custom-viewinbrowser$';

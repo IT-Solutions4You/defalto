@@ -929,5 +929,8 @@ var vtUtils = {
 
         container.find('.changeColor').css('color', color);
         container.find('.changeColorValue').val(color);
+
+        container.find('[data-color-id]').removeClass('bg-body-secondary');
+        container.find('[data-color-id="' + color + '"]').addClass('bg-body-secondary');
     },
 }

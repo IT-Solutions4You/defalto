@@ -179,6 +179,7 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
         Installer_License_Model::updateAll();
         Installer_ExtensionInstall_Model::clearCache();
         Installer_SystemInstall_Model::clearCache();
+        Installer_Notification_Model::updateAll();
 
         header('location:index.php?module=Installer&view=Index');
     }

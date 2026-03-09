@@ -30,7 +30,7 @@
                         <div class="col fw-semibold value text-break-all" title="{strip_tags($DISPLAY_VALUE)}">
                             {include file=$FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName()|@vtemplate_path:$MODULE_NAME FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                         </div>
-                        {if $FIELD_MODEL->isEditable() eq 'true' && $IS_AJAX_ENABLED && $FIELD_MODEL->isAjaxEditable() eq 'true' && $FIELD_MODEL->get('uitype') neq 69}
+                        {if $FIELD_MODEL->isEditable() && $IS_AJAX_ENABLED && $FIELD_MODEL->isAjaxEditable() && $FIELD_MODEL->get('uitype') neq 69}
                             <div class="edit col hide">
                                 {if $FIELD_MODEL->getFieldDataType() eq 'multipicklist'}
                                 <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$fieldDataType}" data-displayvalue='{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}' data-value="{$FIELD_MODEL->get('fieldvalue')}" />

@@ -23,10 +23,10 @@ $languageStrings = [
     'Shipping Method' => 'Spôsob dopravy',
     'Shipping Tracking Number' => 'Číslo zásielky',
     'Asset Name' => 'Názov majetku',
-    'Customer Name' => 'Customer Name',
+    'Customer Name' => 'Zákazník',
     'Notes' => 'Poznámka',
-    'In Service' => 'Aktívny',
-    'Out-of-service' => 'Vyradený',
+    'In Service' => 'Aktívne používaný',
+    'Out-of-service' => 'Dočasne vyradený',
     'Contact Name' => 'Osoba',
     'Product Name' => 'Produkt',
 ];
