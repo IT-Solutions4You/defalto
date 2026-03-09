@@ -16,8 +16,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-include_once('config.performance.php');
-
 // Include the Monolog library for logging functionality
 use Monolog\Logger as MonologLogger;
 use Monolog\Handler\StreamHandler;
@@ -37,7 +35,7 @@ class Core_Logger_Helper
     {
         // Check if the logger is not already initialized
         if (!self::$initialized) {
-            global $PERFORMANCE_CONFIG;
+            include('config.performance.php');
             // Check if the performance config is set and debug logging is enabled
             if (isset($PERFORMANCE_CONFIG) && isset($PERFORMANCE_CONFIG['LOGLEVEl_DEBUG']) && $PERFORMANCE_CONFIG['LOGLEVEl_DEBUG']) {
                 // Set the default log level to 100 and the log file path

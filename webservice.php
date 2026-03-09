@@ -24,7 +24,8 @@ if (file_exists('config_override.php')) {
     include_once 'config_override.php';
 }
 
-//Overrides GetRelatedList : used to get related query
+require_once 'vendorCheck.php';
+require_once 'vendor/autoload.php';
 //TODO : Eliminate below hacking solution
 include_once 'include/Webservices/Relation.php';
 
@@ -83,7 +84,8 @@ $format = vtws_getParameter($_REQUEST, "format", "json");
 $sessionId = vtws_getParameter($_REQUEST, "sessionName");
 
 $sessionManager = new SessionManager();
-$operationManager = new OperationManager($adb, $operation, $format, $sessionManager);
+$db = PearDatabase::getInstance();
+$operationManager = new OperationManager($db, $operation, $format, $sessionManager);
 
 try {
     if (!$sessionId || strcasecmp($sessionId, "null") === 0) {

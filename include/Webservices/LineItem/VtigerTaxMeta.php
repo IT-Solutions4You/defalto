@@ -40,7 +40,7 @@ class VtigerTaxMeta extends VtigerCRMActorMeta
                 }
             }
             $field = $this->getFieldArrayFromDBField($dbField, $tableName);
-            if (strcasecmp('taxname', $dbField->name) === 0 || strcasecmp('deleted', $dbField->name)) {
+            if (strcasecmp('tax_label', $dbField->name) === 0 || strcasecmp('deleted', $dbField->name) === 0) {
                 $field['displaytype'] = 2;
             }
             $webserviceField = WebserviceField::fromArray($this->pearDB, $field);
@@ -60,6 +60,6 @@ class VtigerTaxMeta extends VtigerCRMActorMeta
 
     public function getEntityDeletedQuery()
     {
-        return 'vtiger_inventorytaxinfo.deleted=0';
+        return 'df_taxes.deleted=0';
     }
 }

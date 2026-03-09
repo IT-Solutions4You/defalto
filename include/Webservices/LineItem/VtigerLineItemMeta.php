@@ -20,6 +20,7 @@
 /**
  * Description of VtigerLineItemMeta
  */
+
 class VtigerLineItemMeta extends VtigerCRMActorMeta
 {
     protected function getTableFieldList($tableName)
@@ -67,16 +68,13 @@ class VtigerLineItemMeta extends VtigerCRMActorMeta
 
     private function getTaxLabelFromName($name)
     {
-        $db = PearDatabase::getInstance();
-        $sql = 'SELECT * FROM vtiger_inventorytaxinfo WHERE taxname=? AND deleted=0';
-        $params = [$name];
-        $result = $db->pquery($sql, $params);
-        $it = new SqlResultIterator($db, $result);
-        foreach ($it as $row) {
-            return $row->taxlabel;
-        }
+        try {
+            $tax = Core_Tax_Model::getInstance($name);
 
-        return null;
+            return $tax->getLabel();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     protected function getFieldArrayFromDBField($dbField, $tableName)
