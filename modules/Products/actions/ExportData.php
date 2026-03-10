@@ -25,7 +25,7 @@ class Products_ExportData_Action extends Vtiger_ExportData_Action
     public function getAllTaxes()
     {
         if (!$this->allTaxes) {
-            $this->allTaxes = Inventory_TaxRecord_Model::getProductTaxes();
+            $this->allTaxes = Core_TaxRecord_Model::getActiveTaxesForRecord();
         }
 
         return $this->allTaxes;
@@ -34,7 +34,7 @@ class Products_ExportData_Action extends Vtiger_ExportData_Action
     public function getAllRegions()
     {
         if (!$this->allRegions) {
-            $this->allRegions = Inventory_TaxRegion_Model::getAllTaxRegions();
+            $this->allRegions = Core_TaxRegion_Model::getAllRegions();
         }
 
         return $this->allRegions;

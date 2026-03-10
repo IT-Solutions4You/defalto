@@ -145,17 +145,6 @@ Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_pricebookproductrel MODIF
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN listprice decimal(27,5)", []);
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN discount_amount decimal(27,5)", []);
 
-
-// Register a new actor type for LineItem API
-vtws_addActorTypeWebserviceEntityWithoutName('LineItem', 'include/Webservices/LineItem/VtigerLineItemOperation.php', 'VtigerLineItemOperation', []);
-
-Migration_Index_View::ExecuteQuery(
-    "UPDATE vtiger_ws_entity SET handler_path='include/Webservices/LineItem/VtigerInventoryOperation.php',handler_class='VtigerInventoryOperation' where name in ('Invoice','Quotes','PurchaseOrder','SalesOrder');",
-    []
-);
-
-$purchaseOrderTabId = getTabid("PurchaseOrder");
-
 vtws_addActorTypeWebserviceEntityWithName(
     'Tax',
     'include/Webservices/LineItem/VtigerTaxOperation.php',

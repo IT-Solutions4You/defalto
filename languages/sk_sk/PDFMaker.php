@@ -172,7 +172,6 @@ $languageStrings = [
                     <br/>- /modules/Emails/Save.php
                     <br/>- /Smarty/templates/DetailView.tpl
                     <br/>- /Smarty/templates/ComposeEmail.tpl
-                    <br/>- /Smarty/templates/Inventory/InventoryActions.tpl
                     </b>',
     'LBL_FINISH' => 'Koniec',
     'LBL_NEXT' => 'Ďalej',
