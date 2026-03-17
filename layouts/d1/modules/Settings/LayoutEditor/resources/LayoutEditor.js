@@ -2565,6 +2565,181 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         });
     },
 
+    triggerRelatedListSettingsTabClickEvent: function () {
+        let thisInstance = this;
+        const contents = jQuery('#layoutEditorContainer').find('.contents');
+
+        // Save button via event delegation on persistent parent - works even when
+        // initRelatedListSettingsTab was never called (e.g. Firefox pjax full-navigation).
+        contents.on('click', '.saveRelatedListSettingsBtn', function () {
+            const form = jQuery('#relatedListSettingsForm');
+            const selectElement = form.find('#relatedListColumns');
+
+            if (!selectElement.val() || selectElement.val().length === 0) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN')});
+                return;
+            }
+
+            const params = form.serializeFormData();
+            app.helper.showProgress();
+            app.request.post({data: params}).then(function (error, data) {
+                app.helper.hideProgress();
+                if (!error) {
+                    app.helper.showSuccessNotification({message: app.vtranslate('JS_RELATED_LIST_SETTINGS_SAVED')});
+                }
+            });
+        });
+
+        contents.on('click', '.relatedListSettingsTab', function (e) {
+            const container = contents.find('#relatedListSettingsContainer');
+            const selectedTab = jQuery(e.currentTarget).find('a');
+            const mode = selectedTab.data('mode');
+            const url = selectedTab.data('url') + '&sourceModule=' + jQuery('#selectedModuleName').val() + '&mode=' + mode;
+
+            jQuery('.selectedMode').val(mode);
+
+            if (container.find('#relatedListSettingsForm').length === 0) {
+                app.helper.showProgress();
+                app.request.pjax({'url': url}).then(function (error, data) {
+                    app.helper.hideProgress();
+                    if (error === null) {
+                        container.html(data);
+                    }
+                    // Initialize after pjax regardless of error flag - covers both Chrome
+                    // (data injected via callback) and Firefox (form already in DOM after
+                    // pjax full-navigation where error may not be null).
+                    if (container.find('#relatedListSettingsForm').length > 0
+                        && !container.data('rls-initialized')) {
+                        thisInstance.initRelatedListSettingsTab(container);
+                    }
+                });
+            } else {
+                window.history.pushState('relatedListSettings', '', url);
+                // Form already in DOM (Firefox pjax full-nav or server-side pre-render).
+                // Initialize Select2 + sortable if not done yet.
+                if (!container.data('rls-initialized')) {
+                    thisInstance.initRelatedListSettingsTab(container);
+                }
+            }
+        });
+    },
+
+    initRelatedListSettingsTab: function (container) {
+        container.data('rls-initialized', true);
+
+        const form = container.find('#relatedListSettingsForm');
+        const selectElement = form.find('#relatedListColumns');
+        const valueElement = form.find('input[name="columnslist"]');
+
+        try {
+            vtUtils.makeSelect2ElementSortable(
+                selectElement,
+                valueElement,
+                function (valueElement) {
+                    try { return JSON.parse(valueElement.val()) || []; } catch (e) { return []; }
+                },
+                function (valueElement, selectedValues) {
+                    valueElement.val(JSON.stringify(selectedValues));
+                }
+            );
+        } catch (e) {
+            // Fallback: init select2 and wire change manually
+            vtUtils.showSelect2ElementView(selectElement);
+            selectElement.on('change', function () {
+                valueElement.val(JSON.stringify(selectElement.val() || []));
+            });
+        }
+
+        vtUtils.showSelect2ElementView(form.find('#relatedListSortField'));
+        vtUtils.showSelect2ElementView(form.find('#relatedListSortOrder'));
+
+        // Note: Save button click is handled by event delegation in
+        // triggerRelatedListSettingsTabClickEvent to survive Firefox pjax navigation.
+    },
+
+    triggerPopupSettingsTabClickEvent: function () {
+        let thisInstance = this;
+        const contents = jQuery('#layoutEditorContainer').find('.contents');
+
+        // Save button via event delegation on persistent parent - works even when
+        // initPopupSettingsTab was never called (e.g. Firefox pjax full-navigation).
+        contents.on('click', '.savePopupSettingsBtn', function () {
+            const form = jQuery('#popupSettingsForm');
+            const selectElement = form.find('#popupColumns');
+
+            if (!selectElement.val() || selectElement.val().length === 0) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN')});
+                return;
+            }
+
+            const params = form.serializeFormData();
+            app.helper.showProgress();
+            app.request.post({data: params}).then(function (error, data) {
+                app.helper.hideProgress();
+                if (!error) {
+                    app.helper.showSuccessNotification({message: app.vtranslate('JS_POPUP_SETTINGS_SAVED')});
+                }
+            });
+        });
+
+        contents.on('click', '.popupSettingsTab', function (e) {
+            const container = contents.find('#popupSettingsContainer');
+            const selectedTab = jQuery(e.currentTarget).find('a');
+            const mode = selectedTab.data('mode');
+            const url = selectedTab.data('url') + '&sourceModule=' + jQuery('#selectedModuleName').val() + '&mode=' + mode;
+
+            jQuery('.selectedMode').val(mode);
+
+            if (container.find('#popupSettingsForm').length === 0) {
+                app.helper.showProgress();
+                app.request.pjax({'url': url}).then(function (error, data) {
+                    app.helper.hideProgress();
+                    if (error === null) {
+                        container.html(data);
+                    }
+                    if (container.find('#popupSettingsForm').length > 0
+                        && !container.data('ps-initialized')) {
+                        thisInstance.initPopupSettingsTab(container);
+                    }
+                });
+            } else {
+                window.history.pushState('popupSettings', '', url);
+                if (!container.data('ps-initialized')) {
+                    thisInstance.initPopupSettingsTab(container);
+                }
+            }
+        });
+    },
+
+    initPopupSettingsTab: function (container) {
+        container.data('ps-initialized', true);
+
+        const form = container.find('#popupSettingsForm');
+        const selectElement = form.find('#popupColumns');
+        const valueElement = form.find('input[name="columnslist"]');
+
+        try {
+            vtUtils.makeSelect2ElementSortable(
+                selectElement,
+                valueElement,
+                function (valueElement) {
+                    try { return JSON.parse(valueElement.val()) || []; } catch (e) { return []; }
+                },
+                function (valueElement, selectedValues) {
+                    valueElement.val(JSON.stringify(selectedValues));
+                }
+            );
+        } catch (e) {
+            vtUtils.showSelect2ElementView(selectElement);
+            selectElement.on('change', function () {
+                valueElement.val(JSON.stringify(selectElement.val() || []));
+            });
+        }
+
+        // Note: Save button click is handled by event delegation in
+        // triggerPopupSettingsTabClickEvent to survive Firefox pjax navigation.
+    },
+
     /**
      * register events for layout editor
      */
@@ -2575,6 +2750,8 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         thisInstance.triggerHeaderFieldTabClickEvent();
         thisInstance.triggerRelatedModulesTabClickEvent();
         thisInstance.triggerDuplicationTabClickEvent();
+        thisInstance.triggerRelatedListSettingsTabClickEvent();
+        thisInstance.triggerPopupSettingsTabClickEvent();
         thisInstance.registerFields();
 
         var selectedTab = jQuery('.selectedTab').val();

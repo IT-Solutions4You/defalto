@@ -88,6 +88,14 @@ $languageStrings = [
     "LBL_COLLAPSE_BLOCK" => "Zbaliť blok",
     'LBL_HEADER_FIELDS' => 'Polia v hlavičke',
     'LBL_CLICK_HERE_ADD_COLUMN' => 'Kliknite pre pridanie poľa',
+    'LBL_RELATED_LIST_LAYOUT' => 'Rozloženie súvisiacich zoznamov',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Viditeľné stĺpce',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Predvolené pole triedenia',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Poradie triedenia',
+    'LBL_ASCENDING' => 'Vzostupne',
+    'LBL_DESCENDING' => 'Zostupne',
+    'LBL_POPUP_LAYOUT' => 'Rozloženie vyskakovacieho okna',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Viditeľné stĺpce',
 ];
 
 $jsLanguageStrings = [
@@ -111,4 +119,8 @@ $jsLanguageStrings = [
     "JS_SELECTED_FIELDS_REACTIVATED" => "Vybrané polia boli aktivované",
     "JS_SPECIAL_CHARACTERS" => "Špeciálne znaky, ako je",
     'JS_SELECT_FIELD' => 'Vyberte pole',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Nastavenia rozloženia súvisiacich zoznamov boli úspešne uložené',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Prosím vyberte aspoň jeden viditeľný stĺpec',
+    'JS_POPUP_SETTINGS_SAVED' => 'Nastavenia rozloženia vyskakovacieho okna boli úspešne uložené',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Prosím vyberte aspoň jeden viditeľný stĺpec',
 ];

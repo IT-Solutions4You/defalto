@@ -111,20 +111,6 @@ class SalesOrder extends CRMEntity
     ];
     public $list_link_field = 'subject';
 
-    public $search_fields = [
-        'Order No'     => ['salesorder' => 'salesorder_no'],
-        'Subject'      => ['salesorder' => 'subject'],
-        'Account Name' => ['account' => 'accountid'],
-        'Quote Name'   => ['salesorder' => 'quoteid']
-    ];
-
-    public $search_fields_name = [
-        'Order No'     => 'salesorder_no',
-        'Subject'      => 'subject',
-        'Account Name' => 'account_id',
-        'Quote Name'   => 'quote_id'
-    ];
-
     // This is the list of vtiger_fields that are required.
     public $required_fields = ["accountname" => 1];
 

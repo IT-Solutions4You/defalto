@@ -161,6 +161,14 @@ $languageStrings = [
     'LBL_SYNC_TOOLTIP_MESSAGE'          => "Preferire ultimo record - i dati più recenti saranno mantenuti 
 	<br> Preferisco record interno - il record esistente sarà lasciato come è 
 	<br> Preferisco record esterno - Dati dall'applicazione esterna verranno sempre copiati",
+    'LBL_RELATED_LIST_LAYOUT' => 'Layout elenco correlato',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Colonne visibili',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Campo di ordinamento predefinito',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Ordinamento',
+    'LBL_ASCENDING' => 'Crescente',
+    'LBL_DESCENDING' => 'Decrescente',
+    'LBL_POPUP_LAYOUT' => 'Layout finestra popup',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Colonne visibili',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Visualizza blocco attivato',
@@ -224,4 +232,8 @@ Sei sicuro di voler eliminare questo campo?',
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Con successo aggiornato a prendere in considerazione i campi selezionati nella prevenzione duplicati',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Impossibile prendere in considerazione i campi selezionati nella prevenzione duplicati',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'assegno duplicato è disattivato',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Impostazioni del layout elenco correlato salvate con successo',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Si prega di selezionare almeno una colonna visibile',
+    'JS_POPUP_SETTINGS_SAVED' => 'Impostazioni del layout finestra popup salvate con successo',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Si prega di selezionare almeno una colonna visibile',
 ];

@@ -159,6 +159,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Föredrar interna register',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Föredrar extern rekord',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Föredrar senaste rekord - ska Senast ändrade registerdata bevaras <br> föredrar interna register - befintlig post kommer att behållas eftersom det är <br> föredrar extern rekord - Data från den externa ansökan kommer att kopieras',
+    'LBL_RELATED_LIST_LAYOUT' => 'Layout för relaterad lista',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Synliga kolumner',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Standardsorteringsfält',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Sorteringsordning',
+    'LBL_ASCENDING' => 'Stigande',
+    'LBL_DESCENDING' => 'Fallande',
+    'LBL_POPUP_LAYOUT' => 'Layout för popup-fönster',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Synliga kolumner',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Block visa aktiverad',
@@ -222,4 +230,8 @@ Om du är osäker och vill kunna visa data i framtiden, kan du markera det fält
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Uppdaterats överväga utvalda fält i dubbletter förebyggande',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Det gick inte att tänka på utvalda områden i dubbletter förebyggande',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Duplicate kontroll är inaktiverad',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Layoutinställningar för relaterad lista har sparats',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Välj minst en synlig kolumn',
+    'JS_POPUP_SETTINGS_SAVED' => 'Layoutinställningar för popup-fönster har sparats',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Välj minst en synlig kolumn',
 ];

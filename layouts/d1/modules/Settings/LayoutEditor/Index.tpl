@@ -50,6 +50,16 @@
 									<strong>{vtranslate('LBL_HEADER_FIELDS', $QUALIFIED_MODULE)}</strong>
 								</a>
 							</li>
+							<li class="nav-item relatedListSettingsTab ms-3">
+								<a class="nav-link {if $SELECTED_TAB eq 'relatedListSettingsTab'}active{/if}" data-bs-toggle="tab" href="#relatedListSettingsContainer" data-url="{$URL}" data-mode="showRelatedListSettings">
+									<strong>{vtranslate('LBL_RELATED_LIST_LAYOUT', $QUALIFIED_MODULE)}</strong>
+								</a>
+							</li>
+							<li class="nav-item popupSettingsTab ms-3">
+								<a class="nav-link {if $SELECTED_TAB eq 'popupSettingsTab'}active{/if}" data-bs-toggle="tab" href="#popupSettingsContainer" data-url="{$URL}" data-mode="showPopupSettings">
+									<strong>{vtranslate('LBL_POPUP_LAYOUT', $QUALIFIED_MODULE)}</strong>
+								</a>
+							</li>
 							<li class="nav-item relatedListTab ms-3">
 								<a class="nav-link {if $SELECTED_TAB eq 'relatedListTab'}active{/if}" data-bs-toggle="tab" href="#relatedTabOrder" data-url="{$URL}" data-mode="showRelatedListLayout">
 									<strong>{vtranslate('LBL_RELATION_SHIPS', $QUALIFIED_MODULE)}</strong>
@@ -72,7 +82,17 @@
 									{include file=vtemplate_path('HeaderFields.tpl', $QUALIFIED_MODULE)}
 								{/if}
 							</div>
-							<div class="tab-pane {if $SELECTED_TAB eq 'relatedListTab'} active{/if}" id="relatedTabOrder">
+							<div class="tab-pane{if $SELECTED_TAB eq 'relatedListSettingsTab'} active{/if}" id="relatedListSettingsContainer">
+								{if $SELECTED_TAB eq 'relatedListSettingsTab'}
+									{include file=vtemplate_path('RelatedListSettings.tpl', $QUALIFIED_MODULE)}
+								{/if}
+							</div>
+							<div class="tab-pane{if $SELECTED_TAB eq 'popupSettingsTab'} active{/if}" id="popupSettingsContainer">
+								{if $SELECTED_TAB eq 'popupSettingsTab'}
+									{include file=vtemplate_path('PopupSettings.tpl', $QUALIFIED_MODULE)}
+								{/if}
+							</div>
+						<div class="tab-pane {if $SELECTED_TAB eq 'relatedListTab'} active{/if}" id="relatedTabOrder">
 								{if $SELECTED_TAB eq 'relatedListTab'}
 									{include file=vtemplate_path('RelatedList.tpl', $QUALIFIED_MODULE)}
 								{/if}

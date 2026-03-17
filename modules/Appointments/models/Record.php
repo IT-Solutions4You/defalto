@@ -20,7 +20,7 @@ class Appointments_Record_Model extends Vtiger_Record_Model
         /** @var Appointments_Module_Model $module */
         $module = $this->getModule();
 
-        return $module->getModuleIcon('', $this->get('calendar_type'));
+        return $module->getModuleIcon('', $this->get('calendar_type') ?? '');
     }
 
     /**

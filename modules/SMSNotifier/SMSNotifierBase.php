@@ -60,17 +60,6 @@ class SMSNotifierBase extends CRMEntity
 	// Make the field link to detail view 
 	var $list_link_field = 'message';
 
-	// For Popup listview and UI type support
-	var $search_fields = [
-		/* Format: Field Label => Array(tablename, columnname) */
-		// tablename should not have prefix 'vtiger_'
-		'Message' => ['smsnotifier', 'message']
-	];
-	var $search_fields_name = [
-		/* Format: Field Label => fieldname */
-		'Message' => 'message'
-	];
-
 	// Allow sorting on the following (field column names)
 	var $sortby_fields = ['message'];
 

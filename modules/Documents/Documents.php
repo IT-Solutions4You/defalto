@@ -53,19 +53,6 @@ class Documents extends CRMEntity
         'Folder Name'   => 'folderid',
     ];
 
-    public $search_fields = [
-        'Title'       => ['notes' => 'notes_title'],
-        'File Name'   => ['notes' => 'filename'],
-        'Assigned To' => ['crmentity' => 'assigned_user_id'],
-        'Folder Name' => ['attachmentsfolder' => 'foldername'],
-    ];
-
-    public $search_fields_name = [
-        'Title'       => 'notes_title',
-        'File Name'   => 'filename',
-        'Assigned To' => 'assigned_user_id',
-        'Folder Name' => 'folderid',
-    ];
     public $list_link_field = 'notes_title';
     public $old_filename = '';
     public $mandatory_fields = [

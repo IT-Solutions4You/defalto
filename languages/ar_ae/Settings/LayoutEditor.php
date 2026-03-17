@@ -160,6 +160,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'تفضل السجل الداخلي',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'تفضل سجل خارجية',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'تفضل أحدث سجل - سيتم الاحتفاظ بيانات السجل المعدلة مؤخرا <BR> تفضل السجل الداخلي - القائمة سجل سيتم الاحتفاظ كما هو <BR> تفضل سجل خارجية - بيانات من تطبيق خارجي سيتم نسخ',
+    'LBL_RELATED_LIST_LAYOUT' => 'تخطيط القائمة المرتبطة',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'الأعمدة المرئية',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'حقل الفرز الافتراضي',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'ترتيب الفرز',
+    'LBL_ASCENDING' => 'تصاعدي',
+    'LBL_DESCENDING' => 'تنازلي',
+    'LBL_POPUP_LAYOUT' => 'تخطيط النافذة المنبثقة',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'الأعمدة المرئية',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'إظهار كتلة تمكين',
@@ -223,4 +231,8 @@ $jsLanguageStrings = [
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'تحديث بنجاح للنظر في الحقول المحددة في الوقاية من التكرارات',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'لم تنظر الحقول المحددة في الوقاية من التكرارات',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'تم تعطيل الاختيار مكررة',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'تم حفظ إعدادات تخطيط القائمة المرتبطة بنجاح',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'يرجى تحديد عمود مرئي واحد على الأقل',
+    'JS_POPUP_SETTINGS_SAVED' => 'تم حفظ إعدادات تخطيط النافذة المنبثقة بنجاح',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'يرجى تحديد عمود مرئي واحد على الأقل',
 ];

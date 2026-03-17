@@ -67,22 +67,16 @@ class Documents_Module_Model extends Vtiger_Module_Model
      * Funtion that returns fields that will be showed in the record selection popup
      * @return <Array of fields>
      */
-    public function getPopupViewFieldsList()
+    public function getPopupFields()
     {
-        $popupFileds = $this->getSummaryViewFieldsList();
+        $popupFields = parent::getPopupFields();
         $reqPopUpFields = [
-            'File Status'        => 'filestatus',
-            'File Size'          => 'filesize',
-            'File Location Type' => 'filelocationtype'
+            'filestatus',
+            'filesize',
+            'filelocationtype',
         ];
-        foreach ($reqPopUpFields as $fieldLabel => $fieldName) {
-            $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $this);
-            if ($fieldModel->getPermissions('readonly')) {
-                $popupFileds[$fieldName] = $fieldModel;
-            }
-        }
 
-        return array_keys($popupFileds);
+        return array_merge($popupFields, $reqPopUpFields);
     }
 
     /**
@@ -170,20 +164,14 @@ class Documents_Module_Model extends Vtiger_Module_Model
 
     public function getConfigureRelatedListFields()
     {
-        $showRelatedFieldModel = $this->getHeaderAndSummaryViewFieldsList();
-        $relatedListFields = [];
-        $defaultFields = [];
-        if (php7_count($showRelatedFieldModel) > 0) {
-            foreach ($showRelatedFieldModel as $key => $field) {
-                $relatedListFields[$field->get('column')] = $field->get('name');
-            }
-            $defaultFields = [
-                'title'    => 'notes_title',
-                'filename' => 'filename'
-            ];
-        }
+        $relatedListFields = parent::getConfigureRelatedListFields();
 
-        foreach ($defaultFields as $columnName => $fieldName) {
+        $checkAddFields = [
+            'title'    => 'notes_title',
+            'filename' => 'filename',
+        ];
+
+        foreach ($checkAddFields as $columnName => $fieldName) {
             if (!array_key_exists($columnName, $relatedListFields)) {
                 $relatedListFields[$columnName] = $fieldName;
             }

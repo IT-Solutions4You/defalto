@@ -62,17 +62,6 @@ class ModCommentsCore extends CRMEntity
     // Make the field link to detail view
     var $list_link_field = 'commentcontent';
 
-    // For Popup listview and UI type support
-    var $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        'Comment' => ['modcomments', 'commentcontent']
-    ];
-    var $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        'Comment' => 'commentcontent'
-    ];
-
     // Allow sorting on the following (field column names)
     var $sortby_fields = ['commentcontent'];
 

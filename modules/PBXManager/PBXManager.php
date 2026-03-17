@@ -60,16 +60,6 @@ class PBXManager extends CRMEntity
     ];
     // Make the field link to detail view
     var $list_link_field = 'customernumber';
-    // For Popup listview and UI type support
-    var $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        'Customer' => ['vtiger_pbxmanager', 'customer'],
-    ];
-    var $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        'Customer' => 'customer',
-    ];
     // For Alphabetical search
     var $def_basicsearch_col = 'customer';
     // Column value to use on detail view record text display

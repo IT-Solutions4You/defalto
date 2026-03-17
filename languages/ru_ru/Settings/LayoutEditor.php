@@ -159,6 +159,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Предпочитают внутреннюю запись',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Предпочитает внешнюю запись',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Предпочитает последнюю запись - Совсем недавно измененные данные записей будет сохранены <br> Предпочитают внутренние рекорд - Существующие записи будут сохранены, как это <br> Предпочитает внешнюю запись - данные из внешнего приложения будет скопировано',
+    'LBL_RELATED_LIST_LAYOUT' => 'Макет связанного списка',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Видимые столбцы',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Поле сортировки по умолчанию',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Порядок сортировки',
+    'LBL_ASCENDING' => 'По возрастанию',
+    'LBL_DESCENDING' => 'По убыванию',
+    'LBL_POPUP_LAYOUT' => 'Макет всплывающего окна',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Видимые столбцы',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Блок-шоу включен',
@@ -222,4 +230,8 @@ $jsLanguageStrings = [
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Успешно обновлено рассмотреть выбранные поля в области профилактики дублей',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Не удалось рассмотреть выбранные поля в области профилактики дублей',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Дубликат проверка отключена',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Настройки макета связанного списка успешно сохранены',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Пожалуйста, выберите хотя бы один видимый столбец',
+    'JS_POPUP_SETTINGS_SAVED' => 'Настройки макета всплывающего окна успешно сохранены',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Пожалуйста, выберите хотя бы один видимый столбец',
 ];

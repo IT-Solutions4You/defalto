@@ -60,19 +60,6 @@ class ModuleName extends CRMEntity
     // Make the field link to detail view
     var $list_link_field = '<entityfieldname>';
 
-    // For Popup listview and UI type support
-    var $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        '<entityfieldlabel>' => ['<modulename>', '<entitycolumn>'],
-        'Assigned To'        => ['vtiger_crmentity', 'assigned_user_id'],
-    ];
-    var $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        '<entityfieldlabel>' => '<entityfieldname>',
-        'Assigned To'        => 'assigned_user_id',
-    ];
-
     // For Alphabetical search
     var $def_basicsearch_col = '<entityfieldname>';
 

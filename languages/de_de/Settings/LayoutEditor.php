@@ -160,6 +160,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD' => 'Bevorzugen internen Rekord',
     'LBL_PREFER_EXTERNAL_RECORD' => 'Bevorzugen externen Rekord',
     'LBL_SYNC_TOOLTIP_MESSAGE' => 'Bevorzugen neuesten Rekord - Zuletzt geändert Aufzeichnungsdaten werden beibehalten Die interne Aufzeichnung bevorzugen - Bestehende Datensatz wird beibehalten, wie es <br> bevorzugen externe Platte ist - Daten aus der externen Anwendung kopiert werden',
+    'LBL_RELATED_LIST_LAYOUT' => 'Layout der zugehörigen Liste',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Sichtbare Spalten',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Standard-Sortierfeld',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Sortierreihenfolge',
+    'LBL_ASCENDING' => 'Aufsteigend',
+    'LBL_DESCENDING' => 'Absteigend',
+    'LBL_POPUP_LAYOUT' => 'Popup-Layout',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Sichtbare Spalten',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW' => 'Block Karte aktiviert',
@@ -223,4 +231,8 @@ Sind Sie sicher, dass Sie zum löschen dieses Feld?',
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Erfolgreich aktualisierte ausgewählte Felder in Duplikaten Prävention zu berücksichtigen',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Fehler beim ausgewählten Feldern in Duplikaten Prävention berücksichtigen',
     'JS_DUPLICATE_CHECK_DISABLED' => 'Dublettenprüfung ist deaktiviert',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Layout-Einstellungen für zugehörige Liste erfolgreich gespeichert',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Bitte wählen Sie mindestens eine sichtbare Spalte aus',
+    'JS_POPUP_SETTINGS_SAVED' => 'Popup-Layout-Einstellungen erfolgreich gespeichert',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Bitte wählen Sie mindestens eine sichtbare Spalte aus',
 ];

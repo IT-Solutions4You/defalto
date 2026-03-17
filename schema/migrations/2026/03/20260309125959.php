@@ -10,16 +10,19 @@
 
 require_once 'vtlib/Vtiger/Cron.php';
 
-if (!class_exists('Migration_20260309174559')) {
-    class Migration_20260309174559 extends AbstractMigrations
+if (!class_exists('Migration_20260309125959')) {
+    class Migration_20260309125959 extends AbstractMigrations
     {
         /**
          * @param string $strFileName
+         *
          * @throws Exception
          */
         public function migrate(string $strFileName): void
         {
-            $this->db->pquery('DELETE FROM vtiger_ws_entity WHERE name = ?', ['LineItem']);
+            $relatedListSettings = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+            $relatedListSettings->createTables();
+            $relatedListSettings->initializeColumns();
         }
     }
 } else {

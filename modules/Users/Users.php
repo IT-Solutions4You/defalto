@@ -78,17 +78,6 @@ class Users extends CRMEntity
     public $list_mode;
     public $popup_type;
 
-    public $search_fields = [
-        'Name'   => ['vtiger_users' => 'last_name'],
-        'Email'  => ['vtiger_users' => 'email1'],
-        'Email2' => ['vtiger_users' => 'email2'],
-    ];
-    public $search_fields_name = [
-        'Name'   => 'last_name',
-        'Email'  => 'email1',
-        'Email2' => 'email2',
-    ];
-
     public $module_name = "Users";
 
     public $object_name = "User";

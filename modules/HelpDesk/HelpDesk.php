@@ -84,15 +84,6 @@ class HelpDesk extends CRMEntity
         'modifiedtime',
         'createdtime',
     ];
-    public $search_fields = [
-        //'Ticket ID' => Array('vtiger_crmentity'=>'crmid'),
-        'Ticket No' => ['vtiger_troubletickets' => 'ticket_no'],
-        'Title' => ['vtiger_troubletickets' => 'ticket_title'],
-    ];
-    public $search_fields_name = [
-        'Ticket No' => 'ticket_no',
-        'Title' => 'ticket_title',
-    ];
     //Specify Required fields
     public $required_fields = [];
 

@@ -47,14 +47,6 @@ class Vendors extends CRMEntity
     ];
     var $list_link_field = 'vendorname';
 
-    var $search_fields = [
-        'Vendor Name' => ['vendor' => 'vendorname'],
-        'Phone' => ['vendor' => 'phone']
-    ];
-    var $search_fields_name = [
-        'Vendor Name' => 'vendorname',
-        'Phone' => 'phone'
-    ];
     //Specifying required fields for vendors
     var $required_fields = [];
 
