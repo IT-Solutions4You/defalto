@@ -335,7 +335,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'Создание нового Вид',
     'LBL_BASIC_DETAILS'                       => 'Основные детали',
     'LBL_CHOOSE_COLUMNS'                      => 'Выбрать столбцы и орденом',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'Макс 15',
     'LBL_FILTER_ON_DATE'                      => 'Список по дате',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'Выберите Список условий',
     'LBL_SET_AS_DEFAULT'                      => 'Установить по умолчанию',

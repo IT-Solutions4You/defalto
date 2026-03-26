@@ -393,7 +393,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'Skapa ny Vy',
     'LBL_BASIC_DETAILS'                       => 'Grundläggande uppgifter',
     'LBL_CHOOSE_COLUMNS'                      => 'Välj Kolumner och Ordning',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'Max 15',
     'LBL_FILTER_ON_DATE'                      => 'Lista på datum',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'Välj Lista över betingelser',
     'LBL_ADD_CONDITION'                       => 'Lägg till Villkor',

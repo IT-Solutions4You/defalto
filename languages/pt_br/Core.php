@@ -421,7 +421,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                               => 'Criação nova Visualização',
     'LBL_BASIC_DETAILS'                             => 'Detalhes Básicos',
     'LBL_CHOOSE_COLUMNS'                            => 'Escolha as Colunas e Ordem',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'                 => 'Máx 12',
     'LBL_FILTER_ON_DATE'                            => 'Filtrar data',
     'LBL_CHOOSE_FILTER_CONDITIONS'                  => 'Escolha as Condições do Filtro',
     'LBL_ADD_CONDITION'                             => 'Adicionar Condição',

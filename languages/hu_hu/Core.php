@@ -334,7 +334,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'Új Nézet létrehozása',
     'LBL_BASIC_DETAILS'                       => 'Alapadatok',
     'LBL_CHOOSE_COLUMNS'                      => 'Válassz oszlopokat és sorrendet',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'Maximum 15',
     'LBL_FILTER_ON_DATE'                      => 'Lista a dátum',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'Válasszon Lista feltételek',
     'LBL_SET_AS_DEFAULT'                      => 'Alapértelmezettnek beállít',

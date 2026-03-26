@@ -375,7 +375,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW' => 'Vytvorenie nového zoznamu',
     'LBL_BASIC_DETAILS' => 'Základné údaje',
     'LBL_CHOOSE_COLUMNS' => 'Zvoľte stĺpce ktoré si želáte vidieť. Následne môžete upraviť poradie stĺpcov',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS' => 'Môžete vybrať najviac 15 stĺpcov',
     'LBL_FILTER_ON_DATE' => 'Filtrovať podľa dátumu',
     'LBL_CHOOSE_FILTER_CONDITIONS' => 'Vyberte podmienky zoznamu',
     'LBL_SET_AS_DEFAULT' => 'Nastaviť ako predvolený',

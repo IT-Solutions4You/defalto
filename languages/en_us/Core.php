@@ -386,7 +386,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW' => 'Creating new view',
     'LBL_BASIC_DETAILS' => 'Basic details',
     'LBL_CHOOSE_COLUMNS' => 'Choose columns and order',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS' => 'Max 15',
     'LBL_FILTER_ON_DATE' => 'List on date',
     'LBL_CHOOSE_FILTER_CONDITIONS' => 'Choose List conditions',
     'LBL_SET_AS_DEFAULT' => 'Set as Default',

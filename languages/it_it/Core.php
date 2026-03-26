@@ -337,7 +337,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'Creando nuove Viste',
     'LBL_BASIC_DETAILS'                       => 'Dettagli Base',
     'LBL_CHOOSE_COLUMNS'                      => 'Scegli colonne e ordinamento',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'Max 15',
     'LBL_FILTER_ON_DATE'                      => 'Filtra basandoti sulle date',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'Scegli condizioni Filtri',
     'LBL_SET_AS_DEFAULT'                      => 'Imposta come Default',

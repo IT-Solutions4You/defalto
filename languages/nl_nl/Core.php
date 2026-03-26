@@ -335,7 +335,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'Maak nieu Overzixht',
     'LBL_BASIC_DETAILS'                       => 'Basisdetails',
     'LBL_CHOOSE_COLUMNS'                      => 'Kies Kolommmen en Volgorde',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'Max 15',
     'LBL_FILTER_ON_DATE'                      => 'Lijst op datum',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'Kies Lijst voorwaarden',
     'LBL_SET_AS_DEFAULT'                      => 'Instellen als Standaard',

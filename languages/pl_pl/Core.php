@@ -354,7 +354,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'Utwórz nową listę',
     'LBL_BASIC_DETAILS'                       => 'Podstawowe informacje',
     'LBL_CHOOSE_COLUMNS'                      => 'Wybierz kolumny i kolejność',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'Maksymalnie 15',
     'LBL_FILTER_ON_DATE'                      => 'Listaowanie według daty',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'Wybierz warunków listy',
     'LBL_ADD_CONDITION'                       => 'Dodaj warunek',

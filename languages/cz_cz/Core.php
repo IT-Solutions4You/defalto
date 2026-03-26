@@ -371,7 +371,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW' => 'Vytvořit nový pohled',
     'LBL_BASIC_DETAILS' => 'Základní detaily',
     'LBL_CHOOSE_COLUMNS' => 'Zvolte sloupce které si přejete vidět. Následně můžete upravit pořadí sloupců',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS' => 'Nejvíce 12 sloupců',
     'LBL_FILTER_ON_DATE' => 'Filtrovat podle data',
     'LBL_CHOOSE_FILTER_CONDITIONS' => 'Vybrat podmínky filtru',
     'LBL_SET_AS_DEFAULT' => 'Nastavit jako výchozí',

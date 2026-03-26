@@ -258,7 +258,7 @@ class Vtiger_List_View extends Vtiger_Index_View
                 $sortOrder = $orderParams['sortorder'] ?? '';
                 $searchKey = $orderParams['search_key'] ?? '';
                 $searchValue = $orderParams['search_value'] ?? '';
-                $operator = $orderParams['operator'];
+                $operator = $orderParams['operator'] ?? '';
 
                 if (empty($tagParams)) {
                     $tagParams = $orderParams['tag_params'] ?? '';

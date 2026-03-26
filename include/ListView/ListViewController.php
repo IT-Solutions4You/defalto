@@ -297,7 +297,7 @@ class ListViewController
                 }
 
                 if (in_array($uitype, [15, 33, 16])) {
-                    $value = html_entity_decode($rawValue, ENT_QUOTES, $default_charset);
+                    $value = html_entity_decode((string)$rawValue, ENT_QUOTES, $default_charset);
                 } else {
                     $value = $rawValue;
                 }
@@ -438,7 +438,7 @@ class ListViewController
                         $value = '--';
                     }
                 } elseif ($fieldDataType == 'owner' || $fieldDataType == 'ownergroup') {
-                    $value = textlength_check($this->ownerNameList[$fieldName][$value]);
+                    $value = textlength_check($this->ownerNameList[$fieldName][$value] ?? '');
                 } elseif ($field->getUIType() == 25) {
                     //TODO clean request object reference.
                     $contactId = $_REQUEST['record'];
