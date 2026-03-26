@@ -30,7 +30,11 @@ class Settings_LayoutEditor_SaveRelatedListSettings_Action extends Settings_Vtig
             }
 
             $model = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
-            $model->save($sourceModule, $columnslist, (string)$sortfield, (string)$sortorder);
+            $model->set('moduleName', $sourceModule);
+            $model->set('columnslist', $columnslist);
+            $model->set('sortfield', (string)$sortfield);
+            $model->set('sortorder', (string)$sortorder);
+            $model->save();
 
             $response->setResult(true);
         } catch (Exception $e) {

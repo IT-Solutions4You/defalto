@@ -306,7 +306,9 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
             }
         }
 
-        $selectedSettings = Settings_LayoutEditor_RelatedListSettings_Model::getInstance()->getSettings($sourceModuleName);
+        $relatedListSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+        $relatedListSettingsModel->set('moduleName', $sourceModuleName);
+        $selectedSettings = $relatedListSettingsModel->getSettings();
 
         $viewer = $this->getViewer($request);
         $viewer->assign('FIELDS', $fields);
@@ -347,7 +349,9 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
             }
         }
 
-        $selectedSettings = Settings_LayoutEditor_PopupSettings_Model::getInstance()->getSettings($sourceModuleName);
+        $popupSettingsModel = Settings_LayoutEditor_PopupSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $sourceModuleName);
+        $selectedSettings = $popupSettingsModel->getSettings();
 
         $viewer = $this->getViewer($request);
         $viewer->assign('FIELDS', $fields);

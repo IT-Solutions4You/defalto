@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Settings_LayoutEditor_RelatedListSettings_Model extends Vtiger_Base_Model
+class Settings_LayoutEditor_RelatedListSettings_Model extends Core_DatabaseData_Model
 {
     const TABLE = 'df_relatedlistsettings';
 
@@ -22,21 +22,18 @@ class Settings_LayoutEditor_RelatedListSettings_Model extends Vtiger_Base_Model
 
     /**
      * Create DB table if it does not exist yet.
+     *
+     * @throws Exception
      */
     public function createTables(): void
     {
-        $db = PearDatabase::getInstance();
-        $db->pquery(
-            'CREATE TABLE IF NOT EXISTS `' . self::TABLE . '` (
-                `tabid` int(19) NOT NULL,
-                `columnslist` text,
-                `sortfield` varchar(100) DEFAULT NULL,
-                `sortorder` varchar(4) DEFAULT \'ASC\',
-                PRIMARY KEY (`tabid`),
-                CONSTRAINT `fk_df_rls_tabid` FOREIGN KEY (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8',
-            []
-        );
+        $this->getTable(self::TABLE, null)
+            ->createTable('tabid', 'int(19) NOT NULL')
+            ->createColumn('columnslist', 'text')
+            ->createColumn('sortfield', 'varchar(100) DEFAULT NULL')
+            ->createColumn('sortorder', "varchar(4) DEFAULT 'ASC'")
+            ->createKey('PRIMARY KEY (tabid)')
+            ->createKey('CONSTRAINT fk_df_rls_tabid FOREIGN KEY (tabid) REFERENCES vtiger_tab (tabid) ON DELETE CASCADE');
     }
 
     /**
@@ -71,15 +68,14 @@ class Settings_LayoutEditor_RelatedListSettings_Model extends Vtiger_Base_Model
 
     /**
      * Get saved settings for a module.
-     *
-     * @param string $moduleName
+     * Expects 'moduleName' to be set via $this->set('moduleName', ...) before calling.
      *
      * @return array{columnslist: array, sortfield: string, sortorder: string}
      */
-    public function getSettings(string $moduleName): array
+    public function getSettings(): array
     {
         $db = PearDatabase::getInstance();
-        $tabid = getTabid($moduleName);
+        $tabid = getTabid($this->get('moduleName'));
         $result = $db->pquery('SELECT * FROM ' . self::TABLE . ' WHERE tabid = ?', [$tabid]);
         $row = $db->fetchByAssoc($result);
 
@@ -100,20 +96,20 @@ class Settings_LayoutEditor_RelatedListSettings_Model extends Vtiger_Base_Model
 
     /**
      * Save settings for a module.
-     *
-     * @param string $moduleName
-     * @param array  $columnslist Ordered list of field names
-     * @param string $sortfield
-     * @param string $sortorder   'ASC' or 'DESC'
+     * Expects values set via $this->set() before calling:
+     *   - 'moduleName' (string)
+     *   - 'columnslist' (array) — ordered list of field names
+     *   - 'sortfield' (string)
+     *   - 'sortorder' (string) — 'ASC' or 'DESC'
      */
-    public function save(string $moduleName, array $columnslist, string $sortfield, string $sortorder): void
+    public function save(): void
     {
         $db = PearDatabase::getInstance();
-        $tabid = getTabid($moduleName);
+        $tabid = getTabid($this->get('moduleName'));
 
         $db->pquery(
             'REPLACE INTO ' . self::TABLE . ' (tabid, columnslist, sortfield, sortorder) VALUES (?, ?, ?, ?)',
-            [$tabid, implode(',', $columnslist), $sortfield, $sortorder]
+            [$tabid, implode(',', (array)$this->get('columnslist')), (string)$this->get('sortfield'), (string)$this->get('sortorder')]
         );
     }
 }

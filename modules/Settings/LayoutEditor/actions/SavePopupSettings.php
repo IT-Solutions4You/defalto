@@ -27,7 +27,10 @@ class Settings_LayoutEditor_SavePopupSettings_Action extends Settings_Vtiger_Bas
                 $columnslist = !empty($columnslist) ? json_decode($columnslist, true) : [];
             }
 
-            Settings_LayoutEditor_PopupSettings_Model::getInstance()->save($sourceModule, $columnslist);
+            $model = Settings_LayoutEditor_PopupSettings_Model::getInstance();
+            $model->set('moduleName', $sourceModule);
+            $model->set('columnslist', $columnslist);
+            $model->save();
 
             $response->setResult(true);
         } catch (Exception $e) {

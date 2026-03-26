@@ -119,6 +119,8 @@ class Vtiger_Install_Model extends Core_Install_Model
         'Settings_Vtiger_Menu_Model',
         'Core_Modifiers_Model',
         'CustomView_Record_Model',
+        'Settings_LayoutEditor_RelatedListSettings_Model',
+        'Settings_LayoutEditor_PopupSettings_Model',
     ];
 
     public array $registerFieldTypes = [

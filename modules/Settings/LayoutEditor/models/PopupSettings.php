@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Settings_LayoutEditor_PopupSettings_Model extends Vtiger_Base_Model
+class Settings_LayoutEditor_PopupSettings_Model extends Core_DatabaseData_Model
 {
     const TABLE = 'df_popupsettings';
 
@@ -22,19 +22,16 @@ class Settings_LayoutEditor_PopupSettings_Model extends Vtiger_Base_Model
 
     /**
      * Create DB table if it does not exist yet.
+     *
+     * @throws Exception
      */
     public function createTables(): void
     {
-        $db = PearDatabase::getInstance();
-        $db->pquery(
-            'CREATE TABLE IF NOT EXISTS `' . self::TABLE . '` (
-                `tabid` int(19) NOT NULL,
-                `columnslist` text,
-                PRIMARY KEY (`tabid`),
-                CONSTRAINT `fk_df_ps_tabid` FOREIGN KEY (`tabid`) REFERENCES `vtiger_tab` (`tabid`) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8',
-            []
-        );
+        $this->getTable(self::TABLE, null)
+            ->createTable('tabid', 'int(19) NOT NULL')
+            ->createColumn('columnslist', 'text')
+            ->createKey('PRIMARY KEY (tabid)')
+            ->createKey('CONSTRAINT fk_df_ps_tabid FOREIGN KEY (tabid) REFERENCES vtiger_tab (tabid) ON DELETE CASCADE');
     }
 
     /**
@@ -69,15 +66,14 @@ class Settings_LayoutEditor_PopupSettings_Model extends Vtiger_Base_Model
 
     /**
      * Get saved settings for a module.
-     *
-     * @param string $moduleName
+     * Expects 'moduleName' to be set via $this->set('moduleName', ...) before calling.
      *
      * @return array{columnslist: array}
      */
-    public function getSettings(string $moduleName): array
+    public function getSettings(): array
     {
         $db = PearDatabase::getInstance();
-        $tabid = getTabid($moduleName);
+        $tabid = getTabid($this->get('moduleName'));
         $result = $db->pquery('SELECT * FROM ' . self::TABLE . ' WHERE tabid = ?', [$tabid]);
         $row = $db->fetchByAssoc($result);
 
@@ -94,18 +90,18 @@ class Settings_LayoutEditor_PopupSettings_Model extends Vtiger_Base_Model
 
     /**
      * Save settings for a module.
-     *
-     * @param string $moduleName
-     * @param array  $columnslist Ordered list of field names
+     * Expects values set via $this->set() before calling:
+     *   - 'moduleName' (string)
+     *   - 'columnslist' (array) — ordered list of field names
      */
-    public function save(string $moduleName, array $columnslist): void
+    public function save(): void
     {
         $db = PearDatabase::getInstance();
-        $tabid = getTabid($moduleName);
+        $tabid = getTabid($this->get('moduleName'));
 
         $db->pquery(
             'REPLACE INTO ' . self::TABLE . ' (tabid, columnslist) VALUES (?, ?)',
-            [$tabid, implode(',', $columnslist)]
+            [$tabid, implode(',', (array)$this->get('columnslist'))]
         );
     }
 }
