@@ -39,15 +39,20 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
         const thisInstance = this;
         const form = this.getForm();
         const enableRecurrenceField = form.find('[name="enable_recurring"]');
-        const fieldNamesForValidation = ['recurring_frequency', 'start_period', 'end_period', 'payment_duration', 'recurring_module'];
+        const fieldNamesForValidation = ['recurring_frequency', 'start_period', 'payment_duration', 'recurring_module', 'invoicestatus'];
+        const fieldNamesDisableOnly = ['end_period'];
         const selectors = [];
+        const selectorsDisableOnly = [];
 
         for (let index in fieldNamesForValidation) {
             selectors.push('[name="' + fieldNamesForValidation[index] + '"]');
         }
+        for (let index in fieldNamesDisableOnly) {
+            selectorsDisableOnly.push('[name="' + fieldNamesDisableOnly[index] + '"]');
+        }
 
-        const selectorString = selectors.join(',');
-        const validationToggleFields = form.find(selectorString);
+        const validationToggleFields = form.find(selectors.join(','));
+        const disableOnlyFields = form.find(selectorsDisableOnly.join(','));
         enableRecurrenceField.on('change', function (e) {
             const element = jQuery(e.currentTarget);
             let addValidation = !!element.is(':checked');
@@ -55,23 +60,29 @@ Vtiger_Edit_Js("SalesOrder_Edit_Js", {}, {
             //If validation needs to be added for new elements, then we need to detach and attach validation to the form
             if (addValidation) {
                 thisInstance.AddOrRemoveRequiredValidation(validationToggleFields, true);
+                thisInstance.AddOrRemoveRequiredValidation(disableOnlyFields, true, true);
             } else {
                 thisInstance.AddOrRemoveRequiredValidation(validationToggleFields, false);
+                thisInstance.AddOrRemoveRequiredValidation(disableOnlyFields, false);
             }
         });
         if (!enableRecurrenceField.is(":checked")) {
             thisInstance.AddOrRemoveRequiredValidation(validationToggleFields, false);
+            thisInstance.AddOrRemoveRequiredValidation(disableOnlyFields, false);
         } else if (enableRecurrenceField.is(":checked")) {
             thisInstance.AddOrRemoveRequiredValidation(validationToggleFields, true);
+            thisInstance.AddOrRemoveRequiredValidation(disableOnlyFields, true, true);
         }
     },
 
-    AddOrRemoveRequiredValidation: function (dependentFieldsForValidation, addValidation) {
+    AddOrRemoveRequiredValidation: function (dependentFieldsForValidation, addValidation, skipValidation) {
         jQuery(dependentFieldsForValidation).each(function (key, value) {
             const relatedField = jQuery(value);
 
             if (addValidation) {
-                relatedField.removeClass('ignore-validation').data('rule-required', true);
+                if (!skipValidation) {
+                    relatedField.removeClass('ignore-validation').data('rule-required', true);
+                }
 
                 if (relatedField.is("select")) {
                     relatedField.attr('disabled', false);
