@@ -64,17 +64,6 @@ class Products extends CRMEntity
 
     public $list_link_field = 'productname';
 
-    public $search_fields = [
-        'Product Name' => ['products' => 'productname'],
-        'Part Number' => ['products' => 'productcode'],
-        'Unit Price' => ['products' => 'unit_price'],
-    ];
-    public $search_fields_name = [
-        'Product Name' => 'productname',
-        'Part Number' => 'productcode',
-        'Unit Price' => 'unit_price',
-    ];
-
     public $required_fields = ['productname' => 1];
 
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields

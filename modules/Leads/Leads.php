@@ -76,15 +76,6 @@ class Leads extends CRMEntity
     ];
     public $list_link_field = 'lastname';
 
-    public $search_fields = [
-        'Name' => ['leaddetails' => 'lastname'],
-        'Company' => ['leaddetails' => 'company']
-    ];
-    public $search_fields_name = [
-        'Name' => 'lastname',
-        'Company' => 'company'
-    ];
-
     public $required_fields = [];
 
     // Used when enabling/disabling the mandatory fields for the module.

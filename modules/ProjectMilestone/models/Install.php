@@ -23,6 +23,29 @@ class ProjectMilestone_Install_Model extends Core_Install_Model
 
     protected string $moduleNumbering = 'PM';
 
+    public array $relatedListFields = [
+        [
+            'projectmilestone_no',
+            'projectmilestonename',
+            'projectid',
+            'projectmilestonestatus',
+            'projectmilestonetype',
+            'projectmilestonedate',
+            'assigned_user_id',
+        ],
+        'projectmilestonedate',
+        'ASC'
+    ];
+    public array $popupFields = [
+        'projectmilestone_no',
+        'projectmilestonename',
+        'projectid',
+        'projectmilestonestatus',
+        'projectmilestonetype',
+        'projectmilestonedate',
+        'assigned_user_id',
+    ];
+
     /**
      * @return void
      * @throws Exception

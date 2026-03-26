@@ -159,6 +159,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Inkább belső rekord',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Inkább külső rekord',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Inkább legújabb rekord - Legutóbb módosított rekord adatok megmaradnak katalógusa Inkább belső rekord - Meglévő rekord megmaradnak, ez katalógusa Inkább külső rekord - Az adatok a külső alkalmazás lesz másolva',
+    'LBL_RELATED_LIST_LAYOUT' => 'Kapcsolódó lista elrendezése',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Látható oszlopok',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Alapértelmezett rendezési mező',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Rendezési sorrend',
+    'LBL_ASCENDING' => 'Növekvő',
+    'LBL_DESCENDING' => 'Csökkenő',
+    'LBL_POPUP_LAYOUT' => 'Felugró ablak elrendezése',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Látható oszlopok',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Blokk Térkép engedélyezve',
@@ -222,4 +230,8 @@ Biztos, hogy törölni akarod ezt a mezőt?',
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Sikeresen frissítve vizsgálni kiválasztott mezők ismétlődések megelőzés',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Elmulasztotta figyelembe venni a kiválasztott mezők ismétlődések megelőzés',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Ismétlődő deaktivált',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'A kapcsolódó lista elrendezési beállításai sikeresen mentve',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Kérjük, válasszon legalább egy látható oszlopot',
+    'JS_POPUP_SETTINGS_SAVED' => 'A felugró ablak elrendezési beállításai sikeresen mentve',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Kérjük, válasszon legalább egy látható oszlopot',
 ];

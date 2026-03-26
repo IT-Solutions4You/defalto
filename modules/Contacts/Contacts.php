@@ -121,22 +121,6 @@ class Contacts extends CRMEntity
         'Assigned To' => 'assigned_user_id',
     ];
 
-    public $search_fields = [
-        'First Name' => ['contactdetails' => 'firstname'],
-        'Last Name' => ['contactdetails' => 'lastname'],
-        'Title' => ['contactdetails' => 'title'],
-        'Account Name' => ['contactdetails' => 'account_id'],
-        'Assigned To' => ['crmentity' => 'assigned_user_id'],
-    ];
-
-    public $search_fields_name = [
-        'First Name' => 'firstname',
-        'Last Name' => 'lastname',
-        'Title' => 'title',
-        'Account Name' => 'account_id',
-        'Assigned To' => 'assigned_user_id',
-    ];
-
     // This is the list of vtiger_fields that are required
     public $required_fields = ["lastname" => 1];
 

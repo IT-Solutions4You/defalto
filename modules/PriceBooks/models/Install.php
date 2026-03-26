@@ -17,6 +17,9 @@ class PriceBooks_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [['bookname', 'active', 'currency_id', 'assigned_user_id',]];
+    public array $popupFields = ['bookname', 'active', 'currency_id', 'assigned_user_id',];
+
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();

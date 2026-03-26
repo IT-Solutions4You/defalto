@@ -33,6 +33,9 @@ class Users_Install_Model extends Core_Install_Model
         '$',
     ];
 
+    public array $relatedListFields = [['first_name', 'last_name', 'roleid',]];
+    public array $popupFields = ['first_name', 'last_name', 'roleid',];
+
     /**
      * @return string
      */

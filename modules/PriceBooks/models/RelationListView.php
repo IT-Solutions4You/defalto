@@ -52,10 +52,6 @@ class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model
         $relationModule = $this->getRelationModel()->getRelationModuleModel();
         $relationModuleName = $relationModule->get('name');
         $relatedColumnFieldMapping = $relationModule->getConfigureRelatedListFields();
-        if (php7_count($relatedColumnFieldMapping) <= 0) {
-            $relatedColumnFieldMapping = $relationModule->getRelatedListFields();
-        }
-
         $query = $this->getRelationQuery();
 
         if ($this->get('whereCondition') && is_array($this->get('whereCondition'))) {

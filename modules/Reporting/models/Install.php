@@ -13,6 +13,9 @@ class Reporting_Install_Model extends Core_Install_Model
     protected string $moduleName = 'Reporting';
     protected string $parentName = 'Tools';
 
+    public array $relatedListFields = [['report_name', 'primary_module', 'folder', 'description', 'max_entries',]];
+    public array $popupFields = ['report_name', 'primary_module', 'folder', 'description', 'max_entries',];
+
     public function addCustomLinks(): void
     {
     }

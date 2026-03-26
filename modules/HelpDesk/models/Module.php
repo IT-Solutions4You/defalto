@@ -182,33 +182,4 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model
             return $this->addConditionToQuery($listQuery, $condition);
         }
     }
-
-    /**
-     * Function to get list of field for header view
-     * @return <Array> list of field models <Vtiger_Field_Model>
-     */
-    function getConfigureRelatedListFields()
-    {
-        $summaryViewFields = $this->getSummaryViewFieldsList();
-        $headerViewFields = $this->getHeaderViewFieldsList();
-        $allRelationListViewFields = array_merge($headerViewFields, $summaryViewFields);
-        $relatedListFields = [];
-        if (php7_count($allRelationListViewFields) > 0) {
-            foreach ($allRelationListViewFields as $key => $field) {
-                $relatedListFields[$field->get('column')] = $field->get('name');
-            }
-        }
-
-        if (php7_count($relatedListFields) > 0) {
-            $nameFields = $this->getNameFields();
-            foreach ($nameFields as $fieldName) {
-                if (!isset($relatedListFields[$fieldName])) {
-                    $fieldModel = $this->getField($fieldName);
-                    $relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
-                }
-            }
-        }
-
-        return $relatedListFields;
-    }
 }

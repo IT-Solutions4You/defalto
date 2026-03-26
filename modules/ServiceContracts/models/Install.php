@@ -88,6 +88,24 @@ class ServiceContracts_Install_Model extends Core_Install_Model
         'description',
     ];
 
+    public array $relatedListFields = [
+        [
+            'subject',
+            'account_id',
+            'contact_id',
+            'contract_status',
+            'end_date',
+            'start_date',
+            'total_units',
+            'used_units',
+            'due_date',
+            'assigned_user_id',
+        ],
+        'start_date',
+        'DESC'
+    ];
+    public array $popupFields = ['subject', 'account_id', 'contact_id', 'contract_status', 'end_date', 'start_date', 'total_units', 'used_units', 'due_date', 'assigned_user_id',];
+
     /**
      * @return void
      * @throws Exception

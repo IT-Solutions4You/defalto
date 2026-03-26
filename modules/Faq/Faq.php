@@ -65,16 +65,6 @@ class Faq extends CRMEntity
     ];
     public $list_link_field = 'question';
 
-    public $search_fields = [
-        'Account Name' => ['account' => 'accountname'],
-        'City'         => ['accountbillads' => 'bill_city'],
-    ];
-
-    public $search_fields_name = [
-        'Account Name' => 'accountname',
-        'City'         => 'bill_city',
-    ];
-
     public $mandatory_fields = ['question', 'faq_answer', 'createdtime', 'modifiedtime'];
 
     // For Alphabetical search

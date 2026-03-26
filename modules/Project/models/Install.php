@@ -120,6 +120,9 @@ class Project_Install_Model extends Core_Install_Model
 
     protected string $moduleNumbering = 'PROJ';
 
+    public array $relatedListFields = [['projectname', 'account_id', 'contact_id', 'startdate', 'projectstatus', 'targetenddate', 'assigned_user_id',], 'startdate', 'DESC'];
+    public array $popupFields = ['projectname', 'account_id', 'contact_id', 'startdate', 'projectstatus', 'targetenddate', 'assigned_user_id',];
+
     /**
      * @return void
      * @throws Exception

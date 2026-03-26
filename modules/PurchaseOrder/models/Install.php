@@ -16,6 +16,9 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [['purchaseorder_no', 'subject', 'vendor_id', 'contact_id', 'postatus', 'duedate', 'grand_total', 'assigned_user_id',], 'duedate', 'DESC'];
+    public array $popupFields = ['purchaseorder_no', 'subject', 'vendor_id', 'contact_id', 'postatus', 'duedate', 'grand_total', 'assigned_user_id',];
+
     /**
      * @return void
      */

@@ -51,6 +51,9 @@ class Faq_Install_Model extends Core_Install_Model
         'faq_answer',
     ];
 
+    public array $relatedListFields = [['question', 'faq_no', 'faqstatus', 'product_id', 'faqcategories',]];
+    public array $popupFields = ['question', 'faq_no', 'faqstatus', 'product_id', 'faqcategories',];
+
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();

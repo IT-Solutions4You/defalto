@@ -106,6 +106,13 @@ class Appointments_Install_Model extends Core_Install_Model
         'assigned_user_id',
     ];
 
+    public array $relatedListFields = [
+        ['subject', 'datetime_start', 'calendar_type', 'calendar_status', 'location', 'account_id', 'contact_id', 'parent_id', 'assigned_user_id',],
+        'datetime_start',
+        'DESC'
+    ];
+    public array $popupFields = ['subject', 'datetime_start', 'calendar_type', 'calendar_status', 'location', 'account_id', 'contact_id', 'parent_id', 'assigned_user_id',];
+
     /**
      * @throws Exception
      */

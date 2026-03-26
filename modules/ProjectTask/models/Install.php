@@ -118,6 +118,33 @@ class ProjectTask_Install_Model extends Core_Install_Model
 
     protected string $moduleNumbering = 'PT';
 
+    public array $relatedListFields = [
+        [
+            'projecttask_no',
+            'projecttaskname',
+            'projectid',
+            'milestoneid',
+            'projecttaskstatus',
+            'projecttaskpriority',
+            'startdate',
+            'planed_hours',
+            'assigned_user_id',
+        ],
+        'startdate',
+        'ASC'
+    ];
+    public array $popupFields = [
+        'projecttask_no',
+        'projecttaskname',
+        'projectid',
+        'milestoneid',
+        'projecttaskstatus',
+        'projecttaskpriority',
+        'startdate',
+        'planed_hours',
+        'assigned_user_id',
+    ];
+
     /**
      * @return void
      * @throws Exception

@@ -159,6 +159,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Liever interne registratie',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Liever externe opnemen',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Liever laatste plaat - Meest recent gewijzigde record gegevens zullen worden bewaard <br> liever interne registratie - bestaande record zal worden behouden zoals het is <br> liever externe opname - De gegevens van de externe applicatie wordt gekopieerd',
+    'LBL_RELATED_LIST_LAYOUT' => 'Lay-out gerelateerde lijst',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Zichtbare kolommen',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Standaard sorteerveld',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Sorteervolgorde',
+    'LBL_ASCENDING' => 'Oplopend',
+    'LBL_DESCENDING' => 'Aflopend',
+    'LBL_POPUP_LAYOUT' => 'Lay-out pop-upvenster',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Zichtbare kolommen',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Blok Toon ingeschakeld',
@@ -222,4 +230,8 @@ Bent u zeker dat u op dit gebied?',
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Bijgewerkt naar geselecteerde velden in duplo preventie te overwegen',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Kan geselecteerde velden in duplo preventie te overwegen',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Dubbele controle is uitgeschakeld',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Lay-outinstellingen gerelateerde lijst succesvol opgeslagen',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Selecteer minimaal één zichtbare kolom',
+    'JS_POPUP_SETTINGS_SAVED' => 'Lay-outinstellingen pop-upvenster succesvol opgeslagen',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Selecteer minimaal één zichtbare kolom',
 ];

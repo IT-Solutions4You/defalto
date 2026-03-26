@@ -67,17 +67,6 @@ class Campaigns extends CRMEntity
 
     public $list_link_field = 'campaignname';
 
-    //public $groupTable = Array('vtiger_campaigngrouprelation','campaignid');
-
-    public $search_fields = [
-        'Campaign Name' => ['vtiger_campaign' => 'campaignname'],
-        'Campaign Type' => ['vtiger_campaign' => 'campaigntype'],
-    ];
-
-    public $search_fields_name = [
-        'Campaign Name' => 'campaignname',
-        'Campaign Type' => 'campaigntype',
-    ];
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['campaignname', 'createdtime', 'modifiedtime', 'assigned_user_id'];

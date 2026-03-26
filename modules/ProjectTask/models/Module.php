@@ -72,28 +72,17 @@ class ProjectTask_Module_Model extends Vtiger_Module_Model
     public function getConfigureRelatedListFields()
     {
         $relatedListFields = parent::getConfigureRelatedListFields();
-        if (!$relatedListFields) {
-            //If there is no summary view fieldsenabled,
-            //default related list field values should show in related list
-            $relatedListDefaultFields = $this->getRelatedListFields();
-            foreach ($relatedListDefaultFields as $fieldName) {
-                $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $this);
-                if ($fieldModel && $fieldModel->isViewableInDetailView()) {
-                    $relatedListFields[$fieldName] = $fieldName;
-                }
-            }
-        }
+
         //ProjectTask Progress and Status should show in Projects summary view
-        if (!isset($relatedListFields['projecttaskstatus']) || !$relatedListFields['projecttaskstatus']) {
-            $fieldModel = Vtiger_Field_Model::getInstance('projecttaskstatus', $this);
-            if ($fieldModel && $fieldModel->isViewableInDetailView()) {
-                $relatedListFields['projecttaskstatus'] = 'projecttaskstatus';
-            }
-        }
-        if (!$relatedListFields['projecttaskprogress']) {
-            $fieldModel = Vtiger_Field_Model::getInstance('projecttaskprogress', $this);
-            if ($fieldModel && $fieldModel->isViewableInDetailView()) {
-                $relatedListFields['projecttaskprogress'] = 'projecttaskprogress';
+        $checkAddFields = ['projecttaskstatus', 'projecttaskprogress'];
+
+        foreach ($checkAddFields as $checkAddField) {
+            if (!isset($relatedListFields[$checkAddField]) || !$relatedListFields[$checkAddField]) {
+                $fieldModel = Vtiger_Field_Model::getInstance($checkAddField, $this);
+
+                if ($fieldModel && $fieldModel->isViewableInDetailView()) {
+                    $relatedListFields[$checkAddField] = $checkAddField;
+                }
             }
         }
 

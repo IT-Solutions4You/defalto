@@ -159,6 +159,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'İç kaydını tercih',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Harici kayıt tercih',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'son kayıt tercih - Verileri harici uygulamadan kopyalanmış olacaktır - bu dış rekoru tercih <br> olduğu gibi korunacak Mevcut rekoru - En son değiştirilen kayıt verileri dahili kayıt tercih <br> korunur',
+    'LBL_RELATED_LIST_LAYOUT' => 'İlgili Liste Düzeni',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Görünür Sütunlar',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Varsayılan Sıralama Alanı',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Sıralama Düzeni',
+    'LBL_ASCENDING' => 'Artan',
+    'LBL_DESCENDING' => 'Azalan',
+    'LBL_POPUP_LAYOUT' => 'Açılır Pencere Düzeni',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Görünür Sütunlar',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Block show enabled',
@@ -222,4 +230,8 @@ Bu alanı silmek için emin misiniz?',
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Başarıyla çiftleri önlenmesinde seçili alanları dikkate güncellendi',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'çiftleri önlenmesinde seçili alanları dikkate Başarısız',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Yinelenen kontrolü devre dışı bırakıldığında',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'İlgili liste düzeni ayarları başarıyla kaydedildi',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Lütfen en az bir görünür sütun seçin',
+    'JS_POPUP_SETTINGS_SAVED' => 'Açılır pencere düzeni ayarları başarıyla kaydedildi',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Lütfen en az bir görünür sütun seçin',
 ];

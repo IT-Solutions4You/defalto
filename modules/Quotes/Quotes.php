@@ -99,20 +99,6 @@ class Quotes extends CRMEntity
     ];
     var $list_link_field = 'subject';
 
-    var $search_fields = [
-        'Quote No' => ['quotes' => 'quote_no'],
-        'Subject' => ['quotes' => 'subject'],
-        'Account Name' => ['quotes' => 'account_id'],
-        'Quote Stage' => ['quotes' => 'quotestage'],
-    ];
-
-    var $search_fields_name = [
-        'Quote No' => 'quote_no',
-        'Subject' => 'subject',
-        'Account Name' => 'account_id',
-        'Quote Stage' => 'quotestage',
-    ];
-
     // This is the list of vtiger_fields that are required.
     var $required_fields = ["accountname" => 1];
 

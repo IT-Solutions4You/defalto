@@ -128,6 +128,9 @@ class Products_Install_Model extends Core_Install_Model
         'description',
     ];
 
+    public array $relatedListFields = [['productname', 'product_no', 'serial_no', 'discontinued', 'productcategory', 'qtyinstock', 'assigned_user_id',], 'productname', 'ASC'];
+    public array $popupFields = ['product_no', 'productname', 'serial_no', 'discontinued', 'productcategory', 'qtyinstock', 'assigned_user_id',];
+
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();

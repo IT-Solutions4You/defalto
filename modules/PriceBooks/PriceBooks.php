@@ -42,13 +42,6 @@ class PriceBooks extends CRMEntity
     ];
     public $list_link_field = 'bookname';
 
-    public $search_fields = [
-        'Price Book Name' => ['pricebook' => 'bookname'],
-    ];
-    public $search_fields_name = [
-        'Price Book Name' => 'bookname',
-    ];
-
     public $mandatory_fields = ['bookname', 'currency_id', 'pricebook_no', 'createdtime', 'modifiedtime'];
 
     // For Alphabetical search

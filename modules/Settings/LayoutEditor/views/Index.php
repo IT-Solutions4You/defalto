@@ -24,6 +24,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $this->exposeMethod('showFieldLayout');
         $this->exposeMethod('showHeaderFieldsLayout');
         $this->exposeMethod('showRelatedListLayout');
+        $this->exposeMethod('showRelatedListSettings');
+        $this->exposeMethod('showPopupSettings');
         $this->exposeMethod('showFieldEdit');
         $this->exposeMethod('showDuplicationHandling');
     }
@@ -34,6 +36,12 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         switch ($mode) {
             case 'showRelatedListLayout'    :
                 $selectedTab = 'relatedListTab';
+                break;
+            case 'showRelatedListSettings'    :
+                $selectedTab = 'relatedListSettingsTab';
+                break;
+            case 'showPopupSettings'          :
+                $selectedTab = 'popupSettingsTab';
                 break;
             case 'showDuplicationHandling'    :
                 $selectedTab = 'duplicationTab';
@@ -272,6 +280,92 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         Core_Modifiers_Model::modifyForClass(get_class($this), 'showFieldEdit', $request->getModule(), $viewer, $request);
 
         $viewer->view('FieldCreate.tpl', $qualifiedModule);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function showRelatedListSettings(Vtiger_Request $request)
+    {
+        $qualifiedModule = $request->getModule(false);
+        $sourceModuleName = $request->get('sourceModule');
+        $moduleModel = Vtiger_Module_Model::getInstance($sourceModuleName);
+        $blocks = $moduleModel->getBlocks();
+        $fields = [];
+
+        foreach ($blocks as $blockModel) {
+            $blockFields = $blockModel->getFields();
+
+            foreach ($blockFields as $fieldModel) {
+                if ($fieldModel->get('displaytype') != 5 && !in_array($fieldModel->getFieldDataType(), ['text'])) {
+                    $fields[$fieldModel->getName()] = $fieldModel;
+                }
+            }
+        }
+
+        $relatedListSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+        $relatedListSettingsModel->set('moduleName', $sourceModuleName);
+        $selectedSettings = $relatedListSettingsModel->getSettings();
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('FIELDS', $fields);
+        $viewer->assign('SOURCE_MODULE', $sourceModuleName);
+        $viewer->assign('SELECTED_SETTINGS', $selectedSettings);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showRelatedListSettings', $request->getModule(), $viewer, $request);
+
+        if ($request->isAjax() && !$request->get('showFullContents')) {
+            $viewer->view('RelatedListSettings.tpl', $qualifiedModule);
+        } else {
+            $viewer->view('Index.tpl', $qualifiedModule);
+        }
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function showPopupSettings(Vtiger_Request $request)
+    {
+        $qualifiedModule = $request->getModule(false);
+        $sourceModuleName = $request->get('sourceModule');
+        $moduleModel = Vtiger_Module_Model::getInstance($sourceModuleName);
+        $blocks = $moduleModel->getBlocks();
+        $fields = [];
+
+        foreach ($blocks as $blockModel) {
+            $blockFields = $blockModel->getFields();
+
+            foreach ($blockFields as $fieldModel) {
+                if ($fieldModel->get('displaytype') != 5 && !in_array($fieldModel->getFieldDataType(), ['text'])) {
+                    $fields[$fieldModel->getName()] = $fieldModel;
+                }
+            }
+        }
+
+        $popupSettingsModel = Settings_LayoutEditor_PopupSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $sourceModuleName);
+        $selectedSettings = $popupSettingsModel->getSettings();
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('FIELDS', $fields);
+        $viewer->assign('SOURCE_MODULE', $sourceModuleName);
+        $viewer->assign('SELECTED_SETTINGS', $selectedSettings);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showPopupSettings', $request->getModule(), $viewer, $request);
+
+        if ($request->isAjax() && !$request->get('showFullContents')) {
+            $viewer->view('PopupSettings.tpl', $qualifiedModule);
+        } else {
+            $viewer->view('Index.tpl', $qualifiedModule);
+        }
     }
 
     public function showDuplicationHandling(Vtiger_Request $request)

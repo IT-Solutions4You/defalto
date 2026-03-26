@@ -137,6 +137,14 @@ $languageStrings = [
     "LBL_PROP_MANDATORY" => "povinné",
     'LBL_HEADER_FIELDS' => 'Pole v hlavičce',
     'LBL_CLICK_HERE_ADD_COLUMN' => 'Klikněte pro přidání pole',
+    'LBL_RELATED_LIST_LAYOUT' => 'Rozložení souvisejících seznamů',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Viditelné sloupce',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Výchozí pole řazení',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Pořadí řazení',
+    'LBL_ASCENDING' => 'Vzestupně',
+    'LBL_DESCENDING' => 'Sestupně',
+    'LBL_POPUP_LAYOUT' => 'Rozložení vyskakovacího okna',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Viditelné sloupce',
 ];
 
 $jsLanguageStrings = [
@@ -194,4 +202,8 @@ $jsLanguageStrings = [
     "JS_CUSTOM_FIELDS_MAX_LIMIT" => "Do bloku %s můžete přidat maximálně %s vlastní pole",
     "JS_PROP_MANDATORY" => "povinné",
     'JS_SELECT_FIELD' => 'Vyberte pole',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Nastavení rozložení souvisejících seznamů bylo úspěšně uloženo',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Prosím vyberte alespoň jeden viditelný sloupec',
+    'JS_POPUP_SETTINGS_SAVED' => 'Nastavení rozložení vyskakovacího okna bylo úspěšně uloženo',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Prosím vyberte alespoň jeden viditelný sloupec',
 ];

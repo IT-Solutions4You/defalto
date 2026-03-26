@@ -293,7 +293,10 @@ class Appointments_Module_Model extends Vtiger_Module_Model
     public function getConfigureRelatedListFields()
     {
         $fields = parent::getConfigureRelatedListFields();
-        $fields['is_all_day'] = 'is_all_day';
+        $fields['datetime_start']  = 'datetime_start';
+        $fields['calendar_type']   = 'calendar_type';
+        $fields['calendar_status'] = 'calendar_status';
+        $fields['is_all_day']      = 'is_all_day';
 
         return $fields;
     }

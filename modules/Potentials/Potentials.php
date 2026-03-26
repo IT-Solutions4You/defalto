@@ -66,18 +66,6 @@ class Potentials extends CRMEntity
 
     public $list_link_field = 'potentialname';
 
-    public $search_fields = [
-        'Potential' => ['potential' => 'potentialname'],
-        'Related To' => ['potential' => 'related_to'],
-        'Expected Close Date' => ['potential' => 'closedate'],
-    ];
-
-    public $search_fields_name = [
-        'Potential' => 'potentialname',
-        'Related To' => 'related_to',
-        'Expected Close Date' => 'closingdate',
-    ];
-
     public $required_fields = [];
 
     // Used when enabling/disabling the mandatory fields for the module.

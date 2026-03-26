@@ -159,6 +159,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Préférez enregistrement interne',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Préférez enregistrement externe',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => "Préférez dernier disque - Plus récemment, des données d'enregistrement modifiés seront conservés <br> Préférer enregistrement interne - enregistrement existant sera conservé comme il est <br> Préférez enregistrement externe - Les données de l'application externe seront copiés",
+    'LBL_RELATED_LIST_LAYOUT' => 'Mise en page de la liste associée',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Colonnes visibles',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Champ de tri par défaut',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Ordre de tri',
+    'LBL_ASCENDING' => 'Croissant',
+    'LBL_DESCENDING' => 'Décroissant',
+    'LBL_POPUP_LAYOUT' => 'Mise en page de la fenêtre contextuelle',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Colonnes visibles',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Spectacle de bloc activé',
@@ -222,4 +230,8 @@ Si vous n\'êtes pas sûr et que vous souhaitez être en mesure d\'afficher ces 
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Mis à jour avec succès à considérer les champs sélectionnés dans la prévention des doublons',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => "Impossible d'examiner les champs sélectionnés dans la prévention des doublons",
     'JS_DUPLICATE_CHECK_DISABLED'           => 'vérification des doublons est désactivée',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Paramètres de mise en page de la liste associée enregistrés avec succès',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Veuillez sélectionner au moins une colonne visible',
+    'JS_POPUP_SETTINGS_SAVED' => 'Paramètres de mise en page de la fenêtre contextuelle enregistrés avec succès',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Veuillez sélectionner au moins une colonne visible',
 ];

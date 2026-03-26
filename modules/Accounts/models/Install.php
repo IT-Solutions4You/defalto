@@ -83,6 +83,9 @@ class Accounts_Install_Model extends Core_Install_Model
         'Other',
     ];
 
+    public array $relatedListFields = [['accountname', 'account_no', 'accounttype', 'phone', 'email1', 'currency_id',]];
+    public array $popupFields = ['account_no', 'accountname', 'phone', 'email1', 'reg_no', 'tickersymbol', 'vat_id', 'currency_id', 'assigned_user_id',];
+
     /**
      * @throws Exception
      */
