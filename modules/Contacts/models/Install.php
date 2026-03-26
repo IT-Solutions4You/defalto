@@ -118,6 +118,9 @@ class Contacts_Install_Model extends Core_Install_Model
         ],
     ];
 
+    public array $relatedListFields = [['salutationtype', 'firstname', 'lastname', 'account_id', 'phone', 'email', 'emailoptout', 'birthday',]];
+    public array $popupFields = ['salutationtype', 'firstname', 'lastname', 'account_id', 'phone', 'email', 'emailoptout', 'birthday',];
+
     /**
      * @return void
      */

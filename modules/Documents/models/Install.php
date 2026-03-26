@@ -31,6 +31,9 @@ class Documents_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [['notes_title', 'folderid', 'filename', 'filesize', 'filedownloadcount', 'filestatus', 'assigned_user_id',], 'modifiedtime', 'DESC'];
+    public array $popupFields = ['notes_title', 'folderid', 'filename', 'filesize', 'filedownloadcount', 'filestatus', 'assigned_user_id',];
+
     public function addCustomLinks(): void
     {
         $this->updateToStandardModule();

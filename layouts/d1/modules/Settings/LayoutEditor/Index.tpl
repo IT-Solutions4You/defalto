@@ -19,8 +19,12 @@
 				<div class="container-fluid align-items-center px-3 pt-3 border-bottom">
 					<div class="row align-items-center">
 						<div class="col-lg pb-3">
-							<h4 class="m-0">{sprintf(vtranslate('LBL_EDIT_FIELDS', $QUALIFIED_MODULE), vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME))}</h4>
+							<h4 class="m-0">{vtranslate('LBL_EDIT_FIELDS', $QUALIFIED_MODULE)}</h4>
 						</div>
+					</div>
+				</div>
+				<div class="container-fluid align-items-center px-3 pt-3">
+					<div class="row align-items-center">
 						<label class="col-lg-auto pb-3">
 							{vtranslate('SELECT_MODULE', $QUALIFIED_MODULE)}
 						</label>

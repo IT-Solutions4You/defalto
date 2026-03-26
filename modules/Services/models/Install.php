@@ -32,6 +32,13 @@ class Services_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [
+        ['servicename', 'servicecode', 'discontinued', 'servicecategory', 'service_usageunit', 'unit_price', 'assigned_user_id',],
+        'servicename',
+        'ASC'
+    ];
+    public array $popupFields = ['servicename', 'servicecode', 'discontinued', 'servicecategory', 'service_usageunit', 'unit_price', 'assigned_user_id',];
+
     /**
      * @throws Exception
      */

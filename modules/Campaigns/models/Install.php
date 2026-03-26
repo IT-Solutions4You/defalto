@@ -59,6 +59,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [['campaignname', 'related_to', 'campaignstatus', 'campaigntype', 'closingdate', 'targetaudience',]];
+    public array $popupFields = ['campaignname', 'related_to', 'campaignstatus', 'campaigntype', 'closingdate', 'targetaudience',];
 
     /**
      * @throws Exception

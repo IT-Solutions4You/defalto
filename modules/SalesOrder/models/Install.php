@@ -19,6 +19,13 @@ class SalesOrder_Install_Model extends Core_Install_Model
         ['Documents', 'SalesOrder', 'SalesOrder', '', 'get_related_list',],
     ];
 
+    public array $relatedListFields = [
+        ['salesorder_no', 'subject', 'account_id', 'contact_id', 'sostatus', 'quote_id', 'orderdate', 'duedate', 'grand_total', 'assigned_user_id',],
+        'orderdate',
+        'DESC'
+    ];
+    public array $popupFields = ['salesorder_no', 'subject', 'account_id', 'contact_id', 'sostatus', 'orderdate', 'grand_total', 'assigned_user_id',];
+
     /**
      * @return void
      */

@@ -85,6 +85,13 @@ class Assets_Install_Model extends Core_Install_Model
         'description',
     ];
 
+    public array $relatedListFields = [
+        ['assetname', 'assetstatus', 'product', 'serialnumber', 'account', 'contact', 'datesold', 'shippingtrackingnumber', 'invoiceid',],
+        'datesold',
+        'DESC'
+    ];
+    public array $popupFields = ['assetname', 'assetstatus', 'product', 'serialnumber', 'account', 'contact', 'datesold', 'shippingtrackingnumber', 'invoiceid',];
+
     /**
      * @return void
      */

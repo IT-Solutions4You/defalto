@@ -421,6 +421,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public array $blocksSummaryFields = [];
     public array $blocksListFields = [];
     public array $blocksQuickCreateFields = [];
+    public array $relatedListFields = [];
+    public array $popupFields = [];
 
     /**
      * @var array
@@ -835,6 +837,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
         $this->updateFilters();
         $this->updateMenuLink();
+        $this->updateRelatedListFields();
+        $this->updatePopupFields();
         $this->install();
         $this->postInstall();
 
@@ -1681,5 +1685,57 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $result = $db->pquery('SELECT 1 FROM com_vtiger_workflows WHERE module_name=? AND workflowname=?', [$module, $name]);
 
         return $db->num_rows($result) > 0;
+    }
+
+    /**
+     * @return void
+     */
+    public function updateRelatedListFields(): void
+    {
+        self::logSuccess('Related list fields start creating');
+        $db = PearDatabase::getInstance();
+        $tabId = getTabid($this->moduleName);
+        $result = $db->pquery('SELECT 1 FROM df_relatedlistsettings WHERE tabid = ?', [$tabId]);
+
+        if (!$db->num_rows($result)) {
+            $values = [$tabId, implode(',', $this->relatedListFields[0])];
+
+            if (isset($this->relatedListFields[1])) {
+                $values[] = $this->relatedListFields[1];
+
+                if (isset($this->relatedListFields[2])) {
+                    $values[] = $this->relatedListFields[2];
+                } else {
+                    $values[] = 'ASC';
+                }
+            } else {
+                $values[] = null;
+                $values[] = null;
+            }
+
+            $db->pquery('INSERT INTO df_relatedlistsettings VALUES (' . generateQuestionMarks($values) . ')', $values);
+            self::logSuccess('Related list fields created');
+        } else {
+            self::logInfo('Related list fields already created');
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function updatePopupFields(): void
+    {
+        self::logSuccess('Popup fields start creating');
+        $db = PearDatabase::getInstance();
+        $tabId = getTabid($this->moduleName);
+        $result = $db->pquery('SELECT 1 FROM df_popupsettings WHERE tabid = ?', [$tabId]);
+
+        if (!$db->num_rows($result)) {
+            $values = [$tabId, implode(',', $this->relatedListFields)];
+            $db->pquery('INSERT INTO df_popupsettings VALUES (' . generateQuestionMarks($values) . ')', $values);
+            self::logSuccess('Popup fields created');
+        } else {
+            self::logInfo('Popup fields already created');
+        }
     }
 }

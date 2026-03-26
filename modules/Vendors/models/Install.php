@@ -19,6 +19,9 @@ class Vendors_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [['vendorname', 'phone', 'email', 'website',]];
+    public array $popupFields = ['vendorname', 'phone', 'email', 'city', 'country_id',];
+
     /**
      * @return void
      */
