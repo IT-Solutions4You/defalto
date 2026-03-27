@@ -1136,6 +1136,11 @@ input[type=checkbox]:checked {
     background-image: none !important;
 }
 
+.select2-container.input-error .select2-selection {
+    border: 1px solid #B94A48 !important;
+    background-color: #FFEEEE !important;
+}
+
 .scroller-div {
     height: 1px;
 }
