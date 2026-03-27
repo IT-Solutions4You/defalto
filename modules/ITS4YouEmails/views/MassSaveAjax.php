@@ -590,7 +590,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 
         global $upload_maxsize;
 
-        if ($totalFileSize > $upload_maxsize) {
+        if ($totalFileSize > $upload_maxsize * 1048576) {
             return false;
         }
 

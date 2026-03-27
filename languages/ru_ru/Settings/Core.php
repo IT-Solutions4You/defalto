@@ -211,6 +211,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Неверный Имя',
     'LBL_INVALID_MODULE'                     => 'Неверный Модуль',
     'LBL_INVALID_NUMBER'                     => 'Неверный номер',
+    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'Максимальный размер файла превышает установленный лимит',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'Информация Поля пуст',
     'LBL_SUCCESSFULLY_UPDATED'               => 'Успешно Обновлено',
     'LBL_CUSTOMIZE_RECORD_NUMBERING'         => 'Модуль нумерации', // KEY 5.x: LBL_CUSTOMIZE_MODENT_NUMBER

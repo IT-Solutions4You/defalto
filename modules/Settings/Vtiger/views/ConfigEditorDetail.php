@@ -27,6 +27,7 @@ class Settings_Vtiger_ConfigEditorDetail_View extends Settings_Vtiger_Index_View
         $viewer->assign('MODEL', $moduleModel);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->assign('MAX_UPLOAD_SIZE_LIMIT', vglobal('maxUploadSizeLimit'));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 

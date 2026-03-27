@@ -255,6 +255,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Invalid Name',
     'LBL_INVALID_MODULE'                     => 'Invalid Module',
     'LBL_INVALID_NUMBER'                     => 'Invalid Number',
+    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'Maximum upload file size exceeds the configured limit',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'Fields information is empty',
     'LBL_PERSONAL_EMAIL_TRACKING_INFO'       => "لتتبع يفتح من رسائل البريد الإلكتروني مباشرة أرسلت إلى جهات الاتصال، يرجى تمكين خانة الاختيار هذه. يرجى ملاحظة أن البريد الإلكتروني المرسلة من حملات البريد الالكتروني وحدة يتم تعقب دائما، والتي لا تتأثر هذا الإعداد",
 

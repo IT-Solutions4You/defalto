@@ -262,6 +262,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Nome Inválido',
     'LBL_INVALID_MODULE'                     => 'Módulo Inválido',
     'LBL_INVALID_NUMBER'                     => 'Número Inválido',
+    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'O tamanho máximo de upload excede o limite configurado',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'As informações dos campos estão vazias',
 
     //CustomRecordNumbering

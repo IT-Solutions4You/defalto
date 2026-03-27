@@ -250,6 +250,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Ogiltigt Namn',
     'LBL_INVALID_MODULE'                     => 'Ogiltig Modul',
     'LBL_INVALID_NUMBER'                     => 'Ogiltigt Nummer',
+    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'Den maximala uppladdningsstorleken överstiger den konfigurerade gränsen',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'Fältinformation är tom',
 
     //CustomRecordNumbering

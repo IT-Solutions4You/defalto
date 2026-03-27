@@ -29,7 +29,7 @@
                         {foreach key=FIELD_NAME item=FIELD_DETAILS from=$MODEL->getEditableFields()}
                             <div class="row py-3 form-group border-bottom">
                                 <div class="col-sm-3 fieldLabel text-secondary">
-                                    <label>{if $FIELD_NAME == 'upload_maxsize'}{if $FIELD_DATA[$FIELD_NAME] gt 5}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,$FIELD_DATA[$FIELD_NAME])}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,5)}{/if}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE)}{/if}</label>
+                                    <label>{if $FIELD_NAME == 'upload_maxsize'}{if $FIELD_DATA[$FIELD_NAME] gt $MAX_UPLOAD_SIZE_LIMIT}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,$FIELD_DATA[$FIELD_NAME])}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,$MAX_UPLOAD_SIZE_LIMIT)}{/if}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE)}{/if}</label>
                                 </div>
                                 <div  class="col-sm-6 fieldValue break-word">
                                     <div>

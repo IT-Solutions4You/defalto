@@ -74,7 +74,7 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
 
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
-        $viewer->assign('MAX_UPLOAD_LIMIT', vglobal('upload_maxsize'));
+        $viewer->assign('MAX_UPLOAD_LIMIT', vglobal('upload_maxsize') * 1048576);
         $viewer->assign('RETURN_VIEW', $request->get('returnview'));
         $viewer->assign('RETURN_MODE', $request->get('returnmode'));
         $viewer->assign('RETURN_MODULE', $request->get('returnmodule'));

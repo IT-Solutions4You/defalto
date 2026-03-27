@@ -132,6 +132,7 @@ $languageStrings = [
     'LBL_INVALID_MAPPING' => 'Ungültiges Mapping',
     'LBL_INVALID_MODULE' => 'Ungültiges Modul',
     'LBL_INVALID_NUMBER' => 'Ungültige Nummer',
+    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT' => 'Die maximale Upload-Größe überschreitet das konfigurierte Limit',
     'LBL_INVALID_SUPPORT_NAME' => 'Ungültiger Name',
     'LBL_INVOICES' => 'Rechnungen',
     'LBL_INV_TANDC_DESCRIPTION' => 'bearbeiten Sie den Text der Geschäftsbedingungen',

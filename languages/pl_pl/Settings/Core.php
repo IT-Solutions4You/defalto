@@ -313,6 +313,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Nieprawidłowa Nazwa',
     'LBL_INVALID_MODULE'                     => 'Nieprawidłowy Moduł',
     'LBL_INVALID_NUMBER'                     => 'Liczba Uszkodzonych',
+    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'Maksymalny rozmiar przesyłanego pliku przekracza skonfigurowany limit',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'Pola informacji jest pusty',
     'LBL_SUCCESSFULLY_UPDATED'               => 'Pomyślnie Zaktualizowany',
     'LBL_CUSTOMIZE_RECORD_NUMBERING'         => 'Moduł Numeracji',

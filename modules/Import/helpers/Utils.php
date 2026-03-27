@@ -57,7 +57,7 @@ class Import_Utils_Helper
     {
         global $upload_maxsize;
 
-        return $upload_maxsize;
+        return $upload_maxsize * 1048576;
     }
 
     public static function getImportDirectory()

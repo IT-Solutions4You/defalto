@@ -214,6 +214,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Nome non valido',
     'LBL_INVALID_MODULE'                     => 'Modulo non valido',
     'LBL_INVALID_NUMBER'                     => 'Numero non valido',
+    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'La dimensione massima del file supera il limite configurato',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'L\'informazione dei campi è vuota',
     'LBL_SUCCESSFULLY_UPDATED'               => 'Aggiornato con successo',
     'LBL_CUSTOMIZE_RECORD_NUMBERING'         => 'Modulo Numerazione',

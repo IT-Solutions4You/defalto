@@ -517,7 +517,7 @@ class Vtiger_Util_Helper
      */
     public static function getMaxUploadSize()
     {
-        return ceil(vglobal('upload_maxsize') / (1024 * 1024));
+        return vglobal('upload_maxsize');
     }
 
     /**
