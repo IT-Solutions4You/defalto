@@ -111,18 +111,6 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
     }
 
     /**
-     * Funtion that returns fields that will be showed in the record selection popup
-     * @return <Array of fields>
-     */
-    public function getPopupFields()
-    {
-        $popupFields = parent::getPopupFields();
-        $popupFields[] = 'currency_id';
-
-        return $popupFields;
-    }
-
-    /**
      * Function is used to give links in the All menu bar
      */
     public function getQuickMenuModels()
