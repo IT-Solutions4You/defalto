@@ -30,7 +30,7 @@
                         </div>
                         {if $MODULE neq 'Vtiger' || $REQUEST_INSTANCE.view neq 'Index'}
                             {if isset($ACTIVE_BLOCK.menu) && $ACTIVE_BLOCK.menu neq '' && isset($SETTINGS_MENU_ITEMS[$ACTIVE_BLOCK.menu])}
-                                {assign var=SINGLE_MODULE_LABEL value=vtranslate($ACTIVE_BLOCK.menu, $QUALIFIED_MODULE)}
+                                {assign var=SINGLE_MODULE_LABEL value=vtranslate($ACTIVE_BLOCK.block, $QUALIFIED_MODULE)}
                                 {assign var=DEFAULT_FILTER_URL value=$SETTINGS_MENU_ITEMS[$ACTIVE_BLOCK.menu]->getUrl()}
                             {else}
                                 {assign var=SINGLE_MODULE_LABEL value=vtranslate('SINGLE_'|cat:$MODULE, $QUALIFIED_MODULE)}
