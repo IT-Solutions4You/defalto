@@ -240,7 +240,7 @@ $languageStrings = [
     'LBL_USE_RTE'                            => 'Använd RTE',
     'LBL_HELPDESK_SUPPORT_EMAILID'           => 'Helpdesk Support E-post-Id',
     'LBL_HELPDESK_SUPPORT_NAME'              => 'Helpdesk Supportnamn',
-    'LBL_MAX_UPLOAD_SIZE'                    => 'Maximal uppladdningsstorlek (Max %sMB)',
+    'LBL_MAX_UPLOAD_SIZE'                    => 'Maximal uppladdningsstorlek',
     'LBL_MAX_HISTORY_VIEWED'                 => 'Maximal historik Visad',
     'LBL_DEFAULT_MODULE'                     => 'Förvald Modul',
     'LBL_MAX_TEXT_LENGTH_IN_LISTVIEW'        => 'Maximal textlängd i Listvyn',
@@ -250,7 +250,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Ogiltigt Namn',
     'LBL_INVALID_MODULE'                     => 'Ogiltig Modul',
     'LBL_INVALID_NUMBER'                     => 'Ogiltigt Nummer',
-    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'Den maximala uppladdningsstorleken överstiger den konfigurerade gränsen',
+    'LBL_SERVER_UPLOAD_LIMIT'                => 'Servergräns (PHP): %s MB',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'Fältinformation är tom',
 
     //CustomRecordNumbering

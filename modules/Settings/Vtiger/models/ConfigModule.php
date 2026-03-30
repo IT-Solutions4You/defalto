@@ -182,8 +182,6 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model
             || (array_key_exists('list_max_entries_per_page', $updatedFields) && !filter_var(ltrim($updatedFields['list_max_entries_per_page'], '0'), FILTER_VALIDATE_INT))
             || (array_key_exists('listview_max_textlength', $updatedFields) && !filter_var(ltrim($updatedFields['listview_max_textlength'], '0'), FILTER_VALIDATE_INT))) {
             return "LBL_INVALID_NUMBER";
-        } elseif (array_key_exists('upload_maxsize', $updatedFields) && intval($updatedFields['upload_maxsize']) > intval(vglobal('maxUploadSizeLimit'))) {
-            return "LBL_UPLOAD_SIZE_EXCEEDS_LIMIT";
         }
 
         return true;

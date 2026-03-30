@@ -234,7 +234,7 @@ $languageStrings = [
     'LBL_USE_RTE'                            => 'Utilizar Editor Enriquecido',
     'LBL_HELPDESK_SUPPORT_EMAILID'           => 'Email de Asistencia y Soporte',
     'LBL_HELPDESK_SUPPORT_NAME'              => 'Nombre de Asistencia y Soporte',
-    'LBL_MAX_UPLOAD_SIZE'                    => 'Tamaño máximo de carga (Máx %sMB)',
+    'LBL_MAX_UPLOAD_SIZE'                    => 'Tamaño máximo de carga',
     'LBL_MAX_HISTORY_VIEWED'                 => 'Tamaño Histórico de Navegación',
     'LBL_DEFAULT_MODULE'                     => 'Módulo Inicial',
     'LBL_MAX_TEXT_LENGTH_IN_LISTVIEW'        => 'Longitud de texto en vista de lista',
@@ -244,7 +244,7 @@ $languageStrings = [
     'LBL_INVALID_SUPPORT_NAME'               => 'Nombre Inválido',
     'LBL_INVALID_MODULE'                     => 'Módulo Inválido',
     'LBL_INVALID_NUMBER'                     => 'Número Inválido',
-    'LBL_UPLOAD_SIZE_EXCEEDS_LIMIT'          => 'El tamaño máximo de carga supera el límite configurado',
+    'LBL_SERVER_UPLOAD_LIMIT'                => 'Límite del servidor (PHP): %s MB',
     'LBL_FIELDS_INFO_IS_EMPTY'               => 'Información del campo está vacío',
 
     //CustomRecordNumbering

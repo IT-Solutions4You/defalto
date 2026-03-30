@@ -16,7 +16,7 @@
                 <form id="ConfigEditorForm" class="form-horizontal" data-detail-url="{$MODEL->getDetailViewUrl()}" method="POST">
                     {assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
                     {assign var=FIELD_VALIDATION  value=['HELPDESK_SUPPORT_EMAIL_ID'    => 'data-rule-email="true"',
-                    'upload_maxsize'    => "data-rule-range=[1,{$MAX_UPLOAD_SIZE_LIMIT}] data-rule-positive=\"true\" data-rule-wholeNumber=\"true\"",
+                    'upload_maxsize'    => 'data-rule-min="1" data-rule-positive="true" data-rule-wholeNumber="true"',
                     'history_max_viewed'    => 'data-rule-range=[1,5] data-rule-positive="true" data-rule-wholeNumber="true"',
                     'listview_max_textlength'    => 'data-rule-range=[1,100] data-rule-positive="true" data-rule-wholeNumber="true"',
                     'list_max_entries_per_page'    => 'data-rule-range=[1,100] data-rule-positive="true" data-rule-wholeNumber="true"']}
@@ -25,7 +25,7 @@
                         {foreach key=FIELD_NAME item=FIELD_DETAILS from=$MODEL->getEditableFields()}
                             <div class="row py-2 form-group">
                                 <div class="col-lg-3 control-label fieldLabel text-secondary">
-                                    <label>{if $FIELD_NAME == 'upload_maxsize'}{if $FIELD_DATA[$FIELD_NAME] gt $MAX_UPLOAD_SIZE_LIMIT}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,$FIELD_DATA[$FIELD_NAME])}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,$MAX_UPLOAD_SIZE_LIMIT)}{/if}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE)}{/if}</label>
+                                    <label>{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE)}</label>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="input-group">
@@ -64,6 +64,9 @@
                                                     <div class="input-group-addon input-group-text">{vtranslate('LBL_MB', $QUALIFIED_MODULE)}</div>
                                                 {/if}
                                             </div>
+                                            {if $FIELD_NAME == 'upload_maxsize' && $PHP_UPLOAD_LIMIT_MB gt 0}
+                                                <div class="form-text text-muted mt-1">{vtranslate('LBL_SERVER_UPLOAD_LIMIT', $QUALIFIED_MODULE, $PHP_UPLOAD_LIMIT_MB)}</div>
+                                            {/if}
                                         {/if}
                                     </div>
                                 </div>

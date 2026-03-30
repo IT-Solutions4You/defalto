@@ -109,10 +109,6 @@ $upload_dir = '_VT_UPLOADDIR_';
 // maximum file size for uploaded files in MB also used when uploading import files
 $upload_maxsize = 50; //MB
 
-// maximum value (in MB) that administrator is allowed to set for $upload_maxsize via Settings UI
-// can only be changed by manually editing this file
-$maxUploadSizeLimit = 50; //MB
-
 // flag to allow export functionality
 // 'all' to allow anyone to use exports 
 // 'admin' to only allow admins to export 

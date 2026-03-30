@@ -530,6 +530,46 @@ class Vtiger_Util_Helper
     }
 
     /**
+     * Returns the effective PHP server upload limit in MB (min of upload_max_filesize and post_max_size).
+     * Returns 0 if the limit cannot be determined or is unlimited.
+     * @return int
+     */
+    public static function getServerUploadLimitMB(): int
+    {
+        $parseSize = function (string $size): int {
+            $size = trim($size);
+            if ($size === '' || $size === '0') {
+                return 0;
+            }
+            $unit = strtolower($size[strlen($size) - 1]);
+            $bytes = (int) $size;
+            switch ($unit) {
+                case 'g': $bytes *= 1024;
+                // fall through
+                case 'm': $bytes *= 1024;
+                // fall through
+                case 'k': $bytes *= 1024;
+            }
+            return $bytes;
+        };
+
+        $uploadMax = $parseSize(ini_get('upload_max_filesize'));
+        $postMax   = $parseSize(ini_get('post_max_size'));
+
+        if ($uploadMax === 0 && $postMax === 0) {
+            return 0;
+        }
+        if ($uploadMax === 0) {
+            return (int) floor($postMax / (1024 * 1024));
+        }
+        if ($postMax === 0) {
+            return (int) floor($uploadMax / (1024 * 1024));
+        }
+
+        return (int) floor(min($uploadMax, $postMax) / (1024 * 1024));
+    }
+
+    /**
      * Function to get Owner name for ownerId
      *
      * @param <Integer> $ownerId
