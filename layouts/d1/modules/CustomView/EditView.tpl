@@ -54,13 +54,12 @@
 						</div>
 						<div class="form-group p-2">
 							<label class="py-2">
-								{vtranslate('LBL_CHOOSE_COLUMNS',$MODULE)} ({vtranslate('LBL_MAX_NUMBER_FILTER_COLUMNS')})
+								{vtranslate('LBL_CHOOSE_COLUMNS',$MODULE)}
 							</label>
 							<div class="columnsSelectDiv clearfix">
 								{assign var=MANDATORY_FIELDS value=array()}
 								{assign var=NUMBER_OF_COLUMNS_SELECTED value=0}
-								{assign var=MAX_ALLOWED_COLUMNS value=15}
-                                <select name="selectColumns" data-rule-required="true" data-msg-required="{vtranslate('LBL_PLEASE_SELECT_ATLEAST_ONE_OPTION',$SOURCE_MODULE)}" data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS',$MODULE)}" multiple class="select2 columnsSelect col-lg-10" id="viewColumnsSelect" data-dropdown-css-class="select2-hide-selected" data-maximum-selection-length="15">
+                                <select name="selectColumns" data-rule-required="true" data-msg-required="{vtranslate('LBL_PLEASE_SELECT_ATLEAST_ONE_OPTION',$SOURCE_MODULE)}" data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS',$MODULE)}" multiple class="select2 columnsSelect col-lg-10" id="viewColumnsSelect" data-dropdown-css-class="select2-hide-selected">
 									{foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE}
 										<optgroup label='{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}'>
 											{foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS}
@@ -76,7 +75,7 @@
 												<option value="{$CV_COLUMN_NAME}" data-field-name="{$FIELD_NAME}"
 													{if in_array(decode_html($CV_COLUMN_NAME), $SELECTED_FIELDS)}
 														selected="selected"
-													{elseif (!$RECORD_ID) && ($FIELD_MODEL->isSummaryField() || $FIELD_MODEL->isHeaderField()) && ($FIELD_MODULE_NAME eq $SOURCE_MODULE) && (!(preg_match("/\([A-Za-z_0-9]* \; \([A-Za-z_0-9]*\) [A-Za-z_0-9]*\)/", $FIELD_NAME))) && $NUMBER_OF_COLUMNS_SELECTED < $MAX_ALLOWED_COLUMNS}
+													{elseif (!$RECORD_ID) && ($FIELD_MODEL->isSummaryField() || $FIELD_MODEL->isHeaderField()) && ($FIELD_MODULE_NAME eq $SOURCE_MODULE) && (!(preg_match("/\([A-Za-z_0-9]* \; \([A-Za-z_0-9]*\) [A-Za-z_0-9]*\)/", $FIELD_NAME)))}
 														selected="selected"
 														{assign var=NUMBER_OF_COLUMNS_SELECTED value=$NUMBER_OF_COLUMNS_SELECTED + 1}
 														{assign var=SELECTED_ID value=array_push($SELECTED_FIELDS, $CV_COLUMN_NAME)}

@@ -922,10 +922,8 @@ function calculateValidationRules(form, params, meta) {
             },
             highlight: function (element, errorClass, validClass) {
                 var elem = $(element);
-                if (elem.hasClass("select2-offscreen")) {
-                    var select2Ele = app.helper.getSelect2FromSelect(elem);
-                    select2Ele.find("ul").addClass(errorClass);
-                    select2Ele.find('a.select2-choice').addClass(errorClass);
+                if (elem.hasClass("select2-hidden-accessible")) {
+                    app.helper.getSelect2FromSelect(elem).closest('.select2-container').addClass(errorClass);
                 } else {
                     elem.addClass(errorClass);
                 }
@@ -933,10 +931,8 @@ function calculateValidationRules(form, params, meta) {
 
             unhighlight: function (element, errorClass, validClass) {
                 var elem = $(element);
-                if (elem.hasClass("select2-offscreen")) {
-                    var select2Ele = app.helper.getSelect2FromSelect(elem);
-                    select2Ele.find('ul').removeClass(errorClass);
-                    select2Ele.find('a.select2-choice').removeClass(errorClass);
+                if (elem.hasClass("select2-hidden-accessible")) {
+                    app.helper.getSelect2FromSelect(elem).closest('.select2-container').removeClass(errorClass);
                 } else {
                     elem.removeClass(errorClass);
                 }

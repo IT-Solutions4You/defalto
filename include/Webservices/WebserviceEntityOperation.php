@@ -125,8 +125,8 @@ abstract class WebserviceEntityOperation
                     $maxUploadSize = 0;
                 }
                 $maxUploadSize = $maxUploadSize * 1000000;
-                if ($upload_maxsize > $maxUploadSize) {
-                    $maxUploadSize = $upload_maxsize;
+                if ($upload_maxsize * 1048576 > $maxUploadSize) {
+                    $maxUploadSize = $upload_maxsize * 1048576;
                 }
                 $typeDetails['maxUploadFileSize'] = $maxUploadSize;
                 break;

@@ -257,7 +257,9 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
         $sortOrder = $this->getForSql('sortorder');
 
         if (empty($orderBy) && $relationModuleName !== 'Users') {
-            $settings = Settings_LayoutEditor_RelatedListSettings_Model::getInstance()->getSettings($relationModuleName);
+            $relatedListSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+            $relatedListSettingsModel->set('moduleName', $relationModuleName);
+            $settings = $relatedListSettingsModel->getSettings();
 
             if (!empty($settings['sortfield'])) {
                 $sortFieldModel = $relationModule->getField($settings['sortfield']);

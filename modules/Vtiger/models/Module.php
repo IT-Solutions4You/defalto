@@ -703,7 +703,9 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
      */
     public function getPopupFields()
     {
-        $settings = Settings_LayoutEditor_PopupSettings_Model::getInstance()->getSettings($this->getName());
+        $popupSettingsModel = Settings_LayoutEditor_PopupSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $this->getName());
+        $settings = $popupSettingsModel->getSettings();
 
         if (empty($settings['columnslist'])) {
             return $this->getNameFields();
@@ -718,7 +720,9 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
      */
     public function getRelatedListFields()
     {
-        $settings = Settings_LayoutEditor_RelatedListSettings_Model::getInstance()->getSettings($this->getName());
+        $popupSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $this->getName());
+        $settings = $popupSettingsModel->getSettings();
 
         if (empty($settings['columnslist'])) {
             return $this->getNameFields();
@@ -735,7 +739,9 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
      */
     public function getRelatedListSettingsFields(): array
     {
-        $settings = Settings_LayoutEditor_RelatedListSettings_Model::getInstance()->getSettings($this->getName());
+        $popupSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $this->getName());
+        $settings = $popupSettingsModel->getSettings();
 
         if (empty($settings['columnslist'])) {
             return [];

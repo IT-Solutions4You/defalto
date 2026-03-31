@@ -634,7 +634,6 @@ $languageStrings = [
     'LBL_MATCH_CRITERIA' => 'Doppelte Suchkriterien',
     'LBL_MATCH_FIELDS' => 'Übereinstimmende Felder',
     'LBL_MAX' => 'Max',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS' => 'Maximal 15',
     'LBL_MAX_QTY_SELECT' => 'Maximalwert ist',
     'LBL_MAX_UPLOAD_SIZE' => 'Die maximale Upload-Größe beträgt',
     'LBL_ME' => 'Ich',

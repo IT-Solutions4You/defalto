@@ -90,7 +90,7 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model
                         $fieldValue = explode(' = ', $configContent);
                         $fieldValue = $fieldValue[1];
                         if ($fieldName === 'upload_maxsize') {
-                            $fieldValue = round(number_format(trim($fieldValue, ' ;') / 1048576, 2));
+                            $fieldValue = intval(trim($fieldValue, ' ;'));
                         }
 
                         $data[$fieldName] = str_replace(";", '', str_replace("'", '', $fieldValue));
@@ -147,7 +147,7 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model
                 }
                 $patternString = "\$%s = '%s';";
                 if ($fieldName === 'upload_maxsize') {
-                    $fieldValue = $fieldValue * 1048576; //(1024 * 1024)
+                    $fieldValue = intval($fieldValue);
                     $patternString = "\$%s = %s;";
                 }
                 if ($fieldName === 'list_max_entries_per_page' || $fieldName === 'listview_max_textlength') {

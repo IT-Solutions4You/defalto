@@ -335,7 +335,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'Creating new View',
     'LBL_BASIC_DETAILS'                       => 'Basic Details',
     'LBL_CHOOSE_COLUMNS'                      => 'Choose Columns and Order',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'Max 15',
     'LBL_FILTER_ON_DATE'                      => 'Listă on date',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'Alege condiții Listă',
     'LBL_SET_AS_DEFAULT'                      => 'Set as Default',
