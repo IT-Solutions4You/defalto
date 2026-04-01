@@ -13,98 +13,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public const DOCUMENTS_RELATED_LIST = ['', 'Documents', 'Documents', 'add,select', 'get_related_list',];
     public const EMAILS_RELATED_LIST = ['', 'ITS4YouEmails', 'ITS4YouEmails', 'select', 'get_related_list',];
     public const APPOINTMENTS_RELATED_LIST = ['', 'Appointments', 'Appointments', 'select', 'get_related_list',];
-
-    /**
-     * @var array
-     * [name, handler, frequency, module, sequence, description]
-     */
-    public array $registerCron = [];
-    /**
-     * [module, type, label, url, icon, sequence, handlerInfo]
-     * @return array
-     */
-    public array $registerCustomLinks = [];
-
-    /**
-     * [name,module,trigger,recurrence,conditions,actions]
-     * @var array
-     */
-    public array $registerWorkflowTasks = [];
-    /**
-     * @var array
-     * [events, file, class, condition, dependOn, modules]
-     */
-    public array $registerEventHandler = [];
-
-    /**
-     * @var array
-     * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
-     */
-    public array $registerRelatedLists = [];
-    /**
-     * @var array
-     * [Name, Link, BlockLabel]
-     */
-    public array $registerSettingsLinks = [];
-    /**
-     * @var array
-     * [Module, Workflow Name, Workflow Label, Modules JSON]
-     */
-    public array $registerWorkflows = [];
-
-    /**
-     * @var array 
-     * [ui type => field type]
-     */
-    public array $registerFieldTypes = [];
-    
-    /**
-     * @var PearDatabase
-     */
-    protected PearDatabase $db;
-    /**
-     * @var string
-     */
-    protected string $eventType = '';
-    /**
-     * @var string
-     */
-    protected string $moduleName = '';
-    /**
-     * @var string
-     */
-    protected string $moduleNumbering = '';
-    /**
-     * @var string
-     */
-    protected string $parentName = '';
-
-    /**
-     * @var array
-     */
-    public static array $filters = [];
-    public static array $filterFields = [];
-
+    public static array $blockKeySkippedForUpdate = ['sequence'];
     /**
      * @var array
      */
     public static array $blocks = [];
-
-    /**
-     * @var array
-     */
-    public static array $modules = [];
-
     /**
      * @var array
      */
     public static array $blocksConfig = [];
-
-    /**
-     * @var array
-     */
-    public static array $fieldsConfig = [];
-
     /**
      * @var array
      */
@@ -125,7 +42,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'name' => 'InventoryItem',
         ],
     ];
-
+    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
+    /**
+     * @var array
+     */
+    public static array $fieldsConfig = [];
     /**
      * @var array
      */
@@ -191,7 +112,22 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ],
         ],
     ];
-
+    public static array $fieldsDescription = [
+        'description' => [
+            'label' => 'Description',
+            'name' => 'description',
+            'table' => 'vtiger_crmentity',
+            'column' => 'description',
+            'uitype' => 19,
+            'readonly' => 1,
+            'presence' => 2,
+            'typeofdata' => 'V~O',
+            'quickcreate' => 1,
+            'displaytype' => 1,
+            'masseditable' => 1,
+            'summaryfield' => 0,
+        ],
+    ];
     /**
      * @var array
      */
@@ -398,40 +334,86 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'ajaxeditable' => 0,
         ],
     ];
-
-    public static array $fieldsDescription = [
-        'description' => [
-            'label' => 'Description',
-            'name' => 'description',
-            'table' => 'vtiger_crmentity',
-            'column' => 'description',
-            'uitype' => 19,
-            'readonly' => 1,
-            'presence' => 2,
-            'typeofdata' => 'V~O',
-            'quickcreate' => 1,
-            'displaytype' => 1,
-            'masseditable' => 1,
-            'summaryfield' => 0,
-        ],
-    ];
-
-
-    public array $blocksHeaderFields = [];
-    public array $blocksSummaryFields = [];
-    public array $blocksListFields = [];
-    public array $blocksQuickCreateFields = [];
-    public array $relatedListFields = [];
-    public array $popupFields = [];
-
+    public static array $filterFields = [];
+    /**
+     * @var array
+     */
+    public static array $filters = [];
     /**
      * @var array
      */
     public static array $installedModules = [];
-
-    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
-    public static array $blockKeySkippedForUpdate = ['sequence'];
+    /**
+     * @var array
+     */
+    public static array $modules = [];
+    public array $blocksHeaderFields = [];
+    public array $blocksListFields = [];
+    public array $blocksQuickCreateFields = [];
+    public array $blocksSummaryFields = [];
+    public array $popupFields = [];
+    /**
+     * @var array
+     * [name, handler, frequency, module, sequence, description]
+     */
+    public array $registerCron = [];
+    /**
+     * [module, type, label, url, icon, sequence, handlerInfo]
+     * @return array
+     */
+    public array $registerCustomLinks = [];
+    /**
+     * @var array
+     * [events, file, class, condition, dependOn, modules]
+     */
+    public array $registerEventHandler = [];
+    /**
+     * @var array
+     * [ui type => field type]
+     */
+    public array $registerFieldTypes = [];
+    /**
+     * @var array
+     * [Module, RelatedModule, RelatedLabel, RelatedActions, RelatedFunction]
+     */
+    public array $registerRelatedLists = [];
+    /**
+     * @var array
+     * [Name, Link, BlockLabel]
+     */
+    public array $registerSettingsLinks = [];
+    /**
+     * [name,module,trigger,recurrence,conditions,actions]
+     * @var array
+     */
+    public array $registerWorkflowTasks = [];
+    /**
+     * @var array
+     * [Module, Workflow Name, Workflow Label, Modules JSON]
+     */
+    public array $registerWorkflows = [];
+    public array $relatedListFields = [];
     public bool $requireInstallTables = true;
+    /**
+     * @var PearDatabase
+     */
+    protected PearDatabase $db;
+    /**
+     * @var string
+     */
+    protected string $eventType = '';
+    /**
+     * @var string
+     */
+    protected string $moduleName = '';
+    /**
+     * @var string
+     */
+    protected string $moduleNumbering = '';
+    /**
+     * @var string
+     */
+    protected string $parentName = '';
 
     /**
      * @return void
@@ -461,143 +443,113 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return void
-     */
-    abstract public function deleteCustomLinks(): void;
-
-    /**
-     * @return void
      * @throws Exception
      */
-    public function deleteModule(): void
+    public function createBlock($blockName)
     {
-        $moduleName = $this->moduleName;
-        $moduleInstance = Vtiger_Module::getInstance($moduleName);
-        $moduleFocus = CRMEntity::getInstance($moduleName);
+        $blockParams = $this->getBlockConfig($blockName);
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
 
-        if ($moduleInstance) {
-            self::logError('Delete records, fields, blocks, related lists');
-            $this->db->pquery('DELETE FROM vtiger_crmentity WHERE setype=?', [$moduleName]);
-            $this->db->pquery('DELETE FROM vtiger_field WHERE tabid=?', [getTabid($moduleName)]);
-            $this->db->pquery('DELETE FROM vtiger_blocks WHERE tabid=?', [getTabid($moduleName)]);
-            $this->db->pquery('DELETE FROM vtiger_relatedlists WHERE tabid=? OR related_tabid=?', [getTabid($moduleName), getTabid($moduleName)]);
-
-            self::logError('Delete picklist values');
-            $picklistTables = [];
-
-            foreach ($this->getBlocks() as $blockName => $blockInfo) {
-                foreach ($blockInfo as $fieldName => $fieldInfo) {
-                    if (!empty($fieldInfo['picklist_values'])) {
-                        self::logError('Delete picklist values: ' . $fieldName);
-
-                        $picklistTables[] = 'vtiger_' . $fieldName;
-                        $this->db->pquery('DELETE FROM vtiger_picklist WHERE name=?', [$fieldName]);
-                    }
-                }
-            }
-
-            self::logError('Delete module tables');
-            $moduleTables = [];
-
-            if (!empty($moduleInstance->basetable)) {
-                $cfTable = $moduleFocus->customFieldTable[0];
-                $moduleTables = [
-                    $moduleInstance->basetable,
-                    $moduleInstance->basetable . '_seq',
-                    $cfTable,
-                    $cfTable . '_seq',
-                ];
-            }
-
-            self::logError('Delete filter');
-            Vtiger_Filter::deleteForModule($moduleInstance);
-
-            self::logError('Delete module');
-            $moduleInstance->delete();
-
-            self::logError('Drop tables');
-            $dropTables = array_merge($this->getTables(), $moduleTables, $picklistTables);
-
-            self::logSuccess($dropTables);
-
-            $this->db->pquery('SET FOREIGN_KEY_CHECKS=0');
-
-            foreach ($dropTables as $dropTable) {
-                $this->db->pquery('DROP TABLE IF EXISTS ' . $dropTable);
-            }
-
-            self::logSuccess('Module deleted');
+        if (!empty(self::$blocks[$moduleName][$blockName])) {
+            return self::$blocks[$moduleName][$blockName];
         }
+
+        $blockInstance = Vtiger_Block::getInstance($blockName, $moduleInstance);
+
+        if (!$blockInstance) {
+            $blockInstance = new Vtiger_Block();
+        }
+
+        $blockInstance->label = $blockName;
+        $blockInstance->blockuitype = Core_BlockUiType_Model::addBlockUiType($blockParams['name']);
+
+        if (!$this->isBlockKeySkippedForUpdate('sequence')) {
+            $blocks = array_flip(array_keys($this->getFieldsConfig()));
+
+            if (isset($blocks[$blockName])) {
+                $blockInstance->sequence = $blocks[$blockName] + 1;
+            }
+        }
+
+        $blockInstance->save($moduleInstance);
+        $blockInstance->getBlockTable()->updateData(
+            [
+                'blockuitype' => $blockInstance->blockuitype,
+                'sequence' => $blockInstance->sequence,
+            ],
+            [
+                'blockid' => $blockInstance->id,
+            ],
+        );
+
+        self::$blocks[$moduleName][$blockName] = $blockInstance;
+
+        return $blockInstance;
     }
 
     /**
-     * @return array
-     * @throws Exception
-     */
-    abstract public function getBlocks(): array;
-
-    /**
-     * @param string $eventType
-     * @param string $moduleName
+     * @param string $fieldName
+     * @param array $fieldParams
      *
-     * @return self
-     */
-    public static function getInstance(string $eventType, string $moduleName): self
-    {
-        $class = $moduleName . '_Install_Model';
-
-        $instance = new $class();
-        $instance->eventType = $eventType;
-        $instance->moduleName = $moduleName;
-        $instance->db = PearDatabase::getInstance();
-
-        return $instance;
-    }
-
-    /**
-     * @return array
-     */
-    abstract public function getTables(): array;
-
-    /**
+     * @return Vtiger_Field_Model|bool
      * @throws Exception
      */
-    public function install()
+    public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
     {
-        require_once 'include/utils/utils.php';
-        require_once 'vtlib/Vtiger/Module.php';
-        require_once 'vtlib/Vtiger/Cron.php';
-        require_once 'modules/ModComments/ModComments.php';
-        require_once 'modules/ModTracker/ModTracker.php';
+        $fieldInstance = $this->getFieldInstance($fieldName);
 
-        switch ($this->eventType) {
-            case 'module.postinstall':
-            case 'module.enabled':
-            case 'module.postupdate':
-                $this->addCustomLinks();
-                break;
-            case 'module.disabled':
-            case 'module.preuninstall':
-            case 'module.preupdate':
-                $this->deleteCustomLinks();
-                break;
+        foreach ($fieldParams as $fieldParamName => $fieldParam) {
+            if ($fieldInstance->getId() && $this->isFieldKeySkippedForUpdate($fieldParamName)) {
+                continue;
+            }
+
+            $fieldInstance->$fieldParamName = $fieldParam;
         }
+
+        $fieldInstance->save($fieldInstance->block);
+        $fieldInstance->getFieldTable()->updateData(
+            [
+                'block' => $fieldInstance->getBlockId(),
+                'tablename' => $fieldInstance->table,
+                'columnname' => $fieldInstance->column,
+                'presence' => $fieldInstance->presence,
+                'displaytype' => $fieldInstance->displaytype,
+                'sequence' => $fieldInstance->sequence,
+                'isunique' => $fieldInstance->isunique,
+            ],
+            [
+                'fieldid' => $fieldInstance->id,
+            ],
+        );
+
+        return $fieldInstance;
     }
 
-    /**
-     * @return bool
-     */
-    public function isInstalledModule(): bool
+    public function createFilter($filterName, $moduleInstance)
     {
-        if (isset(self::$installedModules[$this->moduleName])) {
-            self::logInfo($this->moduleName . ': was already installed in this process');
+        $moduleName = $moduleInstance->name;
 
-            return true;
+        if (!empty(self::$filters[$filterName][$moduleName])) {
+            return self::$filters[$filterName][$moduleName];
         }
 
-        self::$installedModules[$this->moduleName] = true;
+        self::logSuccess('Filter create: ' . $moduleName . ':' . $filterName);
 
-        return false;
+        $filterInstance = Vtiger_Filter::getInstance($filterName, $moduleInstance);
+
+        if (!$filterInstance) {
+            $filterInstance = new Vtiger_Filter();
+            $filterInstance->creating = true;
+        }
+
+        $filterInstance->name = $filterName;
+        $filterInstance->isdefault = true;
+        $filterInstance->save($moduleInstance);
+
+        self::$filters[$filterName][$moduleName] = $filterInstance;
+
+        return $filterInstance;
     }
 
     /**
@@ -695,11 +647,98 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return bool
+     * @throws Exception
      */
-    public function isRequiredInstallTables(): bool
+    public function createPicklistTable(string $table, string $tableId, string $columnName): void
     {
-        return $this->requireInstallTables;
+        if (empty($tableId)) {
+            $tableId = $columnName . 'id';
+        }
+
+        if (empty($table)) {
+            $tableId = 'vtiger_' . $columnName;
+        }
+
+        self::getTableInstance($table, $tableId)
+            ->createTable()
+            ->createColumn($columnName, 'VARCHAR(200) NOT NULL')
+            ->createColumn('presence', 'INT (1) NOT NULL DEFAULT 1')
+            ->createColumn('picklist_valueid', 'INT NOT NULL DEFAULT \'0\'')
+            ->createColumn('sortorderid', 'INT DEFAULT \'0\'')
+            ->createColumn('color', 'VARCHAR(10)')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (' . $tableId . ')')
+            ->deleteDuplicates($columnName)
+            ->createKey('UNIQUE KEY IF NOT EXISTS ' . $columnName . '_' . $columnName . '_idx (' . $columnName . ')');
+    }
+
+    /**
+     * @return void
+     */
+    abstract public function deleteCustomLinks(): void;
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function deleteModule(): void
+    {
+        $moduleName = $this->moduleName;
+        $moduleInstance = Vtiger_Module::getInstance($moduleName);
+        $moduleFocus = CRMEntity::getInstance($moduleName);
+
+        if ($moduleInstance) {
+            self::logError('Delete records, fields, blocks, related lists');
+            $this->db->pquery('DELETE FROM vtiger_crmentity WHERE setype=?', [$moduleName]);
+            $this->db->pquery('DELETE FROM vtiger_field WHERE tabid=?', [getTabid($moduleName)]);
+            $this->db->pquery('DELETE FROM vtiger_blocks WHERE tabid=?', [getTabid($moduleName)]);
+            $this->db->pquery('DELETE FROM vtiger_relatedlists WHERE tabid=? OR related_tabid=?', [getTabid($moduleName), getTabid($moduleName)]);
+
+            self::logError('Delete picklist values');
+            $picklistTables = [];
+
+            foreach ($this->getBlocks() as $blockName => $blockInfo) {
+                foreach ($blockInfo as $fieldName => $fieldInfo) {
+                    if (!empty($fieldInfo['picklist_values'])) {
+                        self::logError('Delete picklist values: ' . $fieldName);
+
+                        $picklistTables[] = 'vtiger_' . $fieldName;
+                        $this->db->pquery('DELETE FROM vtiger_picklist WHERE name=?', [$fieldName]);
+                    }
+                }
+            }
+
+            self::logError('Delete module tables');
+            $moduleTables = [];
+
+            if (!empty($moduleInstance->basetable)) {
+                $cfTable = $moduleFocus->customFieldTable[0];
+                $moduleTables = [
+                    $moduleInstance->basetable,
+                    $moduleInstance->basetable . '_seq',
+                    $cfTable,
+                    $cfTable . '_seq',
+                ];
+            }
+
+            self::logError('Delete filter');
+            Vtiger_Filter::deleteForModule($moduleInstance);
+
+            self::logError('Delete module');
+            $moduleInstance->delete();
+
+            self::logError('Drop tables');
+            $dropTables = array_merge($this->getTables(), $moduleTables, $picklistTables);
+
+            self::logSuccess($dropTables);
+
+            $this->db->pquery('SET FOREIGN_KEY_CHECKS=0');
+
+            foreach ($dropTables as $dropTable) {
+                $this->db->pquery('DROP TABLE IF EXISTS ' . $dropTable);
+            }
+
+            self::logSuccess('Module deleted');
+        }
     }
 
     public function getBlockConfig($block): array
@@ -711,6 +750,142 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
 
         return self::$blocksConfigDefault[$block] ?? ['name' => 'Base'];
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    abstract public function getBlocks(): array;
+
+    public function getFieldInstance($fieldName)
+    {
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
+        $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
+
+        if (!$fieldInstance) {
+            $fieldInstance = new Vtiger_Field_Model();
+        }
+
+        $fieldInstance->name = $fieldName;
+        $fieldInstance->column = $fieldName;
+
+        return $fieldInstance;
+    }
+
+    public function getFieldsConfig(): array
+    {
+        $moduleName = $this->getModuleName();
+
+        if (!empty(self::$fieldsConfig[$moduleName])) {
+            return self::$fieldsConfig[$moduleName];
+        }
+
+        return [];
+    }
+
+    public function getFilterField($fieldName, $referenceModule = '', $referenceField = ''): Vtiger_Field_Model|false
+    {
+        $moduleName = $this->getModuleName();
+        $module = $this->getModuleInstance($moduleName);
+
+        if (!empty($referenceField)) {
+            $module = Vtiger_Module_Model::getInstance($referenceModule);
+
+            if ($module) {
+                $field = Vtiger_Field_Model::getInstance($referenceField, $module);
+
+                if ($field) {
+                    $field->set('name', sprintf('(%s ; (%s) %s)', $fieldName, $referenceModule, $referenceField));
+
+                    return $field;
+                }
+            }
+
+            return false;
+        }
+
+        return Vtiger_Field_Model::getInstance($fieldName, $module);
+    }
+
+    public function getFilters()
+    {
+        return self::$filterFields[$this->getModuleName()];
+    }
+
+    /**
+     * @param string $eventType
+     * @param string $moduleName
+     *
+     * @return self
+     */
+    public static function getInstance(string $eventType, string $moduleName): self
+    {
+        $class = $moduleName . '_Install_Model';
+
+        $instance = new $class();
+        $instance->eventType = $eventType;
+        $instance->moduleName = $moduleName;
+        $instance->db = PearDatabase::getInstance();
+
+        return $instance;
+    }
+
+    public function getModuleInstance($moduleName): object
+    {
+        return self::$modules[$moduleName];
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->moduleName;
+    }
+
+    /**
+     * @return array
+     */
+    abstract public function getTables(): array;
+
+    /**
+     * @param string $module
+     * @param string $name
+     * @return bool
+     */
+    public function hasWorkflowTask(string $module, string $name): bool
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT 1 FROM com_vtiger_workflows WHERE module_name=? AND workflowname=?', [$module, $name]);
+
+        return $db->num_rows($result) > 0;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function install()
+    {
+        require_once 'include/utils/utils.php';
+        require_once 'vtlib/Vtiger/Module.php';
+        require_once 'vtlib/Vtiger/Cron.php';
+        require_once 'modules/ModComments/ModComments.php';
+        require_once 'modules/ModTracker/ModTracker.php';
+
+        switch ($this->eventType) {
+            case 'module.postinstall':
+            case 'module.enabled':
+            case 'module.postupdate':
+                $this->addCustomLinks();
+                break;
+            case 'module.disabled':
+            case 'module.preuninstall':
+            case 'module.preupdate':
+                $this->deleteCustomLinks();
+                break;
+        }
     }
 
     /**
@@ -821,7 +996,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     if (isset($fieldParams['filter'])) {
                         self::logSuccess('Filter field config: ' . $fieldName);
 
-                        $filterSequence =  $fieldParams['filter_sequence'] ?: 0;
+                        $filterSequence = $fieldParams['filter_sequence'] ?: 0;
                         $this->setFilterField('All', $fieldInstance, $filterSequence);
                     }
 
@@ -846,129 +1021,19 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         self::logSuccess($moduleInstance);
     }
 
-    public function setFilterField($filterName, $field, $sequence): void
-    {
-        $moduleName = $this->getModuleName();
-
-        if (empty($sequence)) {
-            $sequence = count((array)self::$filterFields[$moduleName][$filterName]) + 1;
-        }
-
-        self::$filterFields[$moduleName][$filterName][$sequence] = $field;
-    }
-
-    public function getFilters()
-    {
-        return self::$filterFields[$this->getModuleName()];
-    }
-
-    public function updateFilters(): void
-    {
-        self::logSuccess('Filter start creating');
-
-        $filters = $this->getFilters();
-        $moduleName = $this->getModuleName();
-        $moduleInstance = $this->getModuleInstance($moduleName);
-
-        foreach ($filters as $filterName => $filterFields) {
-            $filterInstance = $this->createFilter($filterName, $moduleInstance);
-
-            if (!$filterInstance->isCreating() && self::isUpgradeProcess()) {
-                continue;
-            }
-
-            $filterInstance->deleteFields();
-
-            ksort($filterFields);
-
-            foreach ($filterFields as $filterSequence => $filterField) {
-                self::logSuccess('Filter add field: ' . $filterField->get('table') . ':' . $filterField->getName());
-
-                $filterInstance->addField($filterField, $filterSequence);
-            }
-        }
-
-        self::logSuccess('Filter end creating');
-    }
-
-    public function getFilterField($fieldName, $referenceModule = '', $referenceField = ''): Vtiger_Field_Model|false
-    {
-        $moduleName = $this->getModuleName();
-        $module = $this->getModuleInstance($moduleName);
-
-        if (!empty($referenceField)) {
-            $module = Vtiger_Module_Model::getInstance($referenceModule);
-
-            if ($module) {
-                $field = Vtiger_Field_Model::getInstance($referenceField, $module);
-
-                if ($field) {
-                    $field->set('name', sprintf('(%s ; (%s) %s)', $fieldName, $referenceModule, $referenceField));
-
-                    return $field;
-                }
-            }
-
-            return false;
-        }
-
-        return Vtiger_Field_Model::getInstance($fieldName, $module);
-    }
-
-    public function retrieveFilters(): void
-    {
-        foreach ($this->blocksListFields as $key => $field) {
-            [$fieldName, $referenceModule, $referenceField] = array_pad(explode(':', $field), 3, null);
-
-            if (empty($referenceField)) {
-                continue;
-            }
-
-            $field = $this->getFilterField($fieldName, $referenceModule, $referenceField);
-
-            if ($field) {
-                $this->setFilterField('All', $field, $key + 1);
-            }
-        }
-    }
-
     /**
      * @return void
      */
-    public function updateMenuLink(): void
-    {
-        self::logSuccess('Link start creating');
-
-        $moduleName = $this->getModuleName();
-        $moduleInstance = $this->getModuleInstance($moduleName);
-
-        if (!empty($moduleInstance->name) && !empty($moduleInstance->parent)) {
-            Settings_MenuEditor_Module_Model::addModuleToApp($moduleInstance->name, $moduleInstance->parent);
-
-            self::logSuccess('Link created');
-        } else {
-            self::logInfo('Link not created');
-        }
-    }
-
-    public function postInstall(): void
-    {
-        $moduleName = $this->getModuleName();
-
-        vtws_addDefaultModuleTypeEntity($moduleName);
-
-        Vtiger_Cache::delete('module', $moduleName);
-
-        unset($_SESSION[$moduleName . '_listquery']);
-        unset($_SESSION['lvs'][$moduleName]);
-    }
+    abstract public function installTables(): void;
 
     /**
-     * @return string
+     * @param string $key
+     *
+     * @return bool
      */
-    public function getModuleName(): string
+    public function isBlockKeySkippedForUpdate(string $key): bool
     {
-        return $this->moduleName;
+        return self::isUpgradeProcess() && in_array($key, self::$blockKeySkippedForUpdate);
     }
 
     /**
@@ -982,150 +1047,33 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @param string $key
-     *
      * @return bool
      */
-    public function isBlockKeySkippedForUpdate(string $key): bool
+    public function isInstalledModule(): bool
     {
-        return self::isUpgradeProcess() && in_array($key, self::$blockKeySkippedForUpdate);
+        if (isset(self::$installedModules[$this->moduleName])) {
+            self::logInfo($this->moduleName . ': was already installed in this process');
+
+            return true;
+        }
+
+        self::$installedModules[$this->moduleName] = true;
+
+        return false;
     }
 
     /**
-     * @param string $fieldName
-     * @param array  $fieldParams
-     *
-     * @return Vtiger_Field_Model|bool
-     * @throws Exception
+     * @return bool
      */
-    public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
+    public function isRequiredInstallTables(): bool
     {
-        $fieldInstance = $this->getFieldInstance($fieldName);
-
-        foreach ($fieldParams as $fieldParamName => $fieldParam) {
-            if ($fieldInstance->getId() && $this->isFieldKeySkippedForUpdate($fieldParamName)) {
-                continue;
-            }
-
-            $fieldInstance->$fieldParamName = $fieldParam;
-        }
-
-        $fieldInstance->save($fieldInstance->block);
-        $fieldInstance->getFieldTable()->updateData(
-            [
-                'block' => $fieldInstance->getBlockId(),
-                'tablename' => $fieldInstance->table,
-                'columnname' => $fieldInstance->column,
-                'presence' => $fieldInstance->presence,
-                'displaytype' => $fieldInstance->displaytype,
-                'sequence' => $fieldInstance->sequence,
-                'isunique' => $fieldInstance->isunique,
-            ],
-            [
-                'fieldid' => $fieldInstance->id,
-            ],
-        );
-
-        return $fieldInstance;
+        return $this->requireInstallTables;
     }
 
-    public function getFieldInstance($fieldName)
+    public static function isUpgradeProcess(): bool
     {
-        $moduleName = $this->getModuleName();
-        $moduleInstance = $this->getModuleInstance($moduleName);
-        $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
-
-        if (!$fieldInstance) {
-            $fieldInstance = new Vtiger_Field_Model();
-        }
-
-        $fieldInstance->name = $fieldName;
-        $fieldInstance->column = $fieldName;
-
-        return $fieldInstance;
+        return defined('VTIGER_UPGRADE') && VTIGER_UPGRADE;
     }
-
-    public function getModuleInstance($moduleName): object
-    {
-        return self::$modules[$moduleName];
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function createBlock($blockName)
-    {
-        $blockParams = $this->getBlockConfig($blockName);
-        $moduleName = $this->getModuleName();
-        $moduleInstance = $this->getModuleInstance($moduleName);
-
-        if (!empty(self::$blocks[$moduleName][$blockName])) {
-            return self::$blocks[$moduleName][$blockName];
-        }
-
-        $blockInstance = Vtiger_Block::getInstance($blockName, $moduleInstance);
-
-        if (!$blockInstance) {
-            $blockInstance = new Vtiger_Block();
-        }
-
-        $blockInstance->label = $blockName;
-        $blockInstance->blockuitype = Core_BlockUiType_Model::addBlockUiType($blockParams['name']);
-
-        if (!$this->isBlockKeySkippedForUpdate('sequence')) {
-            $blocks = array_flip(array_keys($this->getFieldsConfig()));
-
-            if (isset($blocks[$blockName])) {
-                $blockInstance->sequence = $blocks[$blockName] + 1;
-            }
-        }
-
-        $blockInstance->save($moduleInstance);
-        $blockInstance->getBlockTable()->updateData(
-            [
-                'blockuitype' => $blockInstance->blockuitype,
-                'sequence' => $blockInstance->sequence,
-            ],
-            [
-                'blockid' => $blockInstance->id,
-            ],
-        );
-
-        self::$blocks[$moduleName][$blockName] = $blockInstance;
-
-        return $blockInstance;
-    }
-
-    public function createFilter($filterName, $moduleInstance)
-    {
-        $moduleName = $moduleInstance->name;
-
-        if (!empty(self::$filters[$filterName][$moduleName])) {
-            return self::$filters[$filterName][$moduleName];
-        }
-
-        self::logSuccess('Filter create: ' . $moduleName . ':' . $filterName);
-
-        $filterInstance = Vtiger_Filter::getInstance($filterName, $moduleInstance);
-
-        if (!$filterInstance) {
-            $filterInstance = new Vtiger_Filter();
-            $filterInstance->creating = true;
-        }
-
-        $filterInstance->name = $filterName;
-        $filterInstance->isdefault = true;
-        $filterInstance->save($moduleInstance);
-
-        self::$filters[$filterName][$moduleName] = $filterInstance;
-
-        return $filterInstance;
-    }
-
-    /**
-     * @return void
-     */
-    abstract public function installTables(): void;
 
     /**
      * @param mixed $message
@@ -1173,294 +1121,16 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         throw new Exception('Migration undefined');
     }
 
-    /**
-     * @param $register
-     *
-     * @return void
-     */
-    public function updateComments($register = true)
-    {
-        ModComments::removeWidgetFrom([$this->moduleName]);
-
-        if ($register) {
-            ModComments::addWidgetTo([$this->moduleName]);
-        }
-    }
-
-    /**
-     * @param bool $register
-     *
-     * @return void
-     */
-    public function updateCron($register = true)
-    {
-        foreach ($this->registerCron as $cronInfo) {
-            [$name, $handler, $frequency, $module, $sequence, $description] = array_pad($cronInfo, 6, null);
-
-            Vtiger_Cron::deregister($name);
-
-            if ($register) {
-                Vtiger_Cron::register($name, $handler, $frequency, $module, 1, $sequence, $description);
-            }
-        }
-    }
-
-    /**
-     * @param $register
-     *
-     * @return void
-     */
-    public function updateCustomLinks($register = true)
-    {
-        foreach ($this->registerCustomLinks as $customLink) {
-            [$moduleName, $type, $label, $url, $icon, $sequence, $handler] = array_pad($customLink, 7, null);
-            $module = Vtiger_Module::getInstance($moduleName);
-            $url = str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url);
-
-            if ($module) {
-                $module->deleteLink($type, $label);
-
-                if ($register) {
-                    $module->addLink($type, $label, $url, $icon, $sequence, $handler);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param $register
-     *
-     * @return void
-     */
-    public function updateEventHandler($register = true)
-    {
-        $eventsManager = new VTEventsManager($this->db);
-
-        foreach ($this->registerEventHandler as $data) {
-            [$events, $fileName, $className, $dependOn, $modules] = $data;
-
-            $eventsManager->unregisterHandler($className);
-
-            if ($register) {
-                $dependOn = !empty($dependOn) ? $dependOn : '[]';
-
-                foreach ((array)$events as $event) {
-                    $eventsManager->registerHandler($event, $fileName, $className, $dependOn);
-
-                    foreach ((array)$modules as $module) {
-                        $eventsManager->setModuleForHandler($module, $className);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @param $register
-     *
-     * @return void
-     */
-    public function updateHistory($register = true)
-    {
-        ModTracker::disableTrackingForModule(getTabid($this->moduleName));
-
-        if ($register) {
-            ModTracker::enableTrackingForModule(getTabid($this->moduleName));
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function updateIcons()
-    {
-        $layout = Vtiger_Viewer::getDefaultLayoutName();
-        $from = sprintf('layouts/%s/modules/%s/%s.png', $layout, $this->moduleName, $this->moduleName);
-        $to = sprintf('layouts/%s/skins/images/%s.png', $layout, $this->moduleName);
-
-        if (is_file($from) && !is_file($to)) {
-            copy($from, $to);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function updateNumbering()
-    {
-        if (empty($this->moduleNumbering)) {
-            return;
-        }
-
-        $focus = CRMEntity::getInstance($this->moduleName);
-        $focus->setModuleSeqNumber('configure', $this->moduleName, $this->moduleNumbering, '0001');
-        $focus->updateMissingSeqNumber($this->moduleName);
-    }
-
-    /**
-     * @param bool $register
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function updateRelatedList(bool $register = true): void
-    {
-        foreach ($this->registerRelatedLists as $relatedList) {
-            $moduleName = !empty($relatedList[0]) ? $relatedList[0] : $this->getModuleName();
-            $module = Vtiger_Module::getInstance($moduleName);
-            $relatedModule = Vtiger_Module::getInstance($relatedList[1]);
-
-            if ($module && $relatedModule) {
-                $relatedLabel = $relatedList[2] ?? $relatedModule->name;
-                $relatedActions = $relatedList[3] ?? '';
-                $relatedFunction = $relatedList[4] ?? 'get_related_list';
-                $field = isset($relatedList[5]) ? Vtiger_Field_Model::getInstance($relatedList[5], $relatedModule) : '';
-                $fieldId = $field ? $field->getId() : '';
-
-                $module->unsetRelatedList($relatedModule, $relatedLabel, '');
-
-                if ('delete_related_list' === $relatedFunction) {
-                    continue;
-                }
-
-                if ($register) {
-                    $module->setRelatedList($relatedModule, $relatedLabel, $relatedActions, $relatedFunction, $fieldId);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param bool $register
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function updateSettingsLinks(bool $register = true): void
-    {
-        foreach ($this->registerSettingsLinks as $settingsLink) {
-            [$name, $link, $block] = $settingsLink;
-
-            if ($register) {
-                $menu = Settings_Vtiger_Menu_Model::createMenu($block);
-
-                Settings_Vtiger_MenuItem_Model::createItem($name, $link, $menu);
-            } else {
-                Settings_Vtiger_MenuItem_Model::deleteItem($name);
-            }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function updateToStandardModule()
-    {
-        // Mark the module as Standard module
-        $this->db->pquery('UPDATE vtiger_tab SET customized=0,source=NULL WHERE name=?', [$this->moduleName]);
-    }
-
-    /**
-     * @param $register
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function updateWorkflows($register = true)
-    {
-        foreach ($this->registerWorkflows as $registerWorkflow) {
-            [$moduleName, $workflowName, $workflowLabel, $modules, $classPath, $templatePath] = $registerWorkflow;
-
-            $layout = Vtiger_Viewer::getLayoutName();
-
-            if (!$register) {
-                $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
-                    [$workflowName],
-                );
-
-                $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?',
-                    ['%:"' . $workflowName . '":%'],
-                );
-
-                unlink(sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $workflowName));
-                unlink(sprintf('layouts/%s/modules/Settings/Workflows/Tasks/%s.tpl', $layout, $workflowName));
-                continue;
-            }
-
-            $modules = $modules ?: '{"include":[],"exclude":[]}';
-            $classPath = $classPath ?: sprintf('modules/%s/workflow/%s.inc', $moduleName, $workflowName);
-            $templatePath = $templatePath ?: sprintf('layouts/%s/modules/%s/taskforms/%s.tpl', $layout, $moduleName, $workflowName);
-            $table = $this->getTable('com_vtiger_workflow_tasktypes', 'id');
-            $workflowId = $table->selectData(['id'], ['tasktypename' => $workflowName])['id'];
-            $values = [
-                'tasktypename' => $workflowName,
-                'label' => $workflowLabel,
-                'classname' => $workflowName,
-                'classpath' => $classPath,
-                'templatepath' => $templatePath,
-                'modules' => $modules,
-                'sourcemodule' => $moduleName,
-            ];
-
-            if (empty($workflowId)) {
-                $values['id'] = $this->db->getUniqueID("com_vtiger_workflow_tasktypes");
-                $table->insertData($values);
-            } else {
-                $table->updateData($values, ['id' => $workflowId]);
-            }
-        }
-    }
-
-    /**
-     * @param bool $register
-     *
-     * @return void
-     */
-    public function updateAppointments(bool $register = true): void
-    {
-        $moduleName = $this->getModuleName();
-        $integration = Settings_Appointments_Integration_Model::getInstance($moduleName);
-
-        $integration->unsetField();
-        $integration->unsetRelation();
-
-        if ($register) {
-            $integration->setField();
-            $integration->setRelation();
-        }
-    }
-
-    /**
-     * @param bool $register
-     *
-     * @return void
-     */
-    public function updateEmails(bool $register = true): void
+    public function postInstall(): void
     {
         $moduleName = $this->getModuleName();
 
-        $emails = ITS4YouEmails_Integration_Model::getInstance($moduleName);
-        $emails->updateRelation(false);
-        $emails->updateLinks(false);
-        $emails->unsetReferenceModule();
+        vtws_addDefaultModuleTypeEntity($moduleName);
 
-        if ($register) {
-            $emails->updateRelation();
-            $emails->updateLinks();
-            $emails->setReferenceModule();
-        }
-    }
+        Vtiger_Cache::delete('module', $moduleName);
 
-    /**
-     * @return void
-     */
-    public static function updateModuleMetaFiles(): void
-    {
-        require_once 'vtlib/Vtiger/Deprecated.php';
-        Vtiger_Deprecated::createModuleMetaFile();
-        Vtiger_Deprecated::createModuleGroupMetaFile();
+        unset($_SESSION[$moduleName . '_listquery']);
+        unset($_SESSION['lvs'][$moduleName]);
     }
 
     /**
@@ -1526,75 +1196,384 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
     }
 
-    public function getFieldsConfig(): array
+    public function retrieveFilters(): void
+    {
+        foreach ($this->blocksListFields as $key => $field) {
+            [$fieldName, $referenceModule, $referenceField] = array_pad(explode(':', $field), 3, null);
+
+            if (empty($referenceField)) {
+                continue;
+            }
+
+            $field = $this->getFilterField($fieldName, $referenceModule, $referenceField);
+
+            if ($field) {
+                $this->setFilterField('All', $field, $key + 1);
+            }
+        }
+    }
+
+    public function setFilterField($filterName, $field, $sequence): void
     {
         $moduleName = $this->getModuleName();
 
-        if (!empty(self::$fieldsConfig[$moduleName])) {
-            return self::$fieldsConfig[$moduleName];
+        if (empty($sequence)) {
+            $sequence = count((array)self::$filterFields[$moduleName][$filterName]) + 1;
         }
 
-        return [];
+        self::$filterFields[$moduleName][$filterName][$sequence] = $field;
     }
 
     /**
-     * @throws Exception
-     */
-    public function createPicklistTable(string $table, string $tableId, string $columnName): void
-    {
-        if (empty($tableId)) {
-            $tableId = $columnName . 'id';
-        }
-
-        if (empty($table)) {
-            $tableId = 'vtiger_' . $columnName;
-        }
-
-        self::getTableInstance($table, $tableId)
-            ->createTable()
-            ->createColumn($columnName, 'VARCHAR(200) NOT NULL')
-            ->createColumn('presence', 'INT (1) NOT NULL DEFAULT 1')
-            ->createColumn('picklist_valueid', 'INT NOT NULL DEFAULT \'0\'')
-            ->createColumn('sortorderid', 'INT DEFAULT \'0\'')
-            ->createColumn('color', 'VARCHAR(10)')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (' . $tableId . ')')
-            ->deleteDuplicates($columnName)
-            ->createKey('UNIQUE KEY IF NOT EXISTS ' . $columnName . '_' . $columnName . '_idx (' . $columnName . ')');
-    }
-
-    /**
-     * @param string $name
-     * @param string $moduleName
-     * @param array  $conditions
-     * @param string $trigger
-     * @param string $recurrence
+     * @param bool $register
      *
-     * @return bool|object
+     * @return void
+     */
+    public function updateAppointments(bool $register = true): void
+    {
+        $moduleName = $this->getModuleName();
+        $integration = Settings_Appointments_Integration_Model::getInstance($moduleName);
+
+        $integration->unsetField();
+        $integration->unsetRelation();
+
+        if ($register) {
+            $integration->setField();
+            $integration->setRelation();
+        }
+    }
+
+    /**
+     * @param $register
+     *
+     * @return void
+     */
+    public function updateComments($register = true)
+    {
+        ModComments::removeWidgetFrom([$this->moduleName]);
+
+        if ($register) {
+            ModComments::addWidgetTo([$this->moduleName]);
+        }
+    }
+
+    /**
+     * @param bool $register
+     *
+     * @return void
+     */
+    public function updateCron($register = true)
+    {
+        foreach ($this->registerCron as $cronInfo) {
+            [$name, $handler, $frequency, $module, $sequence, $description] = array_pad($cronInfo, 6, null);
+
+            Vtiger_Cron::deregister($name);
+
+            if ($register) {
+                Vtiger_Cron::register($name, $handler, $frequency, $module, 1, $sequence, $description);
+            }
+        }
+    }
+
+    /**
+     * @param $register
+     *
+     * @return void
+     */
+    public function updateCustomLinks($register = true)
+    {
+        foreach ($this->registerCustomLinks as $customLink) {
+            [$moduleName, $type, $label, $url, $icon, $sequence, $handler] = array_pad($customLink, 7, null);
+            $module = Vtiger_Module::getInstance($moduleName);
+            $url = str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url);
+
+            if ($module) {
+                $module->deleteLink($type, $label);
+
+                if ($register) {
+                    $module->addLink($type, $label, $url, $icon, $sequence, $handler);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param bool $register
+     *
+     * @return void
+     */
+    public function updateEmails(bool $register = true): void
+    {
+        $moduleName = $this->getModuleName();
+
+        $emails = ITS4YouEmails_Integration_Model::getInstance($moduleName);
+        $emails->updateRelation(false);
+        $emails->updateLinks(false);
+        $emails->unsetReferenceModule();
+
+        if ($register) {
+            $emails->updateRelation();
+            $emails->updateLinks();
+            $emails->setReferenceModule();
+        }
+    }
+
+    /**
+     * @param $register
+     *
+     * @return void
+     */
+    public function updateEventHandler($register = true)
+    {
+        $eventsManager = new VTEventsManager($this->db);
+
+        foreach ($this->registerEventHandler as $data) {
+            [$events, $fileName, $className, $dependOn, $modules] = $data;
+
+            $eventsManager->unregisterHandler($className);
+
+            if ($register) {
+                $dependOn = !empty($dependOn) ? $dependOn : '[]';
+
+                foreach ((array)$events as $event) {
+                    $eventsManager->registerHandler($event, $fileName, $className, $dependOn);
+
+                    foreach ((array)$modules as $module) {
+                        $eventsManager->setModuleForHandler($module, $className);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @return void
      * @throws Exception
      */
-    public function updateWorkflowTask(string $name, string $moduleName, array $conditions, string $trigger): bool|object
+    public function updateFieldTypes(): void
     {
-        $workflowModel = Settings_Workflows_Record_Model::getInstanceByName($name);
+        $fieldModel = new Vtiger_Field_Model();
 
-        if (!$workflowModel) {
-            $workflowModel = Settings_Workflows_Record_Model::getCleanInstance($moduleName);
-            $workflowModel->set('status', 1);
+        foreach ($this->registerFieldTypes as $fieldTypeName) {
+            [$uiTypeId, $uiType] = $fieldTypeName;
+            $fieldModel->saveFieldType($uiTypeId, $uiType);
+        }
+    }
+
+    public function updateFilters(): void
+    {
+        self::logSuccess('Filter start creating');
+
+        $filters = $this->getFilters();
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
+
+        foreach ($filters as $filterName => $filterFields) {
+            $filterInstance = $this->createFilter($filterName, $moduleInstance);
+
+            if (!$filterInstance->isCreating() && self::isUpgradeProcess()) {
+                continue;
+            }
+
+            $filterInstance->deleteFields();
+
+            ksort($filterFields);
+
+            foreach ($filterFields as $filterSequence => $filterField) {
+                self::logSuccess('Filter add field: ' . $filterField->get('table') . ':' . $filterField->getName());
+
+                $filterInstance->addField($filterField, $filterSequence);
+            }
         }
 
-        $workflowModel->set('name', $name);
-        $workflowModel->set('summary', $name);
-        $workflowModel->set('conditions', $conditions);
-        $workflowModel->set('execution_condition', $trigger);
-        $workflowModel->set('filtersavedinnew', 6);
-        $workflowModel->save();
+        self::logSuccess('Filter end creating');
+    }
 
-        return $workflowModel;
+    /**
+     * @param $register
+     *
+     * @return void
+     */
+    public function updateHistory($register = true)
+    {
+        ModTracker::disableTrackingForModule(getTabid($this->moduleName));
+
+        if ($register) {
+            ModTracker::enableTrackingForModule(getTabid($this->moduleName));
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function updateIcons()
+    {
+        $layout = Vtiger_Viewer::getDefaultLayoutName();
+        $from = sprintf('layouts/%s/modules/%s/%s.png', $layout, $this->moduleName, $this->moduleName);
+        $to = sprintf('layouts/%s/skins/images/%s.png', $layout, $this->moduleName);
+
+        if (is_file($from) && !is_file($to)) {
+            copy($from, $to);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function updateMenuLink(): void
+    {
+        self::logSuccess('Link start creating');
+
+        $moduleName = $this->getModuleName();
+        $moduleInstance = $this->getModuleInstance($moduleName);
+
+        if (!empty($moduleInstance->name) && !empty($moduleInstance->parent)) {
+            Settings_MenuEditor_Module_Model::addModuleToApp($moduleInstance->name, $moduleInstance->parent);
+
+            self::logSuccess('Link created');
+        } else {
+            self::logInfo('Link not created');
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public static function updateModuleMetaFiles(): void
+    {
+        require_once 'vtlib/Vtiger/Deprecated.php';
+        Vtiger_Deprecated::createModuleMetaFile();
+        Vtiger_Deprecated::createModuleGroupMetaFile();
+    }
+
+    /**
+     * @return void
+     */
+    public function updateNumbering()
+    {
+        if (empty($this->moduleNumbering)) {
+            return;
+        }
+
+        $focus = CRMEntity::getInstance($this->moduleName);
+        $focus->setModuleSeqNumber('configure', $this->moduleName, $this->moduleNumbering, '0001');
+        $focus->updateMissingSeqNumber($this->moduleName);
+    }
+
+    /**
+     * @return void
+     */
+    public function updatePopupFields(): void
+    {
+        self::logSuccess('Popup fields start creating');
+
+        $fields = !empty($this->popupFields) ? $this->popupFields : [];
+        $popupList = Settings_LayoutEditor_PopupSettings_Model::getInstance()
+            ->setModuleName($this->moduleName);
+
+        if (!empty($fields) && !$popupList->isExists()) {
+            $popupList->setColumns($fields)
+                ->save();
+
+            self::logSuccess('Popup fields created');
+        } else {
+            self::logInfo('Popup fields already created');
+        }
+    }
+
+    /**
+     * @param bool $register
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function updateRelatedList(bool $register = true): void
+    {
+        foreach ($this->registerRelatedLists as $relatedList) {
+            $moduleName = !empty($relatedList[0]) ? $relatedList[0] : $this->getModuleName();
+            $module = Vtiger_Module::getInstance($moduleName);
+            $relatedModule = Vtiger_Module::getInstance($relatedList[1]);
+
+            if ($module && $relatedModule) {
+                $relatedLabel = $relatedList[2] ?? $relatedModule->name;
+                $relatedActions = $relatedList[3] ?? '';
+                $relatedFunction = $relatedList[4] ?? 'get_related_list';
+                $field = isset($relatedList[5]) ? Vtiger_Field_Model::getInstance($relatedList[5], $relatedModule) : '';
+                $fieldId = $field ? $field->getId() : '';
+
+                $module->unsetRelatedList($relatedModule, $relatedLabel, '');
+
+                if ('delete_related_list' === $relatedFunction) {
+                    continue;
+                }
+
+                if ($register) {
+                    $module->setRelatedList($relatedModule, $relatedLabel, $relatedActions, $relatedFunction, $fieldId);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function updateRelatedListFields(): void
+    {
+        self::logSuccess('Related list fields start creating');
+
+        $fields = !empty($this->relatedListFields[0]) ? $this->relatedListFields[0] : [];
+        $orderBy = !empty($this->relatedListFields[1]) ? $this->relatedListFields[1] : '';
+        $sortOrder = !empty($this->relatedListFields[2]) ? $this->relatedListFields[2] : 'ASC';
+        $relatedList = Settings_LayoutEditor_RelatedListSettings_Model::getInstance()
+            ->setModuleName($this->moduleName);
+
+        if (!empty($fields) && !$relatedList->isExists()) {
+            $relatedList
+                ->setColumns($fields)
+                ->setSort($orderBy, $sortOrder)
+                ->save();
+
+            self::logSuccess('Related list fields created');
+        } else {
+            self::logInfo('Related list fields already created');
+        }
+    }
+
+    /**
+     * @param bool $register
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function updateSettingsLinks(bool $register = true): void
+    {
+        foreach ($this->registerSettingsLinks as $settingsLink) {
+            [$name, $link, $block] = $settingsLink;
+
+            if ($register) {
+                $menu = Settings_Vtiger_Menu_Model::createMenu($block);
+
+                Settings_Vtiger_MenuItem_Model::createItem($name, $link, $menu);
+            } else {
+                Settings_Vtiger_MenuItem_Model::deleteItem($name);
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function updateToStandardModule()
+    {
+        // Mark the module as Standard module
+        $this->db->pquery('UPDATE vtiger_tab SET customized=0,source=NULL WHERE name=?', [$this->moduleName]);
     }
 
     /**
      * @param string $taskType
      * @param string $taskName
-     * @param array  $data
+     * @param array $data
      * @param object $workflowModel
      *
      * @return object|bool
@@ -1625,22 +1604,32 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return void
+     * @param string $name
+     * @param string $moduleName
+     * @param array $conditions
+     * @param string $trigger
+     * @param string $recurrence
+     *
+     * @return bool|object
      * @throws Exception
      */
-    public function updateFieldTypes(): void
+    public function updateWorkflowTask(string $name, string $moduleName, array $conditions, string $trigger): bool|object
     {
-        $fieldModel = new Vtiger_Field_Model();
+        $workflowModel = Settings_Workflows_Record_Model::getInstanceByName($name);
 
-        foreach ($this->registerFieldTypes as $fieldTypeName) {
-            [$uiTypeId, $uiType] = $fieldTypeName;
-            $fieldModel->saveFieldType($uiTypeId, $uiType);
+        if (!$workflowModel) {
+            $workflowModel = Settings_Workflows_Record_Model::getCleanInstance($moduleName);
+            $workflowModel->set('status', 1);
         }
-    }
 
-    public static function isUpgradeProcess(): bool
-    {
-        return defined('VTIGER_UPGRADE') && VTIGER_UPGRADE;
+        $workflowModel->set('name', $name);
+        $workflowModel->set('summary', $name);
+        $workflowModel->set('conditions', $conditions);
+        $workflowModel->set('execution_condition', $trigger);
+        $workflowModel->set('filtersavedinnew', 6);
+        $workflowModel->save();
+
+        return $workflowModel;
     }
 
     /**
@@ -1675,67 +1664,55 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @param string $module
-     * @param string $name
-     * @return bool
-     */
-    public function hasWorkflowTask(string $module, string $name): bool
-    {
-        $db = PearDatabase::getInstance();
-        $result = $db->pquery('SELECT 1 FROM com_vtiger_workflows WHERE module_name=? AND workflowname=?', [$module, $name]);
-
-        return $db->num_rows($result) > 0;
-    }
-
-    /**
+     * @param $register
+     *
      * @return void
+     * @throws Exception
      */
-    public function updateRelatedListFields(): void
+    public function updateWorkflows($register = true)
     {
-        self::logSuccess('Related list fields start creating');
-        $db = PearDatabase::getInstance();
-        $tabId = getTabid($this->moduleName);
-        $result = $db->pquery('SELECT 1 FROM df_relatedlistsettings WHERE tabid = ?', [$tabId]);
+        foreach ($this->registerWorkflows as $registerWorkflow) {
+            [$moduleName, $workflowName, $workflowLabel, $modules, $classPath, $templatePath] = $registerWorkflow;
 
-        if (!$db->num_rows($result)) {
-            $values = [$tabId, implode(',', $this->relatedListFields[0])];
+            $layout = Vtiger_Viewer::getLayoutName();
 
-            if (isset($this->relatedListFields[1])) {
-                $values[] = $this->relatedListFields[1];
+            if (!$register) {
+                $this->db->pquery(
+                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
+                    [$workflowName],
+                );
 
-                if (isset($this->relatedListFields[2])) {
-                    $values[] = $this->relatedListFields[2];
-                } else {
-                    $values[] = 'ASC';
-                }
-            } else {
-                $values[] = null;
-                $values[] = null;
+                $this->db->pquery(
+                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?',
+                    ['%:"' . $workflowName . '":%'],
+                );
+
+                unlink(sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $workflowName));
+                unlink(sprintf('layouts/%s/modules/Settings/Workflows/Tasks/%s.tpl', $layout, $workflowName));
+                continue;
             }
 
-            $db->pquery('INSERT INTO df_relatedlistsettings VALUES (' . generateQuestionMarks($values) . ')', $values);
-            self::logSuccess('Related list fields created');
-        } else {
-            self::logInfo('Related list fields already created');
-        }
-    }
+            $modules = $modules ?: '{"include":[],"exclude":[]}';
+            $classPath = $classPath ?: sprintf('modules/%s/workflow/%s.inc', $moduleName, $workflowName);
+            $templatePath = $templatePath ?: sprintf('layouts/%s/modules/%s/taskforms/%s.tpl', $layout, $moduleName, $workflowName);
+            $table = $this->getTable('com_vtiger_workflow_tasktypes', 'id');
+            $workflowId = $table->selectData(['id'], ['tasktypename' => $workflowName])['id'];
+            $values = [
+                'tasktypename' => $workflowName,
+                'label' => $workflowLabel,
+                'classname' => $workflowName,
+                'classpath' => $classPath,
+                'templatepath' => $templatePath,
+                'modules' => $modules,
+                'sourcemodule' => $moduleName,
+            ];
 
-    /**
-     * @return void
-     */
-    public function updatePopupFields(): void
-    {
-        self::logSuccess('Popup fields start creating');
-        $db = PearDatabase::getInstance();
-        $tabId = getTabid($this->moduleName);
-        $result = $db->pquery('SELECT 1 FROM df_popupsettings WHERE tabid = ?', [$tabId]);
-
-        if (!$db->num_rows($result)) {
-            $values = [$tabId, implode(',', $this->relatedListFields)];
-            $db->pquery('INSERT INTO df_popupsettings VALUES (' . generateQuestionMarks($values) . ')', $values);
-            self::logSuccess('Popup fields created');
-        } else {
-            self::logInfo('Popup fields already created');
+            if (empty($workflowId)) {
+                $values['id'] = $this->db->getUniqueID("com_vtiger_workflow_tasktypes");
+                $table->insertData($values);
+            } else {
+                $table->updateData($values, ['id' => $workflowId]);
+            }
         }
     }
 }

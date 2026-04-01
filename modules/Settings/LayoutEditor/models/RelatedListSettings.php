@@ -10,15 +10,10 @@
 
 class Settings_LayoutEditor_RelatedListSettings_Model extends Core_DatabaseData_Model
 {
-    const TABLE = 'df_relatedlistsettings';
-
-    /**
-     * @return static
-     */
-    public static function getInstance(): static
-    {
-        return new static();
-    }
+    public const TABLE = 'df_relatedlistsettings';
+    protected string $table = self::TABLE;
+    protected string $tableId = 'tabid';
+    protected string $tableName = 'tabid';
 
     /**
      * Create DB table if it does not exist yet.
@@ -34,6 +29,45 @@ class Settings_LayoutEditor_RelatedListSettings_Model extends Core_DatabaseData_
             ->createColumn('sortorder', "varchar(4) DEFAULT 'ASC'")
             ->createKey('PRIMARY KEY (tabid)')
             ->createKey('CONSTRAINT fk_df_rls_tabid FOREIGN KEY (tabid) REFERENCES vtiger_tab (tabid) ON DELETE CASCADE');
+    }
+
+    /**
+     * @return static
+     */
+    public static function getInstance(): static
+    {
+        $instance = new self();
+        $instance->retrieveDB();
+
+        return $instance;
+    }
+
+    /**
+     * Get saved settings for a module.
+     * Expects 'moduleName' to be set via $this->set('moduleName', ...) before calling.
+     *
+     * @return array{columnslist: array, sortfield: string, sortorder: string}
+     */
+    public function getSettings(): array
+    {
+        $db = PearDatabase::getInstance();
+        $tabid = getTabid($this->get('moduleName'));
+        $result = $db->pquery('SELECT * FROM ' . self::TABLE . ' WHERE tabid = ?', [$tabid]);
+        $row = $db->fetchByAssoc($result);
+
+        if ($row) {
+            return [
+                'columnslist' => !empty($row['columnslist']) ? explode(',', $row['columnslist']) : [],
+                'sortfield' => $row['sortfield'] ?? '',
+                'sortorder' => $row['sortorder'] ?? 'ASC',
+            ];
+        }
+
+        return [
+            'columnslist' => [],
+            'sortfield' => '',
+            'sortorder' => 'ASC',
+        ];
     }
 
     /**
@@ -66,32 +100,11 @@ class Settings_LayoutEditor_RelatedListSettings_Model extends Core_DatabaseData_
         }
     }
 
-    /**
-     * Get saved settings for a module.
-     * Expects 'moduleName' to be set via $this->set('moduleName', ...) before calling.
-     *
-     * @return array{columnslist: array, sortfield: string, sortorder: string}
-     */
-    public function getSettings(): array
+    public function isExists(): bool
     {
-        $db = PearDatabase::getInstance();
-        $tabid = getTabid($this->get('moduleName'));
-        $result = $db->pquery('SELECT * FROM ' . self::TABLE . ' WHERE tabid = ?', [$tabid]);
-        $row = $db->fetchByAssoc($result);
+        $result = $this->getDB()->pquery('SELECT 1 FROM ' . self::TABLE . ' WHERE tabid = ?', [getTabid($this->get('moduleName'))]);
 
-        if ($row) {
-            return [
-                'columnslist' => !empty($row['columnslist']) ? explode(',', $row['columnslist']) : [],
-                'sortfield'   => $row['sortfield'] ?? '',
-                'sortorder'   => $row['sortorder'] ?? 'ASC',
-            ];
-        }
-
-        return [
-            'columnslist' => [],
-            'sortfield'   => '',
-            'sortorder'   => 'ASC',
-        ];
+        return $this->getDB()->num_rows($result) > 0;
     }
 
     /**
@@ -111,5 +124,27 @@ class Settings_LayoutEditor_RelatedListSettings_Model extends Core_DatabaseData_
             'REPLACE INTO ' . self::TABLE . ' (tabid, columnslist, sortfield, sortorder) VALUES (?, ?, ?, ?)',
             [$tabid, implode(',', (array)$this->get('columnslist')), (string)$this->get('sortfield'), (string)$this->get('sortorder')]
         );
+    }
+
+    public function setColumns(array $columns): self
+    {
+        $this->set('columnslist', $columns);
+
+        return $this;
+    }
+
+    public function setModuleName(string $moduleName): self
+    {
+        $this->set('moduleName', $moduleName);
+
+        return $this;
+    }
+
+    public function setSort(string $field, string $order): self
+    {
+        $this->set('sortfield', $field);
+        $this->set('sortorder', $order);
+
+        return $this;
     }
 }
