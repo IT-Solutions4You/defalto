@@ -10,15 +10,10 @@
 
 class Settings_LayoutEditor_PopupSettings_Model extends Core_DatabaseData_Model
 {
-    const TABLE = 'df_popupsettings';
-
-    /**
-     * @return static
-     */
-    public static function getInstance(): static
-    {
-        return new static();
-    }
+    public const TABLE = 'df_popupsettings';
+    protected string $table = self::TABLE;
+    protected string $tableId = 'tabid';
+    protected string $tableName = 'tabid';
 
     /**
      * Create DB table if it does not exist yet.
@@ -32,6 +27,41 @@ class Settings_LayoutEditor_PopupSettings_Model extends Core_DatabaseData_Model
             ->createColumn('columnslist', 'text')
             ->createKey('PRIMARY KEY (tabid)')
             ->createKey('CONSTRAINT fk_df_ps_tabid FOREIGN KEY (tabid) REFERENCES vtiger_tab (tabid) ON DELETE CASCADE');
+    }
+
+    /**
+     * @return static
+     */
+    public static function getInstance(): static
+    {
+        $instance = new self();
+        $instance->retrieveDB();
+
+        return $instance;
+    }
+
+    /**
+     * Get saved settings for a module.
+     * Expects 'moduleName' to be set via $this->set('moduleName', ...) before calling.
+     *
+     * @return array{columnslist: array}
+     */
+    public function getSettings(): array
+    {
+        $db = PearDatabase::getInstance();
+        $tabid = getTabid($this->get('moduleName'));
+        $result = $db->pquery('SELECT * FROM ' . self::TABLE . ' WHERE tabid = ?', [$tabid]);
+        $row = $db->fetchByAssoc($result);
+
+        if ($row) {
+            return [
+                'columnslist' => !empty($row['columnslist']) ? explode(',', $row['columnslist']) : [],
+            ];
+        }
+
+        return [
+            'columnslist' => [],
+        ];
     }
 
     /**
@@ -64,28 +94,13 @@ class Settings_LayoutEditor_PopupSettings_Model extends Core_DatabaseData_Model
         }
     }
 
-    /**
-     * Get saved settings for a module.
-     * Expects 'moduleName' to be set via $this->set('moduleName', ...) before calling.
-     *
-     * @return array{columnslist: array}
-     */
-    public function getSettings(): array
+    public function isExists(): bool
     {
-        $db = PearDatabase::getInstance();
-        $tabid = getTabid($this->get('moduleName'));
-        $result = $db->pquery('SELECT * FROM ' . self::TABLE . ' WHERE tabid = ?', [$tabid]);
-        $row = $db->fetchByAssoc($result);
+        $this->retrieveDB();
+        $tabId = getTabid($this->get('moduleName'));
+        $result = $this->getDB()->pquery('SELECT 1 FROM df_popupsettings WHERE tabid = ?', [$tabId]);
 
-        if ($row) {
-            return [
-                'columnslist' => !empty($row['columnslist']) ? explode(',', $row['columnslist']) : [],
-            ];
-        }
-
-        return [
-            'columnslist' => [],
-        ];
+        return $this->getDB()->num_rows($result) > 0;
     }
 
     /**
@@ -103,5 +118,19 @@ class Settings_LayoutEditor_PopupSettings_Model extends Core_DatabaseData_Model
             'REPLACE INTO ' . self::TABLE . ' (tabid, columnslist) VALUES (?, ?)',
             [$tabid, implode(',', (array)$this->get('columnslist'))]
         );
+    }
+
+    public function setColumns(array $columns): self
+    {
+        $this->set('columnslist', $columns);
+
+        return $this;
+    }
+
+    public function setModuleName(string $moduleName): self
+    {
+        $this->set('moduleName', $moduleName);
+
+        return $this;
     }
 }

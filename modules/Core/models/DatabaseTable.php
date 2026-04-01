@@ -304,11 +304,13 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
         }
     }
 
-    public function retrieveDB()
+    public function retrieveDB(): static
     {
         if (empty($this->db)) {
             $this->db = PearDatabase::getInstance();
         }
+
+        return $this;
     }
 
     public function getDB()
