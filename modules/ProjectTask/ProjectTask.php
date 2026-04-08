@@ -70,24 +70,6 @@ class ProjectTask extends CRMEntity
     // Make the field link to detail view from list view (Fieldname)
     var $list_link_field = 'projecttaskname';
 
-    // For Popup listview and UI type support
-    var $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        'Project Task Name' => ['projecttask' => 'projecttaskname'],
-        'Start Date'        => ['projecttask' => 'startdate'],
-        'Type'              => ['projecttask' => 'projecttasktype'],
-        'Assigned To'       => ['crmentity' => 'assigned_user_id'],
-    ];
-
-    var $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        'Project Task Name' => 'projecttaskname',
-        'Start Date'        => 'startdate',
-        'Type'              => 'projecttasktype',
-        'Assigned To'       => 'assigned_user_id'
-    ];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 

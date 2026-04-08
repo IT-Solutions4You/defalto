@@ -86,14 +86,19 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View
         }
 
         $this->listViewHeaders = $listViewModel->getListViewHeaders();
-        $this->listViewHeaders = PriceBooks_Module_Model::retrieveHeaderFieldListPrice($this->listViewHeaders);
+
+        if ($request->get('src_module') === 'Products' || $request->get('src_module') === 'Services') {
+            $this->listViewHeaders = PriceBooks_Module_Model::retrieveHeaderFieldListPrice($this->listViewHeaders);
+        }
 
         if (!$this->listViewEntries) {
             $this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
         }
 
-        foreach ($this->listViewEntries as $recordId => $recordModel) {
-            $recordModel->set('listprice', $recordModel->getProductsListPrice($sourceRecord));
+        if ($request->get('src_module') === 'Products' || $request->get('src_module') === 'Services') {
+            foreach ($this->listViewEntries as $recordId => $recordModel) {
+                $recordModel->set('listprice', $recordModel->getProductsListPrice($sourceRecord));
+            }
         }
 
         $noOfEntries = php7_count($this->listViewEntries);

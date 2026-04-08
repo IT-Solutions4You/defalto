@@ -170,6 +170,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Prefere registro interno',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Prefere registro externo',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Prefere registros mais recentes - Os dados dos registros modificados mais recentemente serão retornados<br>Prefere registros internos - O registro existente será mantido como está<br>Prefere registros externos - Os dados do aplicativo externo serão copiados',
+    'LBL_RELATED_LIST_LAYOUT' => 'Layout da lista relacionada',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Colunas visíveis',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Campo de classificação padrão',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Ordem de classificação',
+    'LBL_ASCENDING' => 'Crescente',
+    'LBL_DESCENDING' => 'Decrescente',
+    'LBL_POPUP_LAYOUT' => 'Layout da janela pop-up',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Colunas visíveis',
 ];
 
 $jsLanguageStrings = [
@@ -234,4 +242,8 @@ $jsLanguageStrings = [
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Atualizado com sucesso considerando campos selecionados na prevenção de duplicidade',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Falha ao considerar os campos selacionado na prevenção de duplicidade',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Checagem de duplicidade desabilitada',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Configurações de layout da lista relacionada salvas com sucesso',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Por favor, selecione pelo menos uma coluna visível',
+    'JS_POPUP_SETTINGS_SAVED' => 'Configurações de layout da janela pop-up salvas com sucesso',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Por favor, selecione pelo menos uma coluna visível',
 ];

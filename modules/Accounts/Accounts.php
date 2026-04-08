@@ -75,17 +75,6 @@ class Accounts extends CRMEntity
     ];
     public $list_link_field = 'accountname';
 
-    public $search_fields = [
-        'Account Name' => ['vtiger_account' => 'accountname'],
-        'Billing City' => ['vtiger_accountbillads' => 'bill_city'],
-        'Assigned To' => ['vtiger_crmentity' => 'assigned_user_id'],
-    ];
-
-    public $search_fields_name = [
-        'Account Name' => 'accountname',
-        'Billing City' => 'bill_city',
-        'Assigned To' => 'assigned_user_id',
-    ];
     // This is the list of vtiger_fields that are required
     public $required_fields = [];
 

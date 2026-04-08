@@ -55,7 +55,7 @@ class Vtiger_Base_Model
      */
     public function getRaw($key)
     {
-        return $this->rawData[$key];
+        return $this->rawData[$key] ?? null;
     }
 
     /**

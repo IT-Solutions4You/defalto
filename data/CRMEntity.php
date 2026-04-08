@@ -2601,10 +2601,6 @@ class CRMEntity extends CRMExtension
             $this->list_fields = array_diff_assoc($this->list_fields, $hiddenFields);
         }
 
-        if (isset($this->search_fields)) {
-            $this->search_fields = array_diff_assoc($this->search_fields, $hiddenFields);
-        }
-
         // To avoid re-initializing everytime.
         $this->__inactive_fields_filtered = true;
     }

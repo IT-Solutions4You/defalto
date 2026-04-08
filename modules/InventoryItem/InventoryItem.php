@@ -49,16 +49,6 @@ class InventoryItem extends CRMEntity
     // Make the field link to detail view
     public $list_link_field = 'item_text';
 
-    // For Popup listview and UI type support
-    public $search_fields = [
-        'Item text'   => ['df_inventoryitem', 'item_text'],
-        'Assigned To' => ['vtiger_crmentity', 'assigned_user_id'],
-    ];
-    public $search_fields_name = [
-        'Item text'   => 'item_text',
-        'Assigned To' => 'assigned_user_id',
-    ];
-
     // For Alphabetical search
     public $def_basicsearch_col = 'item_text';
 

@@ -75,21 +75,6 @@ class Services extends CRMEntity
     // Make the field link to detail view
     public $list_link_field = 'servicename';
 
-    // For Popup listview and UI type support
-    public $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        'Service No' => ['service' => 'service_no'],
-        'Service Name' => ['service' => 'servicename'],
-        'Price' => ['service' => 'unit_price']
-    ];
-    public $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        'Service No' => 'service_no',
-        'Service Name' => 'servicename',
-        'Price' => 'unit_price'
-    ];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     public $sortby_fields = [];
 

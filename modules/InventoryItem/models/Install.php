@@ -41,6 +41,9 @@ class InventoryItem_Install_Model extends Core_Install_Model
         ],
     ];
 
+    public array $relatedListFields = [['item_text', 'productid', 'price', 'quantity', 'unit',]];
+    public array $popupFields = ['item_text', 'productid', 'price', 'quantity', 'unit',];
+
     public function addCustomLinks(): void
     {
         $this->updateHistory();

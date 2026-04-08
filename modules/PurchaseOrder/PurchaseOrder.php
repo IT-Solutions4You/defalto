@@ -93,15 +93,6 @@ class PurchaseOrder extends CRMEntity
     ];
     public $list_link_field = 'subject';
 
-    public $search_fields = [
-        'Order No' => ['purchaseorder' => 'purchaseorder_no'],
-        'Subject'  => ['purchaseorder' => 'subject'],
-    ];
-
-    public $search_fields_name = [
-        'Order No' => 'purchaseorder_no',
-        'Subject'  => 'subject',
-    ];
     // Used when enabling/disabling the mandatory fields for the module.
     // Refers to vtiger_field.fieldname values.
     public $mandatory_fields = ['subject', 'vendor_id', 'createdtime', 'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid'];

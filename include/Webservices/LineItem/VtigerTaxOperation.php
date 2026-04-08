@@ -47,162 +47,57 @@ class VtigerTaxOperation extends VtigerActorOperation
     public function create($elementType, $taxElement)
     {
         $element = $this->restrictFields($taxElement);
-
-        $taxFormula = $taxElement[$taxElement['taxname'] . '_formula'];
-        if (!$taxFormula) {
-            $taxFormula = $taxElement['formula'];
-        }
-        $element['formula'] = $taxFormula;
-
-        $taxName = $this->getNewTaxName();
-        $element['taxname'] = $taxName;
-        $element['deleted'] = 0;
         $element = $this->sanitizeElementForInsert($element);
-        $createdElement = parent::create($elementType, $element);
-        $sql = "alter table vtiger_inventoryproductrel add column $taxName decimal(7,3)";
-        $result = $this->pearDB->pquery($sql, []);
-        if (!is_object($result)) {
-            [$typeId, $id] = vtws_getIdComponents($element['id']);
-            $this->dropRow($id);
-            throw new WebServiceException(
-                WebServiceErrorCode::$DATABASEQUERYERROR,
-                "Database error while adding tax column($taxName) for inventory lineitem table"
-            );
-        }
 
-        return $createdElement;
+        $taxModel = Core_Tax_Model::getInstance();
+        $this->applyElementToTaxModel($taxModel, $element);
+        $taxModel->save();
+
+        return $this->buildTaxElement($taxModel);
     }
 
     public function update($element)
     {
-        $element['taxname'] = $this->getTaxName($element);
-        $element = $this->sanitizeElementForInsert($element);
+        $id = vtws_getIdComponents($element['id'])[1];
+        $taxModel = Core_Tax_Model::getInstanceById((int)$id);
 
-        return parent::update($element);
+        if (!$taxModel) {
+            throw new WebServiceException(WebServiceErrorCode::$RECORDNOTFOUND, "Record not found");
+        }
+
+        $element = $this->sanitizeElementForInsert($element);
+        $this->applyElementToTaxModel($taxModel, $element);
+        $taxModel->save();
+
+        return $this->buildTaxElement($taxModel);
     }
 
     public function delete($id)
     {
         $ids = vtws_getIdComponents($id);
-        $elemId = $ids[1];
+        $elemId = (int)$ids[1];
+        $taxModel = Core_Tax_Model::getInstanceById($elemId);
 
-        $result = null;
-        $query = 'update ' . $this->entityTableName . ' set deleted=1 where ' . $this->meta->getObectIndexColumn() . '=?';
-        $transactionSuccessful = vtws_runQueryAsTransaction($query, [$elemId], $result);
-        if (!$transactionSuccessful) {
-            throw new WebServiceException(
-                WebServiceErrorCode::$DATABASEQUERYERROR,
-                "Database error while performing required operation"
-            );
+        if (!$taxModel) {
+            throw new WebServiceException(WebServiceErrorCode::$RECORDNOTFOUND, "Record not found");
         }
+
+        $taxModel->delete();
 
         return ["status" => "successful"];
     }
 
-    private function dropRow($id)
-    {
-        $sql = 'delete from vtiger_inventorytaxinfo where taxid = ?';
-        $params = [$id];
-        $result = $this->pearDB->pquery($sql, $params);
-    }
-
-    private function getCurrentTaxName()
-    {
-        $sql = 'select taxname from vtiger_inventorytaxinfo order by taxid desc limit 1';
-        $params = [];
-        $result = $this->pearDB->pquery($sql, $params);
-        $it = new SqlResultIterator($this->pearDB, $result);
-        $currentTaxName = null;
-        foreach ($it as $row) {
-            $currentTaxName = $row->taxname;
-        }
-
-        return $currentTaxName;
-    }
-
-    /**
-     * Function get tax name
-     *
-     * @param <Array> $element
-     *
-     * @return <String> taxName
-     */
-    private function getTaxName($element)
-    {
-        if ($element['taxlabel']) {
-            $sql = 'SELECT taxname FROM vtiger_inventorytaxinfo WHERE taxlabel = ?';
-            $params = [$element['taxlabel']];
-            $result = $this->pearDB->pquery($sql, $params);
-            $it = new SqlResultIterator($this->pearDB, $result);
-            $taxName = null;
-            foreach ($it as $row) {
-                $taxName = $row->taxname;
-            }
-
-            return $taxName;
-        }
-
-        return $this->getCurrentTaxName();
-    }
-
-    private function getNewTaxName()
-    {
-        $currentTaxName = $this->getCurrentTaxName();
-
-        if (empty($currentTaxName)) {
-            return 'tax1';
-        }
-
-        $matches = null;
-        if (preg_match('/tax(\d+)/', $currentTaxName, $matches) != 0) {
-            $taxNumber = (int)$matches[1];
-            $taxNumber++;
-
-            return 'tax' . $taxNumber;
-        }
-
-        return 'tax1';
-    }
-
     public function retrieve($id)
     {
-        $element = parent::retrieve($id);
+        $ids = vtws_getIdComponents($id);
+        $elemId = (int)$ids[1];
+        $taxModel = Core_Tax_Model::getInstanceById($elemId);
 
-        //Constructing regions as element fields
-        $regions = Zend_Json::decode(html_entity_decode($element['regions']));
-        if ($regions) {
-            $allRegions = getAllRegions();
-            foreach ($allRegions as $regionId => $regionInfo) {
-                $regionInfo['name'] = strtolower(str_replace(' ', '_', $regionInfo['name']));
-                $allRegions[$regionId] = $regionInfo;
-            }
-
-            foreach ($regions as $regionInfo) {
-                foreach ($regionInfo['list'] as $regionId) {
-                    $element[$allRegions[$regionId]['name']] = $regionInfo['value'];
-                }
-            }
+        if (!$taxModel) {
+            throw new WebServiceException(WebServiceErrorCode::$RECORDNOTFOUND, "Record not found");
         }
-        unset($element['regions']);
 
-        //Constructing compound info as element field
-        $compoundOn = Zend_Json::decode(html_entity_decode($element['compoundon']));
-        if ($compoundOn) {
-            $allTaxes = [];
-            $allItemTaxes = getAllTaxes();
-            foreach ($allItemTaxes as $taxInfo) {
-                $allTaxes[$taxInfo['taxid']] = $taxInfo;
-            }
-
-            $compoundInfo = '';
-            foreach ($compoundOn as $taxId) {
-                $compoundInfo = "$compoundInfo+" . $allTaxes[$taxId]['taxname'];
-            }
-            $element[$element['taxname'] . '_formula'] = ltrim($compoundInfo, '+');
-        }
-        unset($element['compoundon']);
-
-        return $element;
+        return $this->buildTaxElement($taxModel);
     }
 
     /**
@@ -214,57 +109,204 @@ class VtigerTaxOperation extends VtigerActorOperation
      */
     private function sanitizeElementForInsert($element)
     {
-        $compoundOn = $regions = [];
-        $type = 'Fixed';
-        $method = 'Simple';
+        $element['taxlabel'] = $element['taxlabel'] ?? $element['tax_label'] ?? $element['taxname'] ?? '';
+        $element['percentage'] = $element['percentage'] ?? 0;
 
-        $taxFormula = $element[$element['taxname'] . '_formula'];
-        if (!$taxFormula) {
+        $taxName = $element['taxname'] ?? null;
+
+        if (empty($taxName) && !empty($element['id'])) {
+            $taxName = $this->formatTaxName(vtws_getIdComponents($element['id'])[1]);
+        }
+
+        $taxFormula = '';
+
+        if (!empty($taxName) && !empty($element[$taxName . '_formula'])) {
+            $taxFormula = $element[$taxName . '_formula'];
+        } elseif (!empty($element['formula'])) {
             $taxFormula = $element['formula'];
         }
 
-        if ($taxFormula) {
-            $taxFormulaElements = explode('+', $taxFormula);
-            $sql = 'SELECT taxid, method FROM vtiger_inventorytaxinfo WHERE taxname IN (' . generateQuestionMarks($taxFormulaElements) . ')';
-            $params = $taxFormulaElements;
-            $result = $this->pearDB->pquery($sql, $params);
-            $it = new SqlResultIterator($this->pearDB, $result);
-            foreach ($it as $row) {
-                if ($row->method === 'Simple') {
-                    $compoundOn[] = $row->taxid;
-                }
-            }
-        }
+        $compoundOn = $this->resolveCompoundOnFromFormula($taxFormula);
+        $regions = $this->resolveRegionsFromElement($element);
+
+        $method = $element['method'] ?? 'Simple';
+
         if ($compoundOn) {
             $method = 'Compound';
         }
 
-        $regionsList = [];
-        $allRegions = getAllRegions();
-        foreach ($allRegions as $regionId => $regionInfo) {
-            $regionName = strtolower(str_replace(' ', '_', $regionInfo['name']));
-            if (array_key_exists($regionName, $element)) {
-                $regionValue = $element[$regionName];
-                $regionsList[$regionValue][] = $regionId;
-            }
-        }
-
-        foreach ($regionsList as $regionValue => $regions) {
-            $regions[] = ['list' => $regions, 'value' => $regionValue];
-        }
-        if ($regions) {
-            $type = 'Variable';
-        }
-
-        if ($element['method'] === 'Deducted' && !$compoundOn && !$regions) {
+        if (($element['method'] ?? '') === 'Deducted' && !$compoundOn && !$regions) {
             $method = 'Deducted';
         }
 
-        $element['type'] = $type;
         $element['method'] = $method;
-        $element['regions'] = Zend_Json::encode($regions);
         $element['compoundon'] = Zend_Json::encode($compoundOn);
+        $element['regions'] = Zend_Json::encode($regions);
+        $element['deleted'] = (int)($element['deleted'] ?? 0);
+        $element['active'] = $element['deleted'] ? 0 : (int)($element['active'] ?? 1);
 
         return $element;
+    }
+
+    /**
+     * @param Core_Tax_Model $taxModel
+     * @param array $element
+     * @return void
+     */
+    private function applyElementToTaxModel(Core_Tax_Model $taxModel, array $element): void
+    {
+        $taxModel->setLabel($element['taxlabel']);
+        $taxModel->set('percentage', (float)$element['percentage']);
+        $taxModel->set('method', $element['method']);
+        $taxModel->set('compound_on', $element['compoundon']);
+        $taxModel->set('regions', $element['regions']);
+        $taxModel->set('deleted', (int)$element['deleted']);
+        $taxModel->set('active', (int)$element['active']);
+    }
+
+    /**
+     * @param Core_Tax_Model $taxModel
+     * @return array
+     */
+    private function buildTaxElement(Core_Tax_Model $taxModel): array
+    {
+        $taxId = (int)$taxModel->getId();
+        $taxName = $this->formatTaxName($taxId);
+        $element = [
+            'id' => vtws_getId($this->meta->getEntityId(), $taxId),
+            'taxid' => $taxId,
+            'taxname' => $taxName,
+            'taxlabel' => $taxModel->getLabel(),
+            'percentage' => $taxModel->getPercentage(),
+            'method' => $taxModel->getTaxMethod(),
+            'deleted' => $taxModel->isDeleted() ? 1 : 0,
+            'active' => $taxModel->isActive() ? 1 : 0,
+        ];
+
+        $regions = Zend_Json::decode(html_entity_decode((string)$taxModel->get('regions')));
+
+        if ($regions) {
+            $regionMap = $this->getRegionNameMap();
+
+            foreach ($regions as $regionInfo) {
+                if (!isset($regionInfo['region_id'])) {
+                    continue;
+                }
+
+                $regionId = (int)$regionInfo['region_id'];
+
+                if (isset($regionMap[$regionId])) {
+                    $element[$regionMap[$regionId]] = $regionInfo['value'];
+                }
+            }
+        }
+
+        $compoundOn = Zend_Json::decode(html_entity_decode((string)$taxModel->get('compound_on')));
+
+        if ($compoundOn) {
+            $compoundInfo = [];
+
+            foreach ($compoundOn as $taxId) {
+                $compoundInfo[] = $this->formatTaxName((int)$taxId);
+            }
+
+            $element[$taxName . '_formula'] = implode('+', $compoundInfo);
+        }
+
+        return $element;
+    }
+
+    /**
+     * @param string $taxFormula
+     * @return array
+     * @throws Exception
+     */
+    private function resolveCompoundOnFromFormula(string $taxFormula): array
+    {
+        if (empty($taxFormula)) {
+            return [];
+        }
+
+        $tokens = array_filter(array_map('trim', explode('+', $taxFormula)));
+
+        if (empty($tokens)) {
+            return [];
+        }
+
+        $taxes = Core_Tax_Model::getAllTaxes();
+        $tokenMap = [];
+
+        foreach ($taxes as $tax) {
+            if (!$tax->isActive()) {
+                continue;
+            }
+
+            $taxId = (int)$tax->getId();
+            $tokenMap[$this->formatTaxName($taxId)] = $tax;
+            $tokenMap[$tax->getLabel()] = $tax;
+        }
+
+        $compoundOn = [];
+
+        foreach ($tokens as $token) {
+            if (!isset($tokenMap[$token])) {
+                continue;
+            }
+
+            $tax = $tokenMap[$token];
+
+            if ($tax->getTaxMethod() === 'Simple') {
+                $compoundOn[] = (int)$tax->getId();
+            }
+        }
+
+        return $compoundOn;
+    }
+
+    /**
+     * @param array $element
+     * @return array
+     */
+    private function resolveRegionsFromElement(array $element): array
+    {
+        $regions = [];
+        $regionMap = $this->getRegionNameMap();
+
+        foreach ($regionMap as $regionId => $regionKey) {
+            if (array_key_exists($regionKey, $element)) {
+                $regions[] = [
+                    'region_id' => $regionId,
+                    'value' => $element[$regionKey],
+                ];
+            }
+        }
+
+        return $regions;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    private function getRegionNameMap(): array
+    {
+        $regions = Core_TaxRegion_Model::getAllRegions();
+        $map = [];
+
+        foreach ($regions as $region) {
+            $name = strtolower(str_replace(' ', '_', $region->getName()));
+            $map[$region->getId()] = $name;
+        }
+
+        return $map;
+    }
+
+    /**
+     * @param int $taxId
+     * @return string
+     */
+    private function formatTaxName(int $taxId): string
+    {
+        return 'tax' . $taxId;
     }
 }

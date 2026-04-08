@@ -65,23 +65,6 @@ class Assets extends CRMEntity
     // Make the field link to detail view
     var $list_link_field = 'assetname';
 
-    // For Popup listview and UI type support
-    var $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        'Asset No'      => ['assets' => 'asset_no'],
-        'Asset Name'    => ['assets' => 'assetname'],
-        'Customer Name' => ['account' => 'account'],
-        'Product Name'  => ['products' => 'product']
-    ];
-    var $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        'Asset No'      => 'asset_no',
-        'Asset Name'    => 'assetname',
-        'Customer Name' => 'account',
-        'Product Name'  => 'product'
-    ];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 

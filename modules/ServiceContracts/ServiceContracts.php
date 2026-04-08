@@ -66,25 +66,6 @@ class ServiceContracts extends CRMEntity
     // Make the field link to detail view
     var $list_link_field = 'subject';
 
-    // For Popup listview and UI type support
-    var $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        'Subject' => ['servicecontracts', 'subject'],
-        'Contract No' => ['servicecontracts', 'contract_no'],
-        'Assigned To' => ['vtiger_crmentity', 'assigned_user_id'],
-        'Used Units' => ['servicecontracts', 'used_units'],
-        'Total Units' => ['servicecontracts', 'total_units']
-    ];
-    var $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        'Subject' => 'subject',
-        'Contract No' => 'contract_no',
-        'Assigned To' => 'assigned_user_id',
-        'Used Units' => 'used_units',
-        'Total Units' => 'total_units'
-    ];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 

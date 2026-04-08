@@ -17,6 +17,9 @@ class Invoice_Install_Model extends Core_Install_Model
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [['invoice_no', 'subject', 'account_id', 'invoicestatus', 'duedate', 'grand_total',], 'invoicedate', 'DESC'];
+    public array $popupFields = ['invoice_no', 'subject', 'account_id', 'invoicestatus', 'duedate', 'grand_total',];
+
     /**
      * @throws Exception
      */

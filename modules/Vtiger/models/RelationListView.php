@@ -227,10 +227,6 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
         $relationModuleName = $relationModule->get('name');
         $relatedColumnFields = $relationModule->getConfigureRelatedListFields();
 
-        if (php7_count($relatedColumnFields) <= 0) {
-            $relatedColumnFields = $relationModule->getRelatedListFields();
-        }
-
         $query = $this->getRelationQuery();
 
         if ($this->get('whereCondition') && is_array($this->get('whereCondition'))) {
@@ -259,6 +255,21 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
 
         $orderBy = $this->getForSql('orderby');
         $sortOrder = $this->getForSql('sortorder');
+
+        if (empty($orderBy) && $relationModuleName !== 'Users') {
+            $relatedListSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+            $relatedListSettingsModel->set('moduleName', $relationModuleName);
+            $settings = $relatedListSettingsModel->getSettings();
+
+            if (!empty($settings['sortfield'])) {
+                $sortFieldModel = $relationModule->getField($settings['sortfield']);
+
+                if ($sortFieldModel) {
+                    $orderBy = $sortFieldModel->get('column');
+                    $sortOrder = $settings['sortorder'] ?: 'ASC';
+                }
+            }
+        }
 
         if ($orderBy) {
             $orderByFieldModuleModel = $relationModule->getFieldByColumn($orderBy);
@@ -350,27 +361,66 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
         $headerFields = [];
         $nameFields = $relatedModuleModel->getNameFields();
 
-        foreach ($nameFields as $fieldName) {
-            if (!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
-                $headerFields[$fieldName] = $relatedModuleModel->getFieldByColumn($fieldName);
-            }
-        }
+        $settingsFields = $relatedModuleModel->getRelatedListSettingsFields();
 
-        $summaryFieldsList = $relatedModuleModel->getHeaderAndSummaryViewFieldsList();
-
-        if (php7_count($summaryFieldsList) > 0) {
-            foreach ($summaryFieldsList as $fieldName => $fieldModel) {
-                $headerFields[$fieldName] = $fieldModel;
+        if (empty($settingsFields)) {
+            // No settings saved – fall back to name fields only
+            foreach ($nameFields as $fieldName) {
+                if (!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
+                    $headerFields[$fieldName] = $relatedModuleModel->getFieldByColumn($fieldName);
+                }
             }
         } else {
-            $headerFieldNames = $relatedModuleModel->getRelatedListFields();
+            // Determine whether at least one name field appears in the settings list
+            $settingsContainsNameField = false;
 
-            foreach ($headerFieldNames as $fieldName) {
-                $headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
+            foreach ($nameFields as $fieldName) {
+                if (isset($settingsFields[$fieldName])) {
+                    $settingsContainsNameField = true;
+                    break;
+                }
+            }
+
+            if ($settingsContainsNameField) {
+                // Settings already include a name field – use settings fields as-is
+                $headerFields = $settingsFields;
+            } else {
+                // No name field in settings – prepend name fields, then append settings fields
+                foreach ($nameFields as $fieldName) {
+                    if (!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
+                        $headerFields[$fieldName] = $relatedModuleModel->getFieldByColumn($fieldName);
+                    }
+                }
+
+                foreach ($settingsFields as $fieldName => $fieldModel) {
+                    $headerFields[$fieldName] = $fieldModel;
+                }
             }
         }
 
-        return $headerFields;
+        return $this->filterParentModuleReferenceFields($headerFields);
+    }
+
+    /**
+     * Remove uitype=10 reference fields that point back to the parent module —
+     * showing e.g. "Organization Name → Accounts" inside the Accounts detail view
+     * is redundant.
+     *
+     * @param array<string, Vtiger_Field_Model> $headerFields
+     *
+     * @return array<string, Vtiger_Field_Model>
+     */
+    private function filterParentModuleReferenceFields(array $headerFields): array
+    {
+        $parentModuleName = $this->getParentRecordModel()->getModule()->get('name');
+
+        return array_filter($headerFields, function ($fieldModel) use ($parentModuleName) {
+            if (!$fieldModel || $fieldModel->get('uitype') != 10) {
+                return true;
+            }
+
+            return !in_array($parentModuleName, $fieldModel->getReferenceList());
+        });
     }
 
     /**

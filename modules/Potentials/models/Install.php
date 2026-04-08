@@ -54,6 +54,13 @@ class Potentials_Install_Model extends Core_Install_Model
         ],
     ];
 
+    public array $relatedListFields = [
+        ['potentialname', 'related_to', 'contact_id', 'sales_stage', 'nextstep', 'probability', 'closingdate', 'amount', 'assigned_user_id',],
+        'closingdate',
+        'DESC'
+    ];
+    public array $popupFields = ['potentialname', 'related_to', 'contact_id', 'sales_stage', 'closingdate', 'amount', 'assigned_user_id',];
+
     /**
      * @throws Exception
      */

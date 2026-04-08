@@ -159,6 +159,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Prefiero registro interno',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Prefiero registro externo',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Prefiero último disco - datos de registro Más recientemente modificados serán retenidos <br> prefieren registro interno - existente registro será retenido, ya que es <br> prefieren registro externo - Los datos de la aplicación externa será copiado',
+    'LBL_RELATED_LIST_LAYOUT' => 'Diseño de lista relacionada',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Columnas visibles',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Campo de ordenación predeterminado',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Orden de clasificación',
+    'LBL_ASCENDING' => 'Ascendente',
+    'LBL_DESCENDING' => 'Descendente',
+    'LBL_POPUP_LAYOUT' => 'Diseño de ventana emergente',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Columnas visibles',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Mostrar bloque abierto',
@@ -222,4 +230,8 @@ Está seguro de que desea eliminar este campo?',
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Se ha actualizado correctamente a considerar los campos seleccionados en la prevención de duplicados',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'No tuvo en cuenta los campos seleccionados en la prevención de duplicados',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'comprobación de duplicados está desactivada',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Configuración del diseño de lista relacionada guardada correctamente',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Por favor, seleccione al menos una columna visible',
+    'JS_POPUP_SETTINGS_SAVED' => 'Configuración del diseño de ventana emergente guardada correctamente',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Por favor, seleccione al menos una columna visible',
 ];

@@ -32,6 +32,9 @@ class ITS4YouEmails_Install_Model extends Core_Install_Model
         ['ITS4YouEmails', 'HEADERSCRIPT', 'ITS4YouEmails_MassEdit_Js', 'layouts/$LAYOUT$/modules/ITS4YouEmails/resources/MassEdit.js'],
     );
 
+    public array $relatedListFields = [['subject', 'createdtime', 'email_flag', 'creator_user_id', 'related_to', 'account_id', 'contact_id', 'to_email',], 'createdtime', 'DESC'];
+    public array $popupFields = ['subject', 'createdtime', 'email_flag', 'creator_user_id', 'account_id', 'contact_id', 'related_to', 'to_email',];
+
     /**
      * @return void
      */

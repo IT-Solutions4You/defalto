@@ -575,6 +575,9 @@ class HelpDesk_Install_Model extends Core_Install_Model
         ],
     ];
 
+    public array $relatedListFields = [['ticket_no', 'ticket_title', 'createdtime', 'parent_id', 'contact_id', 'ticketstatus', 'assigned_user_id',], 'modifiedtime', 'DESC'];
+    public array $popupFields = ['ticket_no', 'ticket_title', 'createdtime', 'parent_id', 'contact_id', 'ticketstatus', 'assigned_user_id',];
+
     /**
      * @throws Exception
      */

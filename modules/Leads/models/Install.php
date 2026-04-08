@@ -19,6 +19,9 @@ class Leads_Install_Model extends Core_Install_Model {
         self::APPOINTMENTS_RELATED_LIST,
     ];
 
+    public array $relatedListFields = [['firstname', 'lastname', 'leadstatus', 'phone', 'email', 'leadsource', 'company',]];
+    public array $popupFields = ['firstname', 'lastname', 'leadstatus', 'phone', 'email', 'leadsource', 'company',];
+
     /**
      * @return void
      * @throws Exception

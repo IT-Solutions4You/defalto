@@ -393,7 +393,6 @@ $languageStrings = [
     'LBL_CREATE_VIEW'                         => 'انشاء معاينة جديدة',
     'LBL_BASIC_DETAILS'                       => 'التفاصيل الاساسية',
     'LBL_CHOOSE_COLUMNS'                      => 'اختيار الاعمدة و الترتيب',
-    'LBL_MAX_NUMBER_FILTER_COLUMNS'           => 'الاقصى ١٥',
     'LBL_FILTER_ON_DATE'                      => 'لائحة حسب التسجيل',
     'LBL_CHOOSE_FILTER_CONDITIONS'            => 'اختيار شروط اللائحة',
     'LBL_ADD_CONDITION'                       => 'اضافة شروط',

@@ -88,6 +88,18 @@ class Vtiger_Install_Model extends Core_Install_Model
         'modules/FieldFormulas/vtigerwebservices.js',
         'modules/FieldFormulas/functional.js',
         'modules/Vtiger/helpers/Logger.php',
+        'layouts/d1/modules/Settings/Vtiger/resources/Tax.js',
+        'layouts/d1/modules/Settings/Vtiger/ChargesAndItsTaxes.tpl',
+        'layouts/d1/modules/Settings/Vtiger/EditCharge.tpl',
+        'layouts/d1/modules/Settings/Vtiger/EditRegion.tpl',
+        'layouts/d1/modules/Settings/Vtiger/EditTax.tpl',
+        'layouts/d1/modules/Settings/Vtiger/TaxIndex.tpl',
+        'layouts/d1/modules/Settings/Vtiger/TaxRegions.tpl',
+        'layouts/d1/modules//Vtiger/uitypes/ProductTax.tpl',
+        'modules/Inventory/models/Charges.php',
+        'modules/Inventory/models/TaxRecord.php',
+        'modules/Inventory/models/TaxRegion.php',
+        'modules/Vtiger/uitypes/ProductTax.php',
     ];
 
     public static array $createTablesClasses = [
@@ -107,6 +119,8 @@ class Vtiger_Install_Model extends Core_Install_Model
         'Settings_Vtiger_Menu_Model',
         'Core_Modifiers_Model',
         'CustomView_Record_Model',
+        'Settings_LayoutEditor_RelatedListSettings_Model',
+        'Settings_LayoutEditor_PopupSettings_Model',
     ];
 
     public array $registerFieldTypes = [

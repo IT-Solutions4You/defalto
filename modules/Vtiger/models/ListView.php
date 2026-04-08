@@ -598,7 +598,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
 
         $queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
 
-        $listFields = $moduleModel->getPopupViewFieldsList();
+        $listFields = $moduleModel->getPopupFields();
 
         $listFields[] = 'id';
         $queryGenerator->setFields($listFields);
@@ -679,7 +679,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
         $moduleModel = $this->get('module');
         $queryGenerator = $this->get('query_generator');
 
-        $listFields = $moduleModel->getPopupViewFieldsList();
+        $listFields = $moduleModel->getPopupFields();
 
         $listFields[] = 'id';
         $listFields = array_merge($listFields, $fieldsList);

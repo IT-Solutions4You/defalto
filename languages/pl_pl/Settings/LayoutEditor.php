@@ -158,6 +158,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Wolę rekord wewnętrznego',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Wolę rekord zewnętrznego',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Wolę najnowszą płytę - Ostatnio zmodyfikowane rejestrować dane zostaną zachowane Największa wolą wewnętrzny rekord - Istniejący rekord zostanie zachowana, ponieważ jest Największa wolą rekord zewnętrznego - Dane z zewnętrznej aplikacji zostaną skopiowane',
+    'LBL_RELATED_LIST_LAYOUT' => 'Układ powiązanej listy',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Widoczne kolumny',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Domyślne pole sortowania',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Kolejność sortowania',
+    'LBL_ASCENDING' => 'Rosnąco',
+    'LBL_DESCENDING' => 'Malejąco',
+    'LBL_POPUP_LAYOUT' => 'Układ okna podręcznego',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Widoczne kolumny',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Blok Pokaż włączony',
@@ -221,4 +229,8 @@ Jesteś pewien że chcesz usunąć to pole?',
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Pomyślnie zaktualizowany do rozważenia wybranych pól w zapobieganiu duplikatów',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Nie wzięła pod uwagę wybrane pola w zapobieganiu duplikatów',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Duplikat wyboru jest wyłączony',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Ustawienia układu powiązanej listy zostały pomyślnie zapisane',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Proszę wybrać przynajmniej jedną widoczną kolumnę',
+    'JS_POPUP_SETTINGS_SAVED' => 'Ustawienia układu okna podręcznego zostały pomyślnie zapisane',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Proszę wybrać przynajmniej jedną widoczną kolumnę',
 ];

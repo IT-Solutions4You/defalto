@@ -703,9 +703,15 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
      */
     public function getPopupFields()
     {
-        $entityInstance = CRMEntity::getInstance($this->getName());
+        $popupSettingsModel = Settings_LayoutEditor_PopupSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $this->getName());
+        $settings = $popupSettingsModel->getSettings();
 
-        return $entityInstance->search_fields_name;
+        if (empty($settings['columnslist'])) {
+            return $this->getNameFields();
+        }
+
+        return $settings['columnslist'];
     }
 
     /**
@@ -714,41 +720,95 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
      */
     public function getRelatedListFields()
     {
-        $relatedListFields = [];
-        $entityInstance = CRMEntity::getInstance($this->getName());
-        if (isset($entityInstance->list_fields_name)) {
-            $list_fields_name = $entityInstance->list_fields_name;
-            $list_fields = $entityInstance->list_fields;
-            foreach ($list_fields as $key => $fieldInfo) {
-                foreach ($fieldInfo as $columnName) {
-                    if (array_key_exists($key, $list_fields_name)) {
-                        $relatedListFields[$columnName] = $list_fields_name[$key];
-                    }
-                }
+        $popupSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $this->getName());
+        $settings = $popupSettingsModel->getSettings();
+
+        if (empty($settings['columnslist'])) {
+            return $this->getNameFields();
+        }
+
+        return $settings['columnslist'];
+    }
+
+    /**
+     * Get field models based on the Related List Settings saved in df_relatedlistsettings.
+     * Returns an empty array when no settings have been configured for this module yet.
+     *
+     * @return array<string, Vtiger_Field_Model>  fieldName => fieldModel, in saved order
+     */
+    public function getRelatedListSettingsFields(): array
+    {
+        $popupSettingsModel = Settings_LayoutEditor_RelatedListSettings_Model::getInstance();
+        $popupSettingsModel->set('moduleName', $this->getName());
+        $settings = $popupSettingsModel->getSettings();
+
+        if (empty($settings['columnslist'])) {
+            return [];
+        }
+
+        $fields = [];
+
+        foreach ($settings['columnslist'] as $fieldName) {
+            $fieldModel = $this->getField($fieldName);
+
+            if ($fieldModel) {
+                $fields[$fieldName] = $fieldModel;
             }
         }
 
-        return $relatedListFields;
+        return $fields;
     }
 
     public function getConfigureRelatedListFields()
     {
-        $showRelatedFieldModel = $this->getHeaderAndSummaryViewFieldsList();
+        $nameFields = $this->getNameFields();
+        $settingsFields = $this->getRelatedListSettingsFields();
         $relatedListFields = [];
-        if (php7_count($showRelatedFieldModel) > 0) {
-            foreach ($showRelatedFieldModel as $key => $field) {
-                $relatedListFields[$field->get('column')] = $field->get('name');
-            }
-        }
 
-        if (php7_count($relatedListFields) > 0) {
-            $nameFields = $this->getNameFields();
+        if (empty($settingsFields)) {
+            // No settings saved – fall back to name fields only
             foreach ($nameFields as $fieldName) {
-                if (!isset($relatedListFields[$fieldName]) || !$relatedListFields[$fieldName]) {
-                    $fieldModel = $this->getFieldByColumn($fieldName);
+                $fieldModel = $this->getFieldByColumn($fieldName);
+
+                if ($fieldModel) {
                     $relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
                 }
             }
+
+            return $relatedListFields;
+        }
+
+        // Determine whether at least one name field appears in the settings list
+        $settingsContainsNameField = false;
+
+        foreach ($nameFields as $fieldName) {
+            if (isset($settingsFields[$fieldName])) {
+                $settingsContainsNameField = true;
+                break;
+            }
+        }
+
+        if ($settingsContainsNameField) {
+            // Settings already include a name field – use settings fields as-is
+            foreach ($settingsFields as $fieldModel) {
+                $relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
+            }
+
+            return $relatedListFields;
+        }
+
+        // No name field in settings – prepend name fields, then append settings fields
+        foreach ($nameFields as $fieldName) {
+            $fieldModel = $this->getFieldByColumn($fieldName);
+
+            if ($fieldModel && (!isset($relatedListFields[$fieldModel->get('column')]) || !$relatedListFields[$fieldModel->get('column')])) {
+                $relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
+            }
+        }
+
+        foreach ($settingsFields as $fieldModel) {
+            $relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
         }
 
         return $relatedListFields;
@@ -1862,22 +1922,6 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 
         //To make the first field as the name field
         return $nameFields[0];
-    }
-
-    /**
-     * Function to get popup view fields
-     */
-    public function getPopupViewFieldsList()
-    {
-        $summaryFieldsList = $this->getHeaderAndSummaryViewFieldsList();
-
-        if (php7_count($summaryFieldsList) > 0) {
-            $popupFields = array_keys($summaryFieldsList);
-        } else {
-            $popupFields = array_values($this->getRelatedListFields());
-        }
-
-        return $popupFields;
     }
 
     /**

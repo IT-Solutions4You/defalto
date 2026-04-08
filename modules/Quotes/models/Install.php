@@ -65,6 +65,24 @@ class Quotes_Install_Model extends Core_Install_Model
         'terms_conditions',
     ];
 
+    public array $relatedListFields = [
+        [
+            'quote_no',
+            'subject',
+            'account_id',
+            'contact_id',
+            'quotestage',
+            'potential_id',
+            'quotedate',
+            'validtill',
+            'grand_total',
+            'assigned_user_id',
+        ],
+        'quotedate',
+        'DESC'
+    ];
+    public array $popupFields = ['quote_no', 'subject', 'account_id', 'contact_id', 'quotestage', 'quotedate', 'grand_total', 'assigned_user_id',];
+
     /**
      * @return void
      * @throws Exception

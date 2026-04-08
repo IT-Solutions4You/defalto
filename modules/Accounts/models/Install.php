@@ -20,7 +20,7 @@ class Accounts_Install_Model extends Core_Install_Model
         ['Accounts', 'Products', 'Products', 'select', 'get_related_list', '',],
         ['Accounts', 'Services', 'Services', 'select', 'get_related_list', '',],
         ['Accounts', 'ServiceContracts', 'Service Contracts', ['ADD'], 'get_dependents_list', 'account_id'],
-        ['Accounts', 'Project', 'Projects', 'ADD,SELECT', 'get_related_list', 'account_id'],
+        ['Accounts', 'Project', 'Projects', 'ADD,SELECT', 'get_dependents_list', 'account_id'],
         ['Accounts', 'Campaigns', 'Campaigns', 'select', 'get_related_list', ],
         ['Accounts', 'Assets', 'Assets', 'add', 'get_dependents_list', 'account'],
         self::DOCUMENTS_RELATED_LIST,
@@ -82,6 +82,9 @@ class Accounts_Install_Model extends Core_Install_Model
         'Potential client',
         'Other',
     ];
+
+    public array $relatedListFields = [['accountname', 'account_no', 'accounttype', 'phone', 'email1', 'currency_id',]];
+    public array $popupFields = ['account_no', 'accountname', 'phone', 'email1', 'reg_no', 'tickersymbol', 'vat_id', 'currency_id', 'assigned_user_id',];
 
     /**
      * @throws Exception

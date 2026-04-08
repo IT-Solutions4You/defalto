@@ -169,6 +169,14 @@ $languageStrings = [
     'LBL_PREFER_INTERNAL_RECORD'        => 'Prefer internal record',
     'LBL_PREFER_EXTERNAL_RECORD'        => 'Prefer external record',
     'LBL_SYNC_TOOLTIP_MESSAGE'          => 'Prefer latest record - Most recently modified record data will be retained<br>Prefer internal record - Existing record will be retained as it is<br>Prefer external record - Data from the external application will be copied',
+    'LBL_RELATED_LIST_LAYOUT' => 'Related List Layout',
+    'LBL_RELATED_LIST_VISIBLE_COLUMNS' => 'Visible Columns',
+    'LBL_RELATED_LIST_SORT_FIELD' => 'Default Sort Field',
+    'LBL_RELATED_LIST_SORT_ORDER' => 'Sort Order',
+    'LBL_ASCENDING' => 'Ascending',
+    'LBL_DESCENDING' => 'Descending',
+    'LBL_POPUP_LAYOUT' => 'Popup Layout',
+    'LBL_POPUP_VISIBLE_COLUMNS' => 'Visible Columns',
 ];
 $jsLanguageStrings = [
     'JS_BLOCK_VISIBILITY_SHOW'                     => 'Block show enabled',
@@ -232,4 +240,8 @@ $jsLanguageStrings = [
     'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Successfully updated to consider selected fields in duplicates prevention',
     'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Failed to consider selected fields in duplicates prevention',
     'JS_DUPLICATE_CHECK_DISABLED'           => 'Duplicate check is disabled',
+    'JS_RELATED_LIST_SETTINGS_SAVED' => 'Related List Layout settings saved successfully',
+    'JS_RELATED_LIST_SELECT_AT_LEAST_ONE_COLUMN' => 'Please select at least one visible column',
+    'JS_POPUP_SETTINGS_SAVED' => 'Popup Layout settings saved successfully',
+    'JS_POPUP_SELECT_AT_LEAST_ONE_COLUMN' => 'Please select at least one visible column',
 ];

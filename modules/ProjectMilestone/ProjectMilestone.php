@@ -65,21 +65,6 @@ class ProjectMilestone extends CRMEntity
     // Make the field link to detail view from list view (Fieldname)
     var $list_link_field = 'projectmilestonename';
 
-    // For Popup listview and UI type support
-    var $search_fields = [
-        /* Format: Field Label => Array(tablename, columnname) */
-        // tablename should not have prefix 'vtiger_'
-        'Project Milestone Name' => ['projectmilestone', 'projectmilestonename'],
-        'Milestone Date'         => ['projectmilestone', 'projectmilestonedate'],
-        'Type'                   => ['projectmilestone', 'projectmilestonetype'],
-    ];
-    var $search_fields_name = [
-        /* Format: Field Label => fieldname */
-        'Project Milestone Namee' => 'projectmilestonename',
-        'Milestone Date'          => 'projectmilestonedate',
-        'Type'                    => 'projectmilestonetype',
-    ];
-
     // Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
     var $sortby_fields = [];
 
