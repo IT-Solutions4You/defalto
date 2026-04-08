@@ -26,12 +26,16 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $modules = array_merge(self::getApiModules(), Vtiger_Module_Model::getAll());
         $extensions = [];
 
-        foreach ($modules as $module) {
-            if(in_array($module->getName(), self::$ignoredModules)) {
+        foreach ($modules as $moduleName => $module) {
+            if(in_array($moduleName, self::$ignoredModules)) {
                 continue;
             }
 
-            $extensions[$module->getLabel()] = self::getInstance($module);
+            if (is_numeric($moduleName)) {
+                $moduleName = $module->getName();
+            }
+
+            $extensions[$moduleName] = self::getInstance($module);
         }
 
         ksort($extensions);
