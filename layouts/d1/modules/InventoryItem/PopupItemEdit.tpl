@@ -179,6 +179,12 @@
                 <div class="d-flex flex-row py-2">
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.discount.1}
                     {assign var=FIELD_NAME value=$FIELD->get('name')}
+                    {assign var=DISCOUNT_VALUE value=''}
+                    {if isset($DATA.discount_type) && ($DATA.discount_type eq 'Direct' || $DATA.discount_type eq 'Amount') && isset($DATA.discount_amount)}
+                        {assign var=DISCOUNT_VALUE value=$DATA.discount_amount}
+                    {elseif isset($DATA[$FIELD_NAME])}
+                        {assign var=DISCOUNT_VALUE value=$DATA[$FIELD_NAME]}
+                    {/if}
                     <div class="col-lg-2">
                         <div class="py-2 h-100 paddingLeft5px">
                             <div class="fieldlabel text-truncate medium">
@@ -190,9 +196,9 @@
                         <select name="discount_type" id="discount_type" class="inputElement select2 form-select discount_type">
                             <option value="">{vtranslate('--None--', 'InventoryItem')}</option>
                             <option value="Percentage"
-                                    {if isset($DATA.discount_type) && $DATA.discount_type eq 'Percent'}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
+                                    {if isset($DATA.discount_type) && ($DATA.discount_type eq 'Percentage' || $DATA.discount_type eq 'Percent')}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
                             <option value="Direct"
-                                    {if isset($DATA.discount_type) && $DATA.discount_type eq 'Amount'}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
+                                    {if isset($DATA.discount_type) && ($DATA.discount_type eq 'Direct' || $DATA.discount_type eq 'Amount')}selected{/if}>{vtranslate('Direct', 'InventoryItem')}</option>
                             <option value="Discount per Unit"
                                     {if isset($DATA.discount_type) && $DATA.discount_type eq 'Discount per Unit'}selected{/if}>{vtranslate('Discount per Unit', 'InventoryItem')}</option>
                         </select>
@@ -201,9 +207,9 @@
                     </div>
                     <div class="col-lg-3 pe-2 pe-md-0">
                         <div class="input-group">
-                            <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{if isset($DATA[$FIELD_NAME])}{$DATA[$FIELD_NAME]}{/if}"
+                            <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DISCOUNT_VALUE}"
                                    class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot"/>
-                            <span class="input-group-addon input-group-text discountSymbol">{$CURRENCY_SYMBOL}</span>
+                            <span class="input-group-addon input-group-text discountSymbol">{if isset($DATA.discount_type) && ($DATA.discount_type eq 'Percentage' || $DATA.discount_type eq 'Percent')}%{else}{$CURRENCY_SYMBOL}{/if}</span>
                         </div>
                         <input type="hidden" name="currency_symbol" id="currency_symbol" value="{$CURRENCY_SYMBOL}"/>
                     </div>

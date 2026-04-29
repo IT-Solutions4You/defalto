@@ -20,6 +20,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     initializeVariables: function () {
         this.lineItemsHolder = jQuery('#lineItemTab');
+        this.itemsBlockHolder = this.lineItemsHolder.closest('.block');
         this.numOfLineItems = this.lineItemsHolder.find('.' + this.lineItemDetectingClass).length;
     },
 
@@ -251,6 +252,8 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     recalculateTotals: function () {
         const self = this;
         let grand_total = 0;
+        let subtotal = 0;
+        let summary_discount = 0;
         jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
             let span = jQuery(this);
 
@@ -270,10 +273,20 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 grand_total = columnTotal;
             }
 
+            if (targetClass === 'subtotal') {
+                subtotal = columnTotal;
+            }
+
             span.text(app.convertCurrencyToUserFormat(columnTotal));
         });
 
+        jQuery('tbody input.discount_amount, tbody input.overall_discount_amount', this.lineItemsHolder).each(function () {
+            summary_discount += parseFloat(jQuery(this).val()) || 0;
+        });
+
+        jQuery('td.subTotalDisplay').text(app.convertCurrencyToUserFormat(subtotal));
         jQuery('td.priceTotalDisplay').text(app.convertCurrencyToUserFormat(grand_total));
+        jQuery('td.summaryDiscountDisplay').text(app.convertCurrencyToUserFormat(summary_discount));
         let adjustment = parseFloat(jQuery('#adjustment').val());
 
         if (!isNaN(adjustment)) {
@@ -285,19 +298,20 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     registerOverallDiscountActions: function () {
         const self = this;
+        const itemsBlockHolder = this.itemsBlockHolder;
 
-        this.lineItemsHolder.on('click', '.editOverallDiscount', function () {
+        itemsBlockHolder.on('click', '.editOverallDiscount', function () {
             jQuery('#overallDiscountSettingDiv').show();
             jQuery('#overall_discount_percent').focus();
         });
 
-        this.lineItemsHolder.on('click', '.closeOverallDiscountDiv', function () {
+        itemsBlockHolder.on('click', '.closeOverallDiscountDiv', function () {
             jQuery('#overall_discount_percent').val(jQuery('#original_overall_discount_percent').val());
             jQuery('#overall_discount_percent').trigger('change');
             jQuery('#overallDiscountSettingDiv').hide();
         });
 
-        this.lineItemsHolder.on('change', '#overall_discount_percent', function () {
+        itemsBlockHolder.on('change', '#overall_discount_percent', function () {
             let price = 0;
             jQuery('tbody input.price_after_discount', self.lineItemsHolder).each(function () {
                 price += parseFloat(jQuery(this).val()) || 0;
@@ -306,7 +320,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('#overall_discount_amount').val(overall_discount_amount.toFixed(2));
         });
 
-        this.lineItemsHolder.on('click', '.saveOverallDiscount', function () {
+        itemsBlockHolder.on('click', '.saveOverallDiscount', function () {
             const overallDiscountPercent = parseFloat(jQuery('#overall_discount_percent').val());
             const originalOverallDiscountPercent = parseFloat(jQuery('#original_overall_discount_percent').val());
 
@@ -332,20 +346,21 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     registerAdjustmentActions: function () {
         const self = this;
+        const itemsBlockHolder = this.itemsBlockHolder;
 
-        this.lineItemsHolder.on('click', '.editAdjustment', function () {
+        itemsBlockHolder.on('click', '.editAdjustment', function () {
             jQuery('#adjustmentSettingDiv').show();
             jQuery('#adjustment').focus();
             jQuery('#adjustment').trigger('change');
         });
 
-        this.lineItemsHolder.on('click', '.closeAdjustmentDiv', function () {
+        itemsBlockHolder.on('click', '.closeAdjustmentDiv', function () {
             jQuery('#adjustment').val(jQuery('#original_adjustment').val());
             jQuery('#adjustment').trigger('change');
             jQuery('#adjustmentSettingDiv').hide();
         });
 
-        this.lineItemsHolder.on('change keyup', '#adjustment', function () {
+        itemsBlockHolder.on('change keyup', '#adjustment', function () {
             let price = 0;
             jQuery('tbody input.price_total', self.lineItemsHolder).each(function () {
                 price += parseFloat(jQuery(this).val()) || 0; // Parse value, default to 0
@@ -359,7 +374,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('#total_with_adjustment').val((price + adjustment).toFixed(2));
         });
 
-        this.lineItemsHolder.on('click', '.saveAdjustment', function () {
+        itemsBlockHolder.on('click', '.saveAdjustment', function () {
             let adjustment = parseFloat(jQuery('#adjustment').val());
             const originalAdjustment = parseFloat(jQuery('#original_adjustment').val());
 

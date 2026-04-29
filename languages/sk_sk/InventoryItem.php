@@ -28,6 +28,7 @@ $languageStrings = [
     'Tax Amount' => 'Daň',
     'Total' => 'Celkom',
     'Purchase Cost' => 'Nákupné náklady',
+    'Purchase Cost Amount' => 'Celkové nákupné náklady',
     'Tax' => 'Daň (%)',
     'Margin' => 'Marža %',
     'LBL_MARGIN' => 'Marža',

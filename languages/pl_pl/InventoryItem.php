@@ -29,6 +29,7 @@ $languageStrings = [
     'Tax Amount' => 'Tax Amount',
     'Total' => 'Ogółem',
     'Purchase Cost' => 'Koszt zakupu',
+    'Purchase Cost Amount' => 'Łączny koszt zakupu',
     'Margin' => 'Margines',
     'Unit' => 'Jednostka',
     'Parent Inventory Item' => 'Parent Inventory Item',
