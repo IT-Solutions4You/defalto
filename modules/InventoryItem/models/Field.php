@@ -20,6 +20,7 @@ class InventoryItem_Field_Model extends Vtiger_Field_Model
         'discounts_amount',
         'tax_amount',
         'price_total',
+        'purchase_cost_amount',
         'margin',
         'margin_amount',
     ];

@@ -28,6 +28,7 @@ $languageStrings = [
     'Price Total' => 'Preis mit MwSt.',
     'Product Name' => 'Produktname',
     'Purchase Cost' => 'Einkaufskosten',
+    'Purchase Cost Amount' => 'Gesamte Einkaufskosten',
     'Quantity' => 'Menge',
     'SAVED_TAX_VALUE_FOR' => 'Gespeicherter Steuerwert für:',
     'SINGLE_InventoryItem' => 'Bestandsartikel',

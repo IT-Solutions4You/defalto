@@ -27,6 +27,12 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $selectedFields = InventoryItem_Module_Model::getSelectedFields($selectedModule);
         $moduleModel = Vtiger_Module_Model::getInstance('InventoryItem');
         $fieldModelList = $moduleModel->getFields();
+        $fieldModelList = array_filter($fieldModelList, static function ($fieldModel, $fieldName) {
+            return !in_array($fieldName, InventoryItem_Field_Model::preventDisplay, true);
+        }, ARRAY_FILTER_USE_BOTH);
+        $selectedFields = array_values(array_filter($selectedFields, static function ($fieldName) {
+            return !in_array($fieldName, InventoryItem_Field_Model::preventDisplay, true);
+        }));
         $decimals = InventoryItem_Utils_Helper::fetchDecimals();
 
         $viewer = $this->getViewer($request);

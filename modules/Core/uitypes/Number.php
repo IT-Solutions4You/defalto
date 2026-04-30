@@ -36,7 +36,10 @@ class Core_Number_UIType extends Vtiger_Base_UIType
         $user = $this->isItemDetailField() ? $this->getInventoryNumberUser() : $this->getNumberUser();
         $value = CurrencyField::convertToUserFormat($value, $user, true);
 
-        if ($user->isEmpty('truncate_trailing_zeros')) {
+        if (
+            $user->isEmpty('truncate_trailing_zeros')
+            && strpos($value, $user->getDecimalSeparator()) !== false
+        ) {
             $value = rtrim(rtrim($value, '0'), $user->getDecimalSeparator());
         }
 

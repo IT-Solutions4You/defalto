@@ -28,6 +28,7 @@ $languageStrings = [
     'Tax Amount' => 'Tax Amount',
     'Total' => 'Total',
     'Purchase Cost' => 'Purchase Cost',
+    'Purchase Cost Amount' => 'Total Purchase Cost',
     'Tax' => 'Tax %',
     'Margin' => 'Margin %',
     'LBL_MARGIN' => 'Margin',

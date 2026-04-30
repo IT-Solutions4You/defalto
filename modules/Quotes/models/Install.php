@@ -561,6 +561,8 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('pricebookid', 'int(19) DEFAULT NULL')
             ->createColumn('tax_amount', self::$COLUMN_DECIMAL)
             ->createColumn('grand_total', self::$COLUMN_DECIMAL)
+            ->createColumn('purchase_cost_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('margin', self::$COLUMN_DECIMAL)
             ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteid`)')
             ->createKey('KEY IF NOT EXISTS `quote_quotestage_idx` (`quotestage`)')
