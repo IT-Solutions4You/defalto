@@ -208,7 +208,8 @@
                 <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
                     <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">{vtranslate('Add', 'InventoryItem')}: </div>
                     <button type="button" class="btn btn-primary active mb-2 me-2" id="addText" data-modulename="">
-                        <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
+                        <i class="fa fa-i-cursor me-2"></i>
+                        <span>{vtranslate('TEXT', $MODULE)}</span>
                     </button>
                     {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
                         <button type="button" class="btn btn-primary active mb-2 me-2" id="add{$ITEM_MODULE_NAME}" data-modulename="{$ITEM_MODULE_NAME}">
@@ -243,7 +244,8 @@
                     <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                         <td class="textAlignRight">
                             <div class="position-relative">
-                                <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
+                                <i class="fa fa-pencil fa-fw text-secondary editAdjustment me-2" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
+                                <strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
                                 <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
                                     <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Adjustment', 'InventoryItem')}</h3>
                                     <div class="popover-body popover-content">
@@ -283,7 +285,7 @@
                         </td>
                         <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT_DISPLAY}</td>
                     </tr>
-                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                    <tr {if !$INVENTORY_ITEMS}class="d-none"{/if}>
                         <td class="textAlignRight font-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
                         <td class="textAlignRight font-bold grandTotalDisplay">{$GRAND_TOTAL_DISPLAY}</td>
                     </tr>
