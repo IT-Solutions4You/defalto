@@ -285,7 +285,7 @@
                         </td>
                         <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT_DISPLAY}</td>
                     </tr>
-                    <tr {if !$INVENTORY_ITEMS}class="d-none"{/if}>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
                         <td class="textAlignRight font-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
                         <td class="textAlignRight font-bold grandTotalDisplay">{$GRAND_TOTAL_DISPLAY}</td>
                     </tr>
