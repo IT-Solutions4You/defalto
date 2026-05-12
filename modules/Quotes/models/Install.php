@@ -564,6 +564,7 @@ class Quotes_Install_Model extends Core_Install_Model
             ->createColumn('purchase_cost_amount', self::$COLUMN_DECIMAL)
             ->createColumn('margin', self::$COLUMN_DECIMAL)
             ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('margin_combined', 'varchar(255) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`quoteid`)')
             ->createKey('KEY IF NOT EXISTS `quote_quotestage_idx` (`quotestage`)')
             ->createKey('KEY IF NOT EXISTS `quotes_potential_id_idx` (`potential_id`)')

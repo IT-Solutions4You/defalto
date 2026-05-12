@@ -34,6 +34,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     ];
     protected array $hiddenSelectedFields = [
         'purchase_cost_amount',
+        'margin_combined',
     ];
 
     /**

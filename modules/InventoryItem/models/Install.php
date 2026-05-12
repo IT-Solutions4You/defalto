@@ -423,7 +423,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
                     'column'        => 'margin',
                     'table'         => 'df_inventoryitem',
                     'generatedtype' => 1,
-                    'label'         => 'Margin',
+                    'label'         => 'LBL_MARGIN_PCT',
                     'readonly'      => 1,
                     'presence'      => 0,
                     'maximumlength' => 100,
@@ -439,11 +439,27 @@ class InventoryItem_Install_Model extends Core_Install_Model
                     'column'        => 'margin_amount',
                     'table'         => 'df_inventoryitem',
                     'generatedtype' => 1,
-                    'label'         => 'Margin Amount',
+                    'label'         => 'LBL_MARGIN_AMOUNT',
                     'readonly'      => 1,
                     'presence'      => 0,
                     'maximumlength' => 100,
                     'typeofdata'    => 'N~O',
+                    'quickcreate'   => 1,
+                    'displaytype'   => 1,
+                    'masseditable'  => 1,
+                    'summaryfield'  => 0,
+                ],
+                'margin_combined'              => [
+                    'name'          => 'margin_combined',
+                    'uitype'        => 1,
+                    'column'        => 'margin_combined',
+                    'table'         => 'df_inventoryitem',
+                    'generatedtype' => 1,
+                    'label'         => 'LBL_MARGIN',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 255,
+                    'typeofdata'    => 'V~O',
                     'quickcreate'   => 1,
                     'displaytype'   => 1,
                     'masseditable'  => 1,
@@ -548,6 +564,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
             ->createColumn('purchase_cost_amount', self::$COLUMN_DECIMAL)
             ->createColumn('margin', self::$COLUMN_DECIMAL)
             ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('margin_combined', 'varchar(255) DEFAULT NULL')
             ->createColumn('unit', 'varchar(255) DEFAULT NULL')
             ->createColumn('parentitemid', 'int(19) DEFAULT NULL')
             ->createColumn('sequence', 'int(19) DEFAULT 1')

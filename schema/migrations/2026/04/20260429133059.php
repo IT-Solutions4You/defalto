@@ -13,18 +13,20 @@ if (!class_exists('Migration_20260429133059')) {
     {
         public function migrate(string $strFileName): void
         {
-            $this->db->query('UPDATE df_inventoryitem
+            $this->db->query(
+                'UPDATE df_inventoryitem
                 SET margin = CASE
                     WHEN IFNULL(price_after_overall_discount, 0) > 0
-                        THEN ROUND((IFNULL(purchase_cost_amount, 0) * 100) / price_after_overall_discount, 0)
+                        THEN ROUND((IFNULL(margin_amount, 0) * 100) / price_after_overall_discount, 0)
                     ELSE 0
-                END');
+                END'
+            );
 
             $tables = [
-                'vtiger_quotes' => 'quoteid',
+                'vtiger_quotes'        => 'quoteid',
                 'vtiger_purchaseorder' => 'purchaseorderid',
-                'vtiger_salesorder' => 'salesorderid',
-                'vtiger_invoice' => 'invoiceid',
+                'vtiger_salesorder'    => 'salesorderid',
+                'vtiger_invoice'       => 'invoiceid',
             ];
 
             foreach ($tables as $tableName => $idColumn) {

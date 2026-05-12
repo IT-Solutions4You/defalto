@@ -57,11 +57,16 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
         $purchaseCost = (float)$this->get('purchase_cost');
         $purchaseCostAmount = round($purchaseCost * $quantity, 2);
         $margin = $marginAmount = 0;
+        $marginCombined = '';
 
         if ($purchaseCost > 0) {
             $marginAmount = $priceAfterOverallDiscount - $purchaseCostAmount;
-            $margin = round((100 * ($priceAfterOverallDiscount - $marginAmount)) / $priceAfterOverallDiscount);
+            if ($priceAfterOverallDiscount > 0) {
+                $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount);
+            }
         }
+
+        $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin);
 
         $tax = $this->get('tax');
         $taxAmount = round($priceAfterOverallDiscount * $tax / 100, 2);
@@ -109,6 +114,10 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
 
         if ($marginAmount != $this->get('margin_amount')) {
             $this->set('margin_amount', $marginAmount);
+        }
+
+        if ($marginCombined !== $this->get('margin_combined')) {
+            $this->set('margin_combined', $marginCombined);
         }
     }
 
