@@ -13,7 +13,7 @@ if (!class_exists('Migration_20260429090059')) {
     {
         public function migrate(string $fileName): void
         {
-            $defaultColumns = 'productid,quantity,unit,price,subtotal,discount_amount,price_after_overall_discount,tax,tax_amount,price_total';
+            $defaultColumns = 'productid,quantity,unit,price,subtotal,discount_amount,price_after_overall_discount,tax,tax_amount,price_total,margin_combined';
 
             $this->db->pquery(
                 'UPDATE df_inventoryitemcolumns SET columnslist = ? WHERE tabid = ?',

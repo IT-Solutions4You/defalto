@@ -49,6 +49,7 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
             $changed = false;
             $db = PearDatabase::getInstance();
             $hasMarginField = (bool)Vtiger_Field::getInstance('margin', $parentModuleModel);
+            $hasMarginCombinedField = (bool)Vtiger_Field::getInstance('margin_combined', $parentModuleModel);
             $sql = 'SELECT ';
 
             foreach ($fields as $fieldName) {
@@ -74,7 +75,7 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
                     }
                 }
 
-                if ($hasMarginField) {
+                if ($hasMarginField || $hasMarginCombinedField) {
                     $priceAfterOverallDiscount = (float)($row['price_after_overall_discount'] ?? 0);
                     $marginAmount = (float)($row['margin_amount'] ?? 0);
                     $margin = 0.0;
@@ -83,9 +84,18 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
                         $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount, 0);
                     }
 
-                    if ((float)$parentRecordModel->get('margin') !== $margin) {
+                    if ($hasMarginField && (float)$parentRecordModel->get('margin') !== $margin) {
                         $parentRecordModel->set('margin', $margin);
                         $changed = true;
+                    }
+
+                    if ($hasMarginCombinedField) {
+                        $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin);
+
+                        if ((string)$parentRecordModel->get('margin_combined') !== $marginCombined) {
+                            $parentRecordModel->set('margin_combined', $marginCombined);
+                            $changed = true;
+                        }
                     }
                 }
 

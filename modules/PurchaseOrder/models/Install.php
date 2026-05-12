@@ -585,6 +585,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
             ->createColumn('purchase_cost_amount', self::$COLUMN_DECIMAL)
             ->createColumn('margin', self::$COLUMN_DECIMAL)
             ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('margin_combined', 'varchar(255) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`purchaseorderid`)')
             ->createKey('KEY IF NOT EXISTS `purchaseorder_vendor_id_idx` (`vendor_id`)')
             ->createKey('KEY IF NOT EXISTS `purchaseorder_quoteid_idx` (`quoteid`)')

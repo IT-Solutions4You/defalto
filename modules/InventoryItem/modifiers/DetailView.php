@@ -57,12 +57,6 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
 
         $items = InventoryItem_Utils_Helper::fetchItems($recordId);
 
-        if (!in_array('margin', $selectedFields)) {
-            foreach ($items as &$item) {
-                $item['margin_amount_display'] = $item['margin_amount_display'] . '&nbsp;<small>(' . $item['margin_display'] . '%)</small>';
-            }
-        }
-
         $viewer->assign('INVENTORY_ITEMS', $items);
         $viewer->assign('INVENTORY_ITEMS_COUNT', count($items));
 
@@ -92,6 +86,11 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
         $overallDiscount = $entityRecordModel->get('overall_discount');
         $overallDiscountAmount = $entityRecordModel->get('overall_discount_amount');
         $adjustment = $entityRecordModel->get('adjustment');
+        $margin = (float)$entityRecordModel->get('margin');
+        $marginAmount = (float)$entityRecordModel->get('margin_amount');
+        $marginCombined = (string)$entityRecordModel->get('margin_combined');
+        $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+        $marginDecimals = $decimals['margin'] ?? 2;
 
         if (!$overallDiscount) {
             $overallDiscount = 0;
@@ -105,6 +104,10 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
             $adjustment = 0;
         }
 
+        if ($marginCombined === '') {
+            $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin, $currentUser);
+        }
+
         $viewer->assign('RECORD', $entityRecordModel);
         $viewer->assign('SUBTOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_discount'), $currentUser, true));
         $viewer->assign('OVERALL_DISCOUNT', number_format($overallDiscount, 2));
@@ -116,6 +119,8 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
         $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $currentUser, true, false, true));
         $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $currentUser, true));
+        $viewer->assign('TOTAL_MARGIN_DISPLAY', number_format($margin, $marginDecimals, '.', ''));
+        $viewer->assign('TOTAL_MARGIN_COMBINED_DISPLAY', $marginCombined);
         $viewer->assign('PRICEBOOKS', InventoryItem_Detail_Helper::fetchPriceBooks($request));
     }
 

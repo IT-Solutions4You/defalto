@@ -736,6 +736,7 @@ class SalesOrder_Install_Model extends Core_Install_Model
             ->createColumn('purchase_cost_amount', self::$COLUMN_DECIMAL)
             ->createColumn('margin', self::$COLUMN_DECIMAL)
             ->createColumn('margin_amount', self::$COLUMN_DECIMAL)
+            ->createColumn('margin_combined', 'varchar(255) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`salesorderid`)')
             ->createKey('KEY IF NOT EXISTS `salesorder_vendorid_idx` (`vendorid`)')
             ->createKey('KEY IF NOT EXISTS `salesorder_contact_id_idx` (`contact_id`)')

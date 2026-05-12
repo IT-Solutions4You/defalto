@@ -254,11 +254,22 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         let grand_total = 0;
         let subtotal = 0;
         let summary_discount = 0;
+        let priceAfterOverallDiscountTotal = 0;
+        let marginAmountTotal = 0;
+        const totalMarginSpan = jQuery('tfoot span.total_margin', this.lineItemsHolder);
+        const totalMarginCombinedSpan = jQuery('tfoot span.total_margin_combined', this.lineItemsHolder);
+        const originalTotalMarginDisplay = totalMarginSpan.text();
+        const originalTotalMarginCombinedDisplay = totalMarginCombinedSpan.text();
+
         jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
             let span = jQuery(this);
 
             // Extract the specific class part (e.g., from "total_price_total" -> "price_total")
             let targetClass = span.attr('class').replace('total_', '');
+
+            if (targetClass === 'margin' || targetClass === 'margin_combined') {
+                return;
+            }
 
             // Initialize total for this column
             let columnTotal = 0;
@@ -277,8 +288,29 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 subtotal = columnTotal;
             }
 
+            if (targetClass === 'price_after_overall_discount') {
+                priceAfterOverallDiscountTotal = columnTotal;
+            }
+
+            if (targetClass === 'margin_amount') {
+                marginAmountTotal = columnTotal;
+            }
+
             span.text(app.convertCurrencyToUserFormat(columnTotal));
         });
+
+        let totalMargin = 0;
+
+        if (priceAfterOverallDiscountTotal > 0) {
+            totalMargin = Math.round((marginAmountTotal * 100) / priceAfterOverallDiscountTotal);
+            const totalMarginDisplay = app.convertCurrencyToUserFormat(totalMargin.toFixed(2));
+            const totalMarginAmountDisplay = app.convertCurrencyToUserFormat(marginAmountTotal.toFixed(2));
+            totalMarginSpan.text(totalMarginDisplay);
+            totalMarginCombinedSpan.text(totalMarginAmountDisplay + ' (' + totalMarginDisplay + '%)');
+        } else {
+            totalMarginSpan.text(originalTotalMarginDisplay);
+            totalMarginCombinedSpan.text(originalTotalMarginCombinedDisplay);
+        }
 
         jQuery('tbody input.discount_amount, tbody input.overall_discount_amount', this.lineItemsHolder).each(function () {
             summary_discount += parseFloat(jQuery(this).val()) || 0;

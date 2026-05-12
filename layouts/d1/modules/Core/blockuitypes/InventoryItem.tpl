@@ -185,6 +185,10 @@
                         <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight fw-semibold"{else} class="fw-semibold"{/if}>
                             {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
                                 {vtranslate('Total', 'InventoryItem')}
+                            {elseif $INVENTORY_ITEM_FIELD_NAME eq 'margin'}
+                                <span class="total_margin">{$TOTAL_MARGIN_DISPLAY}</span>
+                            {elseif $INVENTORY_ITEM_FIELD_NAME eq 'margin_combined'}
+                                <span class="total_margin_combined">{$TOTAL_MARGIN_COMBINED_DISPLAY}</span>
                              {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $TOTAL_FIELDS)}
                                 <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
                             {/if}
