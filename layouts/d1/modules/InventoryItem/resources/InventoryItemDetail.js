@@ -251,11 +251,22 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     recalculateTotals: function () {
         const self = this;
-        let grand_total = 0;
-        let subtotal = 0;
+        const sumColumn = function (targetClass) {
+            let columnTotal = 0;
+
+            jQuery('tbody input.' + targetClass, self.lineItemsHolder).each(function () {
+                columnTotal += parseFloat(jQuery(this).val()) || 0;
+            });
+
+            return columnTotal;
+        };
+
+        let grand_total = sumColumn('price_total');
+        let subtotal = sumColumn('subtotal');
         let summary_discount = 0;
-        let priceAfterOverallDiscountTotal = 0;
-        let marginAmountTotal = 0;
+        let priceAfterOverallDiscountTotal = sumColumn('price_after_overall_discount');
+        let marginAmountTotal = sumColumn('margin_amount');
+        let vatTotal = sumColumn('tax_amount');
         const totalMarginSpan = jQuery('tfoot span.total_margin', this.lineItemsHolder);
         const totalMarginCombinedSpan = jQuery('tfoot span.total_margin_combined', this.lineItemsHolder);
         const originalTotalMarginDisplay = totalMarginSpan.text();
@@ -271,39 +282,17 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 return;
             }
 
-            // Initialize total for this column
-            let columnTotal = 0;
-
-            // Find all inputs in tbody with the specific class and sum their values
-            jQuery('tbody input.' + targetClass, self.lineItemsHolder).each(function () {
-                let inputValue = parseFloat(jQuery(this).val()) || 0; // Parse value, default to 0
-                columnTotal += inputValue;
-            });
-
-            if (targetClass === 'price_total') {
-                grand_total = columnTotal;
-            }
-
-            if (targetClass === 'subtotal') {
-                subtotal = columnTotal;
-            }
-
-            if (targetClass === 'price_after_overall_discount') {
-                priceAfterOverallDiscountTotal = columnTotal;
-            }
-
-            if (targetClass === 'margin_amount') {
-                marginAmountTotal = columnTotal;
-            }
+            let columnTotal = sumColumn(targetClass);
 
             span.text(app.convertCurrencyToUserFormat(columnTotal));
         });
 
         let totalMargin = 0;
+        const decimalPlaces = app.getNumberOfDecimals();
 
         if (priceAfterOverallDiscountTotal > 0) {
-            totalMargin = Math.round((marginAmountTotal * 100) / priceAfterOverallDiscountTotal);
-            const totalMarginDisplay = app.convertCurrencyToUserFormat(totalMargin.toFixed(2));
+            totalMargin = ((marginAmountTotal * 100) / priceAfterOverallDiscountTotal);
+            const totalMarginDisplay = app.convertCurrencyToUserFormat(totalMargin.toFixed(decimalPlaces));
             const totalMarginAmountDisplay = app.convertCurrencyToUserFormat(marginAmountTotal.toFixed(2));
             totalMarginSpan.text(totalMarginDisplay);
             totalMarginCombinedSpan.text(totalMarginAmountDisplay + ' (' + totalMarginDisplay + '%)');
@@ -317,6 +306,8 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
 
         jQuery('td.subTotalDisplay').text(app.convertCurrencyToUserFormat(subtotal));
+        jQuery('td.priceWithoutVatDisplay').text(app.convertCurrencyToUserFormat(priceAfterOverallDiscountTotal));
+        jQuery('td.vatDisplay').text(app.convertCurrencyToUserFormat(vatTotal));
         jQuery('td.priceTotalDisplay').text(app.convertCurrencyToUserFormat(grand_total));
         jQuery('td.summaryDiscountDisplay').text(app.convertCurrencyToUserFormat(summary_discount));
         let adjustment = parseFloat(jQuery('#adjustment').val());
@@ -1020,7 +1011,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         let margin = 0;
         let margin_amount = 0;
 
-        if (!isNaN(purchaseCost) && purchaseCost > 0 && price > 0) {
+        if (!isNaN(purchaseCost) && price > 0) {
             margin_amount = (price - (purchaseCost * quantity)).toFixed(decimalPlaces);
             margin = ((parseFloat(margin_amount) / price) * 100).toFixed(decimalPlaces);
         }

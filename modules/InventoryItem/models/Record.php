@@ -56,14 +56,14 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
         $discountsAmount = $discountAmount + $overallDiscountAmount;
         $purchaseCost = (float)$this->get('purchase_cost');
         $purchaseCostAmount = round($purchaseCost * $quantity, 2);
+        $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+        $marginDecimals = $decimals['margin'] ?? 2;
         $margin = $marginAmount = 0;
         $marginCombined = '';
 
-        if ($purchaseCost > 0) {
+        if ($priceAfterOverallDiscount > 0) {
             $marginAmount = $priceAfterOverallDiscount - $purchaseCostAmount;
-            if ($priceAfterOverallDiscount > 0) {
-                $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount);
-            }
+            $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount, $marginDecimals);
         }
 
         $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin);
