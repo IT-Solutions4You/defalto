@@ -23,6 +23,7 @@ class InventoryItem_RoundValues_Helper
         'tax_amount',
         'price_total',
         'purchase_cost',
+        'purchase_cost_amount',
         'margin',
         'margin_amount',
     ];

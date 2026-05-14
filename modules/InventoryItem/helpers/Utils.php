@@ -156,6 +156,10 @@ class InventoryItem_Utils_Helper
                 }
             }
 
+            if (isset($row['margin_combined'])) {
+                $row['margin_combined_display'] = $row['margin_combined'];
+            }
+
             $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], $record);
 
             $inventoryItems[] = $row;
@@ -294,5 +298,18 @@ class InventoryItem_Utils_Helper
         }
 
         return $return;
+    }
+
+    public static function buildMarginCombinedValue($marginAmount, $margin, ?Users_Record_Model $user = null): string
+    {
+        $user ??= Users_Record_Model::getCurrentUserModel();
+        $decimals = self::fetchDecimals();
+        $marginDecimals = $decimals['margin'] ?? 2;
+        $amountDisplay = CurrencyField::convertToUserFormat((float)$marginAmount, $user, true, false, true);
+        $marginUser = clone $user;
+        $marginUser->set('no_of_currency_decimals', $marginDecimals);
+        $marginDisplay = CurrencyField::convertToUserFormat((float)$margin, $marginUser, true, false, true);
+
+        return $amountDisplay . ' (' . $marginDisplay . '%)';
     }
 }

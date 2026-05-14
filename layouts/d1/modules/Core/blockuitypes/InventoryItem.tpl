@@ -22,158 +22,16 @@
                 </span>
                 <span class="ms-3 fs-4 fw-bold text-truncate">{vtranslate($BLOCK_LABEL_KEY, $MODULE_NAME)}</span>
             </div>
-            <div class="col-lg-8 row">
-                <div class="col-lg-1 textAlignRight" id="block_line_items_add">
+            <div class="col-lg-8">
+                <div class="row g-2 justify-content-lg-end align-items-start">
+                <div class="col-lg-auto textAlignRight" id="block_line_items_add">
                 </div>
-                <div class="col-lg-5 textAlignRight" id="block_line_items_pricebook">
-                    <div class="btn-group" role="group">
-                        {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['pricebookid']}
-                        {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
-                        <button type="button" class="btn btn-primary">{vtranslate('SINGLE_PriceBooks', 'PriceBooks')}</button>
-                        <input type="hidden" name="pricebookid_original" id="pricebookid_original" value="{$FIELD_MODEL->get('fieldvalue')}">
-                        <div class="btn-group" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary pricebook-button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {if isset($PRICEBOOKS[$CURRENT_VALUE]) && $PRICEBOOKS[$CURRENT_VALUE] neq ''}{$PRICEBOOKS[$CURRENT_VALUE]}{else}{vtranslate('LBL_NONE', 'InventoryItem')}{/if}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end pricebook" aria-labelledby="btnGroupDrop1">
-                                <li><a class="dropdown-item" data-pricebookid="0">{vtranslate('LBL_NONE', 'InventoryItem')}</a></li>
-                                {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PRICEBOOKS}
-                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-pricebookid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
-                                {/foreach}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 textAlignRight" id="block_line_items_currency">
-                    {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['currency_id']}
-                    {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
-                    {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
-                    {assign var=PICKLIST_VALUES value=$FIELD_INFO['currencyList']}
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-primary">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</button>
-                        <input type="hidden" name="currency_id_original" id="currency_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
-                        <div class="btn-group" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary currency-button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {if $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end currency" aria-labelledby="btnGroupDrop1">
-                                {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-currencyid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
-                                {/foreach}
-                                {if $CURRENT_USER_MODEL->isAdminUser()}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="index.php?module=Currency&parent=Settings&view=List"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
-                                {/if}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 textAlignRight" id="block_line_items_region">
-                    {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
-                    {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
-                    {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
-                    {assign var=PICKLIST_VALUES value=$FIELD_INFO['editablepicklistvalues']}
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-primary">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</button>
-                        <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
-                        <div class="btn-group" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary region-button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {if isset($PICKLIST_VALUES[$CURRENT_VALUE]) && $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end region" aria-labelledby="btnGroupDrop1">
-                                <li><a class="dropdown-item" data-regionid="0">{vtranslate('Default', 'InventoryItem')}</a></li>
-                                {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-regionid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
-                                {/foreach}
-                                {if $CURRENT_USER_MODEL->isAdminUser()}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="index.php?module=Core&parent=Settings&view=Taxes&mode=regions"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
-                                {/if}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
-        <div class="lineItemTableContainer">
-            <table class="table table-borderless table-hover" id="lineItemTab">
-                {if $INVENTORY_ITEMS_COUNT > 0}
-                <thead>
-                <tr class="border-bottom">
-                    <td class="font-bold">{vtranslate('LBL_TOOLS',$MODULE)}</td>
-                    {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
-                        {if isset($INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]) && $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] neq '' && !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
-                        {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
-                        <td class="font-bold{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} textAlignRight{/if}" data-fieldname="{$INVENTORY_ITEM_FIELD_NAME}">
-                            {vtranslate($FIELD->get('label'), 'InventoryItem')}
-                        </td>
-                        {/if}
-                    {/foreach}
-                </tr>
-                </thead>
-                {/if}
-                <tbody>
-                {foreach key=row_no item=data from=$INVENTORY_ITEMS}
-                    <tr id="row{$row_no}" data-row-num="{$row_no}" class="border-bottom lineItemRow">
-                        {if $data.entityType eq 'Text'}
-                            {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
-                        {else}
-                            {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
-                        {/if}
-                    </tr>
-                {/foreach}
-                </tbody>
-                <tfoot>
-                <tr style="display: none;">
-                    <td></td>
-                    {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
-                        {if !isset($INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]) || $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq '' || in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
-                            {continue}
-                        {/if}
-                        {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
-                        <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight"{/if} style="font-weight: bold;">
-                            {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
-                                {vtranslate('Total', 'InventoryItem')}
-                             {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $TOTAL_FIELDS)}
-                                <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
-                            {/if}
-                        </td>
-                    {/foreach}
-                    {foreach key=FIELD_NAME item=FIELD from=$INVENTORY_ITEM_RECORD_STRUCTURE}
-                        {if !in_array($FIELD_NAME, $INVENTORY_ITEM_COLUMNS) and !in_array($FIELD_NAME, $EXCLUDED_FIELDS)}
-                            <td style="display: none;">
-                                {if $FIELD->getFieldDataType() eq 'currency'}
-                                    <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
-                                {/if}
-                            </td>
-                        {/if}
-                    {/foreach}
-                </tr>
-                <tr>
-                    <td rowspan="2" {if !$INVENTORY_ITEMS} colspan="{$FINALS_COLSPAN + 2}" class="textAlignCenter"{else} colspan="{$FINALS_COLSPAN - 2}"{/if}>
-                        <div class="px-4">
-                            <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
-                                <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">{vtranslate('Add', 'InventoryItem')}: </div>
-                                <button type="button" class="btn btn-primary active mb-2 me-2" id="addText" data-modulename="">
-                                    <i class="fa fa-i-cursor"></i>&nbsp;&nbsp;{vtranslate('TEXT', $MODULE)}
-                                </button>
-                                {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
-                                    <button type="button" class="btn btn-primary active mb-2 me-2" id="add{$ITEM_MODULE_NAME}" data-modulename="{$ITEM_MODULE_NAME}">
-                                        {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, $ITEM_MODULE_NAME)}
-                                    </button>
-                                {/foreach}
-                            </div>
-                        </div>
-                    </td>
-                    <td colspan="2" class="textAlignRight font-bold" {if !$INVENTORY_ITEMS}style="display: none;"{/if}>{vtranslate('Total', 'InventoryItem')}</td>
-                    <td class="textAlignRight font-bold subTotalDisplay" {if !$INVENTORY_ITEMS}style="display: none;"{/if}>{$SUBTOTAL_DISPLAY}</td>
-                </tr>
-                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="2" class="textAlignRight">
-                        <div class="position-relative">
-                            <i class="fa fa-pencil fa-fw text-secondary editOverallDiscount" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Overall Discount', 'InventoryItem')}: <span class="overallDiscountPercentage">{$OVERALL_DISCOUNT}</span>%</strong>
+                <div class="col-sm-6 col-lg-auto textAlignRight" id="block_line_items_overall_discount">
+                    <div class="btn-group position-relative" role="group">
+                        <button type="button" class="btn btn-primary editOverallDiscount">{vtranslate('Overall Discount', 'InventoryItem')}</button>
+                        <button type="button" class="btn btn-bd-light btn-outline-secondary rounded-end editOverallDiscount">
+                            <span class="overallDiscountPercentage">{$OVERALL_DISCOUNT}</span>%&nbsp;&nbsp;{* <i class="fa fa-pencil fa-fw text-secondary"></i> *}
+                        </button>
                         <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
                             <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Overall Discount %', 'InventoryItem')}</h3>
                             <div class="popover-body popover-content">
@@ -210,71 +68,234 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-auto textAlignRight" id="block_line_items_pricebook">
+                    <div class="btn-group" role="group">
+                        {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['pricebookid']}
+                        {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
+                        <button type="button" class="btn btn-primary">{vtranslate('SINGLE_PriceBooks', 'PriceBooks')}</button>
+                        <input type="hidden" name="pricebookid_original" id="pricebookid_original" value="{$FIELD_MODEL->get('fieldvalue')}">
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary pricebook-button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {if isset($PRICEBOOKS[$CURRENT_VALUE]) && $PRICEBOOKS[$CURRENT_VALUE] neq ''}{$PRICEBOOKS[$CURRENT_VALUE]}{else}{vtranslate('LBL_NONE', 'InventoryItem')}{/if}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end pricebook" aria-labelledby="btnGroupDrop1">
+                                <li><a class="dropdown-item" data-pricebookid="0">{vtranslate('LBL_NONE', 'InventoryItem')}</a></li>
+                                {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PRICEBOOKS}
+                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-pricebookid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
+                                {/foreach}
+                            </ul>
                         </div>
-                    </td>
-                    <td class="textAlignRight font-bold overallDiscountAmount">{$OVERALL_DISCOUNT_AMOUNT_DISPLAY}</td>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-auto textAlignRight" id="block_line_items_currency">
+                    {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['currency_id']}
+                    {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+                    {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
+                    {assign var=PICKLIST_VALUES value=$FIELD_INFO['currencyList']}
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</button>
+                        <input type="hidden" name="currency_id_original" id="currency_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary currency-button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {if $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end currency" aria-labelledby="btnGroupDrop1">
+                                {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
+                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-currencyid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
+                                {/foreach}
+                                {if $CURRENT_USER_MODEL->isAdminUser()}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="index.php?module=Currency&parent=Settings&view=List"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
+                                {/if}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-auto textAlignRight" id="block_line_items_region">
+                    {assign var=FIELD_MODEL value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
+                    {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+                    {assign var=CURRENT_VALUE value=$FIELD_MODEL->get('fieldvalue')}
+                    {assign var=PICKLIST_VALUES value=$FIELD_INFO['editablepicklistvalues']}
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary">{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</button>
+                        <input type="hidden" name="region_id_original" id="region_id_original" value="{$FIELD_MODEL->get('fieldvalue')}">
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary region-button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {if isset($PICKLIST_VALUES[$CURRENT_VALUE]) && $PICKLIST_VALUES[$CURRENT_VALUE] neq ''}{$PICKLIST_VALUES[$CURRENT_VALUE]}{else}{vtranslate('Default', 'InventoryItem')}{/if}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end region" aria-labelledby="btnGroupDrop1">
+                                <li><a class="dropdown-item" data-regionid="0">{vtranslate('Default', 'InventoryItem')}</a></li>
+                                {foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
+                                    <li><a class="dropdown-item{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} current{/if}" data-regionid="{$PICKLIST_NAME}"{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} aria-current="true"{/if}>{$PICKLIST_VALUE}</a></li>
+                                {/foreach}
+                                {if $CURRENT_USER_MODEL->isAdminUser()}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="index.php?module=Core&parent=Settings&view=Taxes&mode=regions"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
+                                {/if}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="blockData p-3 border-top border-light-subtle {if $IS_HIDDEN}hide{/if}">
+        <div class="lineItemTableContainer">
+            <table class="table table-borderless table-hover" id="lineItemTab">
+                {if $INVENTORY_ITEMS_COUNT > 0}
+                <thead>
+                <tr class="border-bottom">
+                    <td class="font-bold">{vtranslate('LBL_TOOLS',$MODULE)}</td>
+                    {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
+                        {if isset($INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]) && $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] neq '' && !in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
+                        {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
+                        <td class="font-bold{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} textAlignRight{/if}" data-fieldname="{$INVENTORY_ITEM_FIELD_NAME}">
+                            {vtranslate($FIELD->get('label'), 'InventoryItem')}
+                        </td>
+                        {/if}
+                    {/foreach}
                 </tr>
-                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('Total without VAT', 'InventoryItem')}</td>
-                    <td class="textAlignRight font-bold priceWithoutVatDisplay">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
+                </thead>
+                {/if}
+                <tbody>
+                {foreach key=row_no item=data from=$INVENTORY_ITEMS name=lineItemsLoop}
+                    <tr id="row{$row_no}" data-row-num="{$row_no}" class="{if !$smarty.foreach.lineItemsLoop.last}border-bottom {/if}lineItemRow">
+                        {if $data.entityType eq 'Text'}
+                            {include file="partials/TextItemContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
+                        {else}
+                            {include file="partials/LineItemsContent.tpl"|@vtemplate_path:'InventoryItem' row_no=$row_no data=$data}
+                        {/if}
+                    </tr>
+                {/foreach}
+                </tbody>
+                <tfoot>
+                <tr class="lineItemSummaryDivider" {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                    <td colspan="100" class="p-0 border-0" style="height: 2px; line-height: 0; background-color: var(--bs-border-color-translucent);"></td>
                 </tr>
-                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('VAT', 'InventoryItem')}</td>
-                    <td class="textAlignRight font-bold vatDisplay">{$VAT_DISPLAY}</td>
+                <tr class="border-bottom bg-light-subtle lineItemSummaryRow" {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                    <td class="text-secondary"></td>
+                    {foreach item=INVENTORY_ITEM_FIELD_NAME from=$INVENTORY_ITEM_COLUMNS}
+                        {if !isset($INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]) || $INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME] eq '' || in_array($INVENTORY_ITEM_FIELD_NAME, $SPECIAL_TREATMENT_FIELDS)}
+                            {continue}
+                        {/if}
+                        {assign var=FIELD value=$INVENTORY_ITEM_RECORD_STRUCTURE[$INVENTORY_ITEM_FIELD_NAME]}
+                        <td{if $FIELD->getFieldDataType() eq 'currency' or $FIELD->getFieldDataType() eq 'double' or $FIELD->getFieldDataType() eq 'integer' or $FIELD->getFieldDataType() eq 'percentage'} class="textAlignRight fw-semibold"{else} class="fw-semibold"{/if}>
+                            {if $INVENTORY_ITEM_FIELD_NAME eq 'productid'}
+                                {vtranslate('Total', 'InventoryItem')}
+                            {elseif $INVENTORY_ITEM_FIELD_NAME eq 'margin'}
+                                <span class="total_margin">{$TOTAL_MARGIN_DISPLAY}</span>
+                            {elseif $INVENTORY_ITEM_FIELD_NAME eq 'margin_combined'}
+                                <span class="total_margin_combined">{$TOTAL_MARGIN_COMBINED_DISPLAY}</span>
+                            {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $TOTAL_FIELDS)}
+                                <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
+                            {/if}
+                        </td>
+                    {/foreach}
+                    {foreach key=FIELD_NAME item=FIELD from=$INVENTORY_ITEM_RECORD_STRUCTURE}
+                        {if !in_array($FIELD_NAME, $INVENTORY_ITEM_COLUMNS) and !in_array($FIELD_NAME, $EXCLUDED_FIELDS)}
+                            <td style="display: none;">
+                                {if $FIELD->getFieldDataType() eq 'currency'}
+                                    <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
+                                {/if}
+                            </td>
+                        {/if}
+                    {/foreach}
                 </tr>
-                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('Total with VAT', 'InventoryItem')}</td>
-                    <td class="textAlignRight font-bold priceTotalDisplay">{$PRICE_TOTAL_DISPLAY}</td>
-                </tr>
-                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight">
-                        <div class="position-relative">
-                            <i class="fa fa-pencil fa-fw text-secondary editAdjustment" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>&nbsp;&nbsp;<strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
-                            <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
-                                <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Adjustment', 'InventoryItem')}</h3>
-                                <div class="popover-body popover-content">
-                                    <div class="validCheck">
-                                        <table class="table table-borderless popupTable m-0">
-                                            <tbody>
-                                            <tr>
-                                                <td class="p-3">{vtranslate('Adjustment', 'InventoryItem')}</td>
-                                                <td>
-                                                    <div class="input-group">
-                                                        <input type="text" size="5" data-compound-on="" name="adjustment" id="adjustment" value="{$ADJUSTMENT}" class="form-control adjustment replaceCommaWithDot allowOnlyNumbers textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
-                                                        <input type="hidden" id="original_adjustment" name="original_adjustment" value="{$ADJUSTMENT}" class="original_adjustment">
-                                                    </div>
-                                                </td>
-                                                <td class="text-end">
-                                                    <input type="text" size="6" name="total_with_adjustment" id="total_with_adjustment" style="cursor:pointer;" value="" readonly="" class="form-control totalWithAdjustment textAlignRight" aria-invalid="false">
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                </tfoot>
+            </table>
+        </div>
+        <div class="inventoryItemFooter d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3 pt-2">
+            <div class="inventoryItemAddContainer flex-grow-1 px-4 py-2">
+                <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
+                    <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">{vtranslate('Add', 'InventoryItem')}: </div>
+                    <button type="button" class="btn btn-primary active mb-2 me-2" id="addText" data-modulename="">
+                        <i class="fa fa-i-cursor me-2"></i>
+                        <span>{vtranslate('TEXT', $MODULE)}</span>
+                    </button>
+                    {foreach from=$ITEM_MODULES item=ITEM_MODULE_NAME}
+                        <button type="button" class="btn btn-primary active mb-2 me-2" id="add{$ITEM_MODULE_NAME}" data-modulename="{$ITEM_MODULE_NAME}">
+                            {Vtiger_Module_Model::getModuleIconPath($ITEM_MODULE_NAME)}&nbsp;&nbsp;{vtranslate($ITEM_MODULE_NAME, $ITEM_MODULE_NAME)}
+                        </button>
+                    {/foreach}
+                </div>
+            </div>
+            <div class="inventoryItemTotalsContainer flex-shrink-0 w-100" style="max-width: 390px;">
+                <table class="table table-borderless m-0 inventoryItemTotals">
+                    <tbody>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                        <td class="textAlignRight font-bold">{vtranslate('Total', 'InventoryItem')}</td>
+                        <td class="textAlignRight font-bold subTotalDisplay">{$SUBTOTAL_DISPLAY}</td>
+                    </tr>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                        <td class="textAlignRight font-bold">{vtranslate('Discounts Amount', 'InventoryItem')}</td>
+                        <td class="textAlignRight font-bold summaryDiscountDisplay">0,00</td>
+                    </tr>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                        <td class="textAlignRight font-bold">{vtranslate('Total without VAT', 'InventoryItem')}</td>
+                        <td class="textAlignRight font-bold priceWithoutVatDisplay">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
+                    </tr>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                        <td class="textAlignRight font-bold">{vtranslate('VAT', 'InventoryItem')}</td>
+                        <td class="textAlignRight font-bold vatDisplay">{$VAT_DISPLAY}</td>
+                    </tr>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                        <td class="textAlignRight font-bold">{vtranslate('Total with VAT', 'InventoryItem')}</td>
+                        <td class="textAlignRight font-bold priceTotalDisplay">{$PRICE_TOTAL_DISPLAY}</td>
+                    </tr>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                        <td class="textAlignRight">
+                            <div class="position-relative">
+                                <i class="fa fa-pencil fa-fw text-secondary editAdjustment me-2" title="{vtranslate('LBL_EDIT',$MODULE)}"></i>
+                                <strong>{vtranslate('Adjustment', 'InventoryItem')}</strong>
+                                <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="adjustmentSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
+                                    <h3 class="popover-header p-3 m-0 border-bottom">{vtranslate('Adjustment', 'InventoryItem')}</h3>
+                                    <div class="popover-body popover-content">
+                                        <div class="validCheck">
+                                            <table class="table table-borderless popupTable m-0">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="p-3">{vtranslate('Adjustment', 'InventoryItem')}</td>
+                                                    <td>
+                                                        <div class="input-group">
+                                                            <input type="text" size="5" data-compound-on="" name="adjustment" id="adjustment" value="{$ADJUSTMENT}" class="form-control adjustment replaceCommaWithDot allowOnlyNumbers textAlignRight" data-rule-positive="true" data-rule-inventory_percentage="true" aria-invalid="false">
+                                                            <input type="hidden" id="original_adjustment" name="original_adjustment" value="{$ADJUSTMENT}" class="original_adjustment">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <input type="text" size="6" name="total_with_adjustment" id="total_with_adjustment" style="cursor:pointer;" value="" readonly="" class="form-control totalWithAdjustment textAlignRight" aria-invalid="false">
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="modal-footer lineItemPopupModalFooter p-3">
-                                    <div class="container-fluid p-0">
-                                        <div class="row">
-                                            <div class="col-6 text-end">
-                                                <a class="btn btn-outline-primary popoverCancel closeAdjustmentDiv">{vtranslate('LBL_CANCEL')}</a>
-                                            </div>
-                                            <div class="col-6 text-start">
-                                                <a class="btn btn-primary active popoverButton saveAdjustment font-bold">{vtranslate('LBL_SAVE')}</a>
+                                    <div class="modal-footer lineItemPopupModalFooter p-3">
+                                        <div class="container-fluid p-0">
+                                            <div class="row">
+                                                <div class="col-6 text-end">
+                                                    <a class="btn btn-outline-primary popoverCancel closeAdjustmentDiv">{vtranslate('LBL_CANCEL')}</a>
+                                                </div>
+                                                <div class="col-6 text-start">
+                                                    <a class="btn btn-primary active popoverButton saveAdjustment font-bold">{vtranslate('LBL_SAVE')}</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                    <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT_DISPLAY}</td>
-                </tr>
-                <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
-                    <td colspan="{$FINALS_COLSPAN}" class="textAlignRight font-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
-                    <td class="textAlignRight font-bold grandTotalDisplay">{$GRAND_TOTAL_DISPLAY}</td>
-                </tr>
-                </tfoot>
-            </table>
+                        </td>
+                        <td class="textAlignRight font-bold adjustmentDisplay">{$ADJUSTMENT_DISPLAY}</td>
+                    </tr>
+                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                        <td class="textAlignRight font-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
+                        <td class="textAlignRight font-bold grandTotalDisplay">{$GRAND_TOTAL_DISPLAY}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -20,6 +20,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     initializeVariables: function () {
         this.lineItemsHolder = jQuery('#lineItemTab');
+        this.itemsBlockHolder = this.lineItemsHolder.closest('.block');
         this.numOfLineItems = this.lineItemsHolder.find('.' + this.lineItemDetectingClass).length;
     },
 
@@ -250,30 +251,65 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     recalculateTotals: function () {
         const self = this;
-        let grand_total = 0;
+        const sumColumn = function (targetClass) {
+            let columnTotal = 0;
+
+            jQuery('tbody input.' + targetClass, self.lineItemsHolder).each(function () {
+                columnTotal += parseFloat(jQuery(this).val()) || 0;
+            });
+
+            return columnTotal;
+        };
+
+        let grand_total = sumColumn('price_total');
+        let subtotal = sumColumn('subtotal');
+        let summary_discount = 0;
+        let priceAfterOverallDiscountTotal = sumColumn('price_after_overall_discount');
+        let marginAmountTotal = sumColumn('margin_amount');
+        let vatTotal = sumColumn('tax_amount');
+        const totalMarginSpan = jQuery('tfoot span.total_margin', this.lineItemsHolder);
+        const totalMarginCombinedSpan = jQuery('tfoot span.total_margin_combined', this.lineItemsHolder);
+        const originalTotalMarginDisplay = totalMarginSpan.text();
+        const originalTotalMarginCombinedDisplay = totalMarginCombinedSpan.text();
+
         jQuery('tfoot span[class^="total_"]', this.lineItemsHolder).each(function () {
             let span = jQuery(this);
 
             // Extract the specific class part (e.g., from "total_price_total" -> "price_total")
             let targetClass = span.attr('class').replace('total_', '');
 
-            // Initialize total for this column
-            let columnTotal = 0;
-
-            // Find all inputs in tbody with the specific class and sum their values
-            jQuery('tbody input.' + targetClass, self.lineItemsHolder).each(function () {
-                let inputValue = parseFloat(jQuery(this).val()) || 0; // Parse value, default to 0
-                columnTotal += inputValue;
-            });
-
-            if (targetClass === 'price_total') {
-                grand_total = columnTotal;
+            if (targetClass === 'margin' || targetClass === 'margin_combined') {
+                return;
             }
+
+            let columnTotal = sumColumn(targetClass);
 
             span.text(app.convertCurrencyToUserFormat(columnTotal));
         });
 
+        let totalMargin = 0;
+        const decimalPlaces = app.getNumberOfDecimals();
+
+        if (priceAfterOverallDiscountTotal > 0) {
+            totalMargin = ((marginAmountTotal * 100) / priceAfterOverallDiscountTotal);
+            const totalMarginDisplay = app.convertCurrencyToUserFormat(totalMargin.toFixed(decimalPlaces));
+            const totalMarginAmountDisplay = app.convertCurrencyToUserFormat(marginAmountTotal.toFixed(2));
+            totalMarginSpan.text(totalMarginDisplay);
+            totalMarginCombinedSpan.text(totalMarginAmountDisplay + ' (' + totalMarginDisplay + '%)');
+        } else {
+            totalMarginSpan.text(originalTotalMarginDisplay);
+            totalMarginCombinedSpan.text(originalTotalMarginCombinedDisplay);
+        }
+
+        jQuery('tbody input.discount_amount, tbody input.overall_discount_amount', this.lineItemsHolder).each(function () {
+            summary_discount += parseFloat(jQuery(this).val()) || 0;
+        });
+
+        jQuery('td.subTotalDisplay').text(app.convertCurrencyToUserFormat(subtotal));
+        jQuery('td.priceWithoutVatDisplay').text(app.convertCurrencyToUserFormat(priceAfterOverallDiscountTotal));
+        jQuery('td.vatDisplay').text(app.convertCurrencyToUserFormat(vatTotal));
         jQuery('td.priceTotalDisplay').text(app.convertCurrencyToUserFormat(grand_total));
+        jQuery('td.summaryDiscountDisplay').text(app.convertCurrencyToUserFormat(summary_discount));
         let adjustment = parseFloat(jQuery('#adjustment').val());
 
         if (!isNaN(adjustment)) {
@@ -285,19 +321,20 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     registerOverallDiscountActions: function () {
         const self = this;
+        const itemsBlockHolder = this.itemsBlockHolder;
 
-        this.lineItemsHolder.on('click', '.editOverallDiscount', function () {
+        itemsBlockHolder.on('click', '.editOverallDiscount', function () {
             jQuery('#overallDiscountSettingDiv').show();
             jQuery('#overall_discount_percent').focus();
         });
 
-        this.lineItemsHolder.on('click', '.closeOverallDiscountDiv', function () {
+        itemsBlockHolder.on('click', '.closeOverallDiscountDiv', function () {
             jQuery('#overall_discount_percent').val(jQuery('#original_overall_discount_percent').val());
             jQuery('#overall_discount_percent').trigger('change');
             jQuery('#overallDiscountSettingDiv').hide();
         });
 
-        this.lineItemsHolder.on('change', '#overall_discount_percent', function () {
+        itemsBlockHolder.on('change', '#overall_discount_percent', function () {
             let price = 0;
             jQuery('tbody input.price_after_discount', self.lineItemsHolder).each(function () {
                 price += parseFloat(jQuery(this).val()) || 0;
@@ -306,7 +343,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('#overall_discount_amount').val(overall_discount_amount.toFixed(2));
         });
 
-        this.lineItemsHolder.on('click', '.saveOverallDiscount', function () {
+        itemsBlockHolder.on('click', '.saveOverallDiscount', function () {
             const overallDiscountPercent = parseFloat(jQuery('#overall_discount_percent').val());
             const originalOverallDiscountPercent = parseFloat(jQuery('#original_overall_discount_percent').val());
 
@@ -332,20 +369,21 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
 
     registerAdjustmentActions: function () {
         const self = this;
+        const itemsBlockHolder = this.itemsBlockHolder;
 
-        this.lineItemsHolder.on('click', '.editAdjustment', function () {
+        itemsBlockHolder.on('click', '.editAdjustment', function () {
             jQuery('#adjustmentSettingDiv').show();
             jQuery('#adjustment').focus();
             jQuery('#adjustment').trigger('change');
         });
 
-        this.lineItemsHolder.on('click', '.closeAdjustmentDiv', function () {
+        itemsBlockHolder.on('click', '.closeAdjustmentDiv', function () {
             jQuery('#adjustment').val(jQuery('#original_adjustment').val());
             jQuery('#adjustment').trigger('change');
             jQuery('#adjustmentSettingDiv').hide();
         });
 
-        this.lineItemsHolder.on('change keyup', '#adjustment', function () {
+        itemsBlockHolder.on('change keyup', '#adjustment', function () {
             let price = 0;
             jQuery('tbody input.price_total', self.lineItemsHolder).each(function () {
                 price += parseFloat(jQuery(this).val()) || 0; // Parse value, default to 0
@@ -359,7 +397,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             jQuery('#total_with_adjustment').val((price + adjustment).toFixed(2));
         });
 
-        this.lineItemsHolder.on('click', '.saveAdjustment', function () {
+        itemsBlockHolder.on('click', '.saveAdjustment', function () {
             let adjustment = parseFloat(jQuery('#adjustment').val());
             const originalAdjustment = parseFloat(jQuery('#original_adjustment').val());
 
@@ -973,7 +1011,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         let margin = 0;
         let margin_amount = 0;
 
-        if (!isNaN(purchaseCost) && purchaseCost > 0 && price > 0) {
+        if (!isNaN(purchaseCost) && price > 0) {
             margin_amount = (price - (purchaseCost * quantity)).toFixed(decimalPlaces);
             margin = ((parseFloat(margin_amount) / price) * 100).toFixed(decimalPlaces);
         }

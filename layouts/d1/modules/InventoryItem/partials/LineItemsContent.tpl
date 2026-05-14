@@ -66,7 +66,16 @@
             <td style="display: none;"><input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" class="{$INVENTORY_ITEM_FIELD_NAME}" type="hidden" value="{$data.$INVENTORY_ITEM_FIELD_NAME}"></td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'discount_amount'}
             <td class="textAlignRight" title="{vtranslate({$FIELD->get('label')}, 'InventoryItem')}" style="min-width: 80px;" nowrap="nowrap">
-                <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO} ">{if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}{$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}{else}{$data.$INVENTORY_ITEM_FIELD_NAME}{/if}</span>
+                {assign var=DISCOUNT_AMOUNT_DISPLAY value=''}
+                {if $data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'} neq ''}
+                    {assign var=DISCOUNT_AMOUNT_DISPLAY value=$data.{$INVENTORY_ITEM_FIELD_NAME|cat:'_display'}}
+                {else}
+                    {assign var=DISCOUNT_AMOUNT_DISPLAY value=$data.$INVENTORY_ITEM_FIELD_NAME}
+                {/if}
+                {assign var=SHOW_DISCOUNT_PERCENT_IN_AMOUNT value=!in_array('discount', $INVENTORY_ITEM_COLUMNS) && isset($data.discount_type) && ($data.discount_type eq 'Percentage' || $data.discount_type eq 'Percent') && isset($data.discount) && $data.discount neq ''}
+                <span class="noEditLineItem display_{$FIELD_NAME_CAT_ROW_NO} ">
+                    {$DISCOUNT_AMOUNT_DISPLAY}{if $SHOW_DISCOUNT_PERCENT_IN_AMOUNT} ({if isset($data.discount_display) && $data.discount_display neq ''}{$data.discount_display}{else}{$data.discount}{/if}%){/if}
+                </span>
                 <input id="{$FIELD_NAME_CAT_ROW_NO}" name="{$FIELD_NAME_CAT_ROW_NO}" type="hidden" class="{$INVENTORY_ITEM_FIELD_NAME} inputElement form-control textAlignRight" value="{$data.$INVENTORY_ITEM_FIELD_NAME}" readonly="readonly" />
             </td>
         {elseif $INVENTORY_ITEM_FIELD_NAME eq 'price'}

@@ -54,13 +54,19 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
 
         $priceAfterOverallDiscount = $priceAfterDiscount - $overallDiscountAmount;
         $discountsAmount = $discountAmount + $overallDiscountAmount;
-        $purchaseCost = $this->get('purchase_cost');
+        $purchaseCost = (float)$this->get('purchase_cost');
+        $purchaseCostAmount = round($purchaseCost * $quantity, 2);
+        $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+        $marginDecimals = $decimals['margin'] ?? 2;
         $margin = $marginAmount = 0;
+        $marginCombined = '';
 
-        if ($purchaseCost > 0) {
-            $marginAmount = $priceAfterOverallDiscount - ($purchaseCost * $quantity);
-            $margin = (100 * ($priceAfterOverallDiscount - $marginAmount)) / $priceAfterOverallDiscount;
+        if ($priceAfterOverallDiscount > 0) {
+            $marginAmount = $priceAfterOverallDiscount - $purchaseCostAmount;
+            $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount, $marginDecimals);
         }
+
+        $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin);
 
         $tax = $this->get('tax');
         $taxAmount = round($priceAfterOverallDiscount * $tax / 100, 2);
@@ -90,6 +96,10 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
             $this->set('discounts_amount', $discountsAmount);
         }
 
+        if ($purchaseCostAmount != $this->get('purchase_cost_amount')) {
+            $this->set('purchase_cost_amount', $purchaseCostAmount);
+        }
+
         if ($taxAmount != $this->get('tax_amount')) {
             $this->set('tax_amount', $taxAmount);
         }
@@ -104,6 +114,10 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
 
         if ($marginAmount != $this->get('margin_amount')) {
             $this->set('margin_amount', $marginAmount);
+        }
+
+        if ($marginCombined !== $this->get('margin_combined')) {
+            $this->set('margin_combined', $marginCombined);
         }
     }
 

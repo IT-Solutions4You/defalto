@@ -32,6 +32,10 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         'margin_amount',
         'sequence',
     ];
+    protected array $hiddenSelectedFields = [
+        'purchase_cost_amount',
+        'margin_combined',
+    ];
 
     /**
      * @inheritDoc
@@ -119,6 +123,10 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         foreach ($selectedFields as $fieldName) {
             if (!isset($recordStructure[$fieldName]) || !$recordStructure[$fieldName]) {
                 unset($selectedFields[$fieldName]);
+                continue;
+            }
+
+            if (in_array($fieldName, $this->hiddenSelectedFields, true)) {
                 continue;
             }
 

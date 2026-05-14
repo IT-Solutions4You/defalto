@@ -36,7 +36,7 @@ if (!class_exists('Migration_20250709123459')) {
 
             $this->db->pquery(
                 'INSERT INTO df_inventoryitemcolumns VALUES(?,?) ON DUPLICATE KEY UPDATE columnslist = columnslist',
-                [0, 'productid,quantity,unit,price,subtotal,discounts_amount,price_after_overall_discount,tax,tax_amount,price_total']
+                [0, 'productid,quantity,unit,price,subtotal,discount_amount,price_after_overall_discount,tax,tax_amount,price_total']
             );
             $this->db->pquery('INSERT INTO df_inventoryitem_itemmodules (tabid) VALUES (?), (?) ON DUPLICATE KEY UPDATE tabid = tabid', [getTabid('Products'), getTabid('Services')]
             );

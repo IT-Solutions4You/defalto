@@ -29,6 +29,7 @@ $languageStrings = [
     'Tax Amount' => 'Tax Amount',
     'Total' => 'Teljes összeg',
     'Purchase Cost' => 'Beszerzési költsége',
+    'Purchase Cost Amount' => 'Teljes beszerzési költség',
     'Margin' => 'Margó',
     'Unit' => 'Egység',
     'Parent Inventory Item' => 'Parent Inventory Item',
