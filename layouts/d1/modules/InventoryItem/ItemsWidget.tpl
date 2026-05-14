@@ -42,7 +42,6 @@
         </tr>
     {/foreach}
     </tbody>
-    {if count($ITEMS)}
     <tfoot>
     <tr>
         <td></td>
@@ -51,16 +50,25 @@
         <td class="font-bold textAlignRight">{$VAT_DISPLAY}</td>
         <td class="font-bold textAlignRight">{$PRICE_TOTAL_DISPLAY}</td>
     </tr>
+    </tfoot>
+</table>
+{if count($ITEMS)}
+<table class="table table-borderless">
+    <tbody>
     {if $ADJUSTMENT != 0 && $ADJUSTMENT != ''}
     <tr>
-        <td class="font-bold textAlignRight" colspan="4">{vtranslate('Adjustment', 'InventoryItem')}</td>
-        <td class="font-bold textAlignRight">{$ADJUSTMENT_DISPLAY}</td>
+        <td class="font-bold textAlignRight" style="width:100%">{vtranslate('Adjustment', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight" style="white-space:nowrap">{$ADJUSTMENT_DISPLAY}</td>
     </tr>
     {/if}
     <tr>
-        <td class="font-bold textAlignRight" colspan="4">{vtranslate('Grand Total', 'InventoryItem')}</td>
-        <td class="font-bold textAlignRight">{$GRAND_TOTAL_DISPLAY}</td>
+        <td class="font-bold textAlignRight" style="width:100%">{vtranslate('Grand Total', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight" style="white-space:nowrap">{$GRAND_TOTAL_DISPLAY}</td>
     </tr>
-    </tfoot>
-    {/if}
+    <tr>
+        <td class="font-bold textAlignRight" style="width:100%">{vtranslate('LBL_MARGIN', 'InventoryItem')}</td>
+        <td class="font-bold textAlignRight" style="white-space:nowrap">{$MARGIN_COMBINED}</td>
+    </tr>
+    </tbody>
 </table>
+{/if}

@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of Defalto â€“ a CRM software developed by IT-Solutions4You s.r.o.
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
  * (c) IT-Solutions4You s.r.o
  *
@@ -13,6 +13,9 @@ if (!class_exists('Migration_20260511113059')) {
     {
         public function migrate(string $strFileName): void
         {
+            $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+            $marginDecimals = $decimals['margin'] ?? 2;
+
             Vtiger_Utils::AddColumn('df_inventoryitem', 'margin_combined', 'VARCHAR(255)');
             $this->db->query(
                 "UPDATE df_inventoryitemcolumns
@@ -24,32 +27,7 @@ if (!class_exists('Migration_20260511113059')) {
                 WHERE tabid = 0"
             );
 
-            $this->db->query(
-                "UPDATE df_inventoryitem
-                SET
-                    margin = CASE
-                        WHEN IFNULL(price_after_overall_discount, 0) > 0
-                            THEN ROUND((IFNULL(margin_amount, 0) * 100) / price_after_overall_discount, 0)
-                        ELSE 0
-                    END,
-                    margin_combined = CONCAT(
-                        REPLACE(FORMAT(IFNULL(margin_amount, 0), 2), ',', ''),
-                        ' (',
-                        REPLACE(
-                            FORMAT(
-                                CASE
-                                    WHEN IFNULL(price_after_overall_discount, 0) > 0
-                                        THEN ROUND((IFNULL(margin_amount, 0) * 100) / price_after_overall_discount, 0)
-                                    ELSE 0
-                                END,
-                                2
-                            ),
-                            ',',
-                            ''
-                        ),
-                        '%)'
-                    )"
-            );
+            $this->updateInventoryItemMargins($marginDecimals);
 
             $tables = [
                 'vtiger_quotes'        => 'quoteid',
@@ -70,7 +48,7 @@ if (!class_exists('Migration_20260511113059')) {
                             ROUND(SUM(df_inventoryitem.price_after_overall_discount), 2) AS price_after_overall_discount,
                             CASE
                                 WHEN ROUND(SUM(df_inventoryitem.price_after_overall_discount), 2) > 0
-                                    THEN ROUND((ROUND(SUM(df_inventoryitem.margin_amount), 2) * 100) / ROUND(SUM(df_inventoryitem.price_after_overall_discount), 2), 0)
+                                    THEN ROUND((ROUND(SUM(df_inventoryitem.margin_amount), 2) * 100) / ROUND(SUM(df_inventoryitem.price_after_overall_discount), 2), ' . $marginDecimals . ')
                                 ELSE 0
                             END AS margin
                         FROM df_inventoryitem
@@ -82,29 +60,85 @@ if (!class_exists('Migration_20260511113059')) {
                         parent.purchase_cost_amount = COALESCE(items.purchase_cost_amount, 0),
                         parent.margin = CASE
                             WHEN COALESCE(items.price_after_overall_discount, 0) > 0
-                                THEN ROUND((COALESCE(items.margin_amount, 0) * 100) / items.price_after_overall_discount, 0)
+                                THEN ROUND((COALESCE(items.margin_amount, 0) * 100) / items.price_after_overall_discount, ' . $marginDecimals . ')
                             ELSE 0
-                        END,
-                        parent.margin_combined = CONCAT(
-                            REPLACE(FORMAT(COALESCE(items.margin_amount, 0), 2), \',\', \'\'),
-                            \' (\',
-                            REPLACE(
-                                FORMAT(
-                                    CASE
-                                        WHEN COALESCE(items.price_after_overall_discount, 0) > 0
-                                            THEN ROUND((COALESCE(items.margin_amount, 0) * 100) / items.price_after_overall_discount, 0)
-                                        ELSE 0
-                                    END,
-                                    2
-                                ),
-                                \',\',
-                                \'\'
-                            ),
-                            \'%)\'
-                        )';
+                        END';
 
                 $this->db->query($sql);
+                $this->updateParentMargins($tableName, $idColumn, $marginDecimals);
             }
+        }
+
+        private function updateInventoryItemMargins(int $marginDecimals): void
+        {
+            $result = $this->db->pquery(
+                'SELECT df_inventoryitem.inventoryitemid, df_inventoryitem.margin_amount, df_inventoryitem.price_after_overall_discount, vtiger_crmentity.modifiedby
+                FROM df_inventoryitem
+                INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = df_inventoryitem.inventoryitemid
+                WHERE vtiger_crmentity.deleted = 0',
+                []
+            );
+
+            while ($row = $this->db->fetchByAssoc($result)) {
+                $marginAmount = (float)($row['margin_amount'] ?? 0);
+                $priceAfterOverallDiscount = (float)($row['price_after_overall_discount'] ?? 0);
+                $margin = 0.0;
+
+                if ($priceAfterOverallDiscount > 0) {
+                    $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount, $marginDecimals);
+                }
+
+                $user = $this->getFormattingUser((int)($row['modifiedby'] ?? 0));
+                $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin, $user);
+
+                $this->db->pquery(
+                    'UPDATE df_inventoryitem SET margin = ?, margin_combined = ? WHERE inventoryitemid = ?',
+                    [$margin, $marginCombined, $row['inventoryitemid']]
+                );
+            }
+        }
+
+        private function updateParentMargins(string $tableName, string $idColumn, int $marginDecimals): void
+        {
+            $result = $this->db->pquery(
+                'SELECT parent.' . $idColumn . ' AS recordid, parent.margin_amount, parent.price_after_overall_discount, vtiger_crmentity.modifiedby
+                FROM ' . $tableName . ' parent
+                INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = parent.' . $idColumn,
+                []
+            );
+
+            while ($row = $this->db->fetchByAssoc($result)) {
+                $marginAmount = (float)($row['margin_amount'] ?? 0);
+                $priceAfterOverallDiscount = (float)($row['price_after_overall_discount'] ?? 0);
+                $margin = 0.0;
+
+                if ($priceAfterOverallDiscount > 0) {
+                    $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount, $marginDecimals);
+                }
+
+                $user = $this->getFormattingUser((int)($row['modifiedby'] ?? 0));
+                $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin, $user);
+
+                $this->db->pquery(
+                    'UPDATE ' . $tableName . ' SET margin = ?, margin_combined = ? WHERE ' . $idColumn . ' = ?',
+                    [$margin, $marginCombined, $row['recordid']]
+                );
+            }
+        }
+
+        private function getFormattingUser(int $userId): Users_Record_Model
+        {
+            static $userCache = [];
+
+            if ($userId > 0) {
+                if (!isset($userCache[$userId])) {
+                    $userCache[$userId] = Users_Record_Model::getInstanceById($userId, 'Users');
+                }
+
+                return $userCache[$userId];
+            }
+
+            return Users_Record_Model::getCurrentUserModel();
         }
     }
 } else {

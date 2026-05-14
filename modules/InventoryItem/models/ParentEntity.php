@@ -78,10 +78,12 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
                 if ($hasMarginField || $hasMarginCombinedField) {
                     $priceAfterOverallDiscount = (float)($row['price_after_overall_discount'] ?? 0);
                     $marginAmount = (float)($row['margin_amount'] ?? 0);
+                    $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+                    $marginDecimals = $decimals['margin'] ?? 2;
                     $margin = 0.0;
 
                     if ($priceAfterOverallDiscount > 0) {
-                        $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount, 0);
+                        $margin = round(($marginAmount * 100) / $priceAfterOverallDiscount, $marginDecimals);
                     }
 
                     if ($hasMarginField && (float)$parentRecordModel->get('margin') !== $margin) {
