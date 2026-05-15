@@ -165,6 +165,9 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     public function extensionUninstall(Vtiger_Request $request): void
     {
         if ('Yes' === $request->get('confirmed')) {
+            $moduleName = $request->get('sourceModule');
+            Core_Install_Model::getInstance('module.preuninstall', $moduleName)->deleteModule();
+
             header('location:index.php?module=Installer&view=Index');
         } else {
             header('location:' . $_SERVER['HTTP_REFERER']);
