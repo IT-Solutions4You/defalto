@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-{include file="Header"|vtemplate_path:$MODULE}
+{include file="Header.tpl"|vtemplate_path:$MODULE}
 {assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 <nav class="fixed-top app-fixed-navbar bg-body-secondary">
     <div class="container-fluid global-nav">
