@@ -933,4 +933,7 @@ var vtUtils = {
         container.find('[data-color-id]').removeClass('bg-body-secondary');
         container.find('[data-color-id="' + color + '"]').addClass('bg-body-secondary');
     },
+    showLicenseError() {
+        app.helper.showErrorNotification({message: app.vtranslate('JS_MEMBERSHIP_LICENSE_REQUIRED')});
+    },
 }

@@ -6,7 +6,7 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  *}
-{include file="modules/Vtiger/partials/Topbar.tpl"}
+{include file='partials/Topbar.tpl'|vtemplate_path:$MODULE}
 <div class="container-fluid app-nav">
     <div class="row">
         {include file='partials/SidebarHeader.tpl'|vtemplate_path:$MODULE}

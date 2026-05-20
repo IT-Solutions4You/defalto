@@ -1815,4 +1815,5 @@ $jsLanguageStrings = [
     'work' => 'Arbeit',
     'work_fax' => 'Fax',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
+    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Für die Nutzung und Installation der AI Erweiterung ist eine Membership Lizenz erforderlich',
 ];

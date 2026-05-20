@@ -35,7 +35,12 @@
                         </div>
                     {/if}
                     <div class="col-12 mt-2 col-sm-auto mt-sm-0 ms-auto">
-                        <button class="btn btn-primary active px-5 w-100 {$SAVE_BUTTON_CLASS}" type="button" data-mode="add">
+                        <span class="aiChatCommentContainer">
+                            <button type="button" class="btn btn-primary me-2 aiChatComment" onclick="vtUtils.showLicenseError();">
+                                <i class="bi bi-stars"></i>
+                            </button>
+                        </span>
+                        <button class="btn btn-primary active px-5 {$SAVE_BUTTON_CLASS}" type="button" data-mode="add">
                             <i class="fa-solid fa-paper-plane"></i>
                             <span class="d-none d-lg-inline ms-2">{vtranslate('LBL_POST', $MODULE_NAME)}</span>
                         </button>
