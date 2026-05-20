@@ -934,6 +934,6 @@ var vtUtils = {
         container.find('[data-color-id="' + color + '"]').addClass('bg-body-secondary');
     },
     showLicenseError() {
-        app.helper.showErrorNotification({message: 'Membership license is required to use and install AI extension'});
+        app.helper.showErrorNotification({message: app.vtranslate('JS_MEMBERSHIP_LICENSE_REQUIRED')});
     },
 }

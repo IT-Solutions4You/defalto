@@ -1955,4 +1955,5 @@ $jsLanguageStrings = [
     'JS_UPDATE_RECORD_TAXES_QUESTION' => 'Chcete aktualizovat daně u všech záznamů?',
     'JS_CLEAR' => 'Vymazat',
     'JS_ASSIGNED_USER_HAS_CHANGE' => 'Přiřazený uživatel byl změněn',
+    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Pro používání a instalaci AI rozšíření je vyžadována Membership licence',
 ];

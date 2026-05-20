@@ -1952,4 +1952,5 @@ $jsLanguageStrings = [
     'JS_RECORDS_WILL_BE_DELETED' => 'Táto akcia natrvalo odstráni záznamy',
     'JS_REQUIRED_PARAMETER_CONFIRMATION' => 'Niektoré nastavenia PHP nespĺňajú odporúčané hodnoty. Toto môže ovplyvniť niektoré funkcie vtiger CRM. Ste si istí, že chcete pokračovať?',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diakritika nie je povolená. Povolená je pomlčka, podčiarkovník a medzera.',
+    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Na používanie a inštaláciu AI rozšírenia je potrebná Membership licencia',
 ];
