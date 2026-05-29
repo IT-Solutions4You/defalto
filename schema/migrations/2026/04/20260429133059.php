@@ -13,11 +13,14 @@ if (!class_exists('Migration_20260429133059')) {
     {
         public function migrate(string $strFileName): void
         {
+            $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+            $marginDecimals = $decimals['margin'] ?? 2;
+
             $this->db->query(
                 'UPDATE df_inventoryitem
                 SET margin = CASE
                     WHEN IFNULL(price_after_overall_discount, 0) > 0
-                        THEN ROUND((IFNULL(margin_amount, 0) * 100) / price_after_overall_discount, 0)
+                        THEN ROUND((IFNULL(margin_amount, 0) * 100) / price_after_overall_discount, ' . $marginDecimals . ')
                     ELSE 0
                 END'
             );
@@ -46,7 +49,7 @@ if (!class_exists('Migration_20260429133059')) {
                         parent.purchase_cost_amount = COALESCE(items.purchase_cost_amount, 0),
                         parent.margin = CASE
                             WHEN COALESCE(items.price_after_overall_discount, 0) > 0
-                                THEN ROUND((COALESCE(items.margin_amount, 0) * 100) / items.price_after_overall_discount, 0)
+                                THEN ROUND((COALESCE(items.margin_amount, 0) * 100) / items.price_after_overall_discount, ' . $marginDecimals . ')
                             ELSE 0
                         END
                 ';

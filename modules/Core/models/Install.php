@@ -378,7 +378,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'quickcreate' => 3,
             'displaytype' => 1,
             'masseditable' => 1,
-            'summaryfield' => 1,
+            'summaryfield' => 0,
             'ajaxeditable' => 0,
         ],
     ];

@@ -189,7 +189,7 @@
                                 <span class="total_margin">{$TOTAL_MARGIN_DISPLAY}</span>
                             {elseif $INVENTORY_ITEM_FIELD_NAME eq 'margin_combined'}
                                 <span class="total_margin_combined">{$TOTAL_MARGIN_COMBINED_DISPLAY}</span>
-                             {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $TOTAL_FIELDS)}
+                            {elseif in_array($INVENTORY_ITEM_FIELD_NAME, $TOTAL_FIELDS)}
                                 <span class="total_{$INVENTORY_ITEM_FIELD_NAME}"></span>
                             {/if}
                         </td>

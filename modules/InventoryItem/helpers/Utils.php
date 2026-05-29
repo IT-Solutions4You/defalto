@@ -302,10 +302,13 @@ class InventoryItem_Utils_Helper
 
     public static function buildMarginCombinedValue($marginAmount, $margin, ?Users_Record_Model $user = null): string
     {
+        $user ??= Users_Record_Model::getCurrentUserModel();
         $decimals = self::fetchDecimals();
         $marginDecimals = $decimals['margin'] ?? 2;
         $amountDisplay = CurrencyField::convertToUserFormat((float)$marginAmount, $user, true, false, true);
-        $marginDisplay = number_format((float)$margin, $marginDecimals, '.', '');
+        $marginUser = clone $user;
+        $marginUser->set('no_of_currency_decimals', $marginDecimals);
+        $marginDisplay = CurrencyField::convertToUserFormat((float)$margin, $marginUser, true, false, true);
 
         return $amountDisplay . ' (' . $marginDisplay . '%)';
     }
