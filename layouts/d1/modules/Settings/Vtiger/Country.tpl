@@ -36,13 +36,13 @@
             <div class="container-fluid pb-3">
                 <div class="row">
                     {foreach from=$COUNTRIES item=COUNTRY}
-                        <label class="col-lg-6 col-xl-4 col-xxl-3 p-3 border-bottom border-end" data-search-value="{strtolower(implode(' - ', [$COUNTRY['code'], $COUNTRY['name'], vtranslate($COUNTRY['name'], $QUALIFIED_MODULE)]))}">
+                        <label class="col-lg-6 col-xl-4 col-xxl-3 p-3 border-bottom border-end" data-search-value="{strtolower(implode(' - ', [$COUNTRY['code'], $COUNTRY['name'], vtranslate($COUNTRY['name'], 'Country'), vtranslate($COUNTRY['name'], $QUALIFIED_MODULE)]))}">
                             <span class="row">
                                 <span class="col-1">
                                     <input class="form-check-input updateValue" type="checkbox" {if 1 eq $COUNTRY['is_active']}checked="checked"{/if} data-value="{$COUNTRY['code']}">
                                 </span>
                                 <b class="col-1">{$COUNTRY['code']}</b>
-                                <span class="col">{vtranslate($COUNTRY['name'], $QUALIFIED_MODULE)}</span>
+                                <span class="col">{vtranslate($COUNTRY['name'], 'Country')}</span>
                             </span>
                         </label>
                     {/foreach}

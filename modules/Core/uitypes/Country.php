@@ -26,7 +26,7 @@ class Core_Country_UIType extends Vtiger_Base_UIType
         if (!empty($value)) {
             $country = $countryModel->getCountry($value);
 
-            return vtranslate($country['name'], $moduleName);
+            return vtranslate($country['name'], 'Country');
         }
 
         return $value;
@@ -58,7 +58,7 @@ class Core_Country_UIType extends Vtiger_Base_UIType
 
         foreach ($countries as $country) {
             if (1 === (int)$country['is_active']) {
-                $values[$country['code']] = vtranslate($country['name'], $moduleName);
+                $values[$country['code']] = vtranslate($country['name'], 'Country');
             }
         }
 
