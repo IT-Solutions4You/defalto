@@ -1,0 +1,110 @@
+<?php
+/*
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+class Core_DeleteFiles_Config
+{
+    public static array $all = [
+        'modules/Invoice/views/Edit.php',
+        'modules/SalesOrder/views/Edit.php',
+        'modules/PurchaseOrder/views/Edit.php',
+        'modules/Quotes/views/Edit.php',
+        'modules/Invoice/views/Detail.php',
+        'modules/SalesOrder/views/Detail.php',
+        'modules/PurchaseOrder/views/Detail.php',
+        'modules/Quotes/views/Detail.php',
+        'modules/Invoice/views/QuickCreateAjax.php',
+        'modules/SalesOrder/views/QuickCreateAjax.php',
+        'modules/Quotes/views/QuickCreateAjax.php',
+        'modules/Potentials/views/Detail.php',
+        'modules/Import/resources/Import.js',
+        'modules/Webforms/Webforms.js',
+        'modules/Vendors/Vendors.js',
+        'modules/Users/Users.js',
+        'modules/Tooltip/TooltipHeaderScript.js',
+        'modules/Tooltip/Tooltip.js',
+        'modules/Tooltip/TooltipSettings.js',
+        'modules/Settings/Settings.js',
+        'modules/Services/multifile.js',
+        'modules/Services/Services.js',
+        'modules/Services/Servicesslide.js',
+        'modules/ServiceContracts/ServiceContracts.js',
+        'modules/SalesOrder/SalesOrder.js',
+        'modules/Rss/Rss.js',
+        'modules/RecycleBin/RecycleBin.js',
+        'modules/Quotes/Quotes.js',
+        'modules/PurchaseOrder/PurchaseOrder.js',
+        'modules/ProjectTask/ProjectTask.js',
+        'modules/ProjectMilestone/ProjectMilestone.js',
+        'modules/Project/Project.js',
+        'modules/Products/Productsslide.js',
+        'modules/Products/Products.js',
+        'modules/Products/multifile.js',
+        'modules/PriceBooks/PriceBooks.js',
+        'modules/Potentials/Potentials.js',
+        'modules/Portal/Portal.js',
+        'modules/Picklist/DependencyPicklist.js',
+        'modules/PBXManager/PBXManager.js',
+        'modules/MailManager/MailManager.js',
+        'modules/Leads/Leads.js',
+        'modules/Invoice/Invoice.js',
+        'modules/Integration/Integration.js',
+        'modules/Home/Homestuff.js',
+        'modules/HelpDesk/HelpDesk.js',
+        'modules/Faq/Faq.js',
+        'modules/CustomerPortal/CustomerPortal.js',
+        'modules/CronTasks/CronTasks.js',
+        'modules/Contacts/Contacts.js',
+        'modules/ConfigurationEditor/ConfigEditor.js',
+        'modules/Documents/Documents.js',
+        'modules/CustomView/CustomView.js',
+        'modules/ModComments/ModComments.js',
+        'modules/ModComments/ModCommentsCommon.js',
+        'modules/ModTracker/ModTracker.js',
+        'modules/ModTracker/ModTrackerCommon.js',
+        'modules/com_vtiger_workflow/resources/functional.js',
+        'modules/com_vtiger_workflow/resources/parallelexecuter.js',
+        'modules/com_vtiger_workflow/resources/editworkflowscript.js',
+        'modules/com_vtiger_workflow/resources/fieldexpressionpopup.js',
+        'modules/com_vtiger_workflow/resources/workflowlistscript.js',
+        'modules/com_vtiger_workflow/resources/fieldvalidator.js',
+        'modules/com_vtiger_workflow/resources/updatefieldstaskscript.js',
+        'modules/com_vtiger_workflow/resources/jquery-1.2.6.js',
+        'modules/com_vtiger_workflow/resources/json2.js',
+        'modules/com_vtiger_workflow/resources/vtigerwebservices.js',
+        'modules/com_vtiger_workflow/resources/jquery.timepicker.js',
+        'modules/com_vtiger_workflow/resources/createentitytaskscript.js',
+        'modules/com_vtiger_workflow/resources/edittaskscript.js',
+        'modules/com_vtiger_workflow/resources/emailtaskscript.js',
+        'modules/FieldFormulas/editexpressionscript.js',
+        'modules/FieldFormulas/jquery-1.2.6.js',
+        'modules/FieldFormulas/json2.js',
+        'modules/FieldFormulas/vtigerwebservices.js',
+        'modules/FieldFormulas/functional.js',
+        'modules/Vtiger/helpers/Logger.php',
+        'layouts/d1/modules/Settings/Vtiger/resources/Tax.js',
+        'layouts/d1/modules/Settings/Vtiger/ChargesAndItsTaxes.tpl',
+        'layouts/d1/modules/Settings/Vtiger/EditCharge.tpl',
+        'layouts/d1/modules/Settings/Vtiger/EditRegion.tpl',
+        'layouts/d1/modules/Settings/Vtiger/EditTax.tpl',
+        'layouts/d1/modules/Settings/Vtiger/TaxIndex.tpl',
+        'layouts/d1/modules/Settings/Vtiger/TaxRegions.tpl',
+        'layouts/d1/modules//Vtiger/uitypes/ProductTax.tpl',
+        'modules/Inventory/models/Charges.php',
+        'modules/Inventory/models/TaxRecord.php',
+        'modules/Inventory/models/TaxRegion.php',
+        'modules/Vtiger/uitypes/ProductTax.php',
+    ];
+
+    public static function getAll(): array
+    {
+        return self::$all;
+    }
+}
+
