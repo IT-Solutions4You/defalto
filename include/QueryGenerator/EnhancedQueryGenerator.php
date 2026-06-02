@@ -729,6 +729,9 @@ class EnhancedQueryGenerator extends QueryGenerator
                 $valueSqlList = [$valueSqlList];
             }
             foreach ($valueSqlList as $valueSql) {
+                $isMultiPicklist = 'multipicklist' === $field->getFieldDataType();
+                $isContain = 'c' === $operator;
+
                 if (in_array($baseFieldName, $this->referenceFieldList)) {
                     $trim = 'TRIM';
                     $moduleList = $this->referenceFieldInfoList[$baseFieldName];
@@ -812,23 +815,18 @@ class EnhancedQueryGenerator extends QueryGenerator
                 } elseif ($fieldName == "tags") {
                     $fieldSql .= " $fieldGlue ( vtiger_freetags.id " . $valueSql . ' AND ' .
                         '( vtiger_freetagged_objects.tagger_id = ' . $this->user->id . ' OR vtiger_freetags.visibility = "public")) ';
+                } elseif ($fieldName == 'birthday' && !$this->isRelativeSearchOperators($conditionInfo['operator'])) {
+                    $fieldSql .= "$fieldGlue DATE_FORMAT(" . $tableName . '.' . $field->getColumnName() . ",'%m%d') " . $valueSql;
+                } elseif ($conditionInfo['operator'] == 'n' && $isMultiPicklist) {
+                    $specialCondition = ' OR ' . $tableName . '.' . $field->getColumnName() . ' IS NULL ';
+                    $fieldSql .= "$fieldGlue " . $tableName . '.' . $field->getColumnName() . ' ' . $valueSql . $specialCondition;
+                } elseif($isContain && $isMultiPicklist) {
+                    $fieldSql .= sprintf('%s CONCAT(\' |##| \',%s.%s,\' |##| \') %s', $fieldGlue, $tableName, $field->getColumnName(), $valueSql);
                 } else {
-                    if ($fieldName == 'birthday' && !$this->isRelativeSearchOperators($conditionInfo['operator'])) {
-                        $fieldSql .= "$fieldGlue DATE_FORMAT(" . $tableName . '.' .
-                            $field->getColumnName() . ",'%m%d') " . $valueSql;
-                    } else {
-                        if ($conditionInfo['operator'] == 'n' && $field->getFieldDataType() == 'multipicklist') {
-                            $specialCondition = ' OR ' . $tableName . '.' . $field->getColumnName() . ' IS NULL ';
-                            $fieldSql .= "$fieldGlue " . $tableName . '.' .
-                                $field->getColumnName() . ' ' . $valueSql . $specialCondition;
-                        } else {
-                            $fieldSql .= "$fieldGlue " . $tableName . '.' .
-                                $field->getColumnName() . ' ' . $valueSql;
-                        }
-                    }
+                    $fieldSql .= "$fieldGlue " . $tableName . '.' . $field->getColumnName() . ' ' . $valueSql;
                 }
-                if (($conditionInfo['operator'] == 'n' || $conditionInfo['operator'] == 'k') && ($field->getFieldDataType() == 'owner' ||
-                        $field->getFieldDataType() == 'picklist' || $field->getFieldDataType() == 'multipicklist')) {
+
+                if (($conditionInfo['operator'] == 'n' || $conditionInfo['operator'] == 'k') && ($field->getFieldDataType() == 'owner' || $field->getFieldDataType() == 'picklist' || $field->getFieldDataType() == 'multipicklist')) {
                     $fieldGlue = ' AND';
                 } else {
                     $fieldGlue = ' OR';
