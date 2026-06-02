@@ -363,6 +363,17 @@ $languageStrings = [
     'LBL_INVENTORY' => 'Zásoby',
     'My Preferences' => 'Mé nastavení',
     'Calendar Settings' => 'Nastavení kalendáře',
+    'Settings Menu' => 'Menu nastavení',
+    'Search settings' => 'Hledat nastavení',
+    'LBL_MY_PREFERENCES' => 'Moje nastavení',
+    'LBL_USERS' => 'Uživatelé',
+    'LBL_EDIT_FIELDS' => 'Rozložení modulů a polí',
+    'Countries' => 'Země',
+    'Inventory Item Block' => 'Blok skladových položek',
+    'Installer' => 'Instalátor',
+    'Requirements' => 'Požadavky',
+    'pin' => 'Připnout',
+    'Unpin' => 'Odepnout',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Prosím, vyberte alespoň jednoho uživatele do skupiny',

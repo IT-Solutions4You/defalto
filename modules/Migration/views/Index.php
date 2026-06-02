@@ -146,6 +146,7 @@ class Migration_Index_View extends Core_Controller_View
     public function applyDBChanges()
     {
         vglobal('debug', true);
+        define('VTIGER_UPGRADE', true);
 
         $migrationModuleModel = Migration_Module_Model::getInstance();
         $reach = null;
@@ -166,8 +167,6 @@ class Migration_Index_View extends Core_Controller_View
         $migrateVersions[] = $getLatestSourceVersion;
 
         $patchCount = php7_count($migrateVersions);
-
-        define('VTIGER_UPGRADE', $getDBVersion);
 
         for ($i = 0; $i < $patchCount; $i++) {
             $filename = "modules/Migration/schema/" . $migrateVersions[$i] . "_to_" . $migrateVersions[$i + 1] . ".php";
@@ -285,6 +284,7 @@ class Migration_Index_View extends Core_Controller_View
     public function migrateData(Vtiger_Request $request): void
     {
         vglobal('debug', true);
+        define('VTIGER_UPGRADE', true);
 
         Install_Utils_Model::migrateTablesData();
     }

@@ -719,6 +719,7 @@ class QueryGenerator
                 $conditionInfo['operator'],
                 $field
             );
+
             $operator = strtolower($conditionInfo['operator']);
             if ($operator == 'between' && $this->isDateType($field->getFieldDataType())) {
                 $start = explode(' ', $conditionInfo['value'][0]);
@@ -910,6 +911,7 @@ class QueryGenerator
      */
     protected function getConditionValue($value, $operator, $field)
     {
+        $sqlOperator = '';
         $operator = strtolower($operator);
         $db = PearDatabase::getInstance();
 
@@ -1069,6 +1071,10 @@ class QueryGenerator
                 $this->isStringType($field->getFieldDataType())) {
                 $sql[] = "NOT LIKE ''";
                 continue;
+            }
+
+            if ('c' === $operator && 'multipicklist' === $field->getFieldDataType()) {
+                $value = sprintf(' |##| %s |##| ', $value);
             }
 
             switch ($operator) {
