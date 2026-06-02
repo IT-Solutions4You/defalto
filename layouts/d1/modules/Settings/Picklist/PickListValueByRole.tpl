@@ -16,7 +16,7 @@
                 <select class="select2 form-control" id="role2picklist" multiple name="role2picklist[]">
                     {foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$ALL_PICKLIST_VALUES}
                         <option value="{$PICKLIST_VALUE}" data-id="{$PICKLIST_KEY}" {if in_array($PICKLIST_VALUE,$ROLE_PICKLIST_VALUES)} selected {/if}>
-                            {vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)}
+                            {$PICKLIST_TRANSLATIONS[$PICKLIST_VALUE]}
                         </option>
                     {/foreach}
                 </select>
