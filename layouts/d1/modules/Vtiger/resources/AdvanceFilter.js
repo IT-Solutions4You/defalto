@@ -803,7 +803,7 @@ Vtiger_Multipicklist_Field_Js('AdvanceFilter_Multipicklist_Field_Js', {}, {
             pickListValues = this.getPickListValues();
 
         for (let picklistKey in pickListValues) {
-            html += '<option value="' + option + '">' + pickListValues[picklistKey] + '</option>';
+            html += '<option value="' + picklistKey + '">' + pickListValues[picklistKey] + '</option>';
         }
 
         return html;
