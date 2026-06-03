@@ -55,8 +55,13 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('FIELD_MODEL', $fieldModel);
         $viewer->assign('FIELD_VALUE', $valueToEdit);
         $viewer->assign('FIELD_VALUE_ID', $request->get('fieldValueId'));
+        $allFieldPickListValues = array_merge(
+            (array)$selectedFieldEditablePickListValues,
+            (array)$selectedFieldNonEditablePickListValues
+        );
         $viewer->assign('SELECTED_PICKLISTFIELD_EDITABLE_VALUES', $selectedFieldEditablePickListValues);
         $viewer->assign('SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES', $selectedFieldNonEditablePickListValues);
+        $viewer->assign('PICKLIST_TRANSLATIONS', $fieldModel->getValueTranslations($module, $allFieldPickListValues));
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('PICKLIST_COLOR_EDIT', $request->get('pickListColorEdit', false));
@@ -89,8 +94,13 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
 
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
+        $allFieldPickListValues = array_merge(
+            (array)$selectedFieldEditablePickListValues,
+            (array)$selectedFieldNonEditablePickListValues
+        );
         $viewer->assign('SELECTED_PICKLISTFIELD_EDITABLE_VALUES', $selectedFieldEditablePickListValues);
         $viewer->assign('SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES', $selectedFieldNonEditablePickListValues);
+        $viewer->assign('PICKLIST_TRANSLATIONS', $fieldModel->getValueTranslations($module, $allFieldPickListValues));
         $viewer->assign('FIELD_VALUES', array_map('Vtiger_Util_Helper::toSafeHTML', $valueToDelete));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'showDeleteView', $request->getModule(), $viewer, $request);
@@ -134,6 +144,7 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('ROLES_LIST', Settings_Roles_Record_Model::getAll());
         $viewer->assign('SELECTED_PICKLISTFIELD_ALL_VALUES', $selectedFieldAllPickListValues);
+        $viewer->assign('PICKLIST_TRANSLATIONS', $fieldModel->getValueTranslations($sourceModule, $selectedFieldAllPickListValues));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'getPickListValueForField', $request->getModule(), $viewer, $request);
 
@@ -162,6 +173,7 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedName);
         $viewer->assign('ROLE_PICKLIST_VALUES', $pickListValuesForRole);
         $viewer->assign('ALL_PICKLIST_VALUES', $allPickListValues);
+        $viewer->assign('PICKLIST_TRANSLATIONS', $fieldModel->getValueTranslations($sourceModule, $allPickListValues));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'getPickListValueByRole', $request->getModule(), $viewer, $request);
 

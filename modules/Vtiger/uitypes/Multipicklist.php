@@ -36,10 +36,11 @@ class Vtiger_Multipicklist_UIType extends Vtiger_Base_UIType
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
-        $moduleName = $this->get('field')->getModuleName();
+        $field = $this->get('field');
+        $picklistModule = Vtiger_Language_Handler::buildPicklistModule($field->getName(), $field->getModuleName());
         $value = explode(' |##| ', (string)$value);
         foreach ($value as $key => $val) {
-            $value[$key] = vtranslate($val, $moduleName);
+            $value[$key] = vtranslate($val, $picklistModule);
         }
 
         if (is_array($value)) {

@@ -26,7 +26,7 @@
                         <div class="controls col-sm">
                             <select class="select2 form-control" multiple="" id="deleteValue" name="delete_value[]" >
                                 {foreach from=$SELECTED_PICKLISTFIELD_EDITABLE_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
-                                    <option {if in_array($PICKLIST_VALUE,$FIELD_VALUES)} selected="" {/if} value="{$PICKLIST_VALUE_KEY}">{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
+                                    <option {if in_array($PICKLIST_VALUE,$FIELD_VALUES)} selected="" {/if} value="{$PICKLIST_VALUE_KEY}">{$PICKLIST_TRANSLATIONS[$PICKLIST_VALUE]}</option>
                                 {/foreach}
                             </select>
                             <input id="pickListValuesCount" type="hidden" value="{php7_count($SELECTED_PICKLISTFIELD_EDITABLE_VALUES)+php7_count($SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES)}"/>
@@ -39,12 +39,12 @@
                             <select id="replaceValue" name="replace_value" class="select2 form-control" data-validation-engine="validate[required]">
                                 {foreach from=$SELECTED_PICKLISTFIELD_EDITABLE_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
                                     {if !(in_array($PICKLIST_VALUE, $FIELD_VALUES))}
-                                        <option value="{$PICKLIST_VALUE_KEY}">{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
+                                        <option value="{$PICKLIST_VALUE_KEY}">{$PICKLIST_TRANSLATIONS[$PICKLIST_VALUE]}</option>
                                     {/if}
                                 {/foreach}
                                 {foreach from=$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
                                     {if !(in_array($PICKLIST_VALUE, $FIELD_VALUES))}
-                                        <option value="{$PICKLIST_VALUE_KEY}">{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
+                                        <option value="{$PICKLIST_VALUE_KEY}">{$PICKLIST_TRANSLATIONS[$PICKLIST_VALUE]}</option>
                                     {/if}
                                 {/foreach}
                             </select>
@@ -57,7 +57,7 @@
                             <div class="controls col-sm nonEditableValuesDiv">
                                 <ul class="nonEditablePicklistValues p-0" style="list-style-type: none;">
                                 {foreach from=$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES key=NON_EDITABLE_VALUE_KEY item=NON_EDITABLE_VALUE}
-                                    <li>{vtranslate($NON_EDITABLE_VALUE,$SOURCE_MODULE)}</li>
+                                    <li>{$PICKLIST_TRANSLATIONS[$NON_EDITABLE_VALUE]}</li>
                                 {/foreach}
                                 </ul>
                             </div>
