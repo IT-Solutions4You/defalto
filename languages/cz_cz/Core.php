@@ -1957,4 +1957,6 @@ $jsLanguageStrings = [
     'JS_CLEAR' => 'Vymazat',
     'JS_ASSIGNED_USER_HAS_CHANGE' => 'Přiřazený uživatel byl změněn',
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Pro používání a instalaci AI rozšíření je vyžadována Membership licence',
+    'JS_YES' => 'Ano',
+    'JS_NO' => 'Ne',
 ];

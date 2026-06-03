@@ -187,43 +187,44 @@ jQuery.Class("Vtiger_Helper_Js",{
 		return aDeferred.promise();
 	},
 
-    showConfirmationBox: function(data) {
+    showConfirmationBox: function (data) {
         let self = this,
             aDeferred = jQuery.Deferred(),
             buttonsInfo, title;
 
-                if((typeof data.buttons == "object") && (Object.keys(data.buttons).length > 0)){
-                    buttonsInfo = data.buttons;
-                }else{
-                    buttonsInfo = {
-				cancel: {
-					label: 'No',
-					className : 'btn-default confirm-box-btn-pad pull-right'
-				},
-				confirm: {
-					label: 'Yes',
-					className : 'confirm-box-ok confirm-box-btn-pad btn-primary'
-				}
-                                }
+        if ((typeof data.buttons == "object") && (Object.keys(data.buttons).length > 0)) {
+            buttonsInfo = data.buttons;
+        } else {
+            buttonsInfo = {
+                cancel: {
+                    label: app.vtranslate('JS_YES'),
+                    className: 'btn-default confirm-box-btn-pad pull-right'
+                },
+                confirm: {
+                    label: app.vtranslate('JS_NO'),
+                    className: 'confirm-box-ok confirm-box-btn-pad btn-primary'
                 }
-                if(typeof data.title != "undefined"){
-                    title = data.title;
-                }else{
-                    title = '';
-                }
-		bootbox.confirm({
-            title : title,
-			buttons: buttonsInfo,
-			message: data['message'],
+            }
+        }
+        if (typeof data.title != "undefined") {
+            title = data.title;
+        } else {
+            title = '';
+        }
+
+        bootbox.confirm({
+            title: title,
+            buttons: buttonsInfo,
+            message: data['message'],
             htmlSupportEnable: data.hasOwnProperty('htmlSupportEnable') ? data['htmlSupportEnable'] : true,
-			callback: function(result) {
-				if (result) {
-					aDeferred.resolve();
-				} else {
-					aDeferred.reject();
-				}
-			}
-		});
+            callback: function (result) {
+                if (result) {
+                    aDeferred.resolve();
+                } else {
+                    aDeferred.reject();
+                }
+            }
+        });
 
         self.setBackdropIndex();
         self.setBootboxIndex();
