@@ -71,7 +71,6 @@ $languageStrings = [
     'Approved' => 'Schválena',
     'Delivered' => 'Dodána zákazníkovi',
     'Cancelled' => 'Zrušena',
-
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Prosím, odstraňte řádkovou položku, která je odstraněna',

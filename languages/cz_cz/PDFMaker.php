@@ -13,8 +13,8 @@ $languageStrings = [
     'LBL_MODULE_NAME' => 'PDF Maker',
     'LBL_TEMPLATE_GENERATOR' => 'Nástroj pro tvorbu PDF',
     'LBL_TEMPLATE_GENERATOR_DESCRIPTION' => 'Obecné šablony PDF dostupné pro jakýkoli modul.',
-    'LBL_DELETE'=>'Odstranit',
-    'LBL_ADD_TEMPLATE'=>'Přidat šablonu',
+    'LBL_DELETE' => 'Odstranit',
+    'LBL_ADD_TEMPLATE' => 'Přidat šablonu',
     'LBL_LIST_SELECT' => 'Vybrat',
     'LBL_MODULENAMES' => 'Modul',
     'LBL_DESCRIPTION' => 'Popis',
@@ -205,63 +205,47 @@ $languageStrings = [
     'LBL_BARCODES_TYPE3' => 'Doplňky EAN‑2 a EAN‑5 a kombinované formy',
     'LBL_BARCODES_TYPE4' => 'Čárové kódy EAN‑8, UPC‑A a UPC‑E',
     'LBL_BARCODES_TYPE5' => 'Čárové kódy s proměnnou šířkou',
-
     'LBL_INVALID_FOPEN_CURL' => 'Povolte nastavení <strong>allow_url_fopen</strong> nebo rozšíření <strong>cURL</strong> ve vašem PHP.',
     'LBL_PRODUCT_BREAKLINE' => 'Zalomení stránky produktů v PDF',
     'LBL_BREAKLINE_DESC' => 'Vložit zalomení stránky po vybraném produktu.',
-
     'LBL_REACTIVATE' => 'Reaktivovat licenci',
     'LBL_REACTIVATE_DESC' => 'V případě problémů s licenčním klíčem při generování PDF souborů.',
     'REACTIVATE_SUCCESS' => 'Úspěšně jste reaktivovali PDF Maker.',
-
     'LBL_GLOBAL_SETTINGS' => 'Globální nastavení',
     'LBL_SHOW_SUBTOTAL' => 'Zobrazit mezisoučet před zalomením stránky',
     'LBL_SHOW_HEADER' => 'Zobrazit záhlaví tabulky po zalomení stránky',
     'LBL_PRODUCT_IMAGE' => 'Obrázky produktů v PDF',
     'LBL_NO_IMAGE' => 'Žádný obrázek',
-
     'CUSTOM_FUNCTIONS' => 'Vlastní funkce',
     'CUSTOM_FUNCTION' => 'Vlastní funkce',
     'PDFMakerManual' => 'PDF Maker manuál',
-
     'LBL_COMMON_FILEINFO' => 'Obecné informace o souboru',
     'LBL_CURDATE_DD-MM-YYYY' => 'Aktuální datum (dd-mm-yyyy)',
     'LBL_CURDATE_MM-DD-YYYY' => 'Aktuální datum (mm-dd-yyyy)',
     'LBL_CURDATE_YYYY-MM-DD' => 'Aktuální datum (yyyy-mm-dd)',
-
     'PDFMAKER_ATTACHMENT' => 'Příloha PDF Makeru',
-
     'LBL_UPDATE' => 'Aktualizovat',
     'LBL_UPDATE_INSTRUCTIONS' => 'Postupujte podle těchto pokynů pro aktualizaci PDF Makeru',
     'LBL_UPDATE_ERROR' => 'Při aktualizaci PDF Makeru došlo k chybě.',
     'LBL_UPDATE_SELECTION' => 'Výběr režimu aktualizace',
-
     'LBL_REPLACE' => '<font color="blue">nahradit</font>',
     'LBL_WITH_FOLLOWING' => 'následujícím',
     'LBL_FINAL_INSTRUCTIONS' => 'Závěrečné pokyny',
-
     'LBL_RECALCULATE_RIGHTS' => 'Je nutné <b>přepočítat</b> oprávnění, aby se změny projevily.<br />Klikněte na tlačítko Dokončit pro přesměrování do <b>Nastavení sdílení</b>.',
-
     'LBL_BATCH_PRINT' => 'Hromadný export PDF',
     'LBL_PDF_ACTIONS' => 'Hromadný export PDF Makeru',
-
     'LBL_UPDATE_SUCCESS' => 'Aktualizace byla úspěšně dokončena.',
-
     'LBL_PDFMAKER_IMPORT' => 'Import PDF šablon',
     'LBL_STEP_1' => 'Vyberte .XML soubor',
     'LBL_SELECT_XML_TEXT' => 'Pro zahájení importu vyhledejte .XML soubor a klikněte na tlačítko Další.',
     'LBL_FILE_LOCATION' => 'Umístění souboru:',
-
     'LBL_SETASDEFAULT' => 'Nastavit jako výchozí',
     'LBL_DEFAULT' => '(výchozí)',
     'LBL_SETASACTIVE' => 'Nastavit jako aktivní',
     'LBL_SETASINACTIVE' => 'Nastavit jako neaktivní',
     'LBL_UNSETASDEFAULT' => 'Zrušit výchozí nastavení',
-
     'LBL_CRMNOW_DESCRIPTION' => 'Popis PDF Configuratoru',
-
     'LBL_EXPORT_TO_RTF' => 'Exportovat do RTF',
-
     'LBL_RELATED_BLOCK_TPL' => 'Související bloky',
     'LBL_EDIT_RELATED_BLOCK' => 'Upravit blok',
     'LBL_EDIT_RELATED_BLOCK_BTN' => 'Spravovat bloky',
@@ -269,53 +253,40 @@ $languageStrings = [
     'LBL_RELATED_BLOCK' => 'Související blok',
     'LBL_RELATED_BLOCK_NAME' => 'Název bloku',
     'LBL_BLOCK_STYLE' => 'Styl bloku',
-
     'LBL_OR' => 'nebo',
     'LBL_NEW_GROUP' => 'Nová skupina',
     'LBL_DELETE_GROUP' => 'Smazat skupinu',
     'LBL_NEW_CONDITION' => 'Nová podmínka',
     'LBL_SHOW_STANDARD_FILTERS' => 'Zobrazit standardní filtry',
-
     'LBL_RECORD_ID' => 'ID záznamu',
     'LBL_PS_NO' => 'Číslo produktu/služby',
-
     'LBL_DEACTIVATE' => 'Deaktivovat licenci',
     'LBL_DEACTIVATE_TITLE' => 'Deaktivovat licenci',
     'LBL_DEACTIVATE_DESC' => 'Po deaktivaci budete moci exportovat pouze PDF šablony.<br />Po reaktivaci získáte zpět plnou funkcionalitu.',
     'LBL_DEACTIVATE_ERROR' => 'Při deaktivaci licenčního klíče došlo k chybě.',
-
     'LBL_SETFORPORTAL' => 'Nastavit pro Zákaznický portál',
     'LBL_WIDTH' => 'Šířka (mm)',
     'LBL_HEIGHT' => 'Výška (mm)',
     'LBL_CUSTOM_FORMAT_ERROR' => 'Nesprávné hodnoty vlastního formátu. Maximální velikost je 2000mm × 2000mm a minimální 1mm × 1mm.',
-
     'LBL_UNSET_PORTAL' => 'Jako šablona Zákaznického portálu bude použita standardní šablona.',
     'LBL_REPLACED_PORTAL_TEMPLATE' => 'bude nahrazena',
     'LBL_VTIGER_TEMPLATE' => 'Standardní šablona',
     'LBL_PDFMAKER_TEMPLATE' => 'Šablona PDF Makeru',
     'LBL_AS_PORTAL_TEMPLATE' => 'jako šablona Zákaznického portálu.',
-
     'LBL_TAC4YOU' => 'Terms & Conditions 4You',
-
     'LBL_EXTENSIONS' => 'Rozšíření',
     'LBL_EXTENSIONS_DESC' => 'Stáhnout rozšíření pro PDF Maker.',
     'LBL_AVAILABLE_EXTENSIONS' => 'Dostupná rozšíření pro PDF Maker',
-
     'LBL_MANUAL' => 'Manuál',
-
     'LBL_CUSTOMERPORTAL' => 'Zákaznický portál',
     'LBL_CUSTOMERPORTAL_DESC' => 'Umožňuje použít jednu z PDF Maker šablon jako výchozí šablonu Zákaznického portálu pro moduly Faktury a Nabídky.',
-
     'LBL_WORKFLOW' => 'Workflow',
     'LBL_WORKFLOW_DESC' => 'Umožňuje vytvářet PDF soubory pomocí PDF Makeru v rámci Workflow.',
-
     'ALERT_DOWNLOAD_ERROR' => 'Při stahování souboru došlo k chybě.',
-
     'LBL_INSTAL_EXT' => 'POZNÁMKY K INSTALACI:',
     'LBL_EXPRESS_INSTAL_EXT' => 'Pokud máte standardní instalaci bez úprav zdrojového kódu nebo databáze, rozbalte soubory rozšíření do kořenového adresáře.',
     'LBL_CUSTOM_INSTAL_EXT' => 'V opačném případě postupujte podle vlastního instalačního procesu popsaného v',
     'LBL_CP_EXPRESS_INSTAL_EXT' => 'Pokud máte standardní instalaci Defalto a Zákaznického portálu bez úprav, rozbalte soubory rozšíření do kořenového adresáře Defalto a CustomerPortal.',
-
     'LBL_PROFILES_DESC' => 'Správa přístupu PDF Makeru pro jednotlivé role.',
     'LBL_SETPRIVILEGIES' => 'Definovat oprávnění PDF Makeru pro všechny profily',
     'LBL_PROFILES' => 'Profily',
@@ -324,13 +295,11 @@ $languageStrings = [
     'LBL_SHARING_TAB' => 'Sdílení',
     'LBL_TEMPLATE_OWNER' => 'Vlastník šablony',
     'LBL_SHARING_ERROR' => 'Vyberte alespoň jednu entitu, která může šablonu sdílet.',
-
     'LBL_ORDER' => 'Pořadí',
     'LBL_SAVE_ORDER' => 'Uložit pořadí šablon',
     'LBL_ORDER_ERROR' => 'Zadejte prosím platné pořadí šablon.',
     'LBL_ORDER_SAVE_OK' => 'Pořadí šablon bylo úspěšně uloženo.',
     'LBL_ORDER_SAVE_ERROR' => 'Při ukládání pořadí šablon došlo k chybě.',
-
     'LBL_DONT_DISPLAY_HEADER_ON_FIRST_PAGE' => 'Nezobrazovat záhlaví na první stránce',
     'LBL_DONT_DISPLAY_FOOTER_ON_LAST_PAGE' => 'Nezobrazovat zápatí na poslední stránce',
     'LBL_DISPLAY_FOOTER_ONLY_ON_LAST_PAGE' => 'Zobrazit zápatí pouze na poslední stránce',
@@ -567,30 +536,25 @@ $languageStrings = [
     'LBL_CURRENCY_POINT' => 'Oddělovač desetinných míst',
     'LBL_CURRENCY_DECIMALS' => 'Počet desetinných míst',
     'LBL_ALREADY_INSTALLED' => 'Již nainstalováno',
-
     'LBL_DOWNLOAD_SRC_CKE' => 'Pro vytváření PDF šablon je nutné stáhnout a nainstalovat skript CKEditor.',
     'LBL_DOWNLOAD_SRC_SIMPLE_HTML_DOM' => 'Pro generování PDF souborů je nutné stáhnout a nainstalovat PHP Simple HTML DOM Parser.',
     'LBL_DOWNLOAD_SRC_DESC_CKE' => 'Klikněte na tlačítko Stáhnout pro instalaci <strong><a href="https://ckeditor.com/" target="_blank">CKEditoru</a></strong>. Pokud automatické stažení selže, stáhněte jej ručně z <pre>http://www.its4you.sk/images/extensions/PDFMaker/src/ckeditor.zip</pre> a rozbalte do <pre>~VTIGER_ROOT/modules/PDFMaker/resources/</pre>',
     'LBL_DOWNLOAD_SRC_DESC_SIMPLE_HTML_DOM' => 'Klikněte na tlačítko Stáhnout pro instalaci <strong><a href="https://simplehtmldom.sourceforge.io/" target="_blank">PHP Simple HTML DOM Parseru</a></strong>. Pokud automatické stažení selže, stáhněte jej ručně z <pre>http://www.its4you.sk/images/extensions/PDFMaker/src/simple_html_dom.zip</pre> a rozbalte do <pre>~VTIGER_ROOT/modules/PDFMaker/resources/</pre>',
     'LBL_CKEDITOR_HTMLDOM_ERROR' => 'Pro vytváření a generování PDF šablon je nutné nainstalovat CKEditor a PHP Simple HTML DOM Parser.',
-
     'LBL_DEFAULT_PRODUCT_IMAGE' => 'Výchozí velikost obrázku produktu',
     'LBL_WIDTH_PX' => 'Šířka (px)',
     'LBL_HEIGHT_PX' => 'Výška (px)',
     'LBL_SIGNATURE' => 'Podpis',
     'LBL_PRODUCT_LIST_PRICE_WITH_TAX' => 'Ceníková cena s daní',
     'LBL_ASSIGNED_TO_FIELD' => 'Přiřazeno komu',
-
     'INSTALL_MPDF_ERROR' => 'Je vyžadováno ruční kopírování',
     'LBL_DOWNLOAD_ZIP' => 'Stáhnout jako .zip',
     'LBL_EMAILMAKER_TEMPLATES' => 'Šablony EMAILMakeru',
-
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Systémové informace',
     'LBL_EDIT_FIELDS' => 'Pole a rozložení',
     'LBL_EDIT_WORKFLOWS' => 'Workflow',
     'LBL_MODULE_SEQUENCE_NUMBERING' => 'Číslování',
     'LBL_VERSION' => 'Verze',
-
     'LBL_DATE_YYYY' => 'Rok',
     'LBL_DATE_MM' => 'Měsíc',
     'LBL_DATE_DD' => 'Den',
@@ -599,16 +563,12 @@ $languageStrings = [
     'LBL_DATE_HH' => 'Hodina',
     'LBL_DATE_II' => 'Minuta',
     'LBL_DATE_SS' => 'Sekunda',
-
     'LBL_DISABLE_EXPORT_EDIT' => 'Zakázat úpravu exportu',
     'LBL_DISABLED_EXPORT_EDIT' => 'Úprava exportu zakázána',
-
     'LBL_RELATED_TO' => 'Související s',
     'LBL_RECURRENCE_INFORMATION' => 'Opakování',
-
     'LBL_BARCODES_CUSTOM' => 'Vlastní čárové kódy',
     'LBL_CUSTOM_BARCODE' => 'Vlastní',
-
     'LBL_INTEGRATION' => 'Integrace',
     'LBL_MERGE_TEMPLATES' => 'Sloučit dokumenty',
     'LBL_MPDF_SUPPORTED_BARCODES' => 'Podporované čárové kódy pro mPDF',
@@ -618,18 +578,13 @@ $languageStrings = [
     'LBL_BARCODES_DESC2' => 'YOURCODE: Nahraďte podporovanou hodnotou.',
     'LBL_BARCODES_DESC3' => 'Můžete přidat parametry jako velikost, výška, text.',
     'LBL_EXAMPLE' => 'Příklad',
-
     'LBL_MODULE_REQUIREMENTS' => 'Požadavky modulu',
     'LBL_ITEM_DELETED_FROM_SYSTEM' => 'Tato položka byla odstraněna ze systému',
-
     'LBL_DOWNLOAD_SRC_PHP_MAILER' => 'Pro odesílání PDF souborů je nutné stáhnout a nainstalovat PHP Mailer.',
     'LBL_DOWNLOAD_SRC_DESC_PHP_MAILER' => 'Klikněte na Stáhnout pro instalaci <strong><a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Maileru</a></strong>. Pokud automatické stažení selže, stáhněte jej ručně z <pre>https://www.its4you.sk/images/extensions/ITS4YouEmails/src/PHPMailer.zip</pre> a rozbalte do <pre>~VTIGER_ROOT/modules/ITS4YouLibrary/</pre>',
-
     'LBL_EXTENSION_LIBRARY_ERROR' => 'Pro vytváření, generování a odesílání PDF šablon je nutné nainstalovat:',
     'LBL_INSTALL_MPDF' => 'Nainstalovat mPDF knihovnu',
-
     'LBL_LICENSE_MANAGE' => 'Správa licencí',
-
     'LBL_SIGNATURE_TAB' => 'Podpis',
     'LBL_SIGNATURES' => 'Podpisy',
     'LBL_ADD_SIGNATURE' => 'Přidat podpis',
@@ -642,17 +597,14 @@ $languageStrings = [
     'LBL_NAME' => 'Název',
     'LBL_SIGNATURE_ACCEPT_USER' => 'Uživatel akceptace',
     'LBL_ACCEPT_ASSIGNED_TO_USER' => 'Přiřazený uživatel',
-
     'LBL_LICENSE_USED_BY_OTHER_USERS' => 'Licenci používají jiní uživatelé',
     'LBL_ASSIGNED_USER_SMTP' => 'SMTP server přiřazeného uživatele',
     'LBL_EXECUTE_AFTER_SAVE' => 'Provést akci po uložení',
     'LBL_SELECT_LABEL' => 'Vyberte popisek',
-
     'LBL_CHANGE_MODULE_QUESTION' => 'Opravdu chcete změnit primární modul?',
     'LBL_DEACTIVATE_QUESTION' => 'Opravdu chcete deaktivovat váš licenční klíč?',
     'LBL_DUPLICATE_TEMPLATE_CREATION_CONFIRMATION' => 'Název šablony již existuje, chcete vytvořit šablonu se stejným názvem?',
     'LBL_CHECK_COMPANY' => 'Zkontrolujte prosím informace o společnosti.',
-
     'LBL_PRODUCT_LIST_PRICE_WITHOUT_TAX' => 'Ceníková cena bez daně',
     'LBL_VARIABLE_PRODUCTCODE' => 'Kód produktu / služby',
     'LBL_VARIABLE_PRODUCTIMAGE' => 'Obrázek produktu / služby',

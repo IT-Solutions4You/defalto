@@ -279,9 +279,9 @@ class Vtiger_PackageExport
         }
 
         $this->openNode('dependencies');
-        $this->outputNode($vtigerMinVersion, 'vtiger_version');
+        $this->outputNode($vtigerMinVersion, 'version');
         if ($vtigerMaxVersion !== false) {
-            $this->outputNode($vtigerMaxVersion, 'vtiger_max_version');
+            $this->outputNode($vtigerMaxVersion, 'max_version');
         }
         $this->closeNode('dependencies');
     }

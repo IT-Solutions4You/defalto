@@ -93,6 +93,7 @@ $languageStrings = [
     'LBL_SIMPLEXML' => 'Podpora SimpleXML',
     'LBL_SMTP_SERVER_CONFIG' => 'Nastavení odchozího poštovního serveru',
     'LBL_SKIP' => 'Přeskočit',
+    'de_de' => 'Deutsch',
 ];
 $jsLanguageStrings = [
     'JS_WARNING_DECIMALS' => 'Upozornenie! Je potrebné zadať odlišné hodnoty pre desatinný a skupinový oddeľovač.',

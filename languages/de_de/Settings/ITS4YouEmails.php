@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *

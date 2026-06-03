@@ -259,3 +259,5 @@ $languageStrings = [
     'Zambia' => 'Zambie',
     'Zimbabwe' => 'Zimbabwe',
 ];
+$jsLanguageStrings = [
+];

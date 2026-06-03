@@ -300,6 +300,8 @@ $languageStrings = [
     'New extension available' => 'Neue Erweiterung ist zur Installation bereit.',
     'System up to date' => 'Alles ist auf dem neuesten Stand.',
     'System update available' => 'Die Systemversion %s ist jetzt verfügbar.',
+    'LBL_USER_LIMIT' => 'User limit',
+    'Unlimited' => 'Unlimited',
 ];
 $jsLanguageStrings = [
     'JS_ARE_YOU_SURE_INSTALL' => 'Möchten Sie die Erweiterung wirklich installieren?',

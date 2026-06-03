@@ -91,7 +91,7 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
                     $viewer->assign('MODULE_TYPE', $package->type());
                     $viewer->assign('FILE_NAME', $extensionModel->getFileName());
                     $viewer->assign('MODULE_LICENSE', (string)$package->getLicense());
-                    $viewer->assign('SUPPORTED_VTVERSION', $package->getDependentVtigerVersion());
+                    $viewer->assign('SUPPORTED_VTVERSION', $package->getDependentVersion());
                 } else {
                     $viewer->assign('ERROR', true);
                     $viewer->assign('ERROR_MESSAGE', vtranslate('LBL_INVALID_FILE', $qualifiedModuleName));
@@ -185,16 +185,17 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         $viewer = $this->getViewer($request);
         $uploadDir = Settings_ModuleManager_Extension_Model::getUploadDirectory();
         $qualifiedModuleName = $request->getModule(false);
-
         $uploadFile = 'usermodule_' . time() . '.zip';
         $uploadFileName = "$uploadDir/$uploadFile";
+
         checkFileAccess($uploadDir);
+
         if (!move_uploaded_file($_FILES['moduleZip']['tmp_name'], $uploadFileName)) {
             $viewer->assign('MODULEIMPORT_FAILED', true);
         } else {
             $package = new Vtiger_Package();
             $importModuleName = $package->getModuleNameFromZip($uploadFileName);
-            $importModuleDepVtVersion = $package->getDependentVtigerVersion();
+            $importModuleDepVtVersion = $package->getDependentVersion();
 
             if ($importModuleName == null) {
                 $viewer->assign('MODULEIMPORT_FAILED', true);
