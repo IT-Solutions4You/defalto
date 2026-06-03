@@ -277,11 +277,10 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
             $languagefile_found = true;
         }
 
-        if (!empty($this->_modulexml) &&
-            !empty($this->_modulexml->dependencies) &&
-            !empty($this->_modulexml->dependencies->vtiger_version)) {
+        if (!empty($this->_modulexml) && !empty($this->_modulexml->dependencies) && !empty($this->_modulexml->dependencies->vtiger_version)) {
             $vtigerVersion = (string)$this->_modulexml->dependencies->vtiger_version;
-            if (version_compare($vtigerVersion, '6.0.0rc', '>=') === true) {
+
+            if (version_compare($vtigerVersion, '1.0.0', '>=') === true) {
                 $vtigerversion_found = true;
             }
         }

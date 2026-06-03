@@ -185,15 +185,20 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         $viewer = $this->getViewer($request);
         $uploadDir = Settings_ModuleManager_Extension_Model::getUploadDirectory();
         $qualifiedModuleName = $request->getModule(false);
-
         $uploadFile = 'usermodule_' . time() . '.zip';
         $uploadFileName = "$uploadDir/$uploadFile";
+
         checkFileAccess($uploadDir);
+
         if (!move_uploaded_file($_FILES['moduleZip']['tmp_name'], $uploadFileName)) {
             $viewer->assign('MODULEIMPORT_FAILED', true);
         } else {
             $package = new Vtiger_Package();
             $importModuleName = $package->getModuleNameFromZip($uploadFileName);
+
+            print_r_data($importModuleName);
+            exit;
+
             $importModuleDepVtVersion = $package->getDependentVtigerVersion();
 
             if ($importModuleName == null) {
