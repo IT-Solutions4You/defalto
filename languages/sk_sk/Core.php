@@ -1450,6 +1450,7 @@ $languageStrings = [
     'Next' => 'Ďalej',
     'Finish' => 'Dokončiť',
     'LBL_DEFAULT_CV' => 'Přednastavený pohled',
+    'Send Email' => 'Odoslať email',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',

@@ -1287,7 +1287,7 @@ $languageStrings = [
     'week days ago' => 'vor Wochentagen',
     'week days later' => 'Wochentage später',
     'LBL_DEFAULT_CV' => 'Standardansicht',
-
+    'Send Email' => 'E-Mail senden',
 ];
 $jsLanguageStrings = [
     'AM' => 'Vormittag',
