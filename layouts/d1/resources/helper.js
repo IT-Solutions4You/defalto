@@ -188,8 +188,10 @@ jQuery.Class("Vtiger_Helper_Js",{
 	},
 
     showConfirmationBox: function(data) {
-        var aDeferred = jQuery.Deferred();
-                var buttonsInfo, title;
+        let self = this,
+            aDeferred = jQuery.Deferred(),
+            buttonsInfo, title;
+
                 if((typeof data.buttons == "object") && (Object.keys(data.buttons).length > 0)){
                     buttonsInfo = data.buttons;
                 }else{
@@ -222,8 +224,14 @@ jQuery.Class("Vtiger_Helper_Js",{
 				}
 			}
 		});
-		
+
+        self.setBackdropIndex();
+        self.setBootboxIndex();
+
         return aDeferred.promise();
+    },
+    setBootboxIndex: function () {
+        $('.bootbox').css('z-index', app.helper.getZIndex());
     },
     showAlertBox: function(data, cb) {
         var message = data['message'];
@@ -494,6 +502,10 @@ jQuery.Class("Vtiger_Helper_Js",{
         return $(modalId);
     },
     setBackdropIndex(index) {
+        if (!index) {
+            index = this.getZIndex();
+        }
+
         $('.modal-backdrop:last').css('z-index', index);
     },
     showModal: function (content, params = {}) {
@@ -677,9 +689,8 @@ jQuery.Class("Vtiger_Helper_Js",{
         self.setNotificationPosition();
     },
     setNotificationPosition: function () {
-        $('[data-notify="container"]').css('z-index', this.getZIndex())
+        $('[data-notify="container"]').css('z-index', this.getZIndex() + 10);
     },
-    
 	rand : function() {
         return Math.floor((Math.random() * 1000) + 1);
 	},
