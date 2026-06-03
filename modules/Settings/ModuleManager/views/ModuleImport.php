@@ -91,7 +91,7 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
                     $viewer->assign('MODULE_TYPE', $package->type());
                     $viewer->assign('FILE_NAME', $extensionModel->getFileName());
                     $viewer->assign('MODULE_LICENSE', (string)$package->getLicense());
-                    $viewer->assign('SUPPORTED_VTVERSION', $package->getDependentVtigerVersion());
+                    $viewer->assign('SUPPORTED_VTVERSION', $package->getDependentVersion());
                 } else {
                     $viewer->assign('ERROR', true);
                     $viewer->assign('ERROR_MESSAGE', vtranslate('LBL_INVALID_FILE', $qualifiedModuleName));
@@ -195,11 +195,7 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         } else {
             $package = new Vtiger_Package();
             $importModuleName = $package->getModuleNameFromZip($uploadFileName);
-
-            print_r_data($importModuleName);
-            exit;
-
-            $importModuleDepVtVersion = $package->getDependentVtigerVersion();
+            $importModuleDepVtVersion = $package->getDependentVersion();
 
             if ($importModuleName == null) {
                 $viewer->assign('MODULEIMPORT_FAILED', true);
