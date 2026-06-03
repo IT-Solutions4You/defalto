@@ -71,6 +71,10 @@ jQuery.Class("Vtiger_Helper_Js",{
 		}
 	},
 },{
+    zIndex : 1051,
+    getZIndex() {
+        return this.zIndex++;
+    },
     init : function() {
         this._initNotificationDefaults();
 		this.registerPostOverLayPageContentHideEvent();
@@ -489,7 +493,13 @@ jQuery.Class("Vtiger_Helper_Js",{
 
         return $(modalId);
     },
+    setBackdropIndex(index) {
+        $('.modal-backdrop:last').css('z-index', index);
+    },
     showModal: function (content, params = {}) {
+        let self = this,
+            backdropIndex = self.getZIndex();
+
         params = jQuery.extend(this.defaultModalParams(), params);
 
         let container = this.retrieveModal(params),
@@ -517,7 +527,9 @@ jQuery.Class("Vtiger_Helper_Js",{
 
         container.html(content).modal(params);
         container.modal('show');
+        container.css('z-index', self.getZIndex())
 
+        self.setBackdropIndex(backdropIndex);
         vtUtils.applyFieldElementsView(container);
 
         return container;
@@ -557,13 +569,18 @@ jQuery.Class("Vtiger_Helper_Js",{
     },
 
     showProgress : function(message) {
-        var messageBar = jQuery('#messageBar');
+        let self = this,
+            messageBar = jQuery('#messageBar'),
+            messageHTML='';
+
         messageBar.removeClass('hide');
-        var messageHTML='';
+
         if(message !== undefined) {
             messageHTML = '<div class="message"><span>'+message+'</span></div>';
         }
+
         messageBar.html('<div style="text-align:center;position:fixed;top:50%;left:40%;"><img src="'+app.vimage_path('loading.gif')+'">'+ messageHTML +'</div>');
+        messageBar.css('z-index', self.getZIndex());
     },
 
     hideProgress : function() {
@@ -618,38 +635,49 @@ jQuery.Class("Vtiger_Helper_Js",{
     },
 
     showAlertNotification: function (options, settings) {
-        let defaultOptions = {
-            'icon': 'fa fa-exclamation-triangle',
-            'title': app.vtranslate('JS_ALERT')
-        }
-        let defaultSettings = {
-            'type': 'warning',
-        }
+        let self = this,
+            defaultOptions = {
+                'icon': 'fa fa-exclamation-triangle',
+                'title': app.vtranslate('JS_ALERT')
+            },
+            defaultSettings = {
+                'type': 'warning',
+            }
         options = jQuery.extend(defaultOptions, options);
         settings = jQuery.extend(defaultSettings, settings);
         jQuery.notify(options, settings);
+        self.setNotificationPosition();
     },
     showErrorNotification: function (options, settings) {
-        let defaultOptions = {
-            'icon': 'fa fa-exclamation-circle',
-            'title': app.vtranslate('JS_ERROR'),
-        }
-        let defaultSettings = {
-            'delay': this.ERROR_DELAY,
-            'type': 'danger',
-        }
+        let self = this,
+            defaultOptions = {
+                'icon': 'fa fa-exclamation-circle',
+                'title': app.vtranslate('JS_ERROR'),
+            },
+            defaultSettings = {
+                'delay': this.ERROR_DELAY,
+                'type': 'danger',
+            }
+
         options = jQuery.extend(defaultOptions, options);
         settings = jQuery.extend(defaultSettings, settings);
         jQuery.notify(options, settings);
+        self.setNotificationPosition();
     },
-    
-    showSuccessNotification : function(options, settings) {
-        var defaultOptions = {
-            'icon' : 'fa fa-check-circle',
-            'title' : app.vtranslate('JS_SUCCESS')
-        }
+    showSuccessNotification: function (options, settings) {
+        let self = this,
+            defaultOptions = {
+                'icon': 'fa fa-check-circle',
+                'title': app.vtranslate('JS_SUCCESS')
+            }
+
         options = jQuery.extend(defaultOptions, options);
-        jQuery.notify(options,settings);
+
+        jQuery.notify(options, settings);
+        self.setNotificationPosition();
+    },
+    setNotificationPosition: function () {
+        $('[data-notify="container"]').css('z-index', this.getZIndex())
     },
     
 	rand : function() {
