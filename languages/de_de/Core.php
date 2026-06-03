@@ -1288,6 +1288,9 @@ $languageStrings = [
     'week days later' => 'Wochentage später',
     'LBL_DEFAULT_CV' => 'Standardansicht',
     'Send Email' => 'E-Mail senden',
+    'LBL_MARGIN' => 'Margin',
+    'LBL_MARGIN_PCT' => 'Margin %',
+    'LBL_MARGIN_AMOUNT' => 'Margin Amount',
 ];
 $jsLanguageStrings = [
     'AM' => 'Vormittag',
@@ -1817,4 +1820,6 @@ $jsLanguageStrings = [
     'work_fax' => 'Fax',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Für die Nutzung und Installation der AI Erweiterung ist eine Membership Lizenz erforderlich',
+    'JS_YES' => 'Yes',
+    'JS_NO' => 'No',
 ];

@@ -77,16 +77,12 @@ $languageStrings = [
     '100%' => '100%',
     'Project' => 'Projekty',
     'SINGLE_Project' => 'Projekt',
-
     'Progress' => 'Pokrok',
     'Type' => 'Typ',
     'Related to' => 'Související s',
-
     'LBL_SELECT_STATUS' => 'Vyberte stav',
-
     'LBL_MILESTONES_LIST' => 'Seznam milníků',
     'LBL_DOWNLOAD_FILE' => 'Stáhnout soubor',
-
     'low' => 'Nízká',
     'normal' => 'Normální',
     'high' => 'Vysoká',

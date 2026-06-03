@@ -38,16 +38,12 @@ $languageStrings = [
     'Accepted' => 'Přijata',
     'Rejected' => 'Zamítnuta',
     'Quotes' => 'Nabídky',
-
     'LBL_EXPORT_TO_PDF' => 'Exportovat do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odeslat e‑mail s PDF',
-
     'Related To' => 'Související s',
-
     'Terms &amp; Conditions' => 'Podmínky a ustanovení',
     'S&amp;H Amount' => 'Částka za dopravu a manipulaci',
     'S&amp;H Percent' => 'Procento za dopravu a manipulaci',
-
     'Price Book' => 'Ceník',
     'Price After Discount' => 'Cena po slevě',
     'Overall Discount' => 'Celková sleva',
