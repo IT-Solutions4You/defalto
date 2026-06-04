@@ -197,11 +197,11 @@ jQuery.Class("Vtiger_Helper_Js",{
         } else {
             buttonsInfo = {
                 cancel: {
-                    label: app.vtranslate('JS_YES'),
+                    label: app.vtranslate('JS_NO'),
                     className: 'btn-default confirm-box-btn-pad pull-right'
                 },
                 confirm: {
-                    label: app.vtranslate('JS_NO'),
+                    label: app.vtranslate('JS_YES'),
                     className: 'confirm-box-ok confirm-box-btn-pad btn-primary'
                 }
             }

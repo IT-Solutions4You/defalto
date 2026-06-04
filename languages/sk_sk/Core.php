@@ -1954,6 +1954,6 @@ $jsLanguageStrings = [
     'JS_REQUIRED_PARAMETER_CONFIRMATION' => 'Niektoré nastavenia PHP nespĺňajú odporúčané hodnoty. Toto môže ovplyvniť niektoré funkcie vtiger CRM. Ste si istí, že chcete pokračovať?',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diakritika nie je povolená. Povolená je pomlčka, podčiarkovník a medzera.',
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Na používanie a inštaláciu AI rozšírenia je potrebná Membership licencia',
-    'JS_YES' => 'Ano',
+    'JS_YES' => 'Áno',
     'JS_NO' => 'Nie',
 ];
