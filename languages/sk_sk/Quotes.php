@@ -52,6 +52,7 @@ $languageStrings = [
     'Accepted' => 'Prijatá',
     'Rejected' => 'Zamietnutá',
     'Related To' => 'Súvisiace s',
+    'Purchase Cost Amount' => 'Purchase Cost Amount',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Cenová ponuka obsahuje odstránené produkty alebo služby, prosím upravte ponuku',
