@@ -1450,6 +1450,7 @@ $languageStrings = [
     'Next' => 'Ďalej',
     'Finish' => 'Dokončiť',
     'LBL_DEFAULT_CV' => 'Přednastavený pohled',
+    'Send Email' => 'Odoslať email',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',
@@ -1953,4 +1954,6 @@ $jsLanguageStrings = [
     'JS_REQUIRED_PARAMETER_CONFIRMATION' => 'Niektoré nastavenia PHP nespĺňajú odporúčané hodnoty. Toto môže ovplyvniť niektoré funkcie vtiger CRM. Ste si istí, že chcete pokračovať?',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diakritika nie je povolená. Povolená je pomlčka, podčiarkovník a medzera.',
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Na používanie a inštaláciu AI rozšírenia je potrebná Membership licencia',
+    'JS_YES' => 'Áno',
+    'JS_NO' => 'Nie',
 ];

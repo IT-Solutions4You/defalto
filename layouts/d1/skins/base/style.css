@@ -4370,7 +4370,7 @@ input:focus:-ms-input-placeholder {
 .ui-datepicker {
     border-radius: var(--bs-border-radius);
     border: var(--bs-border-width) solid var(--bs-border-color) !important;
-    z-index: 1051 !important;
+    z-index: 100000 !important;
     padding: 0.5rem;
     width: auto !important;
 

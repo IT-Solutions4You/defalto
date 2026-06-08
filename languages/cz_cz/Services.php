@@ -40,7 +40,6 @@ $languageStrings = [
     'Price' => 'Cena',
     'Website' => 'Web',
     'Taxes' => 'Daně',
-
 ];
 $jsLanguageStrings = [
 ];

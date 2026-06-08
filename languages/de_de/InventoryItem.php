@@ -46,6 +46,8 @@ $languageStrings = [
     'Discounts Amount' => 'Discounts Amount',
     'Margin Amount' => 'Margin Amount',
     'Price Book' => 'Price Book',
+    'LBL_MARGIN_PCT' => 'Margin %',
+    'LBL_MARGIN_AMOUNT' => 'Margin Amount',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Fehler beim Speichern der Produktzeile',

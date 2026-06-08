@@ -20,13 +20,11 @@
 						<div class="col-lg-10">
 							{if $VERSION_NOT_SUPPORTED eq 'true'}
 								<font color=red><b>{vtranslate('LBL_VERSION_NOT_SUPPORTED', $QUALIFIED_MODULE)}</b></font>
-							{else}
-								{if $MODULEIMPORT_FILE_INVALID eq "true"}
-									<font color=red><b>{vtranslate('LBL_INVALID_FILE', $QUALIFIED_MODULE)}</b></font> {vtranslate('LBL_INVALID_IMPORT_TRY_AGAIN', $QUALIFIED_MODULE)}
-								{else}
-									<font color=red>{vtranslate('LBL_UNABLE_TO_UPLOAD', $QUALIFIED_MODULE)}</font> {vtranslate('LBL_UNABLE_TO_UPLOAD2', $QUALIFIED_MODULE)}
-								{/if}
-							{/if}
+							{elseif $MODULEIMPORT_FILE_INVALID eq true}
+                                <font color=red><b>{vtranslate('LBL_INVALID_FILE', $QUALIFIED_MODULE)}</b></font> {vtranslate('LBL_INVALID_IMPORT_TRY_AGAIN', $QUALIFIED_MODULE)}
+                            {else}
+                                <font color=red>{vtranslate('LBL_UNABLE_TO_UPLOAD', $QUALIFIED_MODULE)}</font> {vtranslate('LBL_UNABLE_TO_UPLOAD2', $QUALIFIED_MODULE)}
+                            {/if}
 						</div>
 						<input type="hidden" name="view" value="List">
 					{else}
