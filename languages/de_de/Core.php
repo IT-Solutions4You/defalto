@@ -1820,6 +1820,7 @@ $jsLanguageStrings = [
     'work_fax' => 'Fax',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Für die Nutzung und Installation der AI Erweiterung ist eine Membership Lizenz erforderlich',
-    'JS_YES' => 'Yes',
-    'JS_NO' => 'No',
+    'JS_YES' => 'Ja',
+    'JS_NO' => 'Nein',
+    'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Beim Schließen des Fensters gehen alle eingegebenen Daten verloren. Möchten Sie das Fenster schließen?	'
 ];

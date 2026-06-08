@@ -1797,4 +1797,5 @@ $jsLanguageStrings = [
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Membership license is required to use and install AI extension',
     'JS_YES' => 'Yes',
     'JS_NO' => 'No',
+    'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Closing this window will discard all entered data. Do you wish to close the window?'
 ];
