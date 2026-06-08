@@ -31,11 +31,6 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
         'isconvertedfrompotential',
         'isconvertedfromlead',
         'campaignrelstatus',
-        'source',
-        'creator_user_id',
-        'createdtime',
-        'modifiedby',
-        'modifiedtime',
     ];
 
     /**
