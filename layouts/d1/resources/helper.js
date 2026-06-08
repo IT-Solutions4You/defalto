@@ -1135,7 +1135,7 @@ jQuery.Class("Vtiger_Helper_Js",{
         modalContainer.find('[data-bs-dismiss="modal"]').removeAttr('data-bs-dismiss');
         modalContainer.on('click', '.close, .btn-close, .cancelLink', function (e) {
             if (initialFormData !== form.serialize() && form.data('submit') !== "true") {
-                app.helper.showConfirmationBox({'message': app.vtranslate("JS_CHANGES_WILL_BE_LOST") + ' ' + app.vtranslate('JS_WISH_TO_PROCEED')}).then(function () {
+                app.helper.showConfirmationBox({'message': app.vtranslate('JS_CHANGES_POPUP_WILL_BE_LOST')}).then(function () {
                     window.onbeforeunload = null;
 
                     if (form.closest('#overlayPageContent').length > 0) {

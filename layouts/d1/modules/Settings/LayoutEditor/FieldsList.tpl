@@ -524,10 +524,17 @@
 			{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 			<form class="form-horizontal inactiveFieldsForm">
 				<div class="modal-body">
-					<div class="inActiveList row">
-						<div class="col-sm-1"></div>
-						<div class="list col-sm-10"></div>
-						<div class="col-sm-1"></div>
+					<div class="inActiveList">
+						<div class="list row">
+                            <div class="inActiveFieldContainer col-sm-4 py-2">
+                                <div class="checkbox">
+                                    <label class="form-check">
+                                        <input type="checkbox" class="inActiveField form-check-input" value=""/>
+                                        <span class="fieldLabel form-check-label"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
 					</div>
 				</div>
 				<div class="modal-footer">
