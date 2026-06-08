@@ -27,6 +27,11 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
         self::UITYPE_TAX,
     ];
 
+    public static array $restrictedFields = [
+        'isconvertedfrompotential',
+        'isconvertedfromlead'
+    ];
+
     /**
      * Function to Move the field
      *
@@ -492,8 +497,7 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
 
     public function isOptionsRestrictedField()
     {
-        $restrictedFields = ['isconvertedfrompotential', 'isconvertedfromlead'];
-        if (in_array($this->getName(), $restrictedFields)) {
+        if (in_array($this->getName(), self::$restrictedFields)) {
             return true;
         } else {
             return false;
