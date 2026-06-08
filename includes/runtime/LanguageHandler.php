@@ -160,8 +160,10 @@ class Vtiger_Language_Handler
      *
      * Picklist values live in their own per-picklist files so they cannot collide
      * with arbitrary label keys. The lookup chain is:
-     *   1) languages/{lang}/PickList/{picklistName}.php (+ its custom override)
-     *   2) fall back to standard lookup against {fallbackModule}.
+     *   1) languages/{lang}/custom/PickList/{picklistName}.php (preferred custom path)
+     *   2) languages/{lang}/PickList/{picklistName}.php
+     *      + its legacy custom override at languages/custom/{lang}/PickList/{picklistName}.php
+     *   3) fall back to standard lookup against {fallbackModule}.
      *
      * @param string $picklistName   Picklist field name (= picklist DB table name).
      * @param string $fallbackModule Module used as the fallback if no per-picklist
@@ -197,6 +199,15 @@ class Vtiger_Language_Handler
         $fallbackModule = $parts[2] ?? 'Core';
 
         if ($picklistName !== '') {
+            // Preferred custom path: languages/{lang}/custom/PickList/{name}.php.
+            // Checked first so the prevalent location wins over the legacy chain.
+            $newCustom = self::getModuleStringsFromFile($language, 'custom.PickList.' . $picklistName);
+            if (isset($newCustom[$stringsKey][$key])) {
+                return ['value' => $newCustom[$stringsKey][$key], 'fallback' => null];
+            }
+
+            // Legacy chain: languages/{lang}/PickList/{name}.php overridden by
+            // languages/custom/{lang}/PickList/{name}.php (both merged inside the call).
             $strings = self::getModuleStringsFromFile($language, 'PickList.' . $picklistName);
             if (isset($strings[$stringsKey][$key])) {
                 return ['value' => $strings[$stringsKey][$key], 'fallback' => null];
@@ -237,6 +248,15 @@ class Vtiger_Language_Handler
                 self::$languageContainer[$language][$module]['languageStrings'] = $languageStrings;
                 self::$languageContainer[$language][$module]['jsLanguageStrings'] = $jsLanguageStrings;
             }
+        }
+        // Ensure the container slot exists before the custom-path merge below, so
+        // that having only a custom file (no base file) does not crash array_merge
+        // with a null left-hand side.
+        if (!isset(self::$languageContainer[$language][$module])) {
+            self::$languageContainer[$language][$module] = [
+                'languageStrings'   => [],
+                'jsLanguageStrings' => [],
+            ];
         }
         // add custom translation for module from language/custom/$language/$module.php file
         $qualifiedCustomName = 'languages.custom.' . $language . '.' . $module;
