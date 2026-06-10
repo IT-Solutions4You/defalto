@@ -1,0 +1,42 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* Make the intl-tel-input wrapper fill the field like a normal form-control. */
+.Vtiger_Phone_UIType .iti,
+.editElement .iti {
+    width: 100%;
+    display: block;
+}
+
+.iti input.js-iti-phone {
+    width: 100%;
+}
+
+/* Soft validity hints while editing (do not block saving). */
+.js-iti-phone.js-iti-invalid {
+    border-color: #E24B4A;
+}
+
+.js-iti-phone.js-iti-valid {
+    border-color: #639922;
+}
+
+/* Read-only display (detail + list views): flag + formatted number. */
+.iti-display,
+.js-iti-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.iti-display-flag {
+    display: inline-block;
+    flex: 0 0 auto;
+    vertical-align: middle;
+}
