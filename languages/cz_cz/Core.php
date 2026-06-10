@@ -1453,6 +1453,7 @@ $languageStrings = [
     'LBL_MAX' => 'Maximum',
     'LBL_ACTIVE' => 'Aktivní',
     'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'S potěšením oznamujeme, že starý vzhled bude dostupný až do února 2014. Nedávno jsme do nového vzhledu přidali následující funkce:<br /><br />1. Kontingenční reporty<br />2. Vlastní grafy<br />3. Rychlé vyhledávání v seznamech<br /><br />Pokud máte návrhy k novému vzhledu, podělte se o ně níže.',
+    'Send Email' => 'Odoslat email',
 ];
 $jsLanguageStrings = [
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastavení systému nakonfigurujte server odchozí pošty',
@@ -1955,4 +1956,8 @@ $jsLanguageStrings = [
     'JS_UPDATE_RECORD_TAXES_QUESTION' => 'Chcete aktualizovat daně u všech záznamů?',
     'JS_CLEAR' => 'Vymazat',
     'JS_ASSIGNED_USER_HAS_CHANGE' => 'Přiřazený uživatel byl změněn',
+    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Pro používání a instalaci AI rozšíření je vyžadována Membership licence',
+    'JS_YES' => 'Ano',
+    'JS_NO' => 'Ne',
+    'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Zavřením okna se všechna zadaná data ztratí. Přejete si zavřít okno?'
 ];

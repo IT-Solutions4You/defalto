@@ -8,7 +8,7 @@
  *}
 {* modules/Vtiger/views/Index.php *}
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-{include file="modules/Vtiger/partials/Topbar.tpl"}
+{include file='partials/Topbar.tpl'|vtemplate_path:$MODULE}
 
 <div class="container-fluid app-nav">
     <div class="row">

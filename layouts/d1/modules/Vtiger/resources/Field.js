@@ -402,7 +402,7 @@ Vtiger_Field_Js('Vtiger_Currencylist_Field_Js', {}, {
      * @return - select element and chosen element
      */
     getUi: function () {
-        let html = '<select class="CurrencyListField select2 inputElement form-select" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+        let html = '<select class="CurrencyListField select2 inputElement form-select" data-width="100%" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
             currencyLists = this.getCurrencyList(),
             selectedOption = app.htmlDecode(this.getValue());
 
@@ -449,7 +449,7 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js', {}, {
      * @return - select element and chosen element
      */
     getUi: function () {
-        let html = '<select class="MultiPicklistField select2 inputElement form-select" multiple name="' + this.getName() + '[]" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+        let html = '<select class="MultiPicklistField select2 inputElement form-select" data-width="100%" multiple name="' + this.getName() + '[]" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
             pickListValues = this.getPickListValues(),
             selectedOption = app.htmlDecode(this.getValue()),
             selectedOptionsArray = this.getSelectedOptions(selectedOption),

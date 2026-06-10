@@ -449,10 +449,11 @@ class Vtiger_Field_Model extends Vtiger_Field
         if ($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'metricpicklist' || $fieldDataType == 'timestring') {
             $fieldPickListValues = [];
             $picklistValues = Vtiger_Util_Helper::getPickListValues($fieldName);
+            $picklistModule = Vtiger_Language_Handler::buildPicklistModule($fieldName, $this->getModuleName());
 
             foreach ($picklistValues as $value) {
                 if (!is_numeric($value)) {
-                    $addValue = vtranslate($value, $this->getModuleName());
+                    $addValue = vtranslate($value, $picklistModule);
                 } else {
                     $addValue = $value;
                 }
@@ -494,15 +495,39 @@ class Vtiger_Field_Model extends Vtiger_Field
             } else {
                 $picklistValues = Vtiger_Util_Helper::getPickListValues($fieldName);
             }
+            $picklistModule = Vtiger_Language_Handler::buildPicklistModule($fieldName, $this->getModuleName());
 
             foreach ($picklistValues as $value) {
-                $fieldPickListValues[$value] = vtranslate($value, $this->getModuleName());
+                $fieldPickListValues[$value] = vtranslate($value, $picklistModule);
             }
 
             return $fieldPickListValues;
         }
 
         return null;
+    }
+
+    /**
+     * Build a [rawValue => translatedLabel] map for a given list of raw picklist
+     * values using the picklist-scoped translation namespace (PickList:{name}:{module}).
+     *
+     * Intended for admin/settings templates that need both the raw value and the
+     * translated label without calling vtranslate in Smarty.
+     *
+     * @param string $sourceModule Module used as fallback in the PickList lookup chain.
+     * @param array  $rawValues    Raw picklist values to translate.
+     *
+     * @return array<string,string> Map keyed by raw value.
+     */
+    public function getValueTranslations($sourceModule, array $rawValues): array
+    {
+        $picklistModule = Vtiger_Language_Handler::buildPicklistModule($this->getName(), $sourceModule);
+        $translations = [];
+        foreach ($rawValues as $value) {
+            $translations[$value] = vtranslate($value, $picklistModule);
+        }
+
+        return $translations;
     }
 
     /**

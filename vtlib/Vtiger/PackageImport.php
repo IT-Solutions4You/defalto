@@ -221,7 +221,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
         $manifestxml_found = false;
         $languagefile_found = false;
         $layoutfile_found = false;
-        $vtigerversion_found = false;
+        $systemVersionFound = false;
         $extensionfile_found = false;
 
         $modulename = null;
@@ -236,9 +236,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
                 $modulename = $this->_modulexml->name;
                 $isModuleBundle = (string)$this->_modulexml->modulebundle;
 
-                if ($isModuleBundle === 'true' && (!empty($this->_modulexml)) &&
-                    (!empty($this->_modulexml->dependencies)) &&
-                    (!empty($this->_modulexml->dependencies->vtiger_version))) {
+                if ($isModuleBundle === 'true' && (!empty($this->_modulexml)) && (!empty($this->_modulexml->dependencies)) && $this->hasDependentVersion()) {
                     $languagefile_found = true;
                     break;
                 }
@@ -277,25 +275,24 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
             $languagefile_found = true;
         }
 
-        if (!empty($this->_modulexml) &&
-            !empty($this->_modulexml->dependencies) &&
-            !empty($this->_modulexml->dependencies->vtiger_version)) {
-            $vtigerVersion = (string)$this->_modulexml->dependencies->vtiger_version;
-            if (version_compare($vtigerVersion, '6.0.0rc', '>=') === true) {
-                $vtigerversion_found = true;
+        if (!empty($this->_modulexml) && !empty($this->_modulexml->dependencies) && $this->hasDependentVersion()) {
+            $systemVersion = $this->getDependentVersion();
+
+            if (version_compare($systemVersion, '1.0.0', '>=') === true) {
+                $systemVersionFound = true;
             }
         }
 
         $validzip = false;
-        if ($manifestxml_found && $languagefile_found && $vtigerversion_found) {
+        if ($manifestxml_found && $languagefile_found && $systemVersionFound) {
             $validzip = true;
         }
 
-        if ($manifestxml_found && $layoutfile_found && $vtigerversion_found) {
+        if ($manifestxml_found && $layoutfile_found && $systemVersionFound) {
             $validzip = true;
         }
 
-        if ($manifestxml_found && $extensionfile_found && $vtigerversion_found) {
+        if ($manifestxml_found && $extensionfile_found && $systemVersionFound) {
             $validzip = true;
         }
 
@@ -436,22 +433,14 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
         return 'cache/' . $filepath;
     }
 
-    /**
-     * Get dependent version
-     * @access private
-     */
-    function getDependentVtigerVersion()
+    public function hasDependentVersion(): bool
     {
-        return $this->_modulexml->dependencies->vtiger_version;
+        return !empty($this->_modulexml->dependencies->version);
     }
 
-    /**
-     * Get dependent Maximum version
-     * @access private
-     */
-    function getDependentMaxVtigerVersion()
+    public function getDependentVersion()
     {
-        return $this->_modulexml->dependencies->vtiger_max_version;
+        return $this->_modulexml->dependencies->version;
     }
 
     /**
@@ -513,6 +502,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
         if ($module != null) {
             // If data is not yet available
             if (empty($this->_modulexml)) {
+                $unzip = new Vtiger_Unzip($zipfile);
                 $this->__parseManifestFile($unzip);
             }
 
@@ -565,8 +555,8 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
             }
         }
 
-        $vtigerMinVersion = (string)$this->_modulexml->dependencies->vtiger_version;
-        $vtigerMaxVersion = (string)$this->_modulexml->dependencies->vtiger_max_version;
+        $systemMinVersion = (string)$this->_modulexml->dependencies->version;
+        $systemMaxVersion = (string)$this->_modulexml->dependencies->max_version;
 
         $parentTabs = explode(',', $parenttab);
 
@@ -576,8 +566,8 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
         $moduleInstance->parent = $parentTabs[0];
         $moduleInstance->isentitytype = ($isextension != true);
         $moduleInstance->version = (!$tabversion) ? 0 : $tabversion;
-        $moduleInstance->minversion = (!$vtigerMinVersion) ? false : $vtigerMinVersion;
-        $moduleInstance->maxversion = (!$vtigerMaxVersion) ? false : $vtigerMaxVersion;
+        $moduleInstance->minversion = (!$systemMinVersion) ? false : $systemMinVersion;
+        $moduleInstance->maxversion = (!$systemMaxVersion) ? false : $systemMaxVersion;
         $moduleInstance->save();
 
         if (!empty($parenttab)) {

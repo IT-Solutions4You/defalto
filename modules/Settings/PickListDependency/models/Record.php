@@ -108,9 +108,10 @@ class Settings_PickListDependency_Record_Model extends Settings_Vtiger_Record_Mo
             $picklists = array_map('decode_html', getAllPickListValues($fieldName));
         }
 
+        $picklistModule = Vtiger_Language_Handler::buildPicklistModule($fieldName, $sourceModule);
         $picklistValues = [];
         foreach ($picklists as $key => $value) {
-            $picklistValues[$key] = vtranslate($value, $sourceModule);
+            $picklistValues[$key] = vtranslate($value, $picklistModule);
         }
 
         return $picklistValues;

@@ -19,7 +19,7 @@
                     </a>
                 </div>
                 <div class="col overflow-hidden">
-                    <span class="d-inline-block text-truncate text-middle w-100-max py-1 px-2 rounded picklist-color picklist-{$SELECTED_PICKLIST_FIELDMODEL->getId()}-{$PICKLIST_KEY}">{vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)}</span>
+                    <span class="d-inline-block text-truncate text-middle w-100-max py-1 px-2 rounded picklist-color picklist-{$SELECTED_PICKLIST_FIELDMODEL->getId()}-{$PICKLIST_KEY}">{$PICKLIST_TRANSLATIONS[$PICKLIST_VALUE]}</span>
                 </div>
                 <div class="col-auto">
                     <div class="picklistActions">

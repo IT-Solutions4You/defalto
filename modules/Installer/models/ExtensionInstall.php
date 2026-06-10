@@ -27,12 +27,12 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $extensions = [];
 
         foreach ($modules as $moduleName => $module) {
-            if(in_array($moduleName, self::$ignoredModules)) {
-                continue;
-            }
-
             if (is_numeric($moduleName)) {
                 $moduleName = $module->getName();
+            }
+
+            if (in_array($moduleName, self::$ignoredModules)) {
+                continue;
             }
 
             $extensions[$moduleName] = self::getInstance($module);
@@ -218,6 +218,15 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     public function hasDownloadUrl(): bool
     {
         return !$this->isEmpty('download-url');
+    }
+
+    public function getDownloadLabel(): string
+    {
+        if (!vtlib_isModuleActive($this->getName())) {
+            return 'LBL_INSTALL';
+        }
+
+        return 'LBL_UPDATE';
     }
 
     /**

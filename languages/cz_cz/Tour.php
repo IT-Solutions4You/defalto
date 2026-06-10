@@ -31,7 +31,6 @@ $languageStrings = [
     'LBL_NEXT_STEP' => 'Další krok',
     'LBL_FINISH_GUIDE' => 'Dokončit návod',
     'LBL_DELETE_DATA_AFTER_FINISH' => 'Demo data můžete odstranit po dokončení návodu',
-
     'Index' => 'Připraveno k použití',
     'Guide' => 'Návod',
     'Quick Start Guide' => 'Rychlý začátek s aplikací',

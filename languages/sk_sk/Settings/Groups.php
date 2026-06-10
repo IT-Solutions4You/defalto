@@ -23,23 +23,23 @@
  */
 
 $languageStrings = [
-    "LBL_TRANSFORM_OWNERSHIP" => "Prevod vlastníctva",
-    "SINGLE_Groups" => "Skupina",
-    "LBL_TO_OTHER_GROUP" => "K inej skupine",
-    "LBL_ADD_RECORD" => "Pridať skupinu",
-    "LBL_GROUP_NAME" => "Názov skupiny",
-    "LBL_GROUP_MEMBERS" => "Členovia skupiny",
-    "LBL_ADD_USERS_ROLES" => "Pridať Používateľov, Role ...",
-    "LBL_ROLEANDSUBORDINATE" => "Rola a podriadené role",
-    "RoleAndSubordinates" => "Rola a podriadené role",
-    "LBL_DUPLICATES_EXIST" => "Názov skupiny už existuje",
-    "Groups" => "Skupiny",
-    "Users" => "Používatelia",
-    "Roles" => "Role",
-    "Name" => "Názov skupiny",
+    'LBL_TRANSFORM_OWNERSHIP' => 'Prevod vlastníctva',
+    'SINGLE_Groups' => 'Skupina',
+    'LBL_TO_OTHER_GROUP' => 'K inej skupine',
+    'LBL_ADD_RECORD' => 'Pridať skupinu',
+    'LBL_GROUP_NAME' => 'Názov skupiny',
+    'LBL_GROUP_MEMBERS' => 'Členovia skupiny',
+    'LBL_ADD_USERS_ROLES' => 'Pridať Používateľov, Role ...',
+    'LBL_ROLEANDSUBORDINATE' => 'Rola a podriadené role',
+    'RoleAndSubordinates' => 'Rola a podriadené role',
+    'LBL_DUPLICATES_EXIST' => 'Názov skupiny už existuje',
+    'Groups' => 'Skupiny',
+    'Users' => 'Používatelia',
+    'Roles' => 'Role',
+    'Name' => 'Názov skupiny',
 ];
-
 $jsLanguageStrings = [
-    "JS_RECORD_DELETED_SUCCESSFULLY" => "Skupina bola úspešne zmazaná",
-    "JS_COMMA_NOT_ALLOWED_GROUP" => "V názve skupiny nie sú povolené špeciálne znaky",
+    'JS_RECORD_DELETED_SUCCESSFULLY' => 'Skupina bola úspešne zmazaná',
+    'JS_COMMA_NOT_ALLOWED_GROUP' => 'V názve skupiny nie sú povolené špeciálne znaky',
+    'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',
 ];

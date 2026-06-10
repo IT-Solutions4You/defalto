@@ -1547,20 +1547,17 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
      * Function to show the list of inactive fields in the modal
      */
     showHiddenFields: function (blockId, form) {
-        var thisInstance = this;
-        var fieldCount = 0;
-        var curRow;
-        jQuery.each(thisInstance.inActiveFieldsList[blockId], function (key, value) {
-            if (fieldCount % 3 === 0) {
-                curRow = $('<div class="row"></div>').appendTo(form.find('.inActiveList .list'));
-                fieldCount = 0;
-            }
-            var inActiveField = jQuery('<div class="col-sm-4">\n\
-											<div class="checkbox">\n\
-												<label><input type="checkbox" class="inActiveField" value="' + key + '"/><span class="fieldLabel">' + value + '</span></label>\n\
-											</div>\n\
-										</div>');
-            $(curRow).append(inActiveField);
+        let self = this,
+            list = form.find('.inActiveList .list'),
+            fieldCount = 0,
+            field = form.find('.inActiveList .list').find('.inActiveFieldContainer').detach();
+
+        jQuery.each(self.inActiveFieldsList[blockId], function (key, value) {
+            let clone = field.clone(true, true);
+            clone.find('.inActiveField').val(key);
+            clone.find('.fieldLabel').text(value);
+
+            list.append(clone);
             fieldCount++;
         });
     },

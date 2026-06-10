@@ -354,10 +354,7 @@ class Vtiger_ModuleBasic
 
         Vtiger_Utils::CreateTable($this->basetable, "($this->basetableid INT(19) PRIMARY KEY)", true);
         Vtiger_Utils::CreateTable($this->customtable, "($this->basetableid INT(19) PRIMARY KEY)", true);
-
-        if (Vtiger_Version::check('5.0.4', '<=')) {
-            Vtiger_Utils::CreateTable($this->grouptable, "($this->basetableid INT PRIMARY KEY, groupname varchar(100))", true);
-        }
+        Vtiger_Utils::CreateTable($this->grouptable, "($this->basetableid INT PRIMARY KEY, groupname varchar(100))", true);
     }
 
     /**

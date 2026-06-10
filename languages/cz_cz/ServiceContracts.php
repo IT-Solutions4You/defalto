@@ -44,7 +44,6 @@ $languageStrings = [
     'High' => 'Vysoká',
     'Services' => 'Služby',
     'None' => 'Žádné',
-
 ];
 $jsLanguageStrings = [
 ];

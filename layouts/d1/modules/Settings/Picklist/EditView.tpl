@@ -41,11 +41,11 @@
                                 {assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_EDITABLE_VALUES}
                                 <select class="select2 form-control" name="oldValue" data-width="100%">
                                     {foreach from=$PICKLIST_VALUES key=PICKLIST_VALUE_KEY item=PICKLIST_VALUE}
-                                        <option {if $FIELD_VALUE eq $PICKLIST_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_VALUE)}" data-id={$PICKLIST_VALUE_KEY}>{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
+                                        <option {if $FIELD_VALUE eq $PICKLIST_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_VALUE)}" data-id={$PICKLIST_VALUE_KEY}>{$PICKLIST_TRANSLATIONS[$PICKLIST_VALUE]}</option>
                                     {/foreach}
                                     {if $SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES}
                                         {foreach from=$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES key=NON_EDITABLE_VALUE_KEY item=NON_EDITABLE_VALUE}
-                                            <option data-edit-disabled="true" {if $FIELD_VALUE eq $NON_EDITABLE_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($NON_EDITABLE_VALUE)}" data-id={$NON_EDITABLE_VALUE_KEY}>{vtranslate($NON_EDITABLE_VALUE,$SOURCE_MODULE)}</option>
+                                            <option data-edit-disabled="true" {if $FIELD_VALUE eq $NON_EDITABLE_VALUE} selected="" {/if}value="{Vtiger_Util_Helper::toSafeHTML($NON_EDITABLE_VALUE)}" data-id={$NON_EDITABLE_VALUE_KEY}>{$PICKLIST_TRANSLATIONS[$NON_EDITABLE_VALUE]}</option>
                                         {/foreach}
                                     {/if}
                                 </select>

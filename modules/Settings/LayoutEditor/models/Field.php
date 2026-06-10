@@ -19,6 +19,21 @@
 class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
 {
     /**
+     * UITypes for which mandatory switch is disabled
+     * @var array
+     */
+    public static array $mandatoryUITypes = [
+        self::UITYPE_RECORD_NO,
+        self::UITYPE_TAX,
+    ];
+
+    public static array $restrictedFields = [
+        'isconvertedfrompotential',
+        'isconvertedfromlead',
+        'campaignrelstatus',
+    ];
+
+    /**
      * Function to Move the field
      *
      * @param <Array> $fieldNewDetails
@@ -86,22 +101,12 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
 
     /**
      * Function which specifies whether the field can have mandatory switch to happen
-     * @return <Boolean> - true if we can make a field mandatory and non mandatory , false if we cant change previous state
+     * @return Boolean - true if we can make a field mandatory and non mandatory , false if we cant change previous state
+     * @throws Exception
      */
     public function isMandatoryOptionDisabled()
     {
-        $moduleModel = $this->getModule();
-        $complusoryMandatoryFieldList = $moduleModel->getCompulsoryMandatoryFieldList();
-        //uitypes for which mandatory switch is disabled
-        $mandatoryRestrictedUitypes = ['4', '70'];
-        if (in_array($this->getName(), $complusoryMandatoryFieldList) || $this->isOptionsRestrictedField()) {
-            return true;
-        }
-        if (in_array($this->get('uitype'), $mandatoryRestrictedUitypes) || (in_array($this->get('displaytype'), [2, 4]))) {
-            return true;
-        }
-
-        if ($this->get('uitype') == '83' && $this->getName() == 'taxclass') {
+        if ($this->isMandatoryField() || $this->isMandatoryUIType() || $this->isOptionsRestrictedField()) {
             return true;
         }
 
@@ -109,12 +114,39 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
     }
 
     /**
-     * Function which will specify whether the active option is disabled
-     * @return boolean
+     * @throws Exception
      */
-    public function isActiveOptionDisabled()
+    public function isMandatoryUIType(): bool
     {
-        if ($this->get('presence') == 0 || $this->get('displaytype') == 2 || $this->isMandatoryOptionDisabled() || $this->isOptionsRestrictedField()) {
+        return in_array($this->getUIType(), self::$mandatoryUITypes);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMandatoryField(): bool
+    {
+        return in_array($this->getName(), $this->getMandatoryFieldNames());
+    }
+
+    /**
+     * @return array
+     */
+    public function getMandatoryFieldNames(): array
+    {
+        $moduleModel = $this->getModule();
+
+        return (array)$moduleModel->getCompulsoryMandatoryFieldList();
+    }
+
+    /**
+     * Function which will specify whether the active option is disabled
+     * @return bool
+     * @throws Exception
+     */
+    public function isActiveOptionDisabled(): bool
+    {
+        if ($this->get('presence') == 0 || $this->isMandatoryOptionDisabled() || $this->isOptionsRestrictedField()) {
             return true;
         }
 
@@ -466,8 +498,7 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
 
     public function isOptionsRestrictedField()
     {
-        $restrictedFields = ['isconvertedfrompotential', 'isconvertedfromlead'];
-        if (in_array($this->getName(), $restrictedFields)) {
+        if (in_array($this->getName(), self::$restrictedFields)) {
             return true;
         } else {
             return false;

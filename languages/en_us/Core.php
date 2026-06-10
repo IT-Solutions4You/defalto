@@ -1794,4 +1794,8 @@ $jsLanguageStrings = [
     'JS_RECORDS_WILL_BE_DELETED' => 'This action will permanently delete records',
     'JS_REQUIRED_PARAMETER_CONFIRMATION' => 'Some of the PHP Settings do not meet the recommended values. This might affect some of the features of Defalto CRM. Are you sure, you want to proceed?',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
+    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Membership license is required to use and install AI extension',
+    'JS_YES' => 'Yes',
+    'JS_NO' => 'No',
+    'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Closing this window will discard all entered data. Do you wish to close the window?'
 ];

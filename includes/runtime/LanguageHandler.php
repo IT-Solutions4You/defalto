@@ -76,10 +76,17 @@ class Vtiger_Language_Handler
     {
         $moduleStrings = [];
 
-        $module = str_replace(':', '.', $module);
         if (is_array($module)) {
             return null;
         }
+
+        $picklist = self::tryPicklistLookup($language, $key, $module, 'languageStrings');
+
+        if ($picklist !== null) {
+            return $picklist['value'] ?? self::getLanguageTranslatedString($language, $key, $picklist['fallback']);
+        }
+
+        $module = str_replace(':', '.', $module);
         $moduleStrings = self::getModuleStringsFromFile($language, $module);
         if (isset($moduleStrings['languageStrings'][$key])) {
             return $moduleStrings['languageStrings'][$key];
@@ -116,6 +123,12 @@ class Vtiger_Language_Handler
     {
         $moduleStrings = [];
 
+        $picklist = self::tryPicklistLookup($language, $key, $module, 'jsLanguageStrings');
+
+        if ($picklist !== null) {
+            return $picklist['value'] ?? self::getJSTranslatedString($language, $key, $picklist['fallback']);
+        }
+
         $module = str_replace(':', '.', $module);
         $moduleStrings = self::getModuleStringsFromFile($language, $module);
         if (isset($moduleStrings['jsLanguageStrings'][$key])) {
@@ -139,6 +152,69 @@ class Vtiger_Language_Handler
         }
 
         return $key;
+    }
+
+    /**
+     * Build the magic-string module identifier used by getTranslatedString /
+     * vtranslate to route a translation through the picklist namespace.
+     *
+     * Picklist values live in their own per-picklist files so they cannot collide
+     * with arbitrary label keys. The lookup chain is:
+     *   1) languages/{lang}/custom/PickList/{picklistName}.php (preferred custom path)
+     *   2) languages/{lang}/PickList/{picklistName}.php
+     *      + its legacy custom override at languages/custom/{lang}/PickList/{picklistName}.php
+     *   3) fall back to standard lookup against {fallbackModule}.
+     *
+     * @param string $picklistName   Picklist field name (= picklist DB table name).
+     * @param string $fallbackModule Module used as the fallback if no per-picklist
+     *                               translation is defined.
+     */
+    public static function buildPicklistModule(string $picklistName, string $fallbackModule): string
+    {
+        return 'PickList:' . $picklistName . ':' . $fallbackModule;
+    }
+
+    /**
+     * Try the PickList-namespaced lookup for a magic-string $module. Used by both
+     * getLanguageTranslatedString and getJSTranslatedString (only the strings-array
+     * key differs).
+     *
+     * Returns:
+     *   - null            — $module is not a PickList: identifier; caller should
+     *                       fall through to normal module lookup.
+     *   - ['value' => $v, 'fallback' => null]  — picklist file produced a hit.
+     *   - ['value' => null, 'fallback' => $m]  — picklist file did not match;
+     *                                            caller should retry against $m.
+     *
+     * @param string $stringsKey Either 'languageStrings' or 'jsLanguageStrings'.
+     */
+    private static function tryPicklistLookup($language, $key, $module, string $stringsKey): ?array
+    {
+        if (!str_starts_with((string)$module, 'PickList:')) {
+            return null;
+        }
+
+        $parts = explode(':', $module, 3);
+        $picklistName = $parts[1] ?? '';
+        $fallbackModule = $parts[2] ?? 'Core';
+
+        if ($picklistName !== '') {
+            // Preferred custom path: languages/{lang}/custom/PickList/{name}.php.
+            // Checked first so the prevalent location wins over the legacy chain.
+            $newCustom = self::getModuleStringsFromFile($language, 'custom.PickList.' . $picklistName);
+            if (isset($newCustom[$stringsKey][$key])) {
+                return ['value' => $newCustom[$stringsKey][$key], 'fallback' => null];
+            }
+
+            // Legacy chain: languages/{lang}/PickList/{name}.php overridden by
+            // languages/custom/{lang}/PickList/{name}.php (both merged inside the call).
+            $strings = self::getModuleStringsFromFile($language, 'PickList.' . $picklistName);
+            if (isset($strings[$stringsKey][$key])) {
+                return ['value' => $strings[$stringsKey][$key], 'fallback' => null];
+            }
+        }
+
+        return ['value' => null, 'fallback' => $fallbackModule];
     }
 
     /**
@@ -172,6 +248,15 @@ class Vtiger_Language_Handler
                 self::$languageContainer[$language][$module]['languageStrings'] = $languageStrings;
                 self::$languageContainer[$language][$module]['jsLanguageStrings'] = $jsLanguageStrings;
             }
+        }
+        // Ensure the container slot exists before the custom-path merge below, so
+        // that having only a custom file (no base file) does not crash array_merge
+        // with a null left-hand side.
+        if (!isset(self::$languageContainer[$language][$module])) {
+            self::$languageContainer[$language][$module] = [
+                'languageStrings'   => [],
+                'jsLanguageStrings' => [],
+            ];
         }
         // add custom translation for module from language/custom/$language/$module.php file
         $qualifiedCustomName = 'languages.custom.' . $language . '.' . $module;

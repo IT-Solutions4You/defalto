@@ -52,50 +52,15 @@ class Settings_Roles_Save_Action extends Core_Controller_Action
             $recordModel = new Settings_Roles_Record_Model();
         }
 
-        if ($request->get('profile_directly_related_to_role') == '1') {
-            $profileId = $request->get('profile_directly_related_to_role_id');
-            $profileName = $request->get('profilename');
-            if (empty($profileName)) {
-                $profileName = $roleName . '+' . vtranslate('LBL_PROFILE', $qualifiedModuleName);
-            }
-            if ($profileId) {
-                $profileRecordModel = Settings_Profiles_Record_Model::getInstanceById($profileId);
-            } else {
-                $profileRecordModel = Settings_Profiles_Record_Model::getInstanceByName($profileName, true);
-                if (empty($profileRecordModel)) {
-                    $profileRecordModel = new Settings_Profiles_Record_Model();
-                }
-            }
-            $profileRecordModel->set('directly_related_to_role', '1');
-
-            $profileRecordModel->set('profilename', $profileName)
-                ->set('profile_permissions', $request->get('permissions'));
-            $profileRecordModel->set('viewall', $request->get('viewall'));
-            $profileRecordModel->set('editall', $request->get('editall'));
-            $savedProfileId = $profileRecordModel->save();
-            $roleProfiles = [$savedProfileId];
-        } else {
-            $roleProfiles = $request->get('profiles');
-        }
-
         $parentRoleId = $request->get('parent_roleid');
         if ($recordModel && !empty($parentRoleId)) {
             $parentRole = Settings_Roles_Record_Model::getInstanceById($parentRoleId);
             if (!empty($allowassignedrecordsto)) {
                 $recordModel->set('allowassignedrecordsto', $allowassignedrecordsto);
             } // set the value of assigned records to
-            if ($parentRole && !empty($roleName) && !empty($roleProfiles)) {
+            if ($parentRole && !empty($roleName)) {
                 $recordModel->set('rolename', $roleName);
-                $recordModel->set('profileIds', $roleProfiles);
                 $parentRole->addChildRole($recordModel);
-            }
-
-            //After role updation recreating user privilege files
-            if ($roleProfiles) {
-                foreach ($roleProfiles as $profileId) {
-                    $profileRecordModel = Settings_Profiles_Record_Model::getInstanceById($profileId);
-                    $profileRecordModel->recalculate([$recordId]);
-                }
             }
         }
 
