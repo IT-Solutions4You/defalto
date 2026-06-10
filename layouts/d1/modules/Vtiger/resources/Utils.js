@@ -626,6 +626,10 @@ var vtUtils = {
         this.showSelect2ElementView(container.find('select.select2'));
         this.registerEventForDateFields(container.find('.dateField').not('.ignore-ui-registration'));
         this.registerEventForTimeFields(container.find('.timepicker-default'));
+
+        if (typeof Vtiger_Phone_Js !== 'undefined') {
+            Vtiger_Phone_Js.initEdit(container);
+        }
     },
 
     showQtip: function (element, message, customParams) {

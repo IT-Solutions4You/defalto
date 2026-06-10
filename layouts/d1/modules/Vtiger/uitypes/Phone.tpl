@@ -13,8 +13,8 @@
         {assign var="FIELD_NAME" value=$FIELD_MODEL->getFieldName()}
     {/if}
     <div class="Vtiger_Phone_UIType">
-        <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement" name="{$FIELD_NAME}"
-               value="{$FIELD_MODEL->get('fieldvalue')}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
+        <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement js-iti-phone" name="{$FIELD_NAME}"
+               value="{$FIELD_MODEL->get('fieldvalue')}" autocomplete="tel" inputmode="tel" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
                 {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
                 {if php7_count($FIELD_INFO['validator'])}
                     data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}'

@@ -33,6 +33,7 @@
         </div>
     </div>
     <div id="js_strings" class="hide noprint">{Zend_Json::encode($LANGUAGE_STRINGS)}</div>
+    {if isset($PHONE_FIELD_CONFIG)}<div id="phone_field_config" class="hide noprint">{Zend_Json::encode($PHONE_FIELD_CONFIG)}</div>{/if}
     <div id="maxListFieldsSelectionSize" class="hide noprint">{$MAX_LISTFIELDS_SELECTION_SIZE}</div>
     <div id="myModal" class="modal myModal fade" tabindex="-1" data-bs-focus="false">
         <div class="modal-dialog"></div>
