@@ -181,14 +181,13 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
             aDeferred = jQuery.Deferred(),
             params = {};
 
-        let fieldNames = $('.headerFieldBtn')
-            .map(function () {
-                return $(this).data('fieldvalue');
-            })
-            .get()
-            .filter(function (name) {
-                return name !== undefined && name !== null && name !== '';
-            });
+        let containerElement = thisInstance.getFieldsContainer(),
+            valueElement = containerElement.find('input[name="header_fields_order"]'),
+            fieldNames = containerElement.find('#headerFieldsSelect').val() || [];
+
+        try {
+            fieldNames = JSON.parse(valueElement.val()) || fieldNames;
+        } catch (e) {}
 
         params['module'] = app.getModuleName();
         params['parent'] = app.getParentModuleName();
@@ -2759,26 +2758,54 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
         let self = this,
             containerElement = self.getFieldsContainer();
 
-        containerElement.on('click', '.openSelectFields', function () {
-            self.setEditField($(this));
+        self.initHeaderFieldsSelect(containerElement);
 
-            let modalContainer = self.getNewFieldModal();
-
-            app.helper.showModal(modalContainer, {
-                cb: function () {
-                    self.registerSelectFields(modalContainer);
-                }
-            });
-        });
-
-        containerElement.on('click', '.clearHeaderField', function () {
-            let clickHereLabel = $('input[name="click_here_label"]').val();
-
-            $(this).parent().removeAttr('data-fieldvalue');
-            $(this).parent().html(clickHereLabel);
-
+        containerElement.on('click', '.saveHeaderFieldsBtn', function () {
             self.saveHeaderFields();
         });
+
+    },
+
+    initHeaderFieldsSelect: function (containerElement) {
+        let self = this,
+            selectElement = containerElement.find('#headerFieldsSelect'),
+            valueElement = containerElement.find('input[name="header_fields_order"]');
+
+        if (!selectElement.length || selectElement.data('hf-initialized')) {
+            return;
+        }
+
+        selectElement.data('hf-initialized', true);
+
+        try {
+            vtUtils.makeSelect2ElementSortable(
+                selectElement,
+                valueElement,
+                function (valueElement) {
+                    try { return JSON.parse(valueElement.val()) || []; } catch (e) { return []; }
+                },
+                function (valueElement, selectedValues) {
+                    valueElement.val(JSON.stringify(selectedValues));
+                }
+            );
+        } catch (e) {
+            vtUtils.showSelect2ElementView(selectElement);
+            selectElement.on('change', function () {
+                valueElement.val(JSON.stringify(selectElement.val() || []));
+            });
+        }
+
+        selectElement.on('select2:selecting', function (e) {
+            let selectedValues = selectElement.val() || [];
+
+            if (selectedValues.length >= self.maxNumberOfHeaderFields) {
+                e.preventDefault();
+                app.helper.showErrorNotification({
+                    message: app.vtranslate('JS_MAXIMUM_HEADER_FIELDS_ALLOWED', self.maxNumberOfHeaderFields)
+                });
+            }
+        });
+
     }
 });
 

@@ -179,8 +179,11 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
         $headerFieldsModel = new Settings_LayoutEditor_HeaderFields_Model();
+        $selectedFields = $headerFieldsModel->getHeaderFields($sourceModuleName);
+        $selectedFieldNames = array_column($selectedFields, 'fieldname');
         $viewer->assign('HEADER_FIELDS_MODEL', $headerFieldsModel);
-        $viewer->assign('SELECTED_FIELDS', $headerFieldsModel->getHeaderFields($sourceModuleName));
+        $viewer->assign('SELECTED_FIELDS', $selectedFields);
+        $viewer->assign('SELECTED_FIELD_NAMES', $selectedFieldNames);
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'showHeaderFieldsLayout', $request->getModule(), $viewer, $request);
 
