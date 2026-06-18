@@ -409,9 +409,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $modules = [];
+    /**
+     * Field names displayed in the record header; order maps to headerfieldsequence.
+     */
     public array $blocksHeaderFields = [];
+    /**
+     * Field names used as default list filter columns; order maps to filter_sequence.
+     */
     public array $blocksListFields = [];
+    /**
+     * Field names displayed in quick create; order maps to quicksequence.
+     */
     public array $blocksQuickCreateFields = [];
+    /**
+     * Field names displayed in record summary; order maps to summaryfieldsequence.
+     */
     public array $blocksSummaryFields = [];
     public array $popupFields = [];
     /**
