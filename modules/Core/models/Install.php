@@ -42,7 +42,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'name' => 'InventoryItem',
         ],
     ];
-    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
+    public static array $fieldKeySkippedForUpdate = [
+        'presence',
+        'quickcreate',
+        'quicksequence',
+        'masseditable',
+        'summaryfield',
+        'summaryfieldsequence',
+        'headerfield',
+        'headerfieldsequence',
+        'filter',
+        'filter_sequence',
+        'sequence',
+        'block',
+    ];
+
     /**
      * @var array
      */
