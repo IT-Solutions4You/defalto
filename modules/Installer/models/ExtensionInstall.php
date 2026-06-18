@@ -167,14 +167,28 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     {
         $messages = [];
 
+        if (!$this->hasInstalledFiles()) {
+            $messages['danger'] = vtranslate('LBL_MODULE_FILES_MISSING', 'Installer');
+
+            return $messages;
+        }
+
+        if (!$this->isModuleActive()) {
+            $messages['warning'] = vtranslate('LBL_MODULE_INACTIVE', 'Installer');
+
+            return $messages;
+        }
+
         if ($this->isCoreModule()) {
+            $messages['primary'] = vtranslate('LBL_MODULE_ACTIVE', 'Installer');
+
             return $messages;
         }
 
         if (Installer_License_Model::isActiveExtension($this->getName())) {
-            $messages['primary'] = 'Valid license, active extension';
+            $messages['primary'] = vtranslate('LBL_LICENSE_ACTIVE', 'Installer');
         } else {
-            $messages['danger'] = 'Invalid license, inactive extension';
+            $messages['danger'] = vtranslate('LBL_LICENSE_INACTIVE', 'Installer');
         }
 
         return $messages;
@@ -217,21 +231,18 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
                 'linkurl'   => 'index.php?module=Installer&view=Requirements&mode=Module&sourceModule=' . $this->getName(),
                 'linkicon'  => '',
             ];
-
-            if (!$this->isCoreModule()) {
-                $links[] = [
-                    'linktype'  => 'LISTVIEWSETTING',
-                    'linklabel' => 'LBL_LICENSE',
-                    'linkurl'   => 'index.php?module=Installer&view=Index&mode=license&sourceModule=' . $this->getName(),
-                    'linkicon'  => '',
-                ];
-                $links[] = [
-                    'linktype'  => 'LISTVIEWSETTING',
-                    'linklabel' => 'LBL_UNINSTALL',
-                    'linkurl'   => 'index.php?module=Installer&view=Index&mode=uninstall&sourceModule=' . $this->getName(),
-                    'linkicon'  => '',
-                ];
-            }
+            $links[] = [
+                'linktype'  => 'LISTVIEWSETTING',
+                'linklabel' => 'LBL_LICENSE',
+                'linkurl'   => 'index.php?module=Installer&view=Index&mode=license&sourceModule=' . $this->getName(),
+                'linkicon'  => '',
+            ];
+            $links[] = [
+                'linktype'  => 'LISTVIEWSETTING',
+                'linklabel' => 'LBL_UNINSTALL',
+                'linkurl'   => 'index.php?module=Installer&view=Index&mode=uninstall&sourceModule=' . $this->getName(),
+                'linkicon'  => '',
+            ];
         }
 
         return $links;
@@ -283,6 +294,18 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $source = strtolower((string)$this->getModule()?->get('source'));
 
         return $source !== self::SOURCE_CUSTOM;
+    }
+
+    public function isModuleActive(): bool
+    {
+        return (bool)$this->getModule()?->isActive();
+    }
+
+    public function hasInstalledFiles(): bool
+    {
+        $moduleName = $this->getName();
+
+        return is_dir('modules/' . $moduleName) || is_dir('modules/Settings/' . $moduleName);
     }
 
     public function isVisibleInInstaller(): bool
