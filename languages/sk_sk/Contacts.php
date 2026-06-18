@@ -57,6 +57,11 @@ $languageStrings = [
     'Contacted - Successful' => 'Kontaktovaný – úspešne',
     'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
     'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
+    'Mr.' => 'Pán',
+    'Ms.' => 'Slečna',
+    'Mrs.' => 'Pani',
+    'Dr.' => 'Dr.',
+    'Prof.' => 'Prof.',
 ];
 $jsLanguageStrings = [
 ];

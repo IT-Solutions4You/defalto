@@ -58,6 +58,7 @@ $languageStrings = [
     'List Price' => 'Katalógová cena',
     'LBL_CONTACT_ADDRESS' => 'Adresa kontaktu',
     'Purchase Cost Amount' => 'Purchase Cost Amount',
+    'Paid' => 'Uhradené',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Nákupná objednávka obsahuje odstránené produkty alebo služby, prosím upravte objednávku',

@@ -55,7 +55,7 @@ $languageStrings = [
     'Tax Amount' => 'Tax Amount',
     'Grand Total' => 'Grand Total',
     'Margin Amount' => 'Margin Amount',
-    'Paid' => 'Paid',
+    'Paid' => 'Bezahlt',
     'Terms &amp; Conditions' => 'Terms &amp; Conditions',
 ];
 $jsLanguageStrings = [

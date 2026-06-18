@@ -22,6 +22,9 @@ $languageStrings = [
     'Is Private' => 'Je soukromý',
     'Attachment' => 'Příloha',
     'Related Email Id' => 'Související ID e‑mailu',
+    'Customer' => 'Zákazník',
+    'UserId' => 'ID uživatele',
+    'ReasonToEdit' => 'Důvod úpravy',
 ];
 $jsLanguageStrings = [
 ];

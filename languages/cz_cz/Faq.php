@@ -26,6 +26,7 @@ $languageStrings = [
     'Product Name' => 'Produkt',
     'Reviewed' => 'Zkontrolováno',
     'Comments' => 'Komentáře',
+    'Related to' => 'Související s',
 ];
 $jsLanguageStrings = [
 ];
