@@ -187,7 +187,8 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
     {
         // for Record Source Field we should not show default value option as we are setting this while Record Save
         $defaultValueRestrictedFields = ['source'];
-        $defaultValueRestrictedUitypes = ['4', '70', '69', '53', '6', '23'];
+        // 11 = phone: value is entered/normalised through the intl-tel-input widget, no plain default value
+        $defaultValueRestrictedUitypes = ['4', '70', '69', '53', '6', '23', '11'];
         if (in_array($this->getName(), $defaultValueRestrictedFields)
             || in_array($this->get('displaytype'), [4])
             || $this->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE

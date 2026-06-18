@@ -21,6 +21,7 @@ const Vtiger_Phone_Js = {
 
     _config: null,
     _sharedIti: null,
+    _syncing: false,
 
     isReady: function () {
         return typeof window.intlTelInput !== 'undefined';
@@ -47,11 +48,14 @@ const Vtiger_Phone_Js = {
         return this._config;
     },
 
-    getEditOptions: function () {
+    getEditOptions: function (initialCountry) {
         const cfg = this.getConfig();
         const options = {
-            nationalMode: false,
-            separateDialCode: false,
+            // Show the dial code next to the flag (e.g. "SK +421") and let the
+            // user type only the national number — matches the screenshot and
+            // avoids the "+421 in the field looks invalid" confusion. getNumber()
+            // still returns full E.164 for storage.
+            separateDialCode: true,
             countrySearch: true,
             formatOnDisplay: true,
             autoPlaceholder: 'aggressive',
@@ -61,11 +65,80 @@ const Vtiger_Phone_Js = {
         if (cfg.countries.length) {
             options.onlyCountries = cfg.countries;
         }
-        if (cfg.default) {
-            options.initialCountry = cfg.default;
+
+        const initial = initialCountry || cfg.default;
+        if (initial) {
+            options.initialCountry = initial;
         }
 
         return options;
+    },
+
+    /** Whether an ISO2 code is selectable given the configured country list. */
+    isAllowed: function (iso) {
+        const countries = this.getConfig().countries;
+        return !countries.length || countries.indexOf(iso) !== -1;
+    },
+
+    /** Lower-case ISO2 of the form's primary (first) country field, or ''. */
+    getFormCountry: function ($input) {
+        const $form = $input.closest('form');
+        if (!$form.length) {
+            return '';
+        }
+
+        const $select = $form.find('select[data-fieldtype="country"]').first();
+        return $select.length ? String($select.val() || '').toLowerCase() : '';
+    },
+
+    /** Initial country for a phone input: the record's country, else the default. */
+    getInitialCountry: function ($input) {
+        const formCountry = this.getFormCountry($input);
+        if (formCountry && this.isAllowed(formCountry)) {
+            return formCountry;
+        }
+        return this.getConfig().default;
+    },
+
+    /**
+     * Copy the country chosen on a phone field into the form's address country
+     * field — but only while that field is still empty, so a country the user
+     * already picked is never overwritten. Phone is usually filled before the
+     * address, so this lets the address country follow the phone.
+     */
+    syncPhoneCountryToForm: function ($input, iti) {
+        if (this._syncing) {
+            return;
+        }
+
+        const data = iti.getSelectedCountryData(),
+            iso = (data && data.iso2) ? data.iso2 : '';
+        if (!iso) {
+            return;
+        }
+
+        const $form = $input.closest('form');
+        if (!$form.length) {
+            return;
+        }
+
+        const $select = $form.find('select[data-fieldtype="country"]').first();
+        if (!$select.length || String($select.val() || '') !== '') {
+            return;
+        }
+
+        // The country select stores upper-case ISO2 (e.g. "SK").
+        const optionValue = iso.toUpperCase();
+        if (!$select.find('option[value="' + optionValue + '"]').length) {
+            return;
+        }
+
+        this._syncing = true;
+        try {
+            $select.val(optionValue).trigger('change');
+        } finally {
+            this._syncing = false;
+        }
     },
 
     /* -------------------------------------------------------------- edit -- */
@@ -90,14 +163,15 @@ const Vtiger_Phone_Js = {
     },
 
     initInput: function (input) {
-        const $input = jQuery(input);
+        const self = this,
+            $input = jQuery(input);
 
         if ($input.data('itiInitialized')) {
             return;
         }
 
         const el = $input.get(0),
-            iti = window.intlTelInput(el, this.getEditOptions());
+            iti = window.intlTelInput(el, this.getEditOptions(this.getInitialCountry($input)));
 
         el.itiInstance = iti;
         $input.data('itiInitialized', true).addClass('js-iti-ready');
@@ -114,8 +188,19 @@ const Vtiger_Phone_Js = {
             }
         };
 
+        // Once the phone holds a number, mirror its country into the (empty)
+        // address country field. Runs on country pick / auto-detect and on blur
+        // (covers typing a local number under the shown flag).
+        const syncCountry = function () {
+            if ($input.val().trim()) {
+                self.syncPhoneCountryToForm($input, iti);
+            }
+        };
+
         el.addEventListener('blur', markValidity);
+        el.addEventListener('blur', syncCountry);
         el.addEventListener('countrychange', markValidity);
+        el.addEventListener('countrychange', syncCountry);
     },
 
     /** Rewrite a single enhanced input to hold its E.164 value. */
@@ -321,6 +406,30 @@ const Vtiger_Phone_Js = {
         // Edit forms (full edit, quick create, quick edit, overlays).
         app.event.on('post.editView.load', function (e, container) {
             self.initEdit(container || jQuery(document));
+        });
+
+        // Live: when the record's primary country field changes, point the
+        // still-empty phone fields on the same form at that country. The first
+        // country field on the form drives all of its phone fields; fields that
+        // already hold a number are left untouched.
+        jQuery(document).on('change', 'select[data-fieldtype="country"]', function () {
+            const $select = jQuery(this),
+                $form = $select.closest('form');
+
+            if (!$form.length || !$form.find('select[data-fieldtype="country"]').first().is($select)) {
+                return;
+            }
+
+            const iso = String($select.val() || '').toLowerCase();
+            if (!iso || !self.isAllowed(iso)) {
+                return;
+            }
+
+            $form.find('input.js-iti-ready').each(function () {
+                if (this.itiInstance && !this.itiInstance.getNumber()) {
+                    this.itiInstance.setCountry(iso);
+                }
+            });
         });
 
         // Normalise the visible number to E.164 before any form is serialized
