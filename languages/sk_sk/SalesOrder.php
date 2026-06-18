@@ -74,6 +74,7 @@ $languageStrings = [
     'Credit Invoice' => 'Dobropis',
     'Paid' => 'Uhradená',
     'Recurring Module' => 'Modul opakovaných faktúr',
+    'Purchase Cost Amount' => 'Purchase Cost Amount',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Objednávka obsahuje odstránené produkty alebo služby, prosím upravte objednávku',

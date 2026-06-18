@@ -191,17 +191,6 @@
 							</div>
 							<div class="form-group py-3 row">
 								<label class="control-label fieldLabel col-lg-4 text-end">
-									<i class="fa fa-flag-o"></i> &nbsp; <span>{vtranslate('LBL_HEADER_FIELD',$QUALIFIED_MODULE)}</span>
-								</label>
-								<div class="controls col-lg-6">
-									<input type="hidden" name="headerfield" value="0"/>
-									<label class="checkbox form-check">
-										<input type="checkbox" class="form-check-input {if $FIELD_MODEL->isHeaderFieldOptionDisabled()}cursorPointerNotAllowed{else}cursorPointer{/if}" name="headerfield" value="1" {if $FIELD_MODEL->get('headerfield') eq '1'}checked="checked"{/if} {if $FIELD_MODEL->isHeaderFieldOptionDisabled() || (isset($IS_NAME_FIELD) && $IS_NAME_FIELD)}readonly="readonly"{/if} />
-									</label>
-								</div>
-							</div>
-							<div class="form-group py-3 row">
-								<label class="control-label fieldLabel col-lg-4 text-end">
 									<img src="{vimage_path('MassEdit.png')}" height=14 width=14/>
 									<span class="ms-2">{vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}</span>
 								</label>

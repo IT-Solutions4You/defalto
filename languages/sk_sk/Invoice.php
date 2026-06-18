@@ -21,7 +21,7 @@ $languageStrings = [
     'Sales Commission' => 'Provízia',
     'Invoice No' => 'Faktúra č.',
     'LBL_RECEIVED' => 'Uhradené',
-    'LBL_BALANCE' => '	Celkom k úhrade',
+    'LBL_BALANCE' => 'Celkom k úhrade',
     'Sent' => 'Odoslaná',
     'Credit Invoice' => 'Dobropis',
     'Paid' => 'Uhradená',
@@ -66,6 +66,7 @@ $languageStrings = [
     'LBL_SEND_MAIL_PDF' => 'Odoslať e-mail s PDF',
     'LBL_SUB_PRODUCTS' => 'Podprodukty',
     'LBL_ACTION' => 'Akcia',
+    'Purchase Cost Amount' => 'Purchase Cost Amount',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Faktúra obsahuje odstránené produkty alebo služby, prosím upravte Faktúru',

@@ -997,6 +997,8 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
                     $fieldInstance = $this->createField($fieldName, $fieldParams);
 
+                    self::logSuccess($fieldInstance);
+
                     if (!empty($fieldParams['picklist_values'])) {
                         $picklistValues = $fieldParams['picklist_values'];
 

@@ -1959,4 +1959,5 @@ $jsLanguageStrings = [
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Pro používání a instalaci AI rozšíření je vyžadována Membership licence',
     'JS_YES' => 'Ano',
     'JS_NO' => 'Ne',
+    'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Zavřením okna se všechna zadaná data ztratí. Přejete si zavřít okno?'
 ];

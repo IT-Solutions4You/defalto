@@ -18,20 +18,22 @@
  */
 
 $languageStrings = [
-    "LBL_SELECT_MARKETING_MODULES" => "Výber modulov na zobrazenie v záložke Marketing",
-    "LBL_SELECT_SALES_MODULES" => "Výber modulov na zobrazenie v záložke Predaj",
-    "LBL_SELECT_INVENTORY_MODULES" => "Vyberte moduly, ktoré sa majú zobraziť v CRM aplikácii",
-    "LBL_SELECT_SUPPORT_MODULES" => "Výber modulov na zobrazenie v záložke Podpora",
-    "LBL_SELECT_PROJECT_MODULES" => "Výber modulov na zobrazenie v záložke Projkety",
-    "LBL_SELECT_HIDDEN_MODULE" => "Vyberte skrytý Modul",
-    "LBL_INFO" => "info",
-    "LBL_MENU_EDITOR_INFO" => "Drag and drop Module na preusporiadanie. Môžete modul odstrániť z aplikácie a neskôr ho pridať.",
+    'LBL_SELECT_MARKETING_MODULES' => 'Výber modulov na zobrazenie v záložke Marketing',
+    'LBL_SELECT_SALES_MODULES' => 'Výber modulov na zobrazenie v záložke Predaj',
+    'LBL_SELECT_INVENTORY_MODULES' => 'Vyberte moduly, ktoré sa majú zobraziť v CRM aplikácii',
+    'LBL_SELECT_SUPPORT_MODULES' => 'Výber modulov na zobrazenie v záložke Podpora',
+    'LBL_SELECT_PROJECT_MODULES' => 'Výber modulov na zobrazenie v záložke Projkety',
+    'LBL_SELECT_HIDDEN_MODULE' => 'Vyberte skrytý Modul',
+    'LBL_INFO' => 'info',
+    'LBL_MENU_EDITOR_INFO' => 'Pretiahnutím môžete moduly presúvať. Modul môžete odstrániť z aplikácie a neskôr ho znovu pridať.',
+    'LBL_SELECT_ANALYTICS_MODULES' => 'Vyberte moduly, ktoré sa majú zobraziť v aplikácii Analytics',
+    'LBL_SELECT_TOOLS_MODULES' => 'Vyberte moduly, ktoré sa majú zobraziť v aplikácii Nástroje',
+    'LBL_SELECT_HOME_MODULES' => 'Vyberte moduly, ktoré sa majú zobraziť v aplikácii Domov',
 ];
-
 $jsLanguageStrings = [
-    "JS_MODULE_NOT_DRAGGABLE" => "Modul sa nedá presunúť",
-    "JS_MODULE_SEQUENCE_SAVED" => "Sekvencia modulov bola úspešne uložená",
-    "JS_MODULE_REMOVED" => "Modul bol úspešne odstránený",
-    "JS_MODULE_ADD_SUCCESS" => "Moduly boli úspešne pridané",
-    "JS_PLEASE_SELECT_A_MODULE" => "Vyberte modul",
+    'JS_MODULE_NOT_DRAGGABLE' => 'Modul sa nedá presunúť',
+    'JS_MODULE_SEQUENCE_SAVED' => 'Sekvencia modulov bola úspešne uložená',
+    'JS_MODULE_REMOVED' => 'Modul bol úspešne odstránený',
+    'JS_MODULE_ADD_SUCCESS' => 'Moduly boli úspešne pridané',
+    'JS_PLEASE_SELECT_A_MODULE' => 'Vyberte modul',
 ];

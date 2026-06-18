@@ -1051,8 +1051,6 @@ class Users_Install_Model extends Core_Install_Model
                     'masseditable' => 1,
                     'summaryfield' => 0,
                     'picklist_values' => [
-                        '1 Minute',
-                        '5 Minutes',
                         '15 Minutes',
                         '30 Minutes',
                         '45 Minutes',

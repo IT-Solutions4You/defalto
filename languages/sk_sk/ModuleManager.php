@@ -54,8 +54,8 @@ $languageStrings = [
     'LBL_UPDATE_NOW' => 'Aktualizovať teraz',
     'LBL_IMPORT_NOW' => 'Importovať teraz',
     'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Upozornenie - Vlastné súbory môžu ohroziť vaše CRM</b> <br>  
-  										 Táto funkcia bola sprístupnená pre vývojárov na testovanie nových modulov.
-  											Ak inštalujete zo súboru poskytnutého treťou stranou, pokračujte iba v prípade, že dôverujete vydavateľovi. Vlastné moduly môžu obsahovať bezpečnostné zraniteľnosti a prepísať systémové súbory, čím ohrozia vaše CRM. Modul, ktorý sa chystáte nainštalovať, nebol skontrolovaný spoločnosťou Vtiger.',
+                                           Táto funkcia bola sprístupnená pre vývojárov na testovanie nových modulov.
+                                              Ak inštalujete zo súboru poskytnutého treťou stranou, pokračujte iba v prípade, že dôverujete vydavateľovi. Vlastné moduly môžu obsahovať bezpečnostné zraniteľnosti a prepísať systémové súbory, čím ohrozia vaše CRM. Modul, ktorý sa chystáte nainštalovať, nebol skontrolovaný spoločnosťou Vtiger.',
 ];
 $jsLanguageStrings = [
     'JS_ON' => 'zapnuté',

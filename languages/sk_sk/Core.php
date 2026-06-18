@@ -139,7 +139,7 @@ $languageStrings = [
     'LBL_ACTIVITIES' => 'Aktivity',
     'LBL_NO_PENDING_ACTIVITIES' => 'Žiadne blížiace sa aktivity',
     'LBL_SUMMARY' => 'Súhrn',
-    'LBL_KEY_FIELD' => 'Pole v hlavičke',
+    'LBL_KEY_FIELD' => 'Pole v Súhrne',
     'LBL_DETAILS' => 'Podrobne',
     'LBL_NAME_EMAIL' => 'Meno a email',
     'LBL_SEARCH_FOR' => 'Vyhľadať',
@@ -1956,4 +1956,5 @@ $jsLanguageStrings = [
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Na používanie a inštaláciu AI rozšírenia je potrebná Membership licencia',
     'JS_YES' => 'Áno',
     'JS_NO' => 'Nie',
+    'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Zatvorením okna sa všetky zadané údaje stratia. Prajete si zatvoriť okno?'
 ];
