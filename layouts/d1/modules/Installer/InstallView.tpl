@@ -157,7 +157,7 @@
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
-            {foreach from=Installer_ExtensionInstall_Model::getAll() item=EXTENSION_MODEL}
+            {foreach from=Installer_ExtensionInstall_Model::getInstallerModules() item=EXTENSION_MODEL}
                 {assign var=EXTENSION_NAME value=$EXTENSION_MODEL->getName()}
                 {assign var=EXTENSION_LABEL value=vtranslate($EXTENSION_NAME, $EXTENSION_NAME)}
                 <div class="sectionTagContainer"><div class="sectionTag" id="Update{$EXTENSION_NAME}"></div></div>
@@ -185,6 +185,10 @@
                             </div>
                         {/if}
                     </div>
+                </div>
+            {foreachelse}
+                <div class="row border-top py-3">
+                    <div class="col text-secondary">{vtranslate('LBL_NO_MODULE_UPDATES', $QUALIFIED_MODULE)}</div>
                 </div>
             {/foreach}
         </div>

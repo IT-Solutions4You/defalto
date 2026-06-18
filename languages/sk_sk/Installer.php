@@ -266,6 +266,7 @@ $languageStrings = [
     'LBL_CHECK_LOADING' => 'Hľadajú sa aktualizácie',
     'LBL_MEMBERSHIP_BRANDING' => 'Chcete aktualizovať jedným klikom?<br>Pozrite si, čo ponúka <a-redirect-membership>Defalto Membership</a>, a <a-redirect-order>začnite hneď teraz</a>.',
     'LBL_MODULES' => 'Moduly',
+    'LBL_NO_MODULE_UPDATES' => 'Nie sú dostupné žiadne aktualizácie modulov.',
     'LBL_LICENSE_ACTIVATED' => 'Licencia bola úspešne aktivovaná.',
     'LBL_LICENSE_NOT_ACTIVATED' => 'Licencia nebola aktivovaná.',
     'LBL_SYSTEM_DOWNLOAD_INFO' => 'Vitajte v migrácii Vtiger',

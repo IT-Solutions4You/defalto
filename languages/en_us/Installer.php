@@ -259,6 +259,7 @@ $languageStrings = [
     'LBL_LICENSE_DELETED' => 'License deleted successfully.',
     'LBL_ADD_LICENSE' => 'Add License Key',
     'LBL_MODULES' => 'Modules',
+    'LBL_NO_MODULE_UPDATES' => 'No module updates are available.',
     'LBL_LICENSE_ACTIVATED' => 'License activated successfully.',
     'LBL_LICENSE_NOT_ACTIVATED' => 'License not activated.',
     'no_activations_left' => 'No activations left',
