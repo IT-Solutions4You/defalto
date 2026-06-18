@@ -77,7 +77,7 @@
                         <div class="kb-droppable rounded d-flex flex-column w-100 h-100">
                             <div class="kb-header rounded p-2 bg-primary" {if $FIELD_VALUE_COLOR}style="--bs-bg-opacity: 0.5; --bs-primary-rgb: {$FIELD_VALUE_RGB}; color: {$FIELD_VALUE_COLOR};"{/if}>
                                 <div class="fs-5 fw-bold">
-                                    <span class="kb-value-label">{vtranslate($FIELD_VALUE, $QUALIFIED_MODULE)}</span>
+                                    <span class="kb-value-label">{$FIELD_VALUE_TRANSLATIONS[$FIELD_VALUE]}</span>
                                     <span class="ms-2">(<span class="kb-value-count">{$RECORDS_COUNT[$FIELD_VALUE]}</span>)</span>
                                 </div>
                                 {if $RECORDS_HEADER[$FIELD_VALUE]}
