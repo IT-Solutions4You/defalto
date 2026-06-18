@@ -57,6 +57,7 @@ class Products_Install_Model extends Core_Install_Model
         ['Products', 'Leads', 'Leads', 'select', 'get_related_list',],
         ['Products', 'Accounts', 'Accounts', 'select', 'get_related_list',],
         ['Products', 'Contacts', 'Contacts', 'select', 'get_related_list',],
+        ['Products', 'Campaigns', 'Campaigns', 'select', 'get_dependents_list', 'related_to'],
         self::DOCUMENTS_RELATED_LIST,
         self::EMAILS_RELATED_LIST,
         self::APPOINTMENTS_RELATED_LIST,

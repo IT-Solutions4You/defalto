@@ -550,6 +550,8 @@ class Campaigns_Install_Model extends Core_Install_Model {
                 ['campaignid' => $row['campaignid']],
             );
         }
+
+        $this->deleteField('product_id');
     }
 
     /**
