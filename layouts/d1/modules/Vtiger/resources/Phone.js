@@ -207,12 +207,28 @@ const Vtiger_Phone_Js = {
     toE164: function (input) {
         const el = jQuery(input).get(0);
 
-        if (el && el.itiInstance) {
-            const number = el.itiInstance.getNumber();
-            if (number) {
-                el.value = number;
-            }
+        if (!el || !el.itiInstance) {
+            return;
         }
+
+        const iti = el.itiInstance,
+            number = iti.getNumber();
+
+        if (!number) {
+            return;
+        }
+
+        // Put the compact E.164 value in the field so the save flow serializes it.
+        el.value = number;
+
+        // In separateDialCode mode ITI shows "+421" beside the flag and expects
+        // only the national number in the field; the full E.164 we just wrote
+        // would render the dial code twice ("+421 +421905123456"). Save flows
+        // read the value synchronously, so restore the national display on the
+        // next tick — fixes inline-edit re-open and save-with-validation-error.
+        window.setTimeout(function () {
+            iti.setNumber(number);
+        }, 0);
     },
 
     /** Rewrite all enhanced inputs to E.164 (called right before a form saves). */

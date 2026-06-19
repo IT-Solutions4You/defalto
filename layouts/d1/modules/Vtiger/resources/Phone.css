@@ -18,6 +18,20 @@
     width: 100%;
 }
 
+/* Visually separate the country part (flag + dial code) from the typing area:
+   a subtle grey block on the left with a divider, white where the user types. */
+.iti--separate-dial-code .iti__selected-country {
+    background-color: #f3f4f6;
+    border-right: 1px solid #ced4da;
+    border-radius: .25rem 0 0 .25rem;
+    padding-right: 6px;
+}
+
+.iti--separate-dial-code .iti__selected-country:hover,
+.iti--separate-dial-code .iti__selected-country .iti__selected-country-primary:hover {
+    background-color: #e9ecef;
+}
+
 /* Soft validity hints while editing (do not block saving). */
 .js-iti-phone.js-iti-invalid {
     border-color: #E24B4A;
