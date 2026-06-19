@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-lg">{$LICENSE_MODEL->getItemName()}</div>
                     <div class="col-lg {if $LICENSE_MODEL->isUserLimitReached()}fw-bold text-danger{/if}">{$LICENSE_MODEL->getUsersCount()} / {$LICENSE_MODEL->getDisplayUsersLimit()}</div>
-                    <div class="col-lg">{Vtiger_Functions::currentUserDisplayDate($LICENSE_MODEL->getExpireDate())}</div>
+                    <div class="col-lg">{$LICENSE_MODEL->getDisplayExpireDate()}</div>
                     <div class="col-lg-4">
                         <button type="button" class="btn btn-primary me-2" data-edit-license="{$LICENSE_MODEL->getId()}">
                             <i class="fa-solid fa-pencil"></i>
