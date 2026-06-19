@@ -19,17 +19,25 @@
 }
 
 /* Visually separate the country part (flag + dial code) from the typing area:
-   a subtle grey block on the left with a divider, white where the user types. */
-.iti--separate-dial-code .iti__selected-country {
-    background-color: #f3f4f6;
+   a permanent grey block on the left with a divider, white where the user types.
+   The dial code is a child of .iti__selected-country, so the background on that
+   button covers both the flag and the dial code. (The wrapper has no
+   "separate-dial-code" class, so we target the button directly.) */
+.iti .iti__country-container {
+    /* ITI tints only the flag part on hover via this variable; align it so the
+       whole block (flag + dial code) darkens uniformly on hover. */
+    --iti-hover-color: #dee2e6;
+}
+
+.iti .iti__selected-country {
+    background-color: #e9ecef;
     border-right: 1px solid #ced4da;
     border-radius: .25rem 0 0 .25rem;
     padding-right: 6px;
 }
 
-.iti--separate-dial-code .iti__selected-country:hover,
-.iti--separate-dial-code .iti__selected-country .iti__selected-country-primary:hover {
-    background-color: #e9ecef;
+.iti .iti__country-container:hover .iti__selected-country {
+    background-color: #dee2e6;
 }
 
 /* Soft validity hints while editing (do not block saving). */

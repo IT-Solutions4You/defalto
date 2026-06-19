@@ -396,6 +396,14 @@ const Vtiger_Phone_Js = {
             return;
         }
 
+        const self = this,
+            info = this.formatNumber($fb.data('value'));
+
+        if (!info) {
+            return;
+        }
+
+        // The field that was actually edited.
         let $wrapper = $fb.closest('td');
         if (!$wrapper.length) {
             $wrapper = $fb.closest('.td');
@@ -404,14 +412,29 @@ const Vtiger_Phone_Js = {
             $wrapper = $fb.closest('.fieldValue');
         }
 
-        const $value = $wrapper.find('.value').first(),
-            info = this.formatNumber($fb.data('value'));
+        const $edited = $wrapper.find('.value').first();
+        if ($edited.length) {
+            $edited.empty().append(this.buildDisplayNode(info));
+        }
 
-        if (!$value.length || !info) {
+        // The same phone field is often shown twice (header / key fields + the
+        // block below). Detail.js#updateHeaderFieldValue copies the *raw* value
+        // into every other copy (matched by a field-name class) right before
+        // this event fires, so re-render those copies too.
+        const fieldName = $fb.data('name');
+        if (!fieldName) {
             return;
         }
 
-        $value.empty().append(this.buildDisplayNode(info));
+        jQuery('.overlayDetailHeader, .detailViewContainer').find('.value.' + fieldName).each(function () {
+            const $copy = jQuery(this);
+
+            if ($copy.is($edited) || $copy.children('.iti-display').length) {
+                return;
+            }
+
+            $copy.empty().append(self.buildDisplayNode(info));
+        });
     },
 
     /* ------------------------------------------------------------ wiring -- */
