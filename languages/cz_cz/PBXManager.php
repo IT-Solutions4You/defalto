@@ -38,6 +38,7 @@ $languageStrings = [
     'Source UUID' => 'Zdrojové UUID',
     'Gateway' => 'Brána',
     'Customer Type' => 'Typ zákazníka',
+    'Customer' => 'Zákazník',
 ];
 $jsLanguageStrings = [
 ];

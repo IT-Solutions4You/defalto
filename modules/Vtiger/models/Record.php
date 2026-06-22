@@ -442,6 +442,9 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
         $focus = CRMEntity::getInstance($moduleName);
         $focus->id = $recordId;
         $focus->retrieve_entity_info($recordId, $moduleName);
+        foreach ($focus->column_fields as $key => $value) {
+            $focus->column_fields[$key] = decode_html($value);
+        }
         $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Record', $moduleName);
         $instance = new $modelClassName();
 

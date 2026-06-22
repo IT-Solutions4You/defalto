@@ -39,6 +39,8 @@
         <div class="col">
             {foreach from=$EXTENSION_MODEL->getLicenseMessages() key=MESSAGE_TYPE item=MESSAGE}
                 <div class="alert alert-{$MESSAGE_TYPE} mb-2">{$MESSAGE}</div>
+            {foreachelse}
+                <div class="alert alert-primary mb-2">{vtranslate('LBL_MODULE_ACTIVE', $QUALIFIED_MODULE)}</div>
             {/foreach}
         </div>
     </div>

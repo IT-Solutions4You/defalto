@@ -56,6 +56,7 @@ $languageStrings = [
     'Tax Amount' => 'Výše daně',
     'Grand Total' => 'Celková částka',
     'Margin Amount' => 'Výše marže',
+    'Paid' => 'Uhrazeno',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Prosím, odstraňte řádkovou položku, která je odstraněna',

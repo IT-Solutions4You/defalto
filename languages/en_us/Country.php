@@ -9,7 +9,7 @@
  */
 
 $languageStrings = [
-    'Andorra' => 'Andorra 1',
+    'Andorra' => 'Andorra',
     'United Arab Emirates (the)' => 'United Arab Emirates (the)',
     'Afghanistan' => 'Afghanistan',
     'Antigua and Barbuda' => 'Antigua and Barbuda',

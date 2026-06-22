@@ -34,6 +34,23 @@ class Potentials_Install_Model extends Core_Install_Model
 
     public array $registerWorkflowTasks = [
         [
+            'Calculate or Update forecast amount',
+            'Potentials',
+            '3',
+            '1',
+            [],
+            [
+                [
+                    'modules/com_vtiger_workflow/tasks/VTUpdateFieldsTask.inc',
+                    'update forecast amount',
+                    'VTUpdateFieldsTask',
+                    [
+                        'field_value_mapping' => '[{"fieldname":"forecast_amount","valuetype":"expression","value":"amount * probability / 100"}]',
+                    ],
+                ],
+            ],
+        ],
+        [
             'Send Email to users on Potential creation',
             'Potentials',
             '1',
@@ -298,6 +315,20 @@ class Potentials_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 8,
                 ],
+                'forecast_amount' => [
+                    'name' => 'forecast_amount',
+                    'uitype' => 71,
+                    'column' => 'forecast_amount',
+                    'table' => 'vtiger_potential',
+                    'label' => 'Forecast Amount',
+                    'readonly' => 1,
+                    'presence' => 2,
+                    'typeofdata' => 'N~O',
+                    'quickcreate' => 1,
+                    'displaytype' => 1,
+                    'masseditable' => 0,
+                    'summaryfield' => 0,
+                ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',
                     'uitype' => 53,
@@ -431,6 +462,7 @@ class Potentials_Install_Model extends Core_Install_Model
             ->createColumn('description', 'text DEFAULT NULL')
             ->createColumn('forecastcategory', 'int(19) DEFAULT \'0\'')
             ->createColumn('outcomeanalysis', 'int(19) DEFAULT \'0\'')
+            ->createColumn('forecast_amount', self::$COLUMN_DECIMAL)
             ->createColumn('isconvertedfromlead', 'varchar(3) DEFAULT \'0\'')
             ->createColumn('contact_id', 'int(19) DEFAULT NULL')
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
