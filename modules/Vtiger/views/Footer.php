@@ -32,7 +32,9 @@ abstract class Vtiger_Footer_View extends Vtiger_Header_View
         $cssFileNames = [
             '~vendor/bootstrap-switch/bootstrap-switch/dist/css/bootstrap4/bootstrap-switch.min.css',
             '~layouts/' . Vtiger_Viewer::getDefaultLayoutName() . '/lib/jquery/timepicker/jquery.timepicker.css',
-            '~/libraries/jquery/lazyYT/lazyYT.min.css'
+            '~/libraries/jquery/lazyYT/lazyYT.min.css',
+            '~layouts/' . Vtiger_Viewer::getDefaultLayoutName() . '/lib/intl-tel-input/css/intlTelInput.min.css',
+            '~layouts/' . Vtiger_Viewer::getDefaultLayoutName() . '/modules/Vtiger/resources/Phone.css',
         ];
         $cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
 

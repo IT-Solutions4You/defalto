@@ -1,0 +1,64 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* Make the intl-tel-input wrapper fill the field like a normal form-control. */
+.Vtiger_Phone_UIType .iti,
+.editElement .iti {
+    width: 100%;
+    display: block;
+}
+
+.iti input.js-iti-phone {
+    width: 100%;
+}
+
+/* Visually separate the country part (flag + dial code) from the typing area:
+   a permanent grey block on the left with a divider, white where the user types.
+   The dial code is a child of .iti__selected-country, so the background on that
+   button covers both the flag and the dial code. (The wrapper has no
+   "separate-dial-code" class, so we target the button directly.) */
+.iti .iti__country-container {
+    /* ITI tints only the flag part on hover via this variable; align it so the
+       whole block (flag + dial code) darkens uniformly on hover. */
+    --iti-hover-color: #dee2e6;
+}
+
+.iti .iti__selected-country {
+    background-color: #e9ecef;
+    border-right: 1px solid #ced4da;
+    border-radius: .25rem 0 0 .25rem;
+    padding-right: 6px;
+}
+
+.iti .iti__country-container:hover .iti__selected-country {
+    background-color: #dee2e6;
+}
+
+/* Soft validity hints while editing (do not block saving). */
+.js-iti-phone.js-iti-invalid {
+    border-color: #E24B4A;
+}
+
+.js-iti-phone.js-iti-valid {
+    border-color: #639922;
+}
+
+/* Read-only display (detail + list views): flag + formatted number. */
+.iti-display,
+.js-iti-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.iti-display-flag {
+    display: inline-block;
+    flex: 0 0 auto;
+    vertical-align: middle;
+}
