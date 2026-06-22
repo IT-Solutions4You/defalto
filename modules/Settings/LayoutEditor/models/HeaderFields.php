@@ -32,6 +32,7 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model
      */
     public function saveHeaderFields($moduleName, $headerFields): void
     {
+        $headerFields = $this->filterModuleFieldNames($moduleName, (array)$headerFields);
         $table = (new Vtiger_Field_Model())->getFieldTable();
         $table->updateData(['headerfieldsequence' => null, 'headerfield' => null,], ['tabid' => getTabid($moduleName)]);
 
@@ -59,22 +60,6 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model
     }
 
     /**
-     * @param $field
-     *
-     * @return string[]
-     */
-    public static function getFieldModules($field)
-    {
-        if ('owner' === $field->getFieldDataType()) {
-            $modules = ['Users'];
-        } else {
-            $modules = $field->getReferenceList();
-        }
-
-        return $modules;
-    }
-
-    /**
      * @param $moduleName
      *
      * @return array
@@ -93,33 +78,9 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model
 
         /**
          * @var Vtiger_Field_Model $field
-         * @var Vtiger_Field_Model $referenceField
          */
         foreach ($fields as $field) {
             $options['default'][$field->get('name')] = vtranslate($field->block->label, $field->getModuleName()) . '##' . vtranslate($field->get('label'), $field->getModuleName());
-        }
-
-        $fields = $module->getFieldsByType(['reference', 'owner']);
-
-        foreach ($fields as $field) {
-            $fieldName = $field->get('name');
-            $fieldLabel = $field->get('label');
-            $referenceModuleNames = self::getFieldModules($field);
-
-            foreach ($referenceModuleNames as $referenceModuleName) {
-                $reference = Vtiger_Module_Model::getInstance($referenceModuleName);
-                $referenceFields = $reference->getFields();
-
-                foreach ($referenceFields as $referenceField) {
-                    $referenceFieldName = $referenceField->get('name');
-                    $referenceFieldLabel = $referenceField->get('label');
-
-                    $options[implode(':', [$fieldName, $referenceModuleName])][implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate(
-                            $referenceField->block->label,
-                            $referenceField->getModuleName()
-                        ) . '##' . vtranslate($referenceFieldLabel, $referenceModuleName);
-                }
-            }
         }
 
         return $options;
@@ -145,35 +106,30 @@ class Settings_LayoutEditor_HeaderFields_Model extends Vtiger_Field_Model
 
         /**
          * @var Vtiger_Field_Model $field
-         * @var Vtiger_Field_Model $referenceField
          */
         foreach ($fields as $field) {
             $options[$field->get('name')] = vtranslate($field->get('label'), $field->getModuleName());
         }
 
-        $fields = $module->getFieldsByType(['reference', 'owner']);
+        return $options;
+    }
 
-        foreach ($fields as $field) {
-            $fieldName = $field->get('name');
-            $fieldLabel = $field->get('label');
-            $referenceModuleNames = self::getFieldModules($field);
-
-            foreach ($referenceModuleNames as $referenceModuleName) {
-                $reference = Vtiger_Module_Model::getInstance($referenceModuleName);
-                $referenceFields = $reference->getFields();
-
-                foreach ($referenceFields as $referenceField) {
-                    $referenceFieldName = $referenceField->get('name');
-                    $referenceFieldLabel = $referenceField->get('label');
-
-                    $options[implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($fieldLabel, $moduleName) . ' - ' . vtranslate(
-                            $referenceFieldLabel,
-                            $referenceModuleName
-                        );
-                }
-            }
+    /**
+     * @param string $moduleName
+     * @param array  $fieldNames
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function filterModuleFieldNames(string $moduleName, array $fieldNames): array
+    {
+        if (empty($moduleName) || empty($fieldNames)) {
+            return [];
         }
 
-        return $options;
+        $module = Vtiger_Module_Model::getInstance($moduleName);
+        $moduleFieldNames = array_keys($module->getFields());
+
+        return array_values(array_intersect($fieldNames, $moduleFieldNames));
     }
 }
