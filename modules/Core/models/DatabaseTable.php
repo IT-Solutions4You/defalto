@@ -63,6 +63,24 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @param string $column
+     *
+     * @return $this
+     * @throws Exception
+     */
+    public function dropColumn(string $column): self
+    {
+        $this->requireTable('Table is empty for drop column');
+
+        if ($this->checkColumn($column, $this->get('table'), true)) {
+            $this->db->pquery(sprintf('ALTER TABLE %s DROP COLUMN %s', $this->get('table'), $column));
+            $this->removeTableColumns([$column]);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $columnName
      * @param string $tableName
      * @param bool   $cache

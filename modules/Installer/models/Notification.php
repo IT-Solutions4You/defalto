@@ -166,7 +166,7 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
     public function retrieveExtensions(): void
     {
         $installInfo = [];
-        $packages = Installer_ExtensionInstall_Model::getAll();
+        $packages = Installer_ExtensionInstall_Model::getInstallerModules();
         /** @var Installer_ExtensionInstall_Model $package */
         foreach ($packages as $package) {
             if ($package->getVersion() === $package->getUpdateVersion()) {

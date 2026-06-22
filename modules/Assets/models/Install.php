@@ -296,4 +296,12 @@ class Assets_Install_Model extends Core_Install_Model
         $this->getTable('vtiger_assetscf', null)
             ->createTable('assetsid');
     }
+
+    public function migrate(): void
+    {
+        $this->deleteField('related_to');
+
+        $this->getTable('vtiger_assets', null)
+            ->dropColumn('related_to');
+    }
 }

@@ -1040,6 +1040,8 @@ Vtiger.Class('Vtiger_Index_Js', {
                 fieldElement.attr('value', id);
                 fieldElement.data('value', id);
                 fieldElement.val(selectedName);
+                fieldElement.attr('readonly', 'readonly');
+                fieldElement.attr('disabled', 'disabled');
             } else {
                 fieldElement.val(id);
                 fieldElement.data('value', id);
@@ -1047,8 +1049,10 @@ Vtiger.Class('Vtiger_Index_Js', {
 
                 if (selectedName) {
                     fieldDisplayElement.attr('readonly', 'readonly');
+                    fieldDisplayElement.attr('disabled', 'disabled');
                 } else {
                     fieldDisplayElement.removeAttr("readonly");
+                    fieldDisplayElement.removeAttr("disabled");
                 }
             }
 

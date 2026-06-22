@@ -42,7 +42,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'name' => 'InventoryItem',
         ],
     ];
-    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
+    public static array $fieldKeySkippedForUpdate = [
+        'presence',
+        'quickcreate',
+        'quicksequence',
+        'masseditable',
+        'summaryfield',
+        'summaryfieldsequence',
+        'headerfield',
+        'headerfieldsequence',
+        'filter',
+        'filter_sequence',
+        'sequence',
+        'block',
+    ];
+
     /**
      * @var array
      */
@@ -395,9 +409,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $modules = [];
+    /**
+     * Field names displayed in the record header; order maps to headerfieldsequence.
+     */
     public array $blocksHeaderFields = [];
+    /**
+     * Field names used as default list filter columns; order maps to filter_sequence.
+     */
     public array $blocksListFields = [];
+    /**
+     * Field names displayed in quick create; order maps to quicksequence.
+     */
     public array $blocksQuickCreateFields = [];
+    /**
+     * Field names displayed in record summary; order maps to summaryfieldsequence.
+     */
     public array $blocksSummaryFields = [];
     public array $popupFields = [];
     /**
@@ -572,6 +598,31 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         );
 
         return $fieldInstance;
+    }
+
+    /**
+     * @param string $fieldName
+     * @param bool   $checkUsage
+     *
+     * @return bool
+     */
+    public function deleteField(string $fieldName, bool $checkUsage = false): bool
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance($this->getModuleName());
+
+        if (!$moduleModel) {
+            return false;
+        }
+
+        $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+
+        if (!$fieldModel) {
+            return false;
+        }
+
+        $fieldModel->delete($checkUsage);
+
+        return true;
     }
 
     public function createFilter($filterName, $moduleInstance)

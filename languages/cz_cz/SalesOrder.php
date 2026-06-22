@@ -71,6 +71,15 @@ $languageStrings = [
     'Approved' => 'Schválena',
     'Delivered' => 'Dodána zákazníkovi',
     'Cancelled' => 'Zrušena',
+    'Recurring Invoice Information' => 'Informace o opakované fakturaci',
+    'Daily' => 'Denně',
+    'Weekly' => 'Týdně',
+    'Monthly' => 'Měsíčně',
+    'Quarterly' => 'Čtvrtletně',
+    'Yearly' => 'Ročně',
+    'Net 30 days' => 'Splatnost 30 dní',
+    'Net 45 days' => 'Splatnost 45 dní',
+    'Net 60 days' => 'Splatnost 60 dní',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Prosím, odstraňte řádkovou položku, která je odstraněna',

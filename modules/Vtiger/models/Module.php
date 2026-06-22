@@ -1455,8 +1455,14 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
      */
     public function getSettingLinks()
     {
+        $installerSettingLinks = [];
+
+        if (class_exists('Installer_ExtensionInstall_Model')) {
+            $installerSettingLinks = Installer_ExtensionInstall_Model::getModuleSettingLinks($this);
+        }
+
         if (!$this->isEntityModule() && $this->getName() !== 'Users') {
-            return [];
+            return $installerSettingLinks;
         }
 
         $layoutEditorImagePath = Vtiger_Theme::getImagePath('LayoutEditor.gif');
@@ -1512,7 +1518,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
             }
         }
 
-        return $settingsLinks;
+        return array_merge($settingsLinks, $installerSettingLinks);
     }
 
     public function isCustomizable()
