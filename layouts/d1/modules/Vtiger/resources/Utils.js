@@ -618,6 +618,26 @@ var vtUtils = {
     },
 
     /**
+     * Registry of field-type widgets (e.g. Vtiger_Phone_Js). Each is a
+     * jQuery.Class exposing getInstance() + registerEvents() (one-time,
+     * document-level) and initEdit(container) (apply to a freshly rendered
+     * subtree). Widgets self-register via vtUtils.registerFieldWidget().
+     */
+    fieldWidgets: [],
+
+    registerFieldWidget: function (widgetClass) {
+        if (widgetClass && typeof widgetClass.getInstance === 'function' && jQuery.inArray(widgetClass, this.fieldWidgets) === -1) {
+            this.fieldWidgets.push(widgetClass);
+        }
+    },
+
+    eachFieldWidget: function (callback) {
+        jQuery.each(this.fieldWidgets, function (index, widgetClass) {
+            callback(widgetClass.getInstance());
+        });
+    },
+
+    /**
      * Function to change view of edited elements related to selected Plugin
      * @param {type} elementsContainer
      * @returns {undefined}
@@ -626,6 +646,10 @@ var vtUtils = {
         this.showSelect2ElementView(container.find('select.select2'));
         this.registerEventForDateFields(container.find('.dateField').not('.ignore-ui-registration'));
         this.registerEventForTimeFields(container.find('.timepicker-default'));
+
+        this.eachFieldWidget(function (widget) {
+            widget.initEdit(container);
+        });
     },
 
     showQtip: function (element, message, customParams) {

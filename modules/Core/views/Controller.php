@@ -214,6 +214,8 @@ abstract class Core_Controller_View extends Core_Controller_Action
         $viewer = $this->getViewer($request);
         $viewer->assign('ACTIVITY_REMINDER', $currentUser->getCurrentUserActivityReminderInSeconds());
 
+        $viewer->assign('PHONE_FIELD_CONFIG', Core_Country_Model::getPhoneFieldConfig());
+
         Core_Modifiers_Model::modifyForClass(get_class($this), 'postProcess', $request->getModule(), $viewer, $request);
 
         $this->postProcessDisplay($request);

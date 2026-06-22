@@ -58,6 +58,7 @@ class Core_Kanban_View extends Vtiger_Index_View
         $viewer->assign('KANBAN_MODEL', $kanbanModel);
         $viewer->assign('FIELD_NAME', $kanbanModel->getFieldName());
         $viewer->assign('FIELD_VALUES', $fieldValues);
+        $viewer->assign('FIELD_VALUE_TRANSLATIONS', $kanbanModel->getFieldModel()->getValueTranslations($module, $fieldValues));
         $viewer->assign('FIELD_VALUES_COLOR', $kanbanModel->getFieldValuesColor());
         $viewer->assign('RECORDS_INFO', $recordsInfo);
         $viewer->assign('RECORDS_COUNT', $recordsCount);
