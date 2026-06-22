@@ -17,7 +17,22 @@
  * The list of selectable countries + the initial country come from
  * #phone_field_config (Settings > Country), injected in Footer.tpl.
  */
-const Vtiger_Phone_Js = {
+jQuery.Class("Vtiger_Phone_Js", {
+
+    _instance: null,
+
+    /**
+     * Singleton accessor. This widget binds global, document-level handlers, so
+     * there must only ever be one instance.
+     */
+    getInstance: function () {
+        if (!Vtiger_Phone_Js._instance) {
+            Vtiger_Phone_Js._instance = new Vtiger_Phone_Js();
+        }
+
+        return Vtiger_Phone_Js._instance;
+    }
+}, {
 
     _config: null,
     _sharedIti: null,
@@ -439,7 +454,7 @@ const Vtiger_Phone_Js = {
 
     /* ------------------------------------------------------------ wiring -- */
 
-    register: function () {
+    registerEvents: function () {
         const self = this;
 
         // Edit forms (full edit, quick create, quick edit, overlays).
@@ -528,10 +543,18 @@ const Vtiger_Phone_Js = {
         self.initEdit(jQuery(document));
         self.formatDisplay(jQuery(document));
     }
-};
+});
+
+if (typeof vtUtils !== 'undefined') {
+    vtUtils.registerFieldWidget(Vtiger_Phone_Js);
+}
 
 jQuery(function () {
-    if (typeof app !== 'undefined' && app.event) {
-        Vtiger_Phone_Js.register();
+    if (typeof app === 'undefined' || !app.event || typeof vtUtils === 'undefined') {
+        return;
     }
+
+    vtUtils.eachFieldWidget(function (widget) {
+        widget.registerEvents();
+    });
 });

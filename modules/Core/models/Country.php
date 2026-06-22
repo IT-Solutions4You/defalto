@@ -309,8 +309,8 @@ class Core_Country_Model extends Core_DatabaseData_Model
 
     /**
      * ISO2 codes (upper-case) of every currently active country. Falls back to
-     * all known countries when the table is empty, which matches getCountry()
-     * treating countries as active by default on a fresh install.
+     * all known countries when the table is missing or empty, which matches
+     * getCountry() treating countries as active by default on a fresh install.
      *
      * @return array
      */
@@ -322,7 +322,7 @@ class Core_Country_Model extends Core_DatabaseData_Model
 
         $active = [];
 
-        try {
+        if (Vtiger_Utils::CheckTable($this->table)) {
             $this->retrieveDB();
             $result = $this->db->pquery('SELECT code FROM ' . $this->table . ' WHERE is_active = ?', [1]);
 
@@ -333,8 +333,6 @@ class Core_Country_Model extends Core_DatabaseData_Model
                     $active[] = $code;
                 }
             }
-        } catch (Throwable $e) {
-            $active = [];
         }
 
         self::$activeCodes = !empty($active) ? $active : array_keys(self::$countryCodes);
@@ -379,19 +377,15 @@ class Core_Country_Model extends Core_DatabaseData_Model
     {
         $default = '';
 
-        try {
-            $company = getCompanyDetails();
-            $countryName = strtolower(trim((string)($company['country'] ?? '')));
+        $company = getCompanyDetails();
+        $countryName = strtolower(trim((string)($company['country'] ?? '')));
 
-            if ('' !== $countryName) {
-                $byName = array_change_key_case(array_flip(self::$countryCodes));
+        if ('' !== $countryName) {
+            $byName = array_change_key_case(array_flip(self::$countryCodes));
 
-                if (isset($byName[$countryName])) {
-                    $default = strtolower($byName[$countryName]);
-                }
+            if (isset($byName[$countryName])) {
+                $default = strtolower($byName[$countryName]);
             }
-        } catch (Throwable $e) {
-            $default = '';
         }
 
         if ('' === $default || !in_array($default, $activeCodes, true)) {
