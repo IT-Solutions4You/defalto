@@ -18,6 +18,13 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
 
     public array $relatedListFields = [['purchaseorder_no', 'subject', 'vendor_id', 'contact_id', 'postatus', 'duedate', 'grand_total', 'assigned_user_id',], 'duedate', 'DESC'];
     public array $popupFields = ['purchaseorder_no', 'subject', 'vendor_id', 'contact_id', 'postatus', 'duedate', 'grand_total', 'assigned_user_id',];
+    public array $blocksHeaderFields = [
+        'vendor_id',
+        'contact_id',
+        'postatus',
+        'duedate',
+        'grand_total',
+    ];
 
     /**
      * @return void
@@ -117,7 +124,6 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                     'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
-                    'headerfield' => 1,
                     'related_modules' => [
                         'Contacts',
                     ],
@@ -220,7 +226,6 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                         ['Received Shipment', '#5CE573', 0],
                         ['Cancelled', '#F5587D', 0],
                     ],
-                    'headerfield' => 1,
                 ],
                 'assigned_user_id' => [
                     'name' => 'assigned_user_id',

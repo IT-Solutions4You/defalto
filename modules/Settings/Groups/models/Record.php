@@ -226,16 +226,23 @@ class Settings_Groups_Record_Model extends Settings_Vtiger_Record_Model
 
         foreach ($members['RoleAndSubordinates'] as $memberModel) {
             $roleModel = new Settings_Roles_Record_Model();
-            $roleModel->set('roleid', $memberModel->get('roleId'));
+            $roleId = $memberModel->get('roleId');
+            $roleModel->set('roleid', $roleId);
 
             $roleUsers = $roleModel->getUsers();
             foreach ($roleUsers as $userId => $userRecordModel) {
                 $userIdsList[$userId] = $userId;
             }
-        }
 
-        if (array_key_exists(1, $userIdsList)) {
-            unset($userIdsList[1]);
+            foreach (getRoleSubordinates($roleId) as $subordinateRoleId) {
+                $subordinateRoleModel = new Settings_Roles_Record_Model();
+                $subordinateRoleModel->set('roleid', $subordinateRoleId);
+
+                $roleUsers = $subordinateRoleModel->getUsers();
+                foreach ($roleUsers as $userId => $userRecordModel) {
+                    $userIdsList[$userId] = $userId;
+                }
+            }
         }
 
         foreach ($userIdsList as $userId) {

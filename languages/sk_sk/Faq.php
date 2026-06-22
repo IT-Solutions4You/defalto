@@ -26,6 +26,7 @@ $languageStrings = [
     'LBL_SOLUTION' => 'Riešenie',
     'Product Name' => 'Produkt',
     'Comments' => 'Komentáre',
+    'Related to' => 'Súvisiace s',
 ];
 $jsLanguageStrings = [
 ];

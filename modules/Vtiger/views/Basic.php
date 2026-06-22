@@ -124,6 +124,7 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
         $jsFileNames = [
             '~layouts/' . Vtiger_Viewer::getDefaultLayoutName() . '/lib/jquery/timepicker/jquery.timepicker.min.js',
             "~libraries/jquery/lazyYT/lazyYT.min.js",
+            '~layouts/' . Vtiger_Viewer::getDefaultLayoutName() . '/lib/intl-tel-input/js/intlTelInputWithUtils.min.js',
             'modules.Vtiger.resources.Header',
             'modules.Vtiger.resources.Edit',
             "modules.$moduleName.resources.Edit",
@@ -131,6 +132,8 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
             "modules.$moduleName.resources.Popup",
             'modules.Vtiger.resources.Field',
             "modules.$moduleName.resources.Field",
+            'modules.Vtiger.resources.Phone',
+            "modules.$moduleName.resources.Phone",
             'modules.Vtiger.resources.validator.BaseValidator',
             'modules.Vtiger.resources.validator.FieldValidator',
             "modules.$moduleName.resources.validator.FieldValidator",

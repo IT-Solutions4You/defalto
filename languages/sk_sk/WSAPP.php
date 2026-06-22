@@ -1,6 +1,6 @@
 <?php
 /************************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
@@ -17,23 +17,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-$languageStrings = [
-    'Answer' => 'Antwort',
-    'Comments' => 'Kommentare',
-    'Draft' => 'Entwurf',
-    'Faq' => 'FAQ',
-    'Faq No' => 'FAQ Nr.',
-    'General' => 'Allgemein',
-    'LBL_ADD_RECORD' => 'FAQ hinzufügen',
-    'LBL_COMMENT_INFORMATION' => 'Kommentar',
-    'LBL_FAQ_INFORMATION' => 'FAQ Information',
-    'LBL_RECORDS_LIST' => 'Liste der FAQs',
-    'LBL_SOLUTION' => 'Lösung',
-    'Obsolete' => 'veraltet',
-    'Published' => 'veröffentlicht',
-    'Question' => 'Frage',
-    'SINGLE_Faq' => 'FAQ',
-    'Related to' => 'Bezogen auf',
-];
-$jsLanguageStrings = [
+$mod_strings = [
+    'WSAPP' => 'WSAPP',
 ];
