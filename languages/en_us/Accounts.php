@@ -70,6 +70,7 @@ $languageStrings = [
     'Contacted - Successful' => 'Contacted - Successful',
     'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
     'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
+    'LBL_ACCOUNTS_SIMILAR_ORGANIZATIONS' => 'Similar organizations',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',

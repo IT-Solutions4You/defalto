@@ -64,6 +64,7 @@ $languageStrings = [
     'Contacted - Successful' => 'Kontaktovaný – úspešne',
     'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
     'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
+    'LBL_ACCOUNTS_SIMILAR_ORGANIZATIONS' => 'Podobné organizácie',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Ste si istí, že chcete odstrániť záznam?',
