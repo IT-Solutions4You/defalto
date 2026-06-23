@@ -77,6 +77,11 @@
     --bs-dropdown-link-active-bg: var(--dt-blue-color);
 }
 
+.accountNameSuggestionPanel {
+    max-height: 220px;
+    z-index: 1060;
+}
+
 .dropdown-item:focus, .dropdown-item:hover {
     --bs-dropdown-link-hover-bg: rgb(var(--bs-secondary-bg-rgb));
 }
@@ -218,9 +223,11 @@
 .h-iframe, .h-50vh {
     height: 50vh;
 }
+
 .h-75vh {
     height: 75vh;
 }
+
 .h-25vh-max {
     max-height: 25vh;
 }
@@ -505,6 +512,7 @@ body {
     width: var(--menu-width);
     text-align: center;
 }
+
 #app-menu .app-switcher-container {
     width: var(--menu-width);
     height: var(--header-height);
@@ -815,6 +823,7 @@ a {
     cursor: pointer;
     text-decoration: none !important;
 }
+
 .select2-hide-selected [aria-selected="true"] {
     display: none;
 }
@@ -1089,8 +1098,9 @@ ul.unstyled {
     display: inline-block;
     max-width: 300px;
 }
+
 .listViewEntries:hover td {
-    background-color: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity));
+    background-color: rgba(var(--bs-secondary-bg-rgb), var(--bs-bg-opacity));
 }
 
 .listview-table .table-actions span.dropdown.open,
@@ -1242,7 +1252,7 @@ input[type=checkbox]:checked {
 #headerForm .fieldValue .editAction,
 #detailView .fieldValue .editAction {
     border-radius: var(--bs-border-radius) !important;
-    background-color: rgba(var(--bs-body-bg-rgb),var(--bs-bg-opacity)) !important;
+    background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity)) !important;
 }
 
 #detailView .fieldValue:hover .action a {
@@ -1981,6 +1991,7 @@ input[type=checkbox]:checked {
 
     border-left: 1.5rem solid var(--dt-blue-color);
 }
+
 /*******************************************
 ************* Updates Timeline ***************
 ********************************************/
@@ -2127,6 +2138,7 @@ input[type=checkbox]:checked {
 .companyLogo img {
     max-width: 95%;
 }
+
 .treeView li {
     border-left: 4px solid #dddddd;
     list-style: none;
@@ -2196,9 +2208,11 @@ input[type=checkbox]:checked {
 .mini-slider-control[data-value="0"] {
     border: 1px solid rgb(var(--bs-black-rgb));
 }
+
 .mini-slider-control[data-value="1"] {
     border: 1px solid rgb(var(--bs-warning-rgb));
 }
+
 .mini-slider-control[data-value="2"] {
     border: 1px solid rgb(var(--bs-success-rgb));
 }
@@ -2207,10 +2221,12 @@ input[type=checkbox]:checked {
     margin-left: 0;
     background: rgb(var(--bs-black-rgb)) !important;
 }
+
 .mini-slider-control[data-value="1"] .ui-slider-handle {
     margin-left: -8px;
     background: rgb(var(--bs-warning-rgb)) !important;
 }
+
 .mini-slider-control[data-value="2"] .ui-slider-handle {
     background: rgb(var(--bs-success-rgb)) !important;
     margin-left: -13px;
@@ -2587,6 +2603,7 @@ li.dashboardWidget {
 .dashBoardContainer .tabContainer li a .deleteTab:hover {
     cursor: pointer;
 }
+
 .dashBoardContainer .dashBoardWidgetFooter a:active,
 .dashBoardContainer .dashBoardWidgetFooter a:hover {
     color: black;
@@ -2759,9 +2776,11 @@ li.dashboardWidget {
 .layoutContent li.dummyRow .dragUiText {
     opacity: 0.3;
 }
+
 .connectedSortable > li > .row {
     min-height: 12rem;
 }
+
 .fieldProperties .disabled {
     opacity: 0.3;
 }
@@ -2802,6 +2821,7 @@ li.dashboardWidget {
     margin-left: 20px;
     margin-top: -20px;
 }
+
 .layoutContent .blockFieldsList ul {
     list-style-type: none;
     min-height: 4rem;
@@ -4354,24 +4374,31 @@ input:focus:-ms-input-placeholder { -- IE 10+
 .hide {
     display: none !important;
 }
+
 .fs-07rem {
     font-size: 0.7rem !important;
 }
+
 .fs-7 {
     font-size: 0.75rem !important;
 }
+
 .fs-8 {
     font-size: 0.50rem !important;
 }
+
 .fs-9 {
     font-size: 0.25rem !important;
 }
+
 .fs-inherit {
     font-size: inherit !important;
 }
+
 .bg-inherit {
     background: inherit !important;
 }
+
 .select2-container--bootstrap-5 .select2-selection--multiple .select2-search {
     display: inline-block;
     width: auto;
@@ -4388,10 +4415,12 @@ input:focus:-ms-input-placeholder { -- IE 10+
         background-color: var(--dt-light-blue-color);
         color: var(--dt-dark-blue-color);
     }
+
     .ui-state-active {
         background-color: var(--dt-blue-color);
         color: #fff;
     }
+
     .ui-state-default {
         border: 0;
         text-align: center;
@@ -4399,17 +4428,20 @@ input:focus:-ms-input-placeholder { -- IE 10+
         height: 2rem;
         line-height: 1.8rem;
     }
+
     .ui-datepicker-header {
         background: none;
         border: 0;
         border-radius: 0;
     }
+
     .ui-datepicker-shortcut {
         padding: .2em .6em .3em .6em;
         cursor: default;
         width: auto;
         overflow: visible;
     }
+
     .ui-datepicker-shortcut [data-shortcut] {
         cursor: pointer;
     }
@@ -4469,81 +4501,107 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance: textfield;
 }
+
 .min-w-5rem {
     min-width: 5rem;
 }
+
 .cke_dialog_background_cover {
     z-index: 20000 !important;
 }
+
 .cke_dialog_container {
     z-index: 20001 !important;
 }
+
 .border-dashed {
     border-style: dashed;
 }
+
 .pe-grab {
     cursor: grab;
 }
+
 .picklist-color {
-    background-color: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity));
+    background-color: rgba(var(--bs-secondary-bg-rgb), var(--bs-bg-opacity));
 }
+
 .picklist-color:empty {
     background-color: transparent;
 }
+
 .editElement .select2-container {
     overflow: auto;
 }
+
 .word-break-all {
     word-break: break-all;
 }
+
 .h-1rem {
     height: 1rem;
 }
+
 .h-2rem {
     min-height: 2rem;
 }
+
 .mt-1rem {
     margin-top: 1rem;
 }
+
 .w-2rem {
     min-width: 2rem;
 }
+
 .h-4rem {
     min-height: 4rem;
 }
+
 .w-4rem {
     min-width: 4rem;
 }
+
 .h-3rem {
     min-height: 3rem;
 }
+
 .w-3rem {
     min-width: 3rem;
 }
+
 .w-25vw {
     min-width: 25vw;
 }
+
 .w-25vw-max {
     max-width: 25vw;
 }
+
 .w-100-max {
     max-width: 100%;
 }
+
 .w-30rem {
     width: 30rem;
 }
+
 .dropdown-item .dropdown-action {
     opacity: 0;
 }
+
 .dropdown-item:hover .dropdown-action {
     opacity: 1;
 }
+
 .h-13rem {
     height: 1.3rem;
 }
+
 .w-13rem {
     width: 1.3rem;
 }
+
 .tagListContainer .select2-selection__choice {
     --bs-bg-opacity: 0.1;
     background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
@@ -4556,17 +4614,20 @@ input[type=number] {
 .lineItemTableContainer {
     overflow-x: auto;
 }
+
 .bootstrap-switch {
     border-color: #eee !important;
 }
+
 .bootstrap-switch .bootstrap-switch-handle-on,
 .bootstrap-switch .bootstrap-switch-handle-off,
 .bootstrap-switch .bootstrap-switch-label {
     line-height: 10px !important;
     font-size: inherit !important;
 }
+
 .bootstrap-switch .bootstrap-switch-primary {
-    background-color: rgba(var(--bs-primary-rgb),var(--bs-bg-opacity)) !important ;
+    background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .dt_scroll {
@@ -4581,18 +4642,17 @@ input[type=number] {
 .listViewEntryValue[data-field-type="double"],
 .listViewEntryValue[data-field-type="currency"],
 .listViewEntryValue[data-field-type="percentage"],
-
 .relatedListEntryValues[data-field-type="integer"],
 .relatedListEntryValues[data-field-type="double"],
 .relatedListEntryValues[data-field-type="currency"],
-.relatedListEntryValues[data-field-type="percentage"]
-{
+.relatedListEntryValues[data-field-type="percentage"] {
     text-align: right;
 }
 
 .input-file-full-size {
     position: relative;
 }
+
 .input-file-full-size [type=file] {
     opacity: 0;
     position: absolute;
@@ -4601,6 +4661,7 @@ input[type=number] {
     right: 0;
     bottom: 0;
 }
+
 .MultiFile-label {
     display: block;
     white-space: nowrap;
@@ -4613,10 +4674,12 @@ input[type=number] {
 .MultiFile-label * {
     display: inline;
 }
+
 .sectionTagContainer {
     height: 0;
     position: relative;
 }
+
 .sectionTag {
     height: var(--header-height);
     position: absolute;
