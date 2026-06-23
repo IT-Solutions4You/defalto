@@ -133,8 +133,8 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
     },
 
     registerAccountNameSuggestionHint: function (container) {
-        const self = this;
-        const accountNameField = container.find('[name="accountname"]').first();
+        const self = this,
+            accountNameField = container.find('[name="accountname"]').first();
 
         if (accountNameField.length === 0) {
             return;
@@ -174,9 +174,9 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
     },
 
     scheduleAccountNameSuggestionSearch: function (container, accountNameField) {
-        const self = this;
-        const accountName = String(accountNameField.val() || '').replace(/\s+/g, ' ').trim();
-        const existingTimer = accountNameField.data('accountNameSuggestionTimer');
+        const self = this,
+            accountName = String(accountNameField.val() || '').replace(/\s+/g, ' ').trim(),
+            existingTimer = accountNameField.data('accountNameSuggestionTimer');
 
         if (existingTimer) {
             clearTimeout(existingTimer);
@@ -193,9 +193,9 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
     },
 
     loadAccountNameSuggestions: function (container, accountNameField, accountName) {
-        const self = this;
-        const requestId = (accountNameField.data('accountNameSuggestionRequestId') || 0) + 1;
-        const params = {
+        const self = this,
+            requestId = (accountNameField.data('accountNameSuggestionRequestId') || 0) + 1,
+            params = {
             module: 'Accounts',
             action: 'NameSuggestions',
             accountname: accountName,
@@ -242,8 +242,8 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
     },
 
     getAccountNameSuggestionPanel: function (accountNameField) {
-        const panelHost = this.getAccountNameSuggestionPanelHost(accountNameField);
-        let panel = panelHost.children('.accountNameSuggestionPanel').first();
+        let panelHost = this.getAccountNameSuggestionPanelHost(accountNameField),
+            panel = panelHost.children('.accountNameSuggestionPanel').first();
 
         if (panel.length === 0) {
             panel = jQuery(
@@ -260,9 +260,9 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
     },
 
     getAccountNameSuggestionPanelHost: function (accountNameField) {
-        const inputGroup = accountNameField.closest('.input-group');
-        const anchor = inputGroup.length > 0 ? inputGroup : accountNameField;
-        const panelHost = anchor.parent();
+        const inputGroup = accountNameField.closest('.input-group'),
+            anchor = inputGroup.length > 0 ? inputGroup : accountNameField,
+            panelHost = anchor.parent();
 
         if (panelHost.css('position') === 'static') {
             panelHost.css('position', 'relative');
@@ -272,9 +272,9 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
     },
 
     positionAccountNameSuggestionPanel: function (accountNameField, panel) {
-        const inputGroup = accountNameField.closest('.input-group');
-        const anchor = inputGroup.length > 0 ? inputGroup : accountNameField;
-        const position = anchor.position();
+        const inputGroup = accountNameField.closest('.input-group'),
+            anchor = inputGroup.length > 0 ? inputGroup : accountNameField,
+            position = anchor.position();
 
         panel.css({
             'left': position.left + 'px',
