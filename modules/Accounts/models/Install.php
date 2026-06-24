@@ -415,10 +415,10 @@ class Accounts_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_account',
                     'label' => 'Price Book',
                     'readonly' => 0,
-                    'presence' => 0,
+                    'presence' => 1,
                     'typeofdata' => 'I~O',
                     'quickcreate' => 1,
-                    'displaytype' => 1,
+                    'displaytype' => 2,
                     'masseditable' => 0,
                     'summaryfield' => 0,
                     'related_modules' => [
