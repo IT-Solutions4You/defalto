@@ -84,7 +84,7 @@ class Accounts_Install_Model extends Core_Install_Model
     ];
 
     public array $relatedListFields = [['accountname', 'account_no', 'accounttype', 'phone', 'email1', 'currency_id',]];
-    public array $popupFields = ['account_no', 'accountname', 'phone', 'email1', 'reg_no', 'tickersymbol', 'vat_id', 'currency_id', 'assigned_user_id',];
+    public array $popupFields = ['account_no', 'accountname', 'phone', 'email1', 'reg_no', 'vat_id', 'tax_id', 'currency_id', 'assigned_user_id',];
 
     /**
      * @throws Exception
@@ -263,25 +263,6 @@ class Accounts_Install_Model extends Core_Install_Model
                     'masseditable'  => 0,
                     'summaryfield'  => 1,
                 ],
-                'vat_id'           => [
-                    'name'            => 'vat_id',
-                    'uitype'          => 1,
-                    'column'          => 'vat_id',
-                    'table'           => 'vtiger_account',
-                    'generatedtype'   => 1,
-                    'label'           => 'VAT Number',
-                    'readonly'        => 1,
-                    'presence'        => 0,
-                    'maximumlength'   => 100,
-                    'typeofdata'      => 'V~O',
-                    'quickcreate'     => 2,
-                    'quicksequence'   => 5,
-                    'displaytype'     => 1,
-                    'masseditable'    => 2,
-                    'summaryfield'    => 1,
-                    'filter'          => 1,
-                    'filter_sequence' => 7,
-                ],
                 'reg_no'           => [
                     'name'          => 'reg_no',
                     'uitype'        => 1,
@@ -294,7 +275,43 @@ class Accounts_Install_Model extends Core_Install_Model
                     'maximumlength' => 100,
                     'typeofdata'    => 'V~O',
                     'quickcreate'   => 2,
-                    'quicksequence' => 6,
+                    'quicksequence' => 5,
+                    'displaytype'   => 1,
+                    'masseditable'  => 2,
+                    'summaryfield'  => 1,
+                ],
+                'vat_id'           => [
+                    'name'            => 'vat_id',
+                    'uitype'          => 1,
+                    'column'          => 'vat_id',
+                    'table'           => 'vtiger_account',
+                    'generatedtype'   => 1,
+                    'label'           => 'VAT Number',
+                    'readonly'        => 1,
+                    'presence'        => 0,
+                    'maximumlength'   => 100,
+                    'typeofdata'      => 'V~O',
+                    'quickcreate'     => 2,
+                    'quicksequence'   => 6,
+                    'displaytype'     => 1,
+                    'masseditable'    => 2,
+                    'summaryfield'    => 1,
+                    'filter'          => 1,
+                    'filter_sequence' => 7,
+                ],
+                'tax_id'           => [
+                    'name'          => 'tax_id',
+                    'uitype'        => 1,
+                    'column'        => 'tax_id',
+                    'table'         => 'vtiger_account',
+                    'generatedtype' => 1,
+                    'label'         => 'VAT Nr',
+                    'readonly'      => 1,
+                    'presence'      => 0,
+                    'maximumlength' => 100,
+                    'typeofdata'    => 'V~O',
+                    'quickcreate'   => 2,
+                    'quicksequence' => 7,
                     'displaytype'   => 1,
                     'masseditable'  => 2,
                     'summaryfield'  => 1,
@@ -310,7 +327,7 @@ class Accounts_Install_Model extends Core_Install_Model
                     'headerfieldsequence' => 5,
                     'summaryfield'        => 1,
                     'quickcreate'         => 2,
-                    'quicksequence'       => 7,
+                    'quicksequence'       => 8,
                     'filter'              => 1,
                     'filter_sequence'     => 8,
                 ],
@@ -703,6 +720,7 @@ class Accounts_Install_Model extends Core_Install_Model
             ->createColumn('tags', 'varchar(1) DEFAULT NULL')
             ->createColumn('reg_no', 'varchar(100) DEFAULT NULL')
             ->createColumn('vat_id', 'varchar(100) DEFAULT NULL')
+            ->createColumn('tax_id', 'varchar(100) DEFAULT NULL')
             ->createColumn('currency_id', 'int(19) DEFAULT NULL')
             ->createColumn('conversion_rate', 'decimal(10,3) DEFAULT NULL')
             ->createColumn('pricebookid', 'int(19) DEFAULT NULL')

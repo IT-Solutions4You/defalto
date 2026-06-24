@@ -56,6 +56,7 @@ $languageStrings = [
     'Organization Image' => 'Organization Image',
     'Company Reg. No.' => 'Company Reg. No.',
     'VAT ID' => 'VAT ID',
+    'VAT Nr' => 'VAT Nr',
     'LBL_ADD_CONTACTS' => 'Add Contact',
     'LBL_ADD_POTENTIALS' => 'Add Opportunities',
     'LBL_ADD_QUOTES' => 'Add Quote',
