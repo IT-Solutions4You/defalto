@@ -21,6 +21,7 @@ $languageStrings = [
     'Active' => 'aktiv',
     'Document No' => 'Dokumentennr.',
     'Documents' => 'Dokumente',
+    'CV_ALL' => 'Alle Dokumente',
     'Download Count' => 'Anzahl der Downloads',
     'Download Type' => 'Download Typ',
     'File Name' => 'Dateiname',

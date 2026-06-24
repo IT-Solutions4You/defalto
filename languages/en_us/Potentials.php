@@ -19,6 +19,7 @@
 
 $languageStrings = [
     'Potentials' => 'Opportunities',
+    'CV_ALL' => 'All Opportunities',
     'SINGLE_Potentials' => 'Opportunity',
     'LBL_ADD_RECORD' => 'Add Opportunity',
     'LBL_RECORDS_LIST' => 'Opportunities List',

@@ -38,6 +38,7 @@ $languageStrings = [
     'Received Shipment' => 'Přijata na sklad',
     'Cancelled' => 'Zrušena',
     'PurchaseOrder' => 'Nákupní objednávky',
+    'CV_ALL' => 'Všechny nákupní objednávky',
     'SINGLE_PurchaseOrder' => 'Nákupní objednávka',
     'LBL_EXPORT_TO_PDF' => 'Exportovat do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odeslat e-mail s PDF',

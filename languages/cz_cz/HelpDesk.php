@@ -80,6 +80,7 @@ $languageStrings = [
     'Last Comment Time' => 'Čas posledního komentáře',
     'Creator' => 'Tvůrce',
     'HelpDesk' => 'Požadavky',
+    'CV_ALL' => 'Všechny požadavky',
     'LBL_STATUS' => 'Stav',
     'LBL_SEVERITY' => 'Závažnost',
     'Hi' => 'Dobrý den',

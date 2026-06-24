@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Vendors' => 'Dodávatelia',
+    'CV_ALL' => 'Všetci dodávatelia',
     'SINGLE_Vendors' => 'Dodávateľ',
     'LBL_ADD_RECORD' => 'Pridať dodávateľa',
     'LBL_RECORDS_LIST' => 'Zoznam dodávateľov',

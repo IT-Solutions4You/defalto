@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'HelpDesk' => 'Riešenie problémov',
+    'CV_ALL' => 'Všetky požiadavky',
     'SINGLE_HelpDesk' => 'Riešenie problémov',
     'LBL_ADD_RECORD' => 'Pridať novú požiadavku',
     'LBL_RECORDS_LIST' => 'Zoznam požiadaviek',

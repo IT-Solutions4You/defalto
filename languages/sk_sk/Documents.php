@@ -71,6 +71,7 @@ $languageStrings = [
     'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Poslať súbor ako emailovú prílohu',
     'LBL_PREVIEW_NOT_AVAILABLE' => 'Náhľad nie je k dispozícii',
     'Documents' => 'Dokumenty',
+    'CV_ALL' => 'Všetky dokumenty',
     'Last Modified By' => 'Naposledy upravil',
     'LBL_DOWNLOAD_FILE' => 'Stiahnuť súbor',
     'LBL_MAX_UPLOAD_SIZE' => 'Maximálna veľkosť nahrávania',

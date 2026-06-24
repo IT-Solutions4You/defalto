@@ -54,6 +54,7 @@ $languageStrings = [
     'Contacted - Never Contact Again' => 'Již nikdy nekontaktovat',
     'Completed' => 'Ukončena',
     'Campaigns' => 'Kampaně',
+    'CV_ALL' => 'Všechny kampaně',
     'Others' => 'Ostatní',
     'Partners' => 'Partneři',
 ];

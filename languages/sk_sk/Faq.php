@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Faq' => 'Znalostná databáza',
+    'CV_ALL' => 'Všetky FAQ',
     'SINGLE_Faq' => 'Znalostná databáza',
     'LBL_RECORDS_LIST' => 'Znalostná databáza',
     'LBL_ADD_RECORD' => 'Pridať nový záznam',

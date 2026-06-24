@@ -38,6 +38,7 @@ $languageStrings = [
     'Accepted' => 'Přijata',
     'Rejected' => 'Zamítnuta',
     'Quotes' => 'Nabídky',
+    'CV_ALL' => 'Všechny nabídky',
     'LBL_EXPORT_TO_PDF' => 'Exportovat do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odeslat e‑mail s PDF',
     'Related To' => 'Související s',

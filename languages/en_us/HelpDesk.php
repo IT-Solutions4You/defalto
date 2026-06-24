@@ -19,6 +19,7 @@
 
 $languageStrings = [
     'HelpDesk' => 'Tickets',
+    'CV_ALL' => 'All Tickets',
     'SINGLE_HelpDesk' => 'Ticket',
     'LBL_ADD_RECORD' => 'Add Ticket',
     'LBL_RECORDS_LIST' => 'Ticket List',

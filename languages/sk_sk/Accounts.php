@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Accounts' => 'Organizácie',
+    'CV_ALL' => 'Všetky organizácie',
     'SINGLE_Accounts' => 'Organizácia',
     'LBL_ADD_RECORD' => 'Pridať organizáciu',
     'LBL_RECORDS_LIST' => 'Zoznam organizácií',

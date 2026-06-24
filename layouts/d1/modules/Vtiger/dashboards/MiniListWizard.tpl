@@ -65,7 +65,7 @@
 	{foreach from=$ALLFILTERS item=FILTERS key=FILTERGROUP}
 		<optgroup label="{$FILTERGROUP}">
 			{foreach from=$FILTERS item=FILTER key=FILTERNAME}
-				<option value="{$FILTER->getId()}">{$FILTER->get('viewname')}</option>
+				<option value="{$FILTER->getId()}">{$FILTER->getDisplayName()}</option>
 			{/foreach}
 		</optgroup>
 	{/foreach}

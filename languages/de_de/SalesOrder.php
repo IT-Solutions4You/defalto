@@ -42,6 +42,7 @@ $languageStrings = [
     'SINGLE_SalesOrder' => 'Auftragsbestätigung',
     'Sales Commission' => 'Provision',
     'SalesOrder' => 'Auftragsbestätigungen',
+    'CV_ALL' => 'Alle Auftragsbestätigungen',
     'SalesOrder No' => 'Auftragsbestätigungsnr.',
     'Sent' => 'gesendet',
     'Start Period' => 'Start',

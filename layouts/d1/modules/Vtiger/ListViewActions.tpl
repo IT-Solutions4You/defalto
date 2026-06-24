@@ -101,7 +101,7 @@
                         {foreach item=FILTER_TYPES from=$CUSTOM_VIEWS}
                             {foreach item=FILTERS from=$FILTER_TYPES}
                                 {if $FILTERS->get('cvid') eq $VIEWID}
-                                    {assign var=CVNAME value=$FILTERS->get('viewname')}
+                                    {assign var=CVNAME value=$FILTERS->getDisplayName()}
                                     {break}
                                 {/if}
                             {/foreach}

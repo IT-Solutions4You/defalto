@@ -59,6 +59,7 @@ $languageStrings = [
     'Create Proforma Invoice' => 'Vytvořit předfakturu',
     'Create Final Invoice' => 'Vytvořit finální fakturu',
     'SalesOrder' => 'Prodejní objednávky',
+    'CV_ALL' => 'Všechny prodejní objednávky',
     'SINGLE_SalesOrder' => 'Prodejní objednávka',
     'LBL_EXPORT_TO_PDF' => 'Exportovat do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odeslat e-mail s PDF',

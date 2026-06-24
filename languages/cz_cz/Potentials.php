@@ -70,6 +70,7 @@ $languageStrings = [
     'LBL_CREATE_QUOTES' => 'Vytvořit cenovou nabídku',
     'LBL_CREATE_SALESORDER' => 'Vytvořit prodejní objednávku',
     'Potentials' => 'Příležitosti',
+    'CV_ALL' => 'Všechny příležitosti',
     'SINGLE_Potentials' => 'Příležitost',
     'Opportunities' => 'Příležitosti',
     'Opportunity' => 'Příležitost',

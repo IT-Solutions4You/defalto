@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Quotes' => 'Ponuky',
+    'CV_ALL' => 'Všetky ponuky',
     'SINGLE_Quotes' => 'Ponuka',
     'LBL_EXPORT_TO_PDF' => 'Exportovať do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odoslať email s PDF',

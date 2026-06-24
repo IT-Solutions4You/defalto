@@ -12,6 +12,7 @@ $languageStrings = [
     'Account Name' => 'Název organizace',
     'Account No' => 'Číslo organizace',
     'Accounts' => 'Organizace',
+    'CV_ALL' => 'Všechny organizace',
     'Analyst' => 'Analytik',
     'Company Reg. No.' => 'IČ firmy',
     'Competitor' => 'Konkurent',

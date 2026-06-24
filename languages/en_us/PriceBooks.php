@@ -19,6 +19,7 @@
 
 $languageStrings = [
     'PriceBooks' => 'Price Books',
+    'CV_ALL' => 'All Price Books',
     'SINGLE_PriceBooks' => 'Price Book',
     'LBL_ADD_RECORD' => 'Add Price Book',
     'LBL_RECORDS_LIST' => 'Price Books List',

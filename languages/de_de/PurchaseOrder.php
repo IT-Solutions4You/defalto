@@ -41,6 +41,7 @@ $languageStrings = [
     'LBL_VENDOR_ADDRESS' => 'Lieferant Adresse',
     'List Price' => 'Listenpreis',
     'PurchaseOrder' => 'Einkaufsbestellungen',
+    'CV_ALL' => 'Alle Einkaufsbestellungen',
     'PurchaseOrder No' => 'Einkaufsbestellungennr.',
     'Received Shipment' => 'Lieferung empfangen',
     'Requisition No' => 'Anforderungsnummer',

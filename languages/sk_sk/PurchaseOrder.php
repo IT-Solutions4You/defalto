@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'PurchaseOrder' => 'Nákupné objednávky',
+    'CV_ALL' => 'Všetky nákupné objednávky',
     'SINGLE_PurchaseOrder' => 'Nákupná objednávka',
     'LBL_ADD_RECORD' => 'Pridať nákupnú objednávku',
     'LBL_RECORDS_LIST' => 'Zoznam objednávok',

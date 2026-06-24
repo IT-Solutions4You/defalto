@@ -14,7 +14,7 @@
     {if $ACTIVE_TAG}
         {assign var=ACTIVE_CV_LABEL value=$ACTIVE_TAG->get('tag')}
     {else}
-        {assign var=ACTIVE_CV_LABEL value=$ACTIVE_CUSTOM_VIEW->get('viewname')}
+        {assign var=ACTIVE_CV_LABEL value=$ACTIVE_CUSTOM_VIEW->getDisplayName()}
     {/if}
     <div class="dropdown col">
         <div class="overflow-hidden w-25vw-max cursorPointer text-secondary" data-bs-toggle="dropdown" title="{$ACTIVE_CV_LABEL}">

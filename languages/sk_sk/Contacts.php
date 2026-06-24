@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Contacts' => 'Kontakty',
+    'CV_ALL' => 'Všetky kontakty',
     'SINGLE_Contacts' => 'Kontakt',
     'LBL_ADD_RECORD' => 'Pridať osobu',
     'LBL_RECORDS_LIST' => 'Zoznam osôb',

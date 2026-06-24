@@ -49,6 +49,7 @@ $languageStrings = [
     'Contacted - Unsuccessful' => 'Kontaktovaný – neúspešne',
     'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
     'Contacts' => 'Osoby',
+    'CV_ALL' => 'Všechny osoby',
     'SINGLE_Contacts' => 'Osoba',
     'Other Phone' => 'Další telefon',
     'Email' => 'Primární e‑mail',

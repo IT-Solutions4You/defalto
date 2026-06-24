@@ -21,6 +21,7 @@ $languageStrings = [
     'Account Name' => 'Organisationsname',
     'Account No' => 'Organisationsnr.',
     'Accounts' => 'Organisationen',
+    'CV_ALL' => 'Alle Organisationen',
     'Analyst' => 'Analyst',
     'Company Reg. No.' => 'Firmenreg.-Nr.',
     'Competitor' => 'Wettbewerber',

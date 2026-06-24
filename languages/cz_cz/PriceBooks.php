@@ -19,6 +19,7 @@ $languageStrings = [
     'LBL_ADD_TO' => 'Přidat do',
     'Unit Price' => 'Cena za jednotku',
     'PriceBooks' => 'Ceníky',
+    'CV_ALL' => 'Všechny ceníky',
     'LBL_UNIT_PRICE' => 'Jednotková cena',
 ];
 $jsLanguageStrings = [

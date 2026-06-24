@@ -44,6 +44,7 @@ $languageStrings = [
     'Lead No' => 'Lead Nr.',
     'Lead Status' => 'Leadstatus',
     'Leads' => 'Leads',
+    'CV_ALL' => 'Alle Leads',
     'Lost Lead' => 'Lead verloren',
     'Mr.' => 'Herr',
     'Mrs.' => 'Frau',

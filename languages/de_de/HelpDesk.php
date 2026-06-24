@@ -27,6 +27,7 @@ $languageStrings = [
     'Feature' => 'Eigenschaft',
     'From Portal' => 'vom Kundenportal',
     'HelpDesk' => 'Tickets',
+    'CV_ALL' => 'Alle Tickets',
     'HelpDesk ID' => 'Ticket ID',
     'Hi' => 'Hallo',
     'High' => 'hoch',
