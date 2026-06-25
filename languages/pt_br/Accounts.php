@@ -34,11 +34,9 @@ $languageStrings = [
     'Account Name'               => 'Nome Organização',
     'Account No'                 => 'Cód. Organização',
     'Website'                    => 'Website',
-    'Ticker Symbol'              => 'Cod. Bolsa',
     'Member Of'                  => 'Membro de',
     'Employees'                  => 'Empregados',
     'Ownership'                  => 'Propriedade',
-    'SIC Code'                   => 'Cod CNAE',
     'Other Email'                => 'Email Alternativo',
     'Other Phone'                => 'Telefone Alternativo',
     'Phone'                      => 'Telefone',
@@ -63,9 +61,9 @@ $languageStrings = [
     'LBL_COPY_SHIPPING_ADDRESS'  => 'Copiar Endereço Entrega',
     'LBL_IMAGE_INFORMATION'      => 'Imagem Perfil',
     'Organization Image'         => 'Imagem Organização',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'N.º reg. empresa',
+    'VAT Nr' => 'N.º fiscal',
+    'VAT Number' => 'N.º IVA',
 ];
 
 $jsLanguageStrings = [

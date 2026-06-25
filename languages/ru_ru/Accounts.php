@@ -27,11 +27,9 @@ $languageStrings = [
     'Account Name'               => 'Контрагент',
     'Account No'                 => 'Контрагент №',
     'Website'                    => 'Веб сайт',
-    'Ticker Symbol'              => 'Краткое Название',
     'Member Of'                  => 'Входит в группу',
     'Employees'                  => 'Кол-во сотрудников',
     'Ownership'                  => 'Форма',
-    'SIC Code'                   => 'Код по классификатору',
     'Other Email'                => 'Доп.Email',
     'Analyst'                    => 'Аналитик',
     'Competitor'                 => 'Конкурент',
@@ -53,9 +51,9 @@ $languageStrings = [
     'Other Phone' => 'Среднее Телефон',
     'Phone'       => 'Основной Телефон',
     'Email'       => 'Основной Адрес Электронной Почты',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'Регистрационный номер компании',
+    'VAT Nr' => 'Налоговый номер',
+    'VAT Number' => 'Номер НДС',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Вы уверены, что хотите удалить?',

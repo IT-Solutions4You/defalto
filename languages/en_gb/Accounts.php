@@ -27,11 +27,9 @@ $languageStrings = [
     'Account Name'               => 'Organisation Name',
     'Account No'                 => 'Organisation No.',
     'Website'                    => 'Website',
-    'Ticker Symbol'              => 'Ticker Symbol',
     'Member Of'                  => 'Member Of',
     'Employees'                  => 'Employees',
     'Ownership'                  => 'Ownership',
-    'SIC Code'                   => 'SIC Code',
     'Other Email'                => 'Other Email',
     'Analyst'                    => 'Analyst',
     'Competitor'                 => 'Competitor',
@@ -53,9 +51,9 @@ $languageStrings = [
     'Other Phone' => 'Other Phone',
     'Phone'       => 'Phone',
     'Email'       => 'Primary Email',
-
     'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'VAT Nr' => 'VAT Nr',
+    'VAT Number' => 'VAT Number',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?',

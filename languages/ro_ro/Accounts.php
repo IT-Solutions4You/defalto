@@ -27,11 +27,9 @@ $languageStrings = [
     'Account Name'               => 'Nume Cont',
     'Account No'                 => 'ID Cont',
     'Website'                    => 'Site Web',
-    'Ticker Symbol'              => 'Simbol bursier',
     'Member Of'                  => 'Membru al',
     'Employees'                  => 'Angajati',
     'Ownership'                  => 'Proprietar',
-    'SIC Code'                   => 'Cod SIC',
     'Other Email'                => 'Alt email',
     'Analyst'                    => 'Analist',
     'Competitor'                 => 'Concurent',
@@ -53,9 +51,9 @@ $languageStrings = [
     'Other Phone' => 'Medie De Telefon',
     'Phone'       => 'Telefon Principal',
     'Email'       => 'Adresa Principală De E-Mail',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'Nr. registrul comerțului',
+    'VAT Nr' => 'Cod fiscal',
+    'VAT Number' => 'Cod TVA',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?',

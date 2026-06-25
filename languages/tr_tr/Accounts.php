@@ -27,11 +27,9 @@ $languageStrings = [
     'Account Name'               => 'Müşteri Adı',
     'Account No'                 => 'Müşteri No',
     'Website'                    => 'Web Sayfası',
-    'Ticker Symbol'              => 'Ticker Sembolü',
     'Member Of'                  => 'Ana Müşteri',
     'Employees'                  => 'Çalışanlar',
     'Ownership'                  => 'Ortaklığı',
-    'SIC Code'                   => 'SIC Kodu',
     'Other Email'                => 'Diğer E-Posta Adresi',
     'Analyst'                    => 'Analist',
     'Competitor'                 => 'Rakip',
@@ -53,9 +51,9 @@ $languageStrings = [
     'Other Phone' => 'İkincil Telefon',
     'Phone'       => 'Birincil Telefon',
     'Email'       => 'Birincil E-Posta',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'Şirket sicil no',
+    'VAT Nr' => 'Vergi no',
+    'VAT Number' => 'KDV numarası',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?',

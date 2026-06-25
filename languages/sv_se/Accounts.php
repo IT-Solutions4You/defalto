@@ -34,11 +34,9 @@ $languageStrings = [
     'Account Name'               => 'Organisationsnamn',
     'Account No'                 => 'Organisationsnummer',
     'Website'                    => 'Hemsida',
-    'Ticker Symbol'              => 'Ärendesymbol',
     'Member Of'                  => 'Medlem av',
     'Employees'                  => 'Anställda',
     'Ownership'                  => 'Äganderätt',
-    'SIC Code'                   => 'SIC Kod',
     'Other Email'                => 'Sekundär E-post',
     'Other Phone'                => 'Sekundär Telefon',
     'Phone'                      => 'Primär Telefon',
@@ -64,9 +62,9 @@ $languageStrings = [
     'LBL_COPY_BILLING_ADDRESS'  => 'Kopiera Faktureringsadress',
     'LBL_IMAGE_INFORMATION'     => 'Profilbild',
     'Organization Image'        => 'Organisationen bild',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'Företagsregistreringsnr.',
+    'VAT Nr' => 'Skattenr.',
+    'VAT Number' => 'VAT-nummer',
 ];
 
 $jsLanguageStrings = [
