@@ -72,6 +72,13 @@ class Vtiger_Install_View extends Vtiger_Basic_View
 
             $this->invokeExposedMethod($mode, $request);
         }
+
+        $this->finished($request);
+    }
+
+    public function finished($request)
+    {
+        Core_Install_Model::logSuccess('Finished: ' . var_export($request->getAll(), true));
     }
 
     /**
