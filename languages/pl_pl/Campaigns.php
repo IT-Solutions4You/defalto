@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie kampanie',
     // Basic Strings
     'Campaigns'                    => 'Kampanie reklamowe',
     'SINGLE_Campaigns'             => 'Kampania reklamowa',

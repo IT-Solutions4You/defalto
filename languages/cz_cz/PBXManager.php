@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všechny hovory',
     'Asterisk' => 'Asterisk',
     'Call From' => 'Hovor od',
     'Call To' => 'Komu volat',

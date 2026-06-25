@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszyscy potencjalni klienci',
     // Basic Strings
     'Leads'                => 'Potencjalni Klienci',
     'SINGLE_Leads'         => 'Potencjalny Klient',

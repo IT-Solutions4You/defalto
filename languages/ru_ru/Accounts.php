@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Все организации',
     'Accounts'                   => 'Контрагенты',
     'SINGLE_Accounts'            => 'Контрагент',
     'LBL_ADD_RECORD'             => 'Добавить организацию',

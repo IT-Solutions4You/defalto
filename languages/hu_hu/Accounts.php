@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes szervezet',
     'Accounts'                   => 'Cégek',
     'SINGLE_Accounts'            => 'Cég',
     'LBL_ADD_RECORD'             => 'Cég hozzáadása',

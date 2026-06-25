@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie faktury',
     //DetailView Actions
     'Invoice'                 => 'Faktury',
     'SINGLE_Invoice'          => 'Faktura',

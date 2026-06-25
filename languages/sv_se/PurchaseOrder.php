@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla inköpsorder',
     //DetailView Actions
     'PurchaseOrder'             => 'Beställningar',
     'SINGLE_PurchaseOrder'      => 'Beställningar',

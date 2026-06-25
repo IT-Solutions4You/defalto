@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todas as organizações',
     // Basic Strings
     'Accounts'                   => 'Organizações',
     'SINGLE_Accounts'            => 'Organização',

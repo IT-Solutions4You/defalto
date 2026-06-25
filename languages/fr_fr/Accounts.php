@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toutes les organisations',
     'Accounts'                   => 'Comptes',
     'SINGLE_Accounts'            => 'Compte',
     'LBL_ADD_RECORD'             => 'Ajouter un Compte',

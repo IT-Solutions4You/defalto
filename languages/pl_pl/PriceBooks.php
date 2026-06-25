@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie cenniki',
     // Basic Strings
     'PriceBooks'                => 'Cenniki',
     'SINGLE_PriceBooks'         => 'Cennik',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos os marcos do projeto',
     // Basic Strings
     'SINGLE_ProjectMilestone'           => 'Milestone',
     'LBL_ADD_RECORD'                    => 'Adicionar Milestone',

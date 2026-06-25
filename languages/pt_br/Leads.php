@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos os leads',
     // Basic Strings
     'Leads'                => 'Leads',
     'SINGLE_Leads'         => 'Lead',

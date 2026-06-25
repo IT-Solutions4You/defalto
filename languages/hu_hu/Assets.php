@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes eszköz',
     'SINGLE_Assets'            => 'Vagyontárgy',
     'LBL_ADD_RECORD'           => 'Vagyontárgy hozzáadása',
     'LBL_RECORDS_LIST'         => 'Vagyontárgyak listája',

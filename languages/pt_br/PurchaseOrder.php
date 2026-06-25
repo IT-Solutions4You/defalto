@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todas as ordens de compra',
     'PurchaseOrder'             => 'Pedido Compras',
     //DetailView Actions
     'SINGLE_PurchaseOrder'      => 'Pedido de Compra',

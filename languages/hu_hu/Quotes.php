@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes árajánlat',
     'Quotes'                => 'Ajánlat',
     'SINGLE_Quotes'         => 'Ajánlat',
     'LBL_EXPORT_TO_PDF'     => 'Exportálás PDF-be',

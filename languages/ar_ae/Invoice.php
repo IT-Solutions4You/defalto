@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع الفواتير',
     //DetailView Actions
     'Invoice'                 => 'الفواتير',
     'SINGLE_Invoice'          => 'الفواتير',

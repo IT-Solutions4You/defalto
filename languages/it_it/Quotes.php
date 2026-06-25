@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tutti i preventivi',
     'Quotes'                => 'Preventivo',
     'SINGLE_Quotes'         => 'Preventivo',
     'LBL_EXPORT_TO_PDF'     => 'Esporta in PDF',

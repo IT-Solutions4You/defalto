@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع العملاء المحتملين',
     // Basic Strings
     'Leads'                => 'زبائن محتملين',
     'SINGLE_Leads'         => 'زبون محتمل',

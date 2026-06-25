@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tous les tickets',
     'HelpDesk'                         => 'Tickets',
     'SINGLE_HelpDesk'                  => 'Ticket',
     'LBL_ADD_RECORD'                   => 'Ajouter un Ticket',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'All Assets',
     'SINGLE_Assets'            => 'Asset',
     'LBL_ADD_RECORD'           => 'Add Assets',
     'LBL_RECORDS_LIST'         => 'Assets List',

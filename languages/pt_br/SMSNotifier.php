@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todas as mensagens SMS',
     // Basic Strings
     'SMSNotifier'                                => 'Notificador SMS',
     'LBL_SEND_SMS_TO_SELECTED_NUMBERS'           => 'Enviar SMS para os números selecionados',

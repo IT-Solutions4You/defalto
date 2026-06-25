@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes hibajegy',
     'HelpDesk'                         => 'Kérések',
     'SINGLE_HelpDesk'                  => 'Kérés',
     'LBL_ADD_RECORD'                   => 'Kérés hozzáadása',

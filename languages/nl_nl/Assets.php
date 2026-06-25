@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle activa',
     'SINGLE_Assets'            => 'Activa',
     'LBL_ADD_RECORD'           => 'Activa Toevoegen',
     'LBL_RECORDS_LIST'         => 'Activalijst',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla fakturor',
     'Invoice'                 => 'Fakturor',
     'SINGLE_Invoice'          => 'Faktura',
     'LBL_EXPORT_TO_PDF'       => 'Exportera till PDF',

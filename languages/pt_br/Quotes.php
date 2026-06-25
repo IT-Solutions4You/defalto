@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todas as cotações',
     'Quotes'                => 'Cotações',
     //DetailView Actions
     'SINGLE_Quotes'         => 'Cotação',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla projektuppgifter',
     // Basic Strings
     'SINGLE_ProjectTask'           => 'Projekt Uppgift',
     'LBL_ADD_RECORD'               => 'Lägg till Projektppgifter',

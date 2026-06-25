@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toate organizațiile',
     'Accounts'                   => 'Conturi',
     'SINGLE_Accounts'            => 'Cont',
     'LBL_ADD_RECORD'             => 'Add Organization',

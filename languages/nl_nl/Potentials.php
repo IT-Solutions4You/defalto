@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle verkoopkansen',
     'Potentials'                              => 'Verkoopkansen',
     'SINGLE_Potentials'                       => 'Verkoopkans',
     'LBL_ADD_RECORD'                          => 'Voeg Verkoopkans toe',

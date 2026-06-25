@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie zasoby',
     // Basic Strings
     'SINGLE_Assets'            => 'Produkt Serwisowy',
     'LBL_ADD_RECORD'           => 'Dodaj Produkt Serwisowy',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes termék',
     'Products'                     => 'Termékek',
     'SINGLE_Products'              => 'Termék',
     'LBL_ADD_RECORD'               => 'Termék hozzáadása',

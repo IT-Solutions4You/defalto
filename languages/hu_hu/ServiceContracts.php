@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes szervizszerződés',
     'ServiceContracts'                 => 'Szolgáltatási Szerződések',
     'SINGLE_ServiceContracts'          => 'Szolgáltatási Szerződés',
     'LBL_ADD_RECORD'                   => 'Szolgáltatási Szerződés hozzáadása',

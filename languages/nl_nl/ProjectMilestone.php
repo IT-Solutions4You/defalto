@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle projectmijlpalen',
     'SINGLE_ProjectMilestone'           => 'Project Mijlpaal',
     'LBL_ADD_RECORD'                    => 'Voeg Project Mijlpaal toe',
     'LBL_RECORDS_LIST'                  => 'Project Mijlpalenlijst',

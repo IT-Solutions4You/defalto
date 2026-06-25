@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm proje kilometre taşları',
     'SINGLE_ProjectMilestone'           => "Proje Milestone",
     'LBL_ADD_RECORD'                    => "Proje Milestone ekle",
     'LBL_RECORDS_LIST'                  => "Proje Aşamaları Listesi",

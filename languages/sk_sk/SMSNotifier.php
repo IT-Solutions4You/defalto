@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všetky SMS správy',
     'SMSNotifier' => 'SMS Notifier',
     'LBL_SEND_SMS_TO_SELECTED_NUMBERS' => 'Pošlite SMS na vybrané čísla',
     'LBL_STEP_1' => 'Krok 1',

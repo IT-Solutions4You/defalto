@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos os documentos',
     // Basic Strings
     'SINGLE_Documents'                 => 'Documento',
     'Documents'                        => 'Documentos',

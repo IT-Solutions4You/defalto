@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Aktivitäten',
     'Activity Type' => 'Aktivitätentyp',
     'Appointments' => 'Kalender',
     'Busy' => 'Busy',

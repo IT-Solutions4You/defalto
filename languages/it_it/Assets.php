@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tutti i beni',
     'SINGLE_Assets'            => 'Reso',
     'LBL_ADD_RECORD'           => 'Aggiungi reso',
     'LBL_RECORDS_LIST'         => 'Lista resi',

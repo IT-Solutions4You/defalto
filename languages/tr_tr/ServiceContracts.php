@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm hizmet sözleşmeleri',
     'ServiceContracts'                 => 'Hizmet Anlaşmaları',
     'SINGLE_ServiceContracts'          => 'Hizmet Anlaşması',
     'LBL_ADD_RECORD'                   => 'Add Service Contract',

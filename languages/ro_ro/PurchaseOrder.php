@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toate comenzile de achiziție',
     'PurchaseOrder'             => 'Comenzi',
     'SINGLE_PurchaseOrder'      => 'Comenzi',
     'LBL_EXPORT_TO_PDF'         => 'Exporta in PDF',

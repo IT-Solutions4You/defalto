@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes GYIK',
     'Faq'                     => 'TudásTár',
     'SINGLE_Faq'              => 'TudásTár',
     'LBL_RECORDS_LIST'        => 'TudásTár lista',

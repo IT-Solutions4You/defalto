@@ -25,6 +25,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos los contratos de servicio',
     'ServiceContracts'                 => 'Contratos de Servicio',
     'SINGLE_ServiceContracts'          => 'Contrato de Servicio',
     'LBL_ADD_RECORD'                   => 'Añadir Contrato de Servicio',

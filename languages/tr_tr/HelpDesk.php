@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm talepler',
     'HelpDesk'                         => 'Destek',
     'SINGLE_HelpDesk'                  => 'Destek',
     'LBL_ADD_RECORD'                   => 'Add Ticket',

@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Projektaufgaben',
     'Assigned To' => 'zuständig',
     'Canceled' => 'abgebrochen',
     'Completed' => 'abgeschlossen',

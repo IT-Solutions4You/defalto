@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toți furnizorii',
     'Vendors'                        => 'Vanzatori',
     'SINGLE_Vendors'                 => 'Vanzator',
     'LBL_ADD_RECORD'                 => 'Add Vendor',

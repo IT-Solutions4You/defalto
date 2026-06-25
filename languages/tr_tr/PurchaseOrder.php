@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm satın alma siparişleri',
     'PurchaseOrder'             => 'Satın alma siparişleri',
     'SINGLE_PurchaseOrder'      => 'Satın alma siparişleri',
     'LBL_EXPORT_TO_PDF'         => 'PDF Olarak Aktar',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm aramalar',
     'Asterisk'             => 'Asterisk',
     'PBXManager'           => 'PBX Yöneticisi',
     'SINGLE_PBXManager'    => 'PBX Yöneticisi',

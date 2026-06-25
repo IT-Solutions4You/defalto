@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Dienstleistungen',
     'Commission Rate' => 'Provision (%)',
     'LBL_ADD_RECORD' => 'Dienstleistung hinzufügen',
     'LBL_ADD_TO_PRICEBOOKS' => 'zu Preisliste hinzufügen',

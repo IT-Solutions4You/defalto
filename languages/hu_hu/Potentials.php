@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes lehetőség',
     'Potentials'                              => 'Lehetőségek',
     'SINGLE_Potentials'                       => 'Lehetőség',
     'LBL_ADD_RECORD'                          => 'Lehetőség hozzáadása',

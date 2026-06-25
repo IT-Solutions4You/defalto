@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos los contactos',
     'Contacts'                        => 'Contactos',
     'SINGLE_Contacts'                 => 'Contacto',
     'LBL_ADD_RECORD'                  => 'Agregar Contacto',

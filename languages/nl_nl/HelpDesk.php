@@ -18,6 +18,7 @@
 
 global $HELPDESK_SUPPORT_NAME;
 $languageStrings = [
+    'CV_ALL' => 'Alle tickets',
     'HelpDesk'                         => 'Helpdesk',
     'SINGLE_HelpDesk'                  => 'Ticket',
     'LBL_ADD_RECORD'                   => 'Voeg Ticket toe',

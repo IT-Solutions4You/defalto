@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toutes les opportunités',
     'Potentials'                              => 'Affaires',
     'SINGLE_Potentials'                       => 'Affaire',
     'LBL_ADD_RECORD'                          => 'Ajouter une Affaire',

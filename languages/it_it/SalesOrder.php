@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tutti gli ordini di vendita',
     'SalesOrder'         => 'Ordini di vendita',
     'SINGLE_SalesOrder'  => 'Ordine di Vendita',
     'LBL_EXPORT_TO_PDF'  => 'Esporta in PDF',

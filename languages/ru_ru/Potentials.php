@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Все сделки',
     'Potentials'                              => 'Сделки',
     'SINGLE_Potentials'                       => 'Сделка',
     'LBL_ADD_RECORD'                          => 'Добавить Возможность',

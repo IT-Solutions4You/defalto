@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع المستندات',
     // Basic Strings
     'SINGLE_Documents'                 => 'مستند',
     'Documents'                        => 'المستندات',

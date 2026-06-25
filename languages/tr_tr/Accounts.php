@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm kuruluşlar',
     'Accounts'                   => 'Müşteriler',
     'SINGLE_Accounts'            => 'Müşteri',
     'LBL_ADD_RECORD'             => 'Add Organization',
