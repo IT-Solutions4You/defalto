@@ -154,9 +154,6 @@ function getPriceBookRelatedProducts($query, $focus, $returnset = '')
 
     $header = [];
     $header[] = $mod_strings['LBL_LIST_PRODUCT_NAME'];
-    if (getFieldVisibilityPermission('Products', $current_user->id, 'productcode') == '0') {
-        $header[] = $mod_strings['LBL_PRODUCT_CODE'];
-    }
     if (getFieldVisibilityPermission('Products', $current_user->id, 'unit_price') == '0') {
         $header[] = $mod_strings['LBL_PRODUCT_UNIT_PRICE'];
     }
@@ -179,9 +176,6 @@ function getPriceBookRelatedProducts($query, $focus, $returnset = '')
 
         $entries = [];
         $entries[] = textlength_check($adb->query_result($list_result, $i, "productname"));
-        if (getFieldVisibilityPermission('Products', $current_user->id, 'productcode') == '0') {
-            $entries[] = $adb->query_result($list_result, $i, "productcode");
-        }
         if (getFieldVisibilityPermission('Products', $current_user->id, 'unit_price') == '0') {
             $entries[] = CurrencyField::convertToUserFormat($unit_price, null, true);
         }
