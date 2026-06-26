@@ -1046,6 +1046,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     $fieldParams['block'] = $blockInstance;
                     $fieldParams['module'] = $moduleInstance;
 
+                    $fieldExistsBeforeInstall = (bool)$this->getFieldInstance($fieldName)->getId();
                     $fieldInstance = $this->createField($fieldName, $fieldParams);
 
                     self::logSuccess($fieldInstance);
@@ -1058,8 +1059,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
                         $picklistTable = 'vtiger_' . $fieldName;
                         $currentPicklistValues = [];
+                        $overwritePicklistValues = !empty($fieldParams['picklist_overwrite']);
 
-                        if (isset($fieldParams['picklist_overwrite']) && true === $fieldParams['picklist_overwrite']) {
+                        if (!$this->shouldAddPicklistValues($fieldExistsBeforeInstall, $overwritePicklistValues)) {
+                            self::logInfo('Picklist values skipped during upgrade: ' . $fieldName);
+                        } elseif ($overwritePicklistValues) {
                             $fieldInstance->deletePicklistValues();
                             $fieldInstance->setPicklistValues($picklistValues);
                         } else {
@@ -1174,6 +1178,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public static function isUpgradeProcess(): bool
     {
         return defined('VTIGER_UPGRADE') && VTIGER_UPGRADE;
+    }
+
+    public function shouldAddPicklistValues(bool $fieldExistsBeforeInstall, bool $overwritePicklistValues): bool
+    {
+        if ($overwritePicklistValues) {
+            return true;
+        }
+
+        return !(self::isUpgradeProcess() && $fieldExistsBeforeInstall);
     }
 
     /**
