@@ -20,6 +20,7 @@
 $languageStrings = [
     'SINGLE_Documents' => 'Document',
     'Documents' => 'Documents',
+    'CV_ALL' => 'All Documents',
     'LBL_ADD_RECORD' => 'Add Document',
     'LBL_RECORDS_LIST' => 'Documents List',
     'LBL_NOTE_INFORMATION' => 'Basic Information',

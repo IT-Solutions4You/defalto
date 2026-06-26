@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'PriceBooks' => 'Cenníky',
+    'CV_ALL' => 'Všetky cenníky',
     'SINGLE_PriceBooks' => 'Cenník',
     'LBL_ADD_RECORD' => 'Pridať cenník',
     'LBL_RECORDS_LIST' => 'Zoznam cenníkov',

@@ -67,6 +67,7 @@ $languageStrings = [
     'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Odeslat soubor jako přílohu',
     'Custom Informations' => 'Vlastné informácie',
     'Documents' => 'Dokumenty',
+    'CV_ALL' => 'Všechny dokumenty',
     'LBL_DESCRIPTION' => 'Popis',
     'Active' => 'Aktivní',
     'Last Modified By' => 'Naposledy upravil',

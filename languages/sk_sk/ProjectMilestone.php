@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všetky míľniky projektu',
     'SINGLE_ProjectMilestone' => 'Míľnik projektu',
     'LBL_ADD_RECORD' => 'Pridať míľnik projektu',
     'LBL_RECORDS_LIST' => 'Zoznam míľnikov',

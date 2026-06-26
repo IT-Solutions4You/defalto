@@ -49,14 +49,12 @@ class Products extends CRMEntity
     // This is the list of vtiger_fields that are in the lists.
     public $list_fields = [
         'Product Name' => ['products' => 'productname'],
-        'Part Number' => ['products' => 'productcode'],
         'Commission Rate' => ['products' => 'commissionrate'],
         'Qty/Unit' => ['products' => 'qty_per_unit'],
         'Unit Price' => ['products' => 'unit_price'],
     ];
     public $list_fields_name = [
         'Product Name' => 'productname',
-        'Part Number' => 'productcode',
         'Commission Rate' => 'commissionrate',
         'Qty/Unit' => 'qty_per_unit',
         'Unit Price' => 'unit_price',
@@ -350,7 +348,7 @@ class Products extends CRMEntity
         }
 
         $query = "SELECT vtiger_products.productid, vtiger_products.productname,
-			vtiger_products.productcode, vtiger_products.commissionrate,
+			vtiger_products.commissionrate,
 			vtiger_seproductsrel.quantity AS qty_per_unit, vtiger_products.unit_price, 
 			vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id
 			FROM vtiger_products
@@ -403,7 +401,7 @@ class Products extends CRMEntity
         }
 
         $query = "SELECT vtiger_products.productid, vtiger_products.productname,
-			vtiger_products.productcode, vtiger_products.commissionrate,
+			vtiger_products.commissionrate,
 			vtiger_products.qty_per_unit, vtiger_products.unit_price,
 			vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id
 			FROM vtiger_products

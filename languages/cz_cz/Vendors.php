@@ -27,6 +27,7 @@ $languageStrings = [
     '308-Sales-Books' => 'Prodej-Knihy',
     'LBL_CREATE_PURCHASEORDER' => 'Vytvoriť Nákupnú Objednávku',
     'Vendors' => 'Dodavatelé',
+    'CV_ALL' => 'Všichni dodavatelé',
     'Vendor Name' => 'Název dodavatele',
     'Website' => 'Web',
     'Phone' => 'Telefon',

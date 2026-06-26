@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tous les documents',
     'SINGLE_Documents'                 => 'Document',
     'Documents'                        => 'Documents',
     'LBL_ADD_RECORD'                   => 'Ajouter un Document',

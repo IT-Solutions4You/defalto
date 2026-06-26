@@ -550,7 +550,6 @@ class Products_Install_Model extends Core_Install_Model
             ->renameColumn('serialno', 'serial_no')
             ->createColumn('product_no', 'varchar(100) NOT NULL')
             ->createColumn('productname', 'varchar(255) DEFAULT NULL')
-            ->createColumn('productcode', 'varchar(40) DEFAULT NULL')
             ->createColumn('productcategory', 'varchar(200) DEFAULT NULL')
             ->createColumn('manufacturer', 'varchar(200) DEFAULT NULL')
             ->createColumn('qty_per_unit', 'decimal(11,2) DEFAULT 0.00')
@@ -631,5 +630,10 @@ class Products_Install_Model extends Core_Install_Model
         ];
 
         CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+
+        $this->deleteField('productcode');
+
+        $this->getTable('vtiger_products', null)
+            ->dropColumn('productcode');
     }
 }

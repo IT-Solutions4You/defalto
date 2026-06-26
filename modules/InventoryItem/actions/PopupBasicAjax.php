@@ -97,10 +97,6 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
 
                     $recordLabel .= '<b>' . decode_html($recordModel->getName()) . '</b>';
 
-                    if ($searchModule === 'Products' && $recordModel->get('productcode')) {
-                        $recordLabel .= ' - ' . $recordModel->get('productcode');
-                    }
-
                     if ($priceFieldName) {
                         $recordLabel .= ' (';
                         $decimalPlaces = getCurrencyDecimalPlaces();

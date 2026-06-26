@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع المؤسسات',
     // Basic Strings
     'Accounts'                   => 'المنظمات',
     'SINGLE_Accounts'            => 'منظمة',
@@ -35,11 +36,9 @@ $languageStrings = [
     'Account Name'               => 'اسم المنظمة',
     'Account No'                 => 'رقم المنظمة',
     'Website'                    => 'الموقع الالكتروني',
-    'Ticker Symbol'              => 'رمز السهم',
     'Member Of'                  => 'عضو في',
     'Employees'                  => 'الموظفين',
     'Ownership'                  => 'المالك',
-    'SIC Code'                   => 'SIC كود',
     'Other Email'                => 'البريد الالكتروني الثانوي',
     'Other Phone'                => 'الهاتف الثانوي',
     'Phone'                      => 'الهاتف الرئيسي',
@@ -64,9 +63,9 @@ $languageStrings = [
     'LBL_COPY_BILLING_ADDRESS'  => 'نسخص عنوان الدفع',
     'LBL_IMAGE_INFORMATION'     => 'الصورة الشخصية',
     'Organization Image'        => 'تنظيم صورة',
-
     'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'VAT Nr' => 'VAT Nr',
+    'VAT Number' => 'VAT Number',
 ];
 
 $jsLanguageStrings = [

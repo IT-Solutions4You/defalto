@@ -32,6 +32,7 @@ $languageStrings = [
     'Campaign Status' => 'Kampagnenstatus',
     'Campaign Type' => 'Kampagnentyp',
     'Campaigns' => 'Kampagnen',
+    'CV_ALL' => 'Alle Kampagnen',
     'Cancelled' => 'abgebrochen',
     'Complete' => 'vollständig',
     'Contacted - Never Contact Again' => 'Kontaktiert - nicht wieder kontaktieren',

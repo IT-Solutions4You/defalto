@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toate etapele proiectului',
     'SINGLE_ProjectMilestone'           => "Proiectul Milestone",
     'LBL_ADD_RECORD'                    => "Adăugați etapă a proiectului",
     'LBL_RECORDS_LIST'                  => "Lista Repere proiect",

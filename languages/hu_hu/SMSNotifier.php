@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes SMS üzenet',
     'LBL_ADD_MORE_FIELDS'                        => 'További mezők hozzáadása',
     'LBL_CHECK_STATUS'                           => 'Állapot ellenőrzése',
     'LBL_SELECT_THE_PHONE_NUMBER_FIELDS_TO_SEND' => 'Válassza ki küldésre a telefonszám mezőket',

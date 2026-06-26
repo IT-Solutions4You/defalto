@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Все продукты',
     'Products'                     => 'Товары',
     'SINGLE_Products'              => 'Товар',
     'LBL_ADD_RECORD'               => 'Добавить Товар',

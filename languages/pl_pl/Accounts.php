@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie organizacje',
     // Basic Strings
     'Accounts'                   => 'Kontrahenci',
     'SINGLE_Accounts'            => 'Kontrahent',
@@ -35,11 +36,9 @@ $languageStrings = [
     'Account Name'               => 'Nazwa Kontrahenta',
     'Account No'                 => 'Numer Kontrahenta',
     'Website'                    => 'Strona WWW',
-    'Ticker Symbol'              => 'Symbol giełdowy',
     'Member Of'                  => 'Powiązany z',
     'Employees'                  => 'Liczba pracowników',
     'Ownership'                  => 'Właściciel',
-    'SIC Code'                   => 'Numer EKD',
     'Other Email'                => 'Drugi mail',
     'Type'                       => 'Rodzaj',
 
@@ -66,9 +65,9 @@ $languageStrings = [
     'Other Phone' => 'Średnia Telefon',
     'Phone'       => 'Podstawowy Telefon',
     'Email'       => 'Podstawowy Adres E-Mail',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'Numer rejestracyjny firmy',
+    'VAT Nr' => 'NIP',
+    'VAT Number' => 'Numer VAT',
 ];
 
 $jsLanguageStrings = [

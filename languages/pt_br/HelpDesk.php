@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos os tickets',
     // Basic Strings
     'HelpDesk'               => 'Chamados',
     'SINGLE_HelpDesk'        => 'Chamado',

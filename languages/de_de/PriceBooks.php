@@ -27,6 +27,7 @@ $languageStrings = [
     'Price Book Name' => 'Preislistenname',
     'PriceBook No' => 'Preislisten-Nr.',
     'PriceBooks' => 'Preislisten',
+    'CV_ALL' => 'Alle Preislisten',
     'SINGLE_PriceBooks' => 'Preisliste',
 ];
 $jsLanguageStrings = [

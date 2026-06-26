@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع المشاريع',
     // Basic Strings
     'Project'                              => 'المشاريع',
     'SINGLE_Project'                       => 'المشاريع',

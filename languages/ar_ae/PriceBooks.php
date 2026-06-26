@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع قوائم الأسعار',
     // Basic Strings
     'PriceBooks'                => 'كتب الاسعار',
     'SINGLE_PriceBooks'         => 'كتاب الاسعار',

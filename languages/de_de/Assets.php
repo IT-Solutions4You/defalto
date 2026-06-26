@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Aktivposten',
     'Asset Name' => 'Aktivposten Name',
     'Asset No' => 'Aktivpostennr',
     'Assets' => 'Aktivposten',

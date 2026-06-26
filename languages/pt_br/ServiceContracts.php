@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos os contratos de serviço',
     // Basic Strings
     'ServiceContracts'                 => 'Contratos',
     'Service Contracts'                => 'Contratos',

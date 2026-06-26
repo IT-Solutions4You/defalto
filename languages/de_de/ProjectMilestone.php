@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Projektmeilensteine',
     'LBL_ADD_RECORD' => 'Meilenstein hinzufügen',
     'LBL_MILESTONES_LIST' => 'Liste der Meilensteine',
     'LBL_PROJECTS_LIST' => 'Liste der Projekte',

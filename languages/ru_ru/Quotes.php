@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Все коммерческие предложения',
     'Quotes'                => 'Предложение',
     'SINGLE_Quotes'         => 'Предложение',
     'LBL_EXPORT_TO_PDF'     => 'Экспорт в PDF',

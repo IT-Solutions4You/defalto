@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla vanliga frågor',
     'Faq'                     => 'FAQ',
     'SINGLE_Faq'              => 'FAQ',
     'LBL_RECORDS_LIST'        => 'FAQ Lista',

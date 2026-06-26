@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'All Calls',
     'Asterisk' => 'Asterisk',
     'Call From' => 'Call From',
     'Call To' => 'Call To',

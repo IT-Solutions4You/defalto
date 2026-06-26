@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všetky služby',
     'Services' => 'Služby',
     'SINGLE_Services' => 'Služba',
     'LBL_ADD_RECORD' => 'Pridať službu',

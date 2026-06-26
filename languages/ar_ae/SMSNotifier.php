@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع رسائل SMS',
     // Basic Strings
     'LBL_SEND_SMS_TO_SELECTED_NUMBERS'           => 'ارسال رسالة نصية للارقام المحددة',
     'LBL_STEP_1'                                 => 'الخطوة ١',

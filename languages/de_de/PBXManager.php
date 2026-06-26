@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Anrufe',
     'Asterisk' => 'Asterisk',
     'Bill Duration' => 'Dauer der Rechnung  (sek)',
     'Call From' => 'Anruf von',

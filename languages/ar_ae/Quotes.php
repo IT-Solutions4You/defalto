@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع عروض الأسعار',
     //DetailView Actions
     'Quotes'                => 'العروض',
     'SINGLE_Quotes'         => 'العروض',

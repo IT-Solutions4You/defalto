@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie szanse sprzedaży',
     // Basic Strings
     'Potentials'                  => 'Szanse Sprzedaży',
     'SINGLE_Potentials'           => 'Szansa Sprzedaży',

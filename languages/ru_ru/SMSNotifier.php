@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Все SMS-сообщения',
     'LBL_SEND_SMS_TO_SELECTED_NUMBERS'           => 'Отправить SMS на выбранные номера',
     'LBL_STEP_1'                                 => 'Шаг 1',
     'LBL_STEP_2'                                 => 'Шаг 2',

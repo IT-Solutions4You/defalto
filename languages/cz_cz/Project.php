@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všechny projekty',
     'LBL_ADD_RECORD' => 'Přidat projekt',
     'LBL_RECORDS_LIST' => 'Seznam projektů',
     'LBL_PROJECT_INFORMATION' => 'Detaily projektu',

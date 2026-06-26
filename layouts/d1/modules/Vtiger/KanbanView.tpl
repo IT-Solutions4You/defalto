@@ -39,7 +39,7 @@
                             <optgroup class="custom_view_group" id="{if $GROUP_LABEL eq 'Mine'}myList{else}sharedList{/if}" label="{if $GROUP_LABEL eq 'Mine'}{vtranslate('LBL_MY_LIST',$MODULE)}{elseif $GROUP_LABEL eq 'Shared'}{vtranslate('LBL_SHARED_LIST',$MODULE)}{else}{/if}">
                                 {foreach item=CUSTOM_VIEW from=$GROUP_CUSTOM_VIEWS name=customView}
                                     {assign var=IS_DEFAULT value=$CUSTOM_VIEW->isDefault()}
-                                    {assign var=VIEWNAME value=vtranslate($CUSTOM_VIEW->get('viewname'), $MODULE)}
+                                    {assign var=VIEWNAME value=$CUSTOM_VIEW->getDisplayName()}
                                     <option class="custom_view_filter" value="{$CUSTOM_VIEW->getId()}" {if $CUSTOM_VIEW_ID eq $CUSTOM_VIEW->getId()} selected="selected" {/if}>{$VIEWNAME|@escape:'html'}</option>
                                 {/foreach}
                             </optgroup>

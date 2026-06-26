@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes kampány',
     'Campaigns'                       => 'Kampányok',
     'SINGLE_Campaigns'                => 'Kampány',
     'LBL_ADD_RECORD'                  => 'Kampány hozzáadása',

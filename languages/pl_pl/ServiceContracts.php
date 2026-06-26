@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie umowy serwisowe',
     // Basic Strings
     'ServiceContracts'                 => 'Umowy serwisowe',
     'SINGLE_ServiceContracts'          => 'Umowa serwisowa',

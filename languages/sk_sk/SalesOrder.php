@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'SalesOrder' => 'Objednávky',
+    'CV_ALL' => 'Všetky objednávky',
     'SINGLE_SalesOrder' => 'Objednávka',
     'LBL_EXPORT_TO_PDF' => 'Exportovať do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odoslať email s PDF',

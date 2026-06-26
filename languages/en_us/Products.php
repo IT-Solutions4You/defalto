@@ -19,6 +19,7 @@
 
 $languageStrings = [
     'Products' => 'Products',
+    'CV_ALL' => 'All Products',
     'SINGLE_Products' => 'Product',
     'LBL_ADD_RECORD' => 'Add Product',
     'LBL_RECORDS_LIST' => 'Products List',

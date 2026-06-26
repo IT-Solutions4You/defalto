@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Products' => 'Produkty',
+    'CV_ALL' => 'Všetky produkty',
     'SINGLE_Products' => 'Produkt',
     'LBL_ADD_RECORD' => 'Pridať produkt',
     'LBL_RECORDS_LIST' => 'Zoznam produktov',

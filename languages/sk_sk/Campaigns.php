@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Campaigns' => 'Kampane',
+    'CV_ALL' => 'Všetky kampane',
     'SINGLE_Campaigns' => 'Kampaň',
     'LBL_ADD_RECORD' => 'Pridať kampaň',
     'LBL_RECORDS_LIST' => 'Zoznam kampaní',

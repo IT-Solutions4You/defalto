@@ -25,6 +25,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todas las tareas del proyecto',
     'SINGLE_ProjectTask'           => 'Actividad',
     'LBL_ADD_RECORD'               => 'Añadir Actividad',
     'LBL_RECORDS_LIST'             => 'Lista de Actividades',

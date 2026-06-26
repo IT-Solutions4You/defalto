@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm projeler',
     'Project'                              => "Proje",
     'SINGLE_Project'                       => "Proje",
     'LBL_ADD_RECORD'                       => "Proje Ekle",

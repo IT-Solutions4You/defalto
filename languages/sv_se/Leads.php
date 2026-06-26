@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla leads',
     'Leads'                => 'ledningar',
     'SINGLE_Leads'         => 'Lead',
     'LBL_RECORDS_LIST'     => 'Leadslista',

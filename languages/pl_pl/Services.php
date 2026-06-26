@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie usługi',
     // Basic Strings
     'Services'                => 'Usługi',
     'SINGLE_Services'         => 'Usługa',

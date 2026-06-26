@@ -18,7 +18,7 @@
 
 class Products_Module_Model extends Vtiger_Module_Model
 {
-    protected array $numberSearchFields = ['product_no', 'productcode'];
+    protected array $numberSearchFields = ['product_no'];
 
 	/**
 	 * Function to get list view query for popup window

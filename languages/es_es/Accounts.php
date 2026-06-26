@@ -25,6 +25,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todas las organizaciones',
     'Accounts'                   => 'Cuentas',
     'SINGLE_Accounts'            => 'Cuenta',
     'LBL_ADD_RECORD'             => 'Añadir Cuenta',
@@ -35,11 +36,9 @@ $languageStrings = [
     'Account Name'               => 'Nombre de Cuenta',
     'Account No'                 => 'Número de Cuenta',
     'Website'                    => 'Página web',
-    'Ticker Symbol'              => 'Símbolo de bolsa',
     'Member Of'                  => 'Miembro de',
     'Employees'                  => 'Empleados',
     'Ownership'                  => 'Propietario',
-    'SIC Code'                   => 'CIF',
     'Other Email'                => 'Email (Alternativo)',
     'Analyst'                    => 'Analista',
     'Competitor'                 => 'Competencia',
@@ -61,9 +60,9 @@ $languageStrings = [
     'Other Phone' => 'Teléfono Secundario',
     'Phone'       => 'Teléfono Principal',
     'Email'       => 'De Correo Electrónico Principal',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'N.º reg. empresa',
+    'VAT Nr' => 'NIF',
+    'VAT Number' => 'N.º IVA',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => '¿Estás seguro que quieres eliminar?',

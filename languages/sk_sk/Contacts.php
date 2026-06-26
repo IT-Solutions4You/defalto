@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Contacts' => 'Kontakty',
+    'CV_ALL' => 'Všetky kontakty',
     'SINGLE_Contacts' => 'Kontakt',
     'LBL_ADD_RECORD' => 'Pridať osobu',
     'LBL_RECORDS_LIST' => 'Zoznam osôb',
@@ -20,8 +21,8 @@ $languageStrings = [
     'LBL_COPY_MAILING_ADDRESS' => 'Skopírujte primárnu adresu',
     'Office Phone' => 'Telefón do práce',
     'Home Phone' => 'Telefón domov',
-    'Title' => 'Funkcia',
-    'Department' => 'Oddelenie',
+    'Title' => 'Titul',
+    'Department' => 'Pozícia',
     'Birthdate' => 'Dátum narodenia',
     'Reports To' => 'Priamy nadriadený',
     'Assistant' => 'Asistent',

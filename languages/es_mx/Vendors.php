@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos los proveedores',
     'Vendors'                        => 'Proveedores',
     'SINGLE_Vendors'                 => 'Proveedor',
     'LBL_ADD_RECORD'                 => 'Agregar Proveedor',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos os ativos',
     // Basic Strings
     'Assets'                   => 'Ativos',
     'SINGLE_Assets'            => 'Ativo',

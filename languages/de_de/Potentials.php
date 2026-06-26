@@ -51,6 +51,7 @@ $languageStrings = [
     'Perception Analysis' => 'Sichtweisenanalyse',
     'Potential No' => 'Potential Nr.',
     'Potentials' => 'Potentiale',
+    'CV_ALL' => 'Alle Potentiale',
     'Potentials by Stage' => 'Potentiale nach Stufe',
     'Probability' => 'Wahrscheinlichkeit (%)',
     'Proposal/Price Quote' => 'Vorschlag/Angebot',

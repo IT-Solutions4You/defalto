@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla prislistor',
     // Basic Strings
     'PriceBooks'                => 'Prisguider',
     'SINGLE_PriceBooks'         => 'Prisguide',

@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všetky aktivity',
     'SINGLE_Appointments' => 'Kalendár',
     'Appointments' => 'Kalendár',
     'LBL_HOLD_FOLLOWUP_ON' => 'Naplánovať pokračovanie na',

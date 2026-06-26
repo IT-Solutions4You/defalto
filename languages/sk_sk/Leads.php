@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Leads' => 'Leads',
+    'CV_ALL' => 'Všetky leady',
     'SINGLE_Leads' => 'Lead',
     'LBL_RECORDS_LIST' => 'Zoznam Leadov',
     'LBL_ADD_RECORD' => 'Pridať Leada',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tous les bons de commande',
     'PurchaseOrder'               => 'Commandes Fournisseur',
     'SINGLE_PurchaseOrder'        => 'Commande Fournisseur',
     'LBL_EXPORT_TO_PDF'           => 'Export PDF',

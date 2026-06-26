@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes számla',
     'Invoice'                 => 'Számlák',
     'SINGLE_Invoice'          => 'Számlák',
     'LBL_EXPORT_TO_PDF'       => 'Exportálás PDF-be',

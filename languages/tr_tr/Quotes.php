@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm teklifler',
     'Quotes'                => 'Teklif',
     'SINGLE_Quotes'         => 'Teklif',
     'LBL_EXPORT_TO_PDF'     => 'PDF Olarak Aktar',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toți clienții potențiali',
     'Leads'                              => 'Prospectari',
     'SINGLE_Leads'                       => 'Prospectare',
     'LBL_RECORDS_LIST'                   => 'Leads List',
