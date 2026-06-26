@@ -57,7 +57,8 @@ jQuery.Class("Vtiger_Phone_Js", {
 
         this._config = {
             countries: (cfg.countries && cfg.countries.length) ? cfg.countries : [],
-            default: cfg.default || ''
+            default: cfg.default || '',
+            labels: cfg.labels || {}
         };
 
         return this._config;
@@ -79,6 +80,12 @@ jQuery.Class("Vtiger_Phone_Js", {
 
         if (cfg.countries.length) {
             options.onlyCountries = cfg.countries;
+        }
+
+        // Localised country names (lower-case ISO2 => name) so the dropdown and
+        // its search show/match translated names instead of English.
+        if (cfg.labels && Object.keys(cfg.labels).length) {
+            options.i18n = cfg.labels;
         }
 
         const initial = initialCountry || cfg.default;
