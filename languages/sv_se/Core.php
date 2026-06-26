@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_POSTAL_CODES_AVAILABLE' => 'Postnummer tillgängliga',
+    'LBL_ADDRESS_FIELD_MAPPING' => 'Mappning av adressfält',
+    'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Ange vilka adressfält som innehåller postnummer och ort (och valfritt län och land) så att de kan fyllas i automatiskt.',
+    'LBL_ADD_ADDRESS_GROUP' => 'Lägg till adressgrupp',
+    'LBL_GROUP_LABEL' => 'Etikett',
+    'LBL_GROUP_LABEL_PLACEHOLDER' => 't.ex. Fakturering',
+    'LBL_ZIP_FIELD' => 'Postnummerfält',
+    'LBL_CITY_FIELD' => 'Ortfält',
+    'LBL_STATE_FIELD' => 'Länfält',
+    'LBL_COUNTRY_FIELD' => 'Landfält',
+    'LBL_NOT_MAPPED' => 'Inte mappad',
+    'LBL_ADDRESS_ZIP_CITY_REQUIRED' => 'Varje adressgrupp behöver ett postnummerfält och ett ortfält.',
+    'LBL_ADDRESS_MAPPING_SAVED' => 'Mappning av adressfält sparad',
+    'LBL_POSTAL_CODE_DATABASE' => 'Postnummerdatabas',
+    'LBL_DATASET_VERSION' => 'Version',
+    'LBL_RECORDS' => 'poster',
+    'LBL_NO_DATASET_IMPORTED' => 'Inga postnummerdata har importerats ännu',
+    'LBL_COUNTRY_CODE_OPTIONAL' => 'Landskod (valfritt)',
+    'LBL_UPDATE_NOW' => 'Uppdatera nu',
+    'LBL_POSTAL_UPDATE_HINT' => 'Lämna tomt för att importera hela världen, eller ange en 2-bokstavskod för land (t.ex. SK) för att importera ett enda land.',
+    'LBL_POSTAL_CODES_UPDATED' => 'Postnummerdatabasen har uppdaterats',
     // Footer
     'APPTITLE'                                => 'Vtiger CRM',
     'POWEREDBY'                               => 'Powered by Defalto CRM',

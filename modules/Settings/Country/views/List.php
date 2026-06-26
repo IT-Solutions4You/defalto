@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Settings_Vtiger_Country_View extends Settings_Vtiger_Index_View
+class Settings_Country_List_View extends Settings_Vtiger_Index_View
 {
     public function process(Vtiger_Request $request)
     {
@@ -20,13 +20,18 @@ class Settings_Vtiger_Country_View extends Settings_Vtiger_Index_View
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE', $module);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+        $dataModel = Settings_Country_Data_Model::getInstance();
+
         $viewer->assign('COUNTRIES', $countryModel->getCountries());
+        $viewer->assign('POSTAL_META', $dataModel->getMeta());
+        $viewer->assign('IMPORTED_CODES', $dataModel->getImportedCountryCodes());
+        $viewer->assign('ADDRESS_MODULES', Settings_Country_AddressMap_Model::getInstance()->getAddressModules());
         $viewer->assign('TITLE', 'LBL_COUNTRIES');
         $viewer->assign('DESCRIPTION', 'LBL_COUNTRIES_INTEGRATION');
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
-        $viewer->view('Country.tpl', $qualifiedModule);
+        $viewer->view('List.tpl', $qualifiedModule);
     }
 
     /**

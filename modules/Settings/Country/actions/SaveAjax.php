@@ -8,8 +8,16 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Settings_Vtiger_Country_Action extends Settings_Vtiger_Index_Action
+class Settings_Country_SaveAjax_Action extends Settings_Vtiger_Index_Action
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('update');
+        $this->exposeMethod('activateAll');
+        $this->exposeMethod('deactivateAll');
+    }
+
     public function activateAll(Vtiger_Request $request)
     {
         $countryModel = Core_Country_Model::getInstance();
@@ -50,13 +58,5 @@ class Settings_Vtiger_Country_Action extends Settings_Vtiger_Index_Action
             'success' => true,
         ]);
         $response->emit();
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->exposeMethod('update');
-        $this->exposeMethod('activateAll');
-        $this->exposeMethod('deactivateAll');
     }
 }

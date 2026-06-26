@@ -269,37 +269,63 @@ class Core_Country_Model extends Core_DatabaseData_Model
 
     public function isActive($code): bool
     {
-        return !empty(self::$countries[$code]['is_active']) && 1 === self::$countries[$code]['is_active'];
+        return 1 === (int)($this->getCountry($code)['is_active'] ?? 0);
     }
 
+    /**
+     * Load the country list once. The seeded its4you_countries table is the source
+     * of truth; the hard-coded catalog is only a fallback used before the table is
+     * created/seeded (e.g. during installation), never the live source afterwards.
+     */
     public function retrieveCountries()
     {
-        foreach ($this->getCodes() as $code => $country) {
-            self::$countries[$code] = $this->getCountry($code);
+        if (!empty(self::$countries)) {
+            return;
         }
+
+        $loaded = [];
+        $this->retrieveDB();
+
+        if (Vtiger_Utils::CheckTable($this->table)) {
+            $result = $this->db->pquery('SELECT code, name, is_active FROM ' . $this->table);
+
+            while ($result && $row = $this->db->fetchByAssoc($result)) {
+                $code = strtoupper((string)$row['code']);
+                $loaded[$code] = [
+                    'code'      => $code,
+                    'name'      => $row['name'],
+                    'is_active' => (int)$row['is_active'],
+                ];
+            }
+        }
+
+        if (empty($loaded)) {
+            // Table missing/unseeded — derive from the seed catalog so the country
+            // field still works during installation.
+            foreach ($this->getCodes() as $code => $name) {
+                $loaded[$code] = ['code' => $code, 'name' => $name, 'is_active' => 1];
+            }
+        }
+
+        self::$countries = $loaded;
     }
 
     public function getCountry($code)
     {
-        if (!empty(self::$countries[$code])) {
+        $code = strtoupper((string)$code);
+        $this->retrieveCountries();
+
+        if (isset(self::$countries[$code])) {
             return self::$countries[$code];
         }
 
-        global $countries;
-
-        $countries = (int)$countries + 1;
-
-        $this->retrieveDB();
-        $table = $this->getTable($this->table, null);
-        $data = $table->selectData([], ['code' => $code]);
-
-        self::$countries[$code] = !empty($data) ? $data : [
+        // Unknown code (not seeded and not in the catalog) — synthesise an active
+        // entry so display/lookups never fail.
+        return self::$countries[$code] = [
             'code'      => $code,
-            'name'      => self::$countryCodes[$code],
+            'name'      => self::resolveCountryName($code),
             'is_active' => 1,
         ];
-
-        return self::$countries[$code];
     }
 
     public function getCodes()
@@ -308,9 +334,9 @@ class Core_Country_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * ISO2 codes (upper-case) of every currently active country. Falls back to
-     * all known countries when the table is missing or empty, which matches
-     * getCountry() treating countries as active by default on a fresh install.
+     * ISO2 codes (upper-case) of every currently active country, read from the
+     * (seeded) country list. Non-ISO extras (e.g. XK) are excluded here as they are
+     * not relevant to consumers of this list such as the phone-field widget.
      *
      * @return array
      */
@@ -320,22 +346,16 @@ class Core_Country_Model extends Core_DatabaseData_Model
             return self::$activeCodes;
         }
 
+        $this->retrieveCountries();
         $active = [];
 
-        if (Vtiger_Utils::CheckTable($this->table)) {
-            $this->retrieveDB();
-            $result = $this->db->pquery('SELECT code FROM ' . $this->table . ' WHERE is_active = ?', [1]);
-
-            while ($result && $row = $this->db->fetchByAssoc($result)) {
-                $code = strtoupper((string)$row['code']);
-
-                if (isset(self::$countryCodes[$code])) {
-                    $active[] = $code;
-                }
+        foreach (self::$countries as $code => $country) {
+            if (1 === (int)$country['is_active'] && isset(self::$countryCodes[$code])) {
+                $active[] = $code;
             }
         }
 
-        self::$activeCodes = !empty($active) ? $active : array_keys(self::$countryCodes);
+        self::$activeCodes = $active;
 
         return self::$activeCodes;
     }
@@ -414,7 +434,7 @@ class Core_Country_Model extends Core_DatabaseData_Model
         $codes = $this->getCodes();
 
         foreach ($countries as $code => $active) {
-            $name = $codes[$code];
+            $name = $codes[$code] ?? self::resolveCountryName($code);
             $table = $this->getTable($this->table, null);
             $data = $table->selectData([], ['code' => $code]);
 
@@ -424,6 +444,11 @@ class Core_Country_Model extends Core_DatabaseData_Model
                 $table->updateData(['name' => $name, 'is_active' => $active], ['code' => $code]);
             }
         }
+
+        // Invalidate request-level caches so the change is reflected immediately.
+        self::$countries = [];
+        self::$activeCodes = null;
+        self::$phoneFieldConfig = null;
     }
 
     public function getCountries(): array
@@ -431,6 +456,69 @@ class Core_Country_Model extends Core_DatabaseData_Model
         $this->retrieveCountries();
 
         return self::$countries;
+    }
+
+    /**
+     * Resolve the English name for an ISO 3166-1 alpha-2 code. Falls back to the
+     * GeoNames-specific supplement and finally to the code itself, so a name is
+     * always returned.
+     */
+    public static function resolveCountryName(string $code): string
+    {
+        return self::$countryCodes[strtoupper($code)] ?? $code;
+    }
+
+    /**
+     * Ensure each given country has a row in its4you_countries. Codes that are not
+     * present yet are inserted as active, using the supplied English name (falling
+     * back to the seed catalog, then the bare code). Existing rows are left intact —
+     * names are never overwritten. Used to seed the table at install (from the ISO
+     * catalog) and to top it up from GeoNames countryInfo during a postal import.
+     *
+     * @param array $codeNames map of ISO2 code (any case) => English name
+     *
+     * @return array<string> upper-case codes that were newly added
+     * @throws Exception
+     */
+    public function ensureCountries(array $codeNames): array
+    {
+        $this->retrieveDB();
+        $table = $this->getTable($this->table, null);
+
+        $existing = [];
+        $result = $this->db->pquery('SELECT code FROM ' . $this->table);
+
+        while ($result && $row = $this->db->fetchByAssoc($result)) {
+            $existing[strtoupper((string)$row['code'])] = true;
+        }
+
+        $added = [];
+
+        foreach ($codeNames as $code => $name) {
+            $code = strtoupper((string)$code);
+
+            if ('' === $code || isset($existing[$code])) {
+                continue;
+            }
+
+            $table->insertData([
+                'code'      => $code,
+                'name'      => '' !== (string)$name ? $name : self::resolveCountryName($code),
+                'is_active' => 1,
+            ]);
+
+            $existing[$code] = true;
+            $added[] = $code;
+        }
+
+        if (!empty($added)) {
+            // Invalidate request-level caches so freshly added countries are visible.
+            self::$countries = [];
+            self::$activeCodes = null;
+            self::$phoneFieldConfig = null;
+        }
+
+        return $added;
     }
 
     /**
@@ -444,11 +532,17 @@ class Core_Country_Model extends Core_DatabaseData_Model
             ->createColumn('name', 'VARCHAR(155)')
             ->createColumn('is_active', 'INT(1)')
             ->createKey('UNIQUE KEY IF NOT EXISTS `code` (`code`)');
+
+        // Seed the table from the ISO catalog so it becomes the live source of
+        // truth. Idempotent: only missing codes are inserted, existing rows (incl.
+        // admin activations) are kept. Non-ISO GeoNames codes (e.g. XK) are added
+        // later from countryInfo.txt during the postal-code import.
+        $this->ensureCountries(self::$countryCodes);
     }
 
     public function createLinks(): void
     {
-        $link = 'index.php?module=Vtiger&parent=Settings&view=Country';
+        $link = 'index.php?parent=Settings&module=Country&view=List';
         $name = 'Countries';
         $blockId = getSettingsBlockId('LBL_CONFIGURATION');
         $linkInstance = Settings_Vtiger_MenuItem_Model::getInstanceFromArray([

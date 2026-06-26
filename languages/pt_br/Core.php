@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_POSTAL_CODES_AVAILABLE' => 'Códigos postais disponíveis',
+    'LBL_ADDRESS_FIELD_MAPPING' => 'Mapeamento de campos de endereço',
+    'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Defina quais campos de endereço contêm o código postal e a cidade (e opcionalmente o estado e o país) para que possam ser preenchidos automaticamente.',
+    'LBL_ADD_ADDRESS_GROUP' => 'Adicionar grupo de endereço',
+    'LBL_GROUP_LABEL' => 'Rótulo',
+    'LBL_GROUP_LABEL_PLACEHOLDER' => 'ex. Cobrança',
+    'LBL_ZIP_FIELD' => 'Campo de código postal',
+    'LBL_CITY_FIELD' => 'Campo de cidade',
+    'LBL_STATE_FIELD' => 'Campo de estado',
+    'LBL_COUNTRY_FIELD' => 'Campo de país',
+    'LBL_NOT_MAPPED' => 'Não mapeado',
+    'LBL_ADDRESS_ZIP_CITY_REQUIRED' => 'Cada grupo de endereço precisa de um campo de código postal e um campo de cidade.',
+    'LBL_ADDRESS_MAPPING_SAVED' => 'Mapeamento de campos de endereço salvo',
+    'LBL_POSTAL_CODE_DATABASE' => 'Banco de dados de códigos postais',
+    'LBL_DATASET_VERSION' => 'Versão',
+    'LBL_RECORDS' => 'registros',
+    'LBL_NO_DATASET_IMPORTED' => 'Nenhum dado de código postal importado ainda',
+    'LBL_COUNTRY_CODE_OPTIONAL' => 'Código do país (opcional)',
+    'LBL_UPDATE_NOW' => 'Atualizar agora',
+    'LBL_POSTAL_UPDATE_HINT' => 'Deixe em branco para importar o mundo todo, ou insira um código de país de 2 letras (ex. SK) para importar um único país.',
+    'LBL_POSTAL_CODES_UPDATED' => 'Banco de dados de códigos postais atualizado',
     // Footer
     'APPTITLE'                                      => 'Vtiger CRM',
     'POWEREDBY'                                     => 'Suportado por Vtiger CRM',
