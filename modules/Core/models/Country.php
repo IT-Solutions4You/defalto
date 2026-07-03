@@ -373,12 +373,22 @@ class Core_Country_Model extends Core_DatabaseData_Model
         }
 
         $model = self::getInstance();
-        $countries = array_map('strtolower', $model->getActiveCodes());
+        $activeCodes = $model->getActiveCodes();
+        $countries = array_map('strtolower', $activeCodes);
         sort($countries);
+
+        // Localised country names (lower-case ISO2 => translated name) for the
+        // intl-tel-input dropdown/search, so it matches the translated country
+        // picklist instead of always showing English names.
+        $labels = [];
+        foreach ($activeCodes as $code) {
+            $labels[strtolower($code)] = vtranslate(self::$countryCodes[$code], 'Country');
+        }
 
         self::$phoneFieldConfig = [
             'countries' => $countries,
             'default'   => $model->getDefaultCode($countries),
+            'labels'    => $labels,
         ];
 
         return self::$phoneFieldConfig;
@@ -395,24 +405,42 @@ class Core_Country_Model extends Core_DatabaseData_Model
      */
     public function getDefaultCode(array $activeCodes): string
     {
-        $default = '';
-
-        $company = getCompanyDetails();
-        $countryName = strtolower(trim((string)($company['country'] ?? '')));
-
-        if ('' !== $countryName) {
-            $byName = array_change_key_case(array_flip(self::$countryCodes));
-
-            if (isset($byName[$countryName])) {
-                $default = strtolower($byName[$countryName]);
-            }
-        }
+        $default = $this->getCompanyCountryCode();
 
         if ('' === $default || !in_array($default, $activeCodes, true)) {
             $default = $activeCodes[0] ?? 'us';
         }
 
         return $default;
+    }
+
+    /**
+     * Lower-case ISO2 of the company country, from Settings > Company
+     * Information. The current source of truth is organizationdetails.country_id
+     * (an ISO2 code, e.g. "SK"); for older data we fall back to the legacy
+     * free-text country name (e.g. "Slovakia").
+     *
+     * @return string
+     */
+    public function getCompanyCountryCode(): string
+    {
+        $companyDetails = Settings_Vtiger_CompanyDetails_Model::getInstance();
+
+        $code = strtolower(trim((string)$companyDetails->get('country_id')));
+        if ('' !== $code && isset(self::$countryCodes[strtoupper($code)])) {
+            return $code;
+        }
+
+        $name = strtolower(trim((string)$companyDetails->get('country')));
+        if ('' !== $name) {
+            $byName = array_change_key_case(array_flip(self::$countryCodes));
+
+            if (isset($byName[$name])) {
+                return strtolower($byName[$name]);
+            }
+        }
+
+        return '';
     }
 
     public static function getInstance($moduleName = 'Vtiger')
