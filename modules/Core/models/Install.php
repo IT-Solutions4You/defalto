@@ -908,9 +908,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         return Vtiger_Field_Model::getInstance($fieldName, $module);
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
-        return self::$filterFields[$this->getModuleName()];
+        return self::$filterFields[$this->getModuleName()] ?? [];
     }
 
     /**
@@ -1332,7 +1332,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleName = $this->getModuleName();
 
         if (empty($sequence)) {
-            $sequence = count((array)self::$filterFields[$moduleName][$filterName]) + 1;
+            $sequence = count(self::$filterFields[$moduleName][$filterName] ?? []) + 1;
         }
 
         self::$filterFields[$moduleName][$filterName][$sequence] = $field;
