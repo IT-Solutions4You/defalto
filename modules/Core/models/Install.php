@@ -1292,7 +1292,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ],
         ];
 
-        foreach (self::$fieldsConfig[$moduleName] as $blockName => $fields) {
+        foreach ($this->getFieldsConfig() as $blockName => $fields) {
             foreach ($fields as $fieldName => $fieldInfo) {
                 foreach ($configFields as $configField) {
                     [$fieldKey, $fieldSequenceKey, $fieldList, $fieldDefault] = $configField;
