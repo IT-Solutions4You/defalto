@@ -20,6 +20,7 @@ class Core_CreateTables_Config
         'Settings_Workflows_TaskRecord_Model',
         'Core_InventoryItemsBlock_Model',
         'Core_RelatedBlock_Model',
+        'Core_SharingRecord_Model',
         'Core_Tax_Model',
         'Core_TaxRegion_Model',
         'Core_TaxRecord_Model',
