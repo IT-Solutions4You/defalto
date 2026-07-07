@@ -16,6 +16,84 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
     protected $members;
 
     /**
+     * @throws Exception
+     */
+    public function createTables(): void
+    {
+        $roleIdColumnType = $this->getRoleIdColumnType();
+
+        Core_DatabaseData_Model::getTableInstance('its4you_sharing_users', '')
+            ->createTable('crmid', 'int(19) NOT NULL')
+            ->createColumn('userid', 'int(19) NOT NULL')
+            ->createColumn('type', 'int(1) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS crmid (crmid)')
+            ->createKey('KEY IF NOT EXISTS userid (userid)')
+            ->createKey('KEY IF NOT EXISTS crmid_2 (crmid,userid)');
+
+        Core_DatabaseData_Model::getTableInstance('its4you_sharing_groups', '')
+            ->createTable('crmid', 'int(19) NOT NULL')
+            ->createColumn('groupid', 'int(19) NOT NULL')
+            ->createColumn('type', 'int(1) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS crmid (crmid)')
+            ->createKey('KEY IF NOT EXISTS groupid (groupid)')
+            ->createKey('KEY IF NOT EXISTS crmid_2 (crmid,groupid)');
+
+        Core_DatabaseData_Model::getTableInstance('its4you_sharing_roles', '')
+            ->createTable('crmid', 'int(19) NOT NULL')
+            ->createColumn('roleid', $roleIdColumnType)
+            ->createColumn('type', 'int(1) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS crmid (crmid)')
+            ->createKey('KEY IF NOT EXISTS roleid (roleid)')
+            ->createKey('KEY IF NOT EXISTS crmid_2 (crmid,roleid)');
+
+        Core_DatabaseData_Model::getTableInstance('its4you_sharing_rolessubroles', '')
+            ->createTable('crmid', 'int(19) NOT NULL')
+            ->createColumn('roleid', $roleIdColumnType)
+            ->createColumn('type', 'int(1) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS crmid (crmid)')
+            ->createKey('KEY IF NOT EXISTS rolesid (roleid)')
+            ->createKey('KEY IF NOT EXISTS crmid_2 (crmid,roleid)');
+
+        Core_DatabaseData_Model::getTableInstance('its4you_sharing_multicompany', '')
+            ->createTable('crmid', 'int(19) NOT NULL')
+            ->createColumn('companyid', 'int(19) NOT NULL')
+            ->createColumn('type', 'int(1) NOT NULL')
+            ->createKey('KEY IF NOT EXISTS crmid (crmid)')
+            ->createKey('KEY IF NOT EXISTS companyid (companyid)')
+            ->createKey('KEY IF NOT EXISTS crmid_2 (crmid,companyid)');
+    }
+
+    protected function getRoleIdColumnType(): string
+    {
+        $roleIdColumnType = 'varchar(255) NOT NULL';
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            'SELECT CHARACTER_SET_NAME AS character_set_name, COLLATION_NAME AS collation_name FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+            ['vtiger_role', 'roleid']
+        );
+
+        if ($db->num_rows($result) > 0) {
+            $charset = (string)$db->query_result($result, 0, 'character_set_name');
+            $collation = (string)$db->query_result($result, 0, 'collation_name');
+
+            if ($this->isValidSqlIdentifier($charset) && $this->isValidSqlIdentifier($collation)) {
+                $roleIdColumnType = sprintf(
+                    'varchar(255) CHARACTER SET %s COLLATE %s NOT NULL',
+                    $charset,
+                    $collation
+                );
+            }
+        }
+
+        return $roleIdColumnType;
+    }
+
+    protected function isValidSqlIdentifier(string $value): bool
+    {
+        return 1 === preg_match('/^[A-Za-z0-9_]+$/', $value);
+    }
+
+    /**
      * Function to get the Id
      * @return <Number> record Id
      */
@@ -94,7 +172,7 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
      */
     public function getMembers($record = false)
     {
-        if (!$this->members) {
+        if (null === $this->members) {
             $this->members = self::getAllSharing($record);
         }
 
@@ -150,9 +228,14 @@ class Core_SharingRecord_Model extends Vtiger_Base_Model
      */
     public static function getAllSharing($record)
     {
+        $members = [1 => [], 2 => []];
+
+        if (empty($record)) {
+            return $members;
+        }
+
         $db = PearDatabase::getInstance();
 
-        $members = [];
         $sql = 'SELECT its4you_sharing_users.type, vtiger_users.id, vtiger_users.last_name, vtiger_users.first_name FROM vtiger_users
                 INNER JOIN its4you_sharing_users ON its4you_sharing_users.userid = vtiger_users.id
                 WHERE its4you_sharing_users.crmid = ?';
