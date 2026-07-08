@@ -263,6 +263,8 @@ class Core_Country_Model extends Core_DatabaseData_Model
         'ZW' => 'Zimbabwe',
     ];
     public static array $countries = [];
+    public static ?array $activeCodes = null;
+    public static ?array $phoneFieldConfig = null;
     public string $moduleName = 'Vtiger';
 
     public function isActive($code): bool
@@ -303,6 +305,122 @@ class Core_Country_Model extends Core_DatabaseData_Model
     public function getCodes()
     {
         return self::$countryCodes;
+    }
+
+    /**
+     * ISO2 codes (upper-case) of every currently active country. Falls back to
+     * all known countries when the table is missing or empty, which matches
+     * getCountry() treating countries as active by default on a fresh install.
+     *
+     * @return array
+     */
+    public function getActiveCodes(): array
+    {
+        if (null !== self::$activeCodes) {
+            return self::$activeCodes;
+        }
+
+        $active = [];
+
+        if (Vtiger_Utils::CheckTable($this->table)) {
+            $this->retrieveDB();
+            $result = $this->db->pquery('SELECT code FROM ' . $this->table . ' WHERE is_active = ?', [1]);
+
+            while ($result && $row = $this->db->fetchByAssoc($result)) {
+                $code = strtoupper((string)$row['code']);
+
+                if (isset(self::$countryCodes[$code])) {
+                    $active[] = $code;
+                }
+            }
+        }
+
+        self::$activeCodes = !empty($active) ? $active : array_keys(self::$countryCodes);
+
+        return self::$activeCodes;
+    }
+
+    /**
+     * Configuration consumed by the phone-field widget (intl-tel-input) on the
+     * client side: the selectable countries and the initial country.
+     *
+     * @return array{countries: array, default: string}
+     */
+    public static function getPhoneFieldConfig(): array
+    {
+        if (null !== self::$phoneFieldConfig) {
+            return self::$phoneFieldConfig;
+        }
+
+        $model = self::getInstance();
+        $activeCodes = $model->getActiveCodes();
+        $countries = array_map('strtolower', $activeCodes);
+        sort($countries);
+
+        // Localised country names (lower-case ISO2 => translated name) for the
+        // intl-tel-input dropdown/search, so it matches the translated country
+        // picklist instead of always showing English names.
+        $labels = [];
+        foreach ($activeCodes as $code) {
+            $labels[strtolower($code)] = vtranslate(self::$countryCodes[$code], 'Country');
+        }
+
+        self::$phoneFieldConfig = [
+            'countries' => $countries,
+            'default'   => $model->getDefaultCode($countries),
+            'labels'    => $labels,
+        ];
+
+        return self::$phoneFieldConfig;
+    }
+
+    /**
+     * Best-effort initial country (lower-case ISO2) for new phone values: the
+     * company country when it maps to an active code, otherwise the first
+     * active country.
+     *
+     * @param array $activeCodes lower-case ISO2 codes
+     *
+     * @return string
+     */
+    public function getDefaultCode(array $activeCodes): string
+    {
+        $default = $this->getCompanyCountryCode();
+
+        if ('' === $default || !in_array($default, $activeCodes, true)) {
+            $default = $activeCodes[0] ?? 'us';
+        }
+
+        return $default;
+    }
+
+    /**
+     * Lower-case ISO2 of the company country, from Settings > Company
+     * Information. The current source of truth is organizationdetails.country_id
+     * (an ISO2 code, e.g. "SK"); for older data we fall back to the legacy
+     * free-text country name (e.g. "Slovakia").
+     *
+     * @return string
+     */
+    public function getCompanyCountryCode(): string
+    {
+        $companyDetails = Settings_Vtiger_CompanyDetails_Model::getInstance();
+
+        $code = strtolower(trim((string)$companyDetails->get('country_id')));
+        if ('' !== $code && isset(self::$countryCodes[strtoupper($code)])) {
+            return $code;
+        }
+
+        $name = strtolower(trim((string)$companyDetails->get('country')));
+        if ('' !== $name) {
+            $byName = array_change_key_case(array_flip(self::$countryCodes));
+
+            if (isset($byName[$name])) {
+                return strtolower($byName[$name]);
+            }
+        }
+
+        return '';
     }
 
     public static function getInstance($moduleName = 'Vtiger')

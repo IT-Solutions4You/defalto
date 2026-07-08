@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toutes les listes de prix',
     'PriceBooks'                => 'Grille Tarifaire',
     'SINGLE_PriceBooks'         => 'Grille Tarifaire',
     'LBL_ADD_RECORD'            => 'Ajouter une Grille Tarifaire',

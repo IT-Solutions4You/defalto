@@ -15,6 +15,7 @@ class Installer_License_Model extends Core_DatabaseData_Model
     ];
     public const MEMBERSHIP_PACKAGE = 'Membership Package';
     public const EXTENSION_PACKAGE = 'Extension Package';
+    public const LIFETIME_EXPIRE_VALUE = 'lifetime';
     protected array $columns = [
         'name',
         'info',
@@ -72,6 +73,15 @@ class Installer_License_Model extends Core_DatabaseData_Model
     public function getExpireDate(): string
     {
         return (string)$this->getInfo('expires');
+    }
+
+    public function getDisplayExpireDate(): string
+    {
+        if ($this->isLifetimeLicense()) {
+            return vtranslate('Unlimited', 'Installer');
+        }
+
+        return Vtiger_Functions::currentUserDisplayDate($this->getExpireDate());
     }
 
     public function getInfo($key = ''): mixed
@@ -203,6 +213,10 @@ class Installer_License_Model extends Core_DatabaseData_Model
 
     public function isExpired(): bool
     {
+        if ($this->isLifetimeLicense()) {
+            return false;
+        }
+
         return $this->getExpireDate() < date('Y-m-d H:i:s');
     }
 
@@ -239,6 +253,11 @@ class Installer_License_Model extends Core_DatabaseData_Model
     public function hasExpireDate(): bool
     {
         return !empty($this->getExpireDate());
+    }
+
+    public function isLifetimeLicense(): bool
+    {
+        return self::LIFETIME_EXPIRE_VALUE === $this->getExpireDate();
     }
 
     public function activate(): static

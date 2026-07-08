@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie oferty',
     'Quotes'                => 'Oferta',
     //DetailView Actions
     'SINGLE_Quotes'         => 'Oferta',

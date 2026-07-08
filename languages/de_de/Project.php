@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Projekte',
     'Actual End Date' => 'Tatsächliches Enddatum',
     'LBL_ADD_RECORD' => 'Projekt hinzufügen',
     'LBL_CHART' => 'Grafik',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tous les devis',
     'Quotes'                      => 'Devis',
     'SINGLE_Quotes'               => 'Devis',
     'LBL_EXPORT_TO_PDF'           => 'Export PDF',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes projektmérföldkő',
     'SINGLE_ProjectMilestone'           => 'Projekt Mérföldkő',
     'LBL_ADD_RECORD'                    => 'Projekt Mérföldkő hozzáadása',
     'LBL_RECORDS_LIST'                  => 'Projekt Mérföldkövek listája',

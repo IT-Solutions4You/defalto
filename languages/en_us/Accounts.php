@@ -19,6 +19,7 @@
 
 $languageStrings = [
     'Accounts' => 'Organizations',
+    'CV_ALL' => 'All Organizations',
     'SINGLE_Accounts' => 'Organization',
     'LBL_ADD_RECORD' => 'Add Organization',
     'LBL_RECORDS_LIST' => 'Organization List',
@@ -28,11 +29,9 @@ $languageStrings = [
     'Account Name' => 'Organization Name',
     'Account No' => 'Organization Number',
     'Website' => 'Website',
-    'Ticker Symbol' => 'Ticker Symbol',
     'Member Of' => 'Member Of',
     'Employees' => 'Employees',
     'Ownership' => 'Ownership',
-    'SIC Code' => 'SIC Code',
     'Other Email' => 'Secondary Email',
     'Other Phone' => 'Other Phone',
     'Phone' => 'Phone',
@@ -54,7 +53,7 @@ $languageStrings = [
     'LBL_IMAGE_INFORMATION' => 'Profile Picture',
     'Organization Image' => 'Organization Image',
     'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID' => 'VAT ID',
+    'VAT Nr' => 'VAT Nr',
     'LBL_ADD_CONTACTS' => 'Add Contact',
     'LBL_ADD_POTENTIALS' => 'Add Opportunities',
     'LBL_ADD_QUOTES' => 'Add Quote',
@@ -70,6 +69,7 @@ $languageStrings = [
     'Contacted - Successful' => 'Contacted - Successful',
     'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
     'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
+    'LBL_ACCOUNTS_SIMILAR_ORGANIZATIONS' => 'Similar organizations',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',

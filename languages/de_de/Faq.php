@@ -22,6 +22,7 @@ $languageStrings = [
     'Comments' => 'Kommentare',
     'Draft' => 'Entwurf',
     'Faq' => 'FAQ',
+    'CV_ALL' => 'Alle FAQ',
     'Faq No' => 'FAQ Nr.',
     'General' => 'Allgemein',
     'LBL_ADD_RECORD' => 'FAQ hinzufügen',
@@ -33,7 +34,7 @@ $languageStrings = [
     'Published' => 'veröffentlicht',
     'Question' => 'Frage',
     'SINGLE_Faq' => 'FAQ',
-    'Related to' => 'Related to',
+    'Related to' => 'Bezogen auf',
 ];
 $jsLanguageStrings = [
 ];

@@ -132,6 +132,191 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
         }
     },
 
+    registerAccountNameSuggestionHint: function (container) {
+        const self = this,
+            accountNameField = container.find('[name="accountname"]').first();
+
+        if (accountNameField.length === 0) {
+            return;
+        }
+
+        accountNameField.off(
+            'input.accountNameSuggestions change.accountNameSuggestions keydown.accountNameSuggestions ' +
+            'focus.accountNameSuggestions blur.accountNameSuggestions'
+        );
+        accountNameField.on('input.accountNameSuggestions', function () {
+            self.scheduleAccountNameSuggestionSearch(container, jQuery(this));
+        });
+        accountNameField.on('focus.accountNameSuggestions', function () {
+            self.scheduleAccountNameSuggestionSearch(container, jQuery(this));
+        });
+        accountNameField.on('blur.accountNameSuggestions', function () {
+            const field = jQuery(this);
+
+            setTimeout(function () {
+                self.hideAccountNameSuggestionPanel(field);
+            }, 0);
+        });
+        accountNameField.on('change.accountNameSuggestions', function (e) {
+            if (e.originalEvent) {
+                return;
+            }
+
+            self.scheduleAccountNameSuggestionSearch(container, jQuery(this));
+        });
+        accountNameField.on('keydown.accountNameSuggestions', function (e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                self.hideAccountNameSuggestionPanel(jQuery(this));
+            }
+        });
+
+        this.registerAccountNameSuggestionCloseEvents();
+    },
+
+    scheduleAccountNameSuggestionSearch: function (container, accountNameField) {
+        const self = this,
+            accountName = String(accountNameField.val() || '').replace(/\s+/g, ' ').trim(),
+            existingTimer = accountNameField.data('accountNameSuggestionTimer');
+
+        if (existingTimer) {
+            clearTimeout(existingTimer);
+        }
+
+        if (accountName.length < 3) {
+            self.hideAccountNameSuggestionPanel(accountNameField);
+            return;
+        }
+
+        accountNameField.data('accountNameSuggestionTimer', setTimeout(function () {
+            self.loadAccountNameSuggestions(container, accountNameField, accountName);
+        }, 300));
+    },
+
+    loadAccountNameSuggestions: function (container, accountNameField, accountName) {
+        const self = this,
+            requestId = (accountNameField.data('accountNameSuggestionRequestId') || 0) + 1,
+            params = {
+            module: 'Accounts',
+            action: 'NameSuggestions',
+            accountname: accountName,
+            record: this.getAccountNameSuggestionRecordId(container),
+        };
+
+        accountNameField.data('accountNameSuggestionRequestId', requestId);
+
+        app.request.get({data: params}).then(function (err, data) {
+            if (accountNameField.data('accountNameSuggestionRequestId') !== requestId) {
+                return;
+            }
+
+            if (err !== null || !data || !data.html) {
+                self.hideAccountNameSuggestionPanel(accountNameField);
+                return;
+            }
+
+            self.showAccountNameSuggestionPanel(accountNameField, data.html);
+        });
+    },
+
+    getAccountNameSuggestionRecordId: function (container) {
+        const recordField = container.find('[name="record"]').first();
+
+        if (recordField.length > 0) {
+            return recordField.val();
+        }
+
+        if (container.closest('#QuickCreate').length === 0 && typeof app.getRecordId === 'function') {
+            return app.getRecordId();
+        }
+
+        return '';
+    },
+
+    showAccountNameSuggestionPanel: function (accountNameField, html) {
+        const panel = this.getAccountNameSuggestionPanel(accountNameField);
+
+        panel.html(html);
+
+        this.positionAccountNameSuggestionPanel(accountNameField, panel);
+        panel.show();
+    },
+
+    getAccountNameSuggestionPanel: function (accountNameField) {
+        let panelHost = this.getAccountNameSuggestionPanelHost(accountNameField),
+            panel = panelHost.children('.accountNameSuggestionPanel').first();
+
+        if (panel.length === 0) {
+            panel = jQuery(
+                '<div class="accountNameSuggestionPanel list-group shadow-sm overflow-auto position-absolute"></div>'
+            );
+            panel.hide();
+            panel.on('click.accountNameSuggestions mousedown.accountNameSuggestions', function (e) {
+                e.stopPropagation();
+            });
+            panelHost.append(panel);
+        }
+
+        return panel;
+    },
+
+    getAccountNameSuggestionPanelHost: function (accountNameField) {
+        const inputGroup = accountNameField.closest('.input-group'),
+            anchor = inputGroup.length > 0 ? inputGroup : accountNameField,
+            panelHost = anchor.parent();
+
+        if (panelHost.css('position') === 'static') {
+            panelHost.css('position', 'relative');
+        }
+
+        return panelHost;
+    },
+
+    positionAccountNameSuggestionPanel: function (accountNameField, panel) {
+        const inputGroup = accountNameField.closest('.input-group'),
+            anchor = inputGroup.length > 0 ? inputGroup : accountNameField,
+            position = anchor.position();
+
+        panel.css({
+            'left': position.left + 'px',
+            'top': (position.top + anchor.outerHeight() + 4) + 'px',
+            'width': anchor.outerWidth() + 'px',
+        });
+    },
+
+    hideAccountNameSuggestionPanel: function (accountNameField) {
+        const existingTimer = accountNameField.data('accountNameSuggestionTimer');
+
+        if (existingTimer) {
+            clearTimeout(existingTimer);
+        }
+
+        accountNameField.data(
+            'accountNameSuggestionRequestId',
+            (accountNameField.data('accountNameSuggestionRequestId') || 0) + 1
+        );
+        this.getAccountNameSuggestionPanelHost(accountNameField).children('.accountNameSuggestionPanel').hide();
+    },
+
+    registerAccountNameSuggestionCloseEvents: function () {
+        jQuery(document).off('click.accountNameSuggestions keydown.accountNameSuggestions');
+        jQuery(document).on('click.accountNameSuggestions', function (e) {
+            const target = jQuery(e.target);
+
+            if (
+                target.closest('.accountNameSuggestionPanel').length === 0
+                && target.closest('[name="accountname"]').length === 0
+            ) {
+                jQuery('.accountNameSuggestionPanel').hide();
+            }
+        });
+        jQuery(document).on('keydown.accountNameSuggestions', function (e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                jQuery('.accountNameSuggestionPanel').hide();
+            }
+
+        });
+    },
+
     /**
      * Function which will register basic events which will be used in quick create as well
      *
@@ -139,5 +324,6 @@ Vtiger_Edit_Js("Accounts_Edit_Js", {}, {
     registerBasicEvents: function (container) {
         this._super(container);
         this.registerEventForCopyingAddress(container);
+        this.registerAccountNameSuggestionHint(container);
     }
 });

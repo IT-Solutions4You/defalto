@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všetky servisné zmluvy',
     'ServiceContracts' => 'Servisné zmluvy',
     'Service Contracts' => 'Servisné zmluvy',
     'SINGLE_ServiceContracts' => 'Servisná zmluva',

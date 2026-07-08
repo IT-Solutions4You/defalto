@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Potentials' => 'Obchodné príležitosti',
+    'CV_ALL' => 'Všetky obchodné príležitosti',
     'SINGLE_Potentials' => 'Obchodná príležitosť',
     'LBL_ADD_RECORD' => 'Pridať priležitosť',
     'LBL_RECORDS_LIST' => 'Zoznam príležitostí',

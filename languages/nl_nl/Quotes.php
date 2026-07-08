@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle offertes',
     'Quotes'                => 'Offerte',
     'SINGLE_Quotes'         => 'Offerte',
     'LBL_EXPORT_TO_PDF'     => 'Exporteer naar PDF',

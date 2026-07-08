@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toutes les campagnes',
     'Campaigns'                       => 'Campagnes',
     'SINGLE_Campaigns'                => 'Campagne',
     'LBL_ADD_RECORD'                  => 'Add Campaign',

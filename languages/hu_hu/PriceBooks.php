@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes árlista',
     'PriceBooks'                => 'Csomagárak',
     'SINGLE_PriceBooks'         => 'Csomagár',
     'LBL_ADD_RECORD'            => 'Csomagár hozzáadása',

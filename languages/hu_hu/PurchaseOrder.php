@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes beszerzési rendelés',
     'PurchaseOrder'             => 'Megrendelések',
     'SINGLE_PurchaseOrder'      => 'Megrendelések',
     'LBL_EXPORT_TO_PDF'         => 'Exportálás PDF-be',

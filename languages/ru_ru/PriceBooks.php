@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Все прайс-листы',
     'PriceBooks'                => 'Каталоги',
     'SINGLE_PriceBooks'         => 'Каталог',
     'LBL_ADD_RECORD'            => 'Добавить прейскуранту',

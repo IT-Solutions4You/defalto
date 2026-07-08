@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Все вехи проекта',
     'SINGLE_ProjectMilestone'           => 'Контрольная Точка',
     'LBL_ADD_RECORD'                    => "Добавить проект Milestone",
     'LBL_RECORDS_LIST'                  => "Список Этапы проекта",

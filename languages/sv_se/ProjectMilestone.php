@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla projektmilstolpar',
     // Basic Strings
     'SINGLE_ProjectMilestone'           => 'Projektmilstolpe',
     'LBL_ADD_RECORD'                    => 'Lägg till Projektmilstolpe',

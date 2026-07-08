@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع الموردين',
     // Basic Strings
     'Vendors'                        => 'الموردين',
     'SINGLE_Vendors'                 => 'مورد',

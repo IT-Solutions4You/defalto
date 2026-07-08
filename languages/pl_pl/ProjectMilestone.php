@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie kamienie milowe projektu',
     // Basic Strings
     'SINGLE_ProjectMilestone'           => 'Etap Projektu',
     'LBL_ADD_RECORD'                    => 'Dodaj Etap Projektu',

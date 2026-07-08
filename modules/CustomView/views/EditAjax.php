@@ -101,7 +101,7 @@ class CustomView_EditAjax_View extends Vtiger_IndexAjax_View
         foreach ($allCustomViews as $views) {
             foreach ($views as $view) {
                 if ($currentUserModel->getId() == $view->get('userid')) {
-                    $allViewNames[$view->getId()] = strtolower(vtranslate($view->get('viewname'), $moduleName));
+                    $allViewNames[$view->getId()] = strtolower($view->getDisplayName());
                 }
             }
         }

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos os produtos',
     // Basic Strings
     'Products'                => 'Produtos',
     'SINGLE_Products'         => 'Produto',

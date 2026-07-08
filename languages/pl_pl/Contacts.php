@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie kontakty',
     // Basic Strings
     'Contacts'                        => 'Kontakty',
     'SINGLE_Contacts'                 => 'Kontakt',

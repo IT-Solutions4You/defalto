@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes beszállító',
     'Vendors'                        => 'Beszállítók',
     'SINGLE_Vendors'                 => 'Beszállító',
     'LBL_ADD_RECORD'                 => 'Beszállító hozzáadása',

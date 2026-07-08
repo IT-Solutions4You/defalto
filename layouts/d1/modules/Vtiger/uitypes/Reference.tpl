@@ -32,7 +32,7 @@
             {/if}
         {/if}
         {assign var=displayId value=$FIELD_VALUE}
-        <div class="input-group rounded-start flex-nowrap">
+        <div class="input-group flex-nowrap">
             {if $REFERENCE_LIST_COUNT > 1}
                 {assign var=DISPLAYID value=$FIELD_MODEL->get('fieldvalue')}
                 {assign var=REFERENCED_MODULE_STRUCT value=$FIELD_MODEL->getUITypeModel()->getReferenceModule($DISPLAYID)}
@@ -46,11 +46,12 @@
                 </select>
             {/if}
             <input id="{$FIELD_NAME}_display" name="{$FIELD_MODEL->getFieldName()}_display" data-fieldname="{$FIELD_MODEL->getFieldName()}" data-fieldtype="reference" type="text"
-               class="marginLeftZero autoComplete inputElement form-control w-50"
+               class="marginLeftZero autoComplete inputElement form-control w-50{if $REFERENCE_LIST_COUNT <= 1} rounded-start{/if}"
                value="{$FIELD_MODEL->getEditViewDisplayValue($displayId)}"
                placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
                {if !empty($FIELD_VALUE)}
                    readonly="readonly"
+                   disabled="disabled"
                {/if}
                 {if $FIELD_INFO["mandatory"] eq true}
                     data-rule-required="true"

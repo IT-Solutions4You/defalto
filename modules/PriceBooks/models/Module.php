@@ -37,7 +37,7 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model
      */
     function get_pricebook_products($recordModel, $relatedModuleModel)
     {
-        $query = 'SELECT vtiger_products.productid, vtiger_products.productname, vtiger_products.productcode, vtiger_products.commissionrate,
+        $query = 'SELECT vtiger_products.productid, vtiger_products.productname, vtiger_products.commissionrate,
 						vtiger_products.qty_per_unit, vtiger_products.unit_price, vtiger_crmentity.crmid, vtiger_crmentity.assigned_user_id,
 						vtiger_pricebookproductrel.listprice
 				FROM vtiger_products

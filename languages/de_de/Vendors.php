@@ -39,6 +39,7 @@ $languageStrings = [
     'Vendor Name' => 'Lieferantenname',
     'Vendor No' => 'Lieferanten Nummer',
     'Vendors' => 'Lieferanten',
+    'CV_ALL' => 'Alle Lieferanten',
     'Website' => 'Webseite',
 ];
 $jsLanguageStrings = [

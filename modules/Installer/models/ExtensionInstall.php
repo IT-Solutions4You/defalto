@@ -10,6 +10,9 @@
 
 class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 {
+    public const SOURCE_CORE = 'core';
+    public const SOURCE_CUSTOM = 'custom';
+
     public static array $ignoredModules = ['Dashboard', 'Home', 'Import', 'SMSNotifier', 'WSAPP', 'PBXManager', 'RecycleBin', 'Webforms', 'Google', 'ModTracker', 'ModComments', 'MailManager', 'Users', 'CustomerPortal'];
     public Vtiger_Module_Model|bool|null $module = null;
 
@@ -39,6 +42,22 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         }
 
         ksort($extensions);
+
+        return $extensions;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getInstallerModules(): array
+    {
+        $extensions = [];
+
+        foreach (self::getAll() as $moduleName => $extension) {
+            if ($extension->isVisibleInInstaller()) {
+                $extensions[$moduleName] = $extension;
+            }
+        }
 
         return $extensions;
     }
@@ -148,10 +167,28 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     {
         $messages = [];
 
+        if (!$this->hasInstalledFiles()) {
+            $messages['danger'] = vtranslate('LBL_MODULE_FILES_MISSING', 'Installer');
+
+            return $messages;
+        }
+
+        if (!$this->isModuleActive()) {
+            $messages['warning'] = vtranslate('LBL_MODULE_INACTIVE', 'Installer');
+
+            return $messages;
+        }
+
+        if ($this->isCoreModule()) {
+            $messages['primary'] = vtranslate('LBL_MODULE_ACTIVE', 'Installer');
+
+            return $messages;
+        }
+
         if (Installer_License_Model::isActiveExtension($this->getName())) {
-            $messages['primary'] = 'Valid license, active extension';
+            $messages['primary'] = vtranslate('LBL_LICENSE_ACTIVE', 'Installer');
         } else {
-            $messages['danger'] = 'Invalid license, inactive extension';
+            $messages['danger'] = vtranslate('LBL_LICENSE_INACTIVE', 'Installer');
         }
 
         return $messages;
@@ -160,33 +197,65 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     public function getLinks()
     {
         $links = $this->getModule() ? $this->getModule()->getSettingLinks() : [];
+        $links = Vtiger_Link_Model::checkAndConvertLinks($links);
 
+        return $links['LISTVIEWSETTING'] ?? [];
+    }
+
+    public static function getModuleSettingLinks(Vtiger_Module_Model $module): array
+    {
+        $extension = self::getLocalInstance($module);
+
+        return self::translateInstallerLinks($extension->getInstallerSettingLinks());
+    }
+
+    public static function getLocalInstance(Vtiger_Module_Model $module): self
+    {
+        $instance = new self();
+        $instance->setName($module->getName());
+        $instance->module = $module;
+        $instance->set('version', $module->get('version'));
+
+        return $instance;
+    }
+
+    public function getInstallerSettingLinks(): array
+    {
+        $links = [];
         $extensionName = $this->getName();
 
         if (class_exists($extensionName . '_Install_Model')) {
             $links[] = [
                 'linktype'  => 'LISTVIEWSETTING',
-                'linklabel' => vtranslate('LBL_REQUIREMENTS', 'Installer'),
+                'linklabel' => 'LBL_REQUIREMENTS',
                 'linkurl'   => 'index.php?module=Installer&view=Requirements&mode=Module&sourceModule=' . $this->getName(),
                 'linkicon'  => '',
             ];
             $links[] = [
                 'linktype'  => 'LISTVIEWSETTING',
-                'linklabel' => vtranslate('LBL_LICENSE', 'Installer'),
+                'linklabel' => 'LBL_LICENSE',
                 'linkurl'   => 'index.php?module=Installer&view=Index&mode=license&sourceModule=' . $this->getName(),
                 'linkicon'  => '',
             ];
             $links[] = [
                 'linktype'  => 'LISTVIEWSETTING',
-                'linklabel' => vtranslate('LBL_UNINSTALL', 'Installer'),
+                'linklabel' => 'LBL_UNINSTALL',
                 'linkurl'   => 'index.php?module=Installer&view=Index&mode=uninstall&sourceModule=' . $this->getName(),
                 'linkicon'  => '',
             ];
         }
 
-        $links = Vtiger_Link_Model::checkAndConvertLinks($links);
+        return $links;
+    }
 
-        return $links['LISTVIEWSETTING'] ?? [];
+    public static function translateInstallerLinks(array $links): array
+    {
+        foreach ($links as &$link) {
+            $link['linklabel'] = vtranslate($link['linklabel'], 'Installer');
+        }
+        unset($link);
+
+        return $links;
     }
 
     /**
@@ -218,6 +287,37 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     public function hasDownloadUrl(): bool
     {
         return !$this->isEmpty('download-url');
+    }
+
+    public function isCoreModule(): bool
+    {
+        $source = strtolower((string)$this->getModule()?->get('source'));
+
+        return $source !== self::SOURCE_CUSTOM;
+    }
+
+    public function isModuleActive(): bool
+    {
+        return (bool)$this->getModule()?->isActive();
+    }
+
+    public function hasInstalledFiles(): bool
+    {
+        $moduleName = $this->getName();
+
+        return is_dir('modules/' . $moduleName) || is_dir('modules/Settings/' . $moduleName);
+    }
+
+    public function isVisibleInInstaller(): bool
+    {
+        if ($this->hasDownloadUrl()) {
+            return true;
+        }
+
+        $version = $this->getVersion();
+        $updateVersion = $this->getUpdateVersion();
+
+        return $updateVersion !== '' && $version !== $updateVersion;
     }
 
     public function getDownloadLabel(): string

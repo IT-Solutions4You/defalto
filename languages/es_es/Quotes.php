@@ -25,6 +25,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos los presupuestos',
     'Quotes'                => 'cotizaciones',
     'SINGLE_Quotes'         => 'cotizaciones',
     'LBL_EXPORT_TO_PDF'     => 'Exportar a PDF',

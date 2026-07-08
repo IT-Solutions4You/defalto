@@ -88,13 +88,13 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model
     {
         $this->initListViewController();
 
-        $db = PearDatabase::getInstance();
-
         $suffix = '';
-        $customviewrs = $db->pquery('SELECT viewname FROM vtiger_customview WHERE cvid=?', [$this->widgetModel->get('filterid')]);
-        if ($db->num_rows($customviewrs)) {
-            $customview = $db->fetch_array($customviewrs);
-            $suffix = ' - ' . $customview['viewname'];
+        $filterId = $this->widgetModel->get('filterid');
+        if ($filterId) {
+            $customView = CustomView_Record_Model::getInstanceById($filterId);
+            if ($customView) {
+                $suffix = ' - ' . $customView->getDisplayName();
+            }
         }
 
         return $prefix . vtranslate($this->getTargetModuleModel()->label, $this->getTargetModule()) . $suffix;

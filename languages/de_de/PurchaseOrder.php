@@ -41,6 +41,7 @@ $languageStrings = [
     'LBL_VENDOR_ADDRESS' => 'Lieferant Adresse',
     'List Price' => 'Listenpreis',
     'PurchaseOrder' => 'Einkaufsbestellungen',
+    'CV_ALL' => 'Alle Einkaufsbestellungen',
     'PurchaseOrder No' => 'Einkaufsbestellungennr.',
     'Received Shipment' => 'Lieferung empfangen',
     'Requisition No' => 'Anforderungsnummer',
@@ -55,7 +56,7 @@ $languageStrings = [
     'Tax Amount' => 'Tax Amount',
     'Grand Total' => 'Grand Total',
     'Margin Amount' => 'Margin Amount',
-    'Paid' => 'Paid',
+    'Paid' => 'Bezahlt',
     'Terms &amp; Conditions' => 'Terms &amp; Conditions',
 ];
 $jsLanguageStrings = [

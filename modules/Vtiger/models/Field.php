@@ -47,6 +47,9 @@ class Vtiger_Field_Model extends Vtiger_Field
     const PRESENCE_HIDDEN = 1;
     const PRESENCE_VISIBLE = 2;//can be hidden by user
 
+    const READONLY_READWRITE = 0; // value for read/write fields
+    const READONLY_READONLY = 1; // value for read-only fields
+
     //UITYPES
     const UITYPE_TEXT = 1;
     const UITYPE_NAME = 2;
@@ -293,7 +296,7 @@ class Vtiger_Field_Model extends Vtiger_Field
             $row['presence'] = $this->get('presence');
             $row['tabid'] = $this->getModuleId();
             $row['fieldid'] = $this->get('id');
-            $row['readonly'] = !$this->getProfileReadWritePermission();
+            $row['readonly'] = $this->getProfileReadWritePermission() ? self::READONLY_READWRITE : self::READONLY_READONLY;
             $row['defaultvalue'] = $this->get('defaultvalue');
 
             $this->webserviceField = WebserviceField::fromArray($db, $row);

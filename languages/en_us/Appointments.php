@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'All Activities',
     'SINGLE_Appointments' => 'Calendar',
     'Appointments' => 'Calendar',
     'LBL_HOLD_FOLLOWUP_ON' => 'Hold Followup on',

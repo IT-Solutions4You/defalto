@@ -61,6 +61,43 @@ class CustomView_Record_Model extends Vtiger_Base_Model
     }
 
     /**
+     * Function to get translated custom view label for display
+     *
+     * @return string
+     */
+    public function getDisplayName(): string
+    {
+        $moduleName = $this->getModule()->getName();
+        $viewName = (string)$this->get('viewname');
+        $viewNameKey = $this->getDisplayNameKey();
+        $viewNameLabel = vtranslate($viewNameKey, $moduleName);
+
+        if (!empty($viewNameKey) && $viewNameKey !== $viewNameLabel) {
+            return $viewNameLabel;
+        }
+
+        return $viewName;
+    }
+
+    /**
+     * Function to get custom view translation key
+     *
+     * @return string
+     */
+    public function getDisplayNameKey(): string
+    {
+        $viewName = trim((string)$this->get('viewname'));
+        $label = preg_replace('/[^A-Za-z0-9]+/', '_', $viewName);
+        $label = trim((string)$label, '_');
+
+        if ($label === '') {
+            return '';
+        }
+
+        return 'CV_' . strtoupper($label);
+    }
+
+    /**
      * Function to get the Module to which the record belongs
      * @return Vtiger_Module_Model
      */

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tous les jalons du projet',
     'SINGLE_ProjectMilestone'           => "Projet Milestone",
     'LBL_ADD_RECORD'                    => "Ajouter Milestone Project",
     'LBL_RECORDS_LIST'                  => "Liste des jalons du projet",

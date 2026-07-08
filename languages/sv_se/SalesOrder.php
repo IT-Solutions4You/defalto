@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla kundorder',
     //DetailView Actions
     'SalesOrder'         => 'Kundorder',
     'SINGLE_SalesOrder'  => 'Kundorder',

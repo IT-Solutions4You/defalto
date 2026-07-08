@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všechny služby',
     'SINGLE_Services' => 'Službu',
     'LBL_ADD_RECORD' => 'Přidat službu',
     'LBL_RECORDS_LIST' => 'Seznam služeb',
@@ -40,6 +41,8 @@ $languageStrings = [
     'Price' => 'Cena',
     'Website' => 'Web',
     'Taxes' => 'Daně',
+    'Support' => 'Podpora',
+    'Incidents' => 'Incidenty',
 ];
 $jsLanguageStrings = [
 ];

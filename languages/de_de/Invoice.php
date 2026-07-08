@@ -23,6 +23,7 @@ $languageStrings = [
     'Credit Invoice' => 'Gutschrift',
     'Customer No' => 'Kundenzeichen',
     'Invoice' => 'Rechnungen',
+    'CV_ALL' => 'Alle Rechnungen',
     'Invoice Date' => 'Rechnungsdatum',
     'Invoice No' => 'Rechnungsnr',
     'LBL_ACTION' => 'Aktion',

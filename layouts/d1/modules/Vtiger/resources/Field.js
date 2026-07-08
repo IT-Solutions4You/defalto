@@ -205,6 +205,15 @@ Vtiger_Field_Js('Vtiger_Url_Field_Js', {}, {
     }
 });
 
+/** @var Vtiger_Phone_Field_Js */
+Vtiger_Field_Js('Vtiger_Phone_Field_Js', {}, {
+    getUi: function () {
+        // Reuse the base text input and only tag it so the intl-tel-input
+        // enhancement (Vtiger_Phone_Js) picks it up on inline edit too.
+        return jQuery(this._super()).addClass('js-iti-phone');
+    }
+});
+
 /** @var Vtiger_Reference_Field_Js */
 Vtiger_Field_Js('Vtiger_Reference_Field_Js', {}, {
 
@@ -235,10 +244,10 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js', {}, {
         }
 
         html += '<input name="popupReferenceModule" type="hidden" value="' + referenceModules[0] + '"/>';
-        html += '<input class="autoComplete form-control inputElement sourceField w-50" type="search" data-fieldtype="reference" name="' + this.getName() + '"';
+        html += '<input class="autoComplete form-control inputElement sourceField w-50' + (referenceModules.length > 1 ? '' : ' rounded-start') + '" type="search" data-fieldtype="reference" name="' + this.getName() + '"';
 
         if (value) {
-            html += ' value="' + value + '" readonly="readonly"';
+            html += ' value="' + value + '" data-value="' + value + '" readonly="readonly" disabled="disabled"';
         }
 
         html += '/>';

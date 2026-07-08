@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Invoice' => 'Faktúry',
+    'CV_ALL' => 'Všetky faktúry',
     'SINGLE_Invoice' => 'Faktúra',
     'LBL_ADD_RECORD' => 'Pridať faktúru',
     'LBL_RECORDS_LIST' => 'Zoznam faktúr',

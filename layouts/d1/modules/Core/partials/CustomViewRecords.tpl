@@ -9,10 +9,11 @@
 {strip}
     {if $CUSTOM_VIEWS}
         {foreach from=$CUSTOM_VIEWS item=CUSTOM_VIEW}
-            <div class="dropdown-item ps-4 cursorPointer {if empty($ACTIVE_TAG) and $ACTIVE_CUSTOM_VIEW->getId() eq $CUSTOM_VIEW->getId()}text-primary bg-body-secondary fw-bold{/if}" data-open-url="{$CUSTOM_VIEW->getListViewUrl()}" data-search-element="1" data-search-value="{$CUSTOM_VIEW->get('viewname')}">
+            {assign var=CUSTOM_VIEW_DISPLAY_NAME value=$CUSTOM_VIEW->getDisplayName()}
+            <div class="dropdown-item ps-4 cursorPointer {if empty($ACTIVE_TAG) and $ACTIVE_CUSTOM_VIEW->getId() eq $CUSTOM_VIEW->getId()}text-primary bg-body-secondary fw-bold{/if}" data-open-url="{$CUSTOM_VIEW->getListViewUrl()}" data-search-element="1" data-search-value="{$CUSTOM_VIEW_DISPLAY_NAME}">
                 <div class="row align-items-center">
                     <div class="col overflow-hidden text-truncate">
-                        <span>{$CUSTOM_VIEW->get('viewname')}</span>
+                        <span>{$CUSTOM_VIEW_DISPLAY_NAME}</span>
                     </div>
                     <div class="col-auto dropdown-action">
                         {if $CUSTOM_VIEW->isEditable()}

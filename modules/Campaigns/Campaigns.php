@@ -117,7 +117,8 @@ class Campaigns extends CRMEntity
     {
         $rel_tables = [
             'Potentials' => ['vtiger_potential' => ['campaignid', 'potentialid'], 'vtiger_campaign' => 'campaignid'],
-            'Products' => ['vtiger_campaign' => ['campaignid', 'product_id']],
+            'Products' => ['vtiger_campaign' => ['campaignid', 'related_to']],
+            'Services' => ['vtiger_campaign' => ['campaignid', 'related_to']],
         ];
 
         return $rel_tables[$secmodule];

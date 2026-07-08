@@ -24,6 +24,7 @@ $languageStrings = [
     'Contact Id' => 'Kontakt Id',
     'Contact Image' => 'Kontaktbild',
     'Contacts' => 'Kontakte',
+    'CV_ALL' => 'Alle Kontakte',
     'Department' => 'Abteilung',
     'Do Not Call' => 'nicht anrufen',
     'Dr.' => 'Dr.',

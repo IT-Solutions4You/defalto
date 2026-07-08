@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tutte le chiamate',
     'Asterisk'             => 'Asterisco',
     'PBXManager'           => 'Gestione chiamate',
     'SINGLE_PBXManager'    => 'Gestione chiamate',

@@ -38,6 +38,7 @@ $languageStrings = [
     'Received Shipment' => 'Přijata na sklad',
     'Cancelled' => 'Zrušena',
     'PurchaseOrder' => 'Nákupní objednávky',
+    'CV_ALL' => 'Všechny nákupní objednávky',
     'SINGLE_PurchaseOrder' => 'Nákupní objednávka',
     'LBL_EXPORT_TO_PDF' => 'Exportovat do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odeslat e-mail s PDF',
@@ -56,6 +57,7 @@ $languageStrings = [
     'Tax Amount' => 'Výše daně',
     'Grand Total' => 'Celková částka',
     'Margin Amount' => 'Výše marže',
+    'Paid' => 'Uhrazeno',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Prosím, odstraňte řádkovou položku, která je odstraněna',

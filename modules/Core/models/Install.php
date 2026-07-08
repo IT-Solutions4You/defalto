@@ -42,7 +42,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             'name' => 'InventoryItem',
         ],
     ];
-    public static array $fieldKeySkippedForUpdate = ['presence', 'typeofdata', 'quickcreate', 'masseditable', 'summaryfield', 'sequence', 'block'];
+    public static array $fieldKeySkippedForUpdate = [
+        'presence',
+        'quickcreate',
+        'quicksequence',
+        'masseditable',
+        'summaryfield',
+        'summaryfieldsequence',
+        'headerfield',
+        'headerfieldsequence',
+        'filter',
+        'filter_sequence',
+        'sequence',
+        'block',
+    ];
+
     /**
      * @var array
      */
@@ -395,9 +409,21 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      * @var array
      */
     public static array $modules = [];
+    /**
+     * Field names displayed in the record header; order maps to headerfieldsequence.
+     */
     public array $blocksHeaderFields = [];
+    /**
+     * Field names used as default list filter columns; order maps to filter_sequence.
+     */
     public array $blocksListFields = [];
+    /**
+     * Field names displayed in quick create; order maps to quicksequence.
+     */
     public array $blocksQuickCreateFields = [];
+    /**
+     * Field names displayed in record summary; order maps to summaryfieldsequence.
+     */
     public array $blocksSummaryFields = [];
     public array $popupFields = [];
     /**
@@ -572,6 +598,31 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         );
 
         return $fieldInstance;
+    }
+
+    /**
+     * @param string $fieldName
+     * @param bool   $checkUsage
+     *
+     * @return bool
+     */
+    public function deleteField(string $fieldName, bool $checkUsage = false): bool
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance($this->getModuleName());
+
+        if (!$moduleModel) {
+            return false;
+        }
+
+        $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+
+        if (!$fieldModel) {
+            return false;
+        }
+
+        $fieldModel->delete($checkUsage);
+
+        return true;
     }
 
     public function createFilter($filterName, $moduleInstance)
@@ -857,9 +908,9 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         return Vtiger_Field_Model::getInstance($fieldName, $module);
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
-        return self::$filterFields[$this->getModuleName()];
+        return self::$filterFields[$this->getModuleName()] ?? [];
     }
 
     /**
@@ -995,6 +1046,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                     $fieldParams['block'] = $blockInstance;
                     $fieldParams['module'] = $moduleInstance;
 
+                    $fieldExistsBeforeInstall = (bool)$this->getFieldInstance($fieldName)->getId();
                     $fieldInstance = $this->createField($fieldName, $fieldParams);
 
                     self::logSuccess($fieldInstance);
@@ -1007,8 +1059,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
 
                         $picklistTable = 'vtiger_' . $fieldName;
                         $currentPicklistValues = [];
+                        $overwritePicklistValues = !empty($fieldParams['picklist_overwrite']);
 
-                        if (isset($fieldParams['picklist_overwrite']) && true === $fieldParams['picklist_overwrite']) {
+                        if (!$this->shouldAddPicklistValues($fieldExistsBeforeInstall, $overwritePicklistValues)) {
+                            self::logInfo('Picklist values skipped during upgrade: ' . $fieldName);
+                        } elseif ($overwritePicklistValues) {
                             $fieldInstance->deletePicklistValues();
                             $fieldInstance->setPicklistValues($picklistValues);
                         } else {
@@ -1125,6 +1180,15 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         return defined('VTIGER_UPGRADE') && VTIGER_UPGRADE;
     }
 
+    public function shouldAddPicklistValues(bool $fieldExistsBeforeInstall, bool $overwritePicklistValues): bool
+    {
+        if ($overwritePicklistValues) {
+            return true;
+        }
+
+        return !(self::isUpgradeProcess() && $fieldExistsBeforeInstall);
+    }
+
     /**
      * @param mixed $message
      *
@@ -1228,7 +1292,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ],
         ];
 
-        foreach (self::$fieldsConfig[$moduleName] as $blockName => $fields) {
+        foreach ($this->getFieldsConfig() as $blockName => $fields) {
             foreach ($fields as $fieldName => $fieldInfo) {
                 foreach ($configFields as $configField) {
                     [$fieldKey, $fieldSequenceKey, $fieldList, $fieldDefault] = $configField;
@@ -1268,7 +1332,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         $moduleName = $this->getModuleName();
 
         if (empty($sequence)) {
-            $sequence = count((array)self::$filterFields[$moduleName][$filterName]) + 1;
+            $sequence = count(self::$filterFields[$moduleName][$filterName] ?? []) + 1;
         }
 
         self::$filterFields[$moduleName][$filterName][$sequence] = $field;

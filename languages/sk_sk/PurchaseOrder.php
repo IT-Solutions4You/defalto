@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'PurchaseOrder' => 'Nákupné objednávky',
+    'CV_ALL' => 'Všetky nákupné objednávky',
     'SINGLE_PurchaseOrder' => 'Nákupná objednávka',
     'LBL_ADD_RECORD' => 'Pridať nákupnú objednávku',
     'LBL_RECORDS_LIST' => 'Zoznam objednávok',
@@ -58,6 +59,7 @@ $languageStrings = [
     'List Price' => 'Katalógová cena',
     'LBL_CONTACT_ADDRESS' => 'Adresa kontaktu',
     'Purchase Cost Amount' => 'Purchase Cost Amount',
+    'Paid' => 'Uhradené',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Nákupná objednávka obsahuje odstránené produkty alebo služby, prosím upravte objednávku',

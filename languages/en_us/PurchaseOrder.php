@@ -19,6 +19,7 @@
 
 $languageStrings = [
     'PurchaseOrder' => 'Purchase Orders',
+    'CV_ALL' => 'All Purchase Orders',
     'SINGLE_PurchaseOrder' => 'Purchase Order',
     'LBL_EXPORT_TO_PDF' => 'Export to PDF',
     'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',

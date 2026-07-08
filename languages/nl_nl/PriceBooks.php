@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle prijslijsten',
     'PriceBooks'                => 'Prijslijsten',
     'SINGLE_PriceBooks'         => 'Prijslijst',
     'LBL_ADD_RECORD'            => 'Voeg Prijslijst toe',

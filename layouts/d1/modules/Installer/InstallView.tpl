@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-lg">{$LICENSE_MODEL->getItemName()}</div>
                     <div class="col-lg {if $LICENSE_MODEL->isUserLimitReached()}fw-bold text-danger{/if}">{$LICENSE_MODEL->getUsersCount()} / {$LICENSE_MODEL->getDisplayUsersLimit()}</div>
-                    <div class="col-lg">{Vtiger_Functions::currentUserDisplayDate($LICENSE_MODEL->getExpireDate())}</div>
+                    <div class="col-lg">{$LICENSE_MODEL->getDisplayExpireDate()}</div>
                     <div class="col-lg-4">
                         <button type="button" class="btn btn-primary me-2" data-edit-license="{$LICENSE_MODEL->getId()}">
                             <i class="fa-solid fa-pencil"></i>
@@ -157,7 +157,7 @@
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_UPDATE_VERSION', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
-            {foreach from=Installer_ExtensionInstall_Model::getAll() item=EXTENSION_MODEL}
+            {foreach from=Installer_ExtensionInstall_Model::getInstallerModules() item=EXTENSION_MODEL}
                 {assign var=EXTENSION_NAME value=$EXTENSION_MODEL->getName()}
                 {assign var=EXTENSION_LABEL value=vtranslate($EXTENSION_NAME, $EXTENSION_NAME)}
                 <div class="sectionTagContainer"><div class="sectionTag" id="Update{$EXTENSION_NAME}"></div></div>
@@ -185,6 +185,10 @@
                             </div>
                         {/if}
                     </div>
+                </div>
+            {foreachelse}
+                <div class="row border-top py-3">
+                    <div class="col text-secondary">{vtranslate('LBL_NO_MODULE_UPDATES', $QUALIFIED_MODULE)}</div>
                 </div>
             {/foreach}
         </div>

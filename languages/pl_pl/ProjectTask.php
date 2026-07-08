@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Wszystkie zadania projektu',
     // Basic Strings
     'SINGLE_ProjectTask'           => 'Zadanie Projektu',
     'LBL_ADD_RECORD'               => 'Dodaj Zadanie Projektu',

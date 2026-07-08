@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع مراحل المشروع',
     // Basic Strings
     'SINGLE_ProjectMilestone'           => 'احداث المشروع',
     'LBL_ADD_RECORD'                    => 'اضافة حدث للمشروع',

@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'جميع التذاكر',
     // Basic Strings
     'HelpDesk'               => 'تذاكر',
     'SINGLE_HelpDesk'        => 'تذكرة',

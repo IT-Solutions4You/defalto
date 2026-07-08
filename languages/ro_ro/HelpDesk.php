@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toate tichetele',
     'HelpDesk'                         => 'HelpDesk',
     'SINGLE_HelpDesk'                  => 'Tichet',
     'LBL_ADD_RECORD'                   => 'Add Tichet',

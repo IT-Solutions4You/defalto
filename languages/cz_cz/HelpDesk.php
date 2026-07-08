@@ -80,6 +80,7 @@ $languageStrings = [
     'Last Comment Time' => 'Čas posledního komentáře',
     'Creator' => 'Tvůrce',
     'HelpDesk' => 'Požadavky',
+    'CV_ALL' => 'Všechny požadavky',
     'LBL_STATUS' => 'Stav',
     'LBL_SEVERITY' => 'Závažnost',
     'Hi' => 'Dobrý den',
@@ -92,6 +93,7 @@ $languageStrings = [
     'LBL_COULDNOT_CLOSED' => 'Požadavek nemohl být uzavřen',
     'LBL_GIVE_MAILID' => 'Prosíme, zadejte váš e‑mail',
     'LBL_CHECK_MAILID' => 'Prosíme, ověřte svůj e‑mail použitý pro zákaznický portál.',
+    'Related to' => 'Související s',
 ];
 $jsLanguageStrings = [
     'LBL_ADD_DOCUMENT' => 'Přidat dokument',

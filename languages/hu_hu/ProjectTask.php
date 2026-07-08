@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes projektfeladat',
     'SINGLE_ProjectTask'           => 'Projekt Feladat',
     'LBL_ADD_RECORD'               => 'Projekt Feladat hozzáadása',
     'LBL_RECORDS_LIST'             => 'Projekt Feladatok listája',

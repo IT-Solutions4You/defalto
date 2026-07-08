@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle organisaties',
     'Accounts'                   => 'Accounts',
     'SINGLE_Accounts'            => 'Account',
     'LBL_ADD_RECORD'             => 'Voeg Organizatie toe',
@@ -27,11 +28,9 @@ $languageStrings = [
     'Account Name'               => 'Accountnaam',
     'Account No'                 => 'Account Nr',
     'Website'                    => 'Website',
-    'Ticker Symbol'              => 'Ticker symbool',
     'Member Of'                  => 'Onderdeel van',
     'Employees'                  => 'Werknemers',
     'Ownership'                  => 'Eigendom',
-    'SIC Code'                   => 'SBI code',
     'Other Email'                => 'Extra e-mailadres',
     'Analyst'                    => 'Analist',
     'Competitor'                 => 'Concurrent',
@@ -53,9 +52,9 @@ $languageStrings = [
     'Other Phone' => 'Secundaire Telefoon',
     'Phone'       => 'Primaire Telefoon',
     'Email'       => 'Primaire E-Mail',
-
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'KvK-nummer',
+    'VAT Nr' => 'Fiscaal nr.',
+    'VAT Number' => 'Btw-nummer',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Weet u zeker dat u wilt verwijderen?',

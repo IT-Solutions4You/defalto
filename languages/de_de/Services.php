@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Dienstleistungen',
     'Commission Rate' => 'Provision (%)',
     'LBL_ADD_RECORD' => 'Dienstleistung hinzufügen',
     'LBL_ADD_TO_PRICEBOOKS' => 'zu Preisliste hinzufügen',
@@ -41,14 +42,14 @@ $languageStrings = [
     'Usage Unit' => 'Einheit',
     'Website' => 'Webseite',
     'Service Code' => 'Service Code',
-    'Support' => 'Support',
+    'Support' => 'Unterstützung',
     'Installation' => 'Installation',
     'Migration' => 'Migration',
     'Customization' => 'Customization',
     'Training' => 'Training',
     'Hours' => 'Hours',
     'Days' => 'Days',
-    'Incidents' => 'Incidents',
+    'Incidents' => 'Vorfälle',
     'Taxes' => 'Taxes',
 ];
 $jsLanguageStrings = [

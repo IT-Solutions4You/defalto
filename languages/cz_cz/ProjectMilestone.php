@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všechny milníky projektu',
     'SINGLE_ProjectMilestone' => 'Projektový milník',
     'LBL_ADD_RECORD' => 'Přidat projektový milník',
     'LBL_RECORDS_LIST' => 'Seznam milníků',

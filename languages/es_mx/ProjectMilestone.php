@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos los hitos del proyecto',
     'SINGLE_ProjectMilestone'           => 'Meta',
     'LBL_ADD_RECORD'                    => 'Agregar Meta',
     'LBL_RECORDS_LIST'                  => 'Lista de Metas',

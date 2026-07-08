@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'Leads' => 'Leads',
+    'CV_ALL' => 'Všetky leady',
     'SINGLE_Leads' => 'Lead',
     'LBL_RECORDS_LIST' => 'Zoznam Leadov',
     'LBL_ADD_RECORD' => 'Pridať Leada',
@@ -49,6 +50,15 @@ $languageStrings = [
     'Contacted - Never Contact Again' => 'Kontaktovaný – už nekontaktovať',
     'Website' => 'Webstránka',
     'Comments' => 'Komentáre',
+    'Phone' => 'Telefón',
+    'Secondary Email' => 'Sekundárny email',
+    'Email' => 'Primárny email',
+    '--None--' => '--Žiadne--',
+    'Mr.' => 'Pán',
+    'Ms.' => 'Slečna',
+    'Mrs.' => 'Pani',
+    'Dr.' => 'Dr.',
+    'Prof.' => 'Prof.',
 ];
 $jsLanguageStrings = [
     'JS_SELECT_CONTACTS' => 'Vyberte Kontakty pre pokračovanie',

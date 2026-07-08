@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle SMS-Nachrichten',
     'LBL_ADD_MORE_FIELDS' => 'Weitere Felder hinzufügen',
     'LBL_CHECK_STATUS' => 'Status prüfen',
     'LBL_SELECT_THE_PHONE_NUMBER_FIELDS_TO_SEND' => 'Telefonnummernfelder zum Senden auswählen',

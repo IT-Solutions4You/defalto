@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alla affärsmöjligheter',
     // Basic Strings
     'Potentials'                  => 'Affärsmöjligheter',
     'SINGLE_Potentials'           => 'Affärsmöjlighet',

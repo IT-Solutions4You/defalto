@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle leveranciers',
     'Vendors'                        => 'Leveranciers',
     'SINGLE_Vendors'                 => 'Leverancier',
     'LBL_ADD_RECORD'                 => 'Voeg Leverancier toe',

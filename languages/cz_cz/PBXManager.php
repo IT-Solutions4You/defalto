@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všechny hovory',
     'Asterisk' => 'Asterisk',
     'Call From' => 'Hovor od',
     'Call To' => 'Komu volat',
@@ -38,6 +39,7 @@ $languageStrings = [
     'Source UUID' => 'Zdrojové UUID',
     'Gateway' => 'Brána',
     'Customer Type' => 'Typ zákazníka',
+    'Customer' => 'Zákazník',
 ];
 $jsLanguageStrings = [
 ];

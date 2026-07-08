@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle inkooporders',
     'PurchaseOrder'             => 'Inkooporders',
     'SINGLE_PurchaseOrder'      => 'Inkooporder',
     'LBL_EXPORT_TO_PDF'         => 'Exporteer naar PDF',

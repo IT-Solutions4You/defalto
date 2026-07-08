@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'SalesOrder' => 'Objednávky',
+    'CV_ALL' => 'Všetky objednávky',
     'SINGLE_SalesOrder' => 'Objednávka',
     'LBL_EXPORT_TO_PDF' => 'Exportovať do PDF',
     'LBL_SEND_MAIL_PDF' => 'Odoslať email s PDF',
@@ -75,6 +76,14 @@ $languageStrings = [
     'Paid' => 'Uhradená',
     'Recurring Module' => 'Modul opakovaných faktúr',
     'Purchase Cost Amount' => 'Purchase Cost Amount',
+    'Daily' => 'Denne',
+    'Weekly' => 'Týždenne',
+    'Monthly' => 'Mesačne',
+    'Quarterly' => 'Štvrťročne',
+    'Yearly' => 'Ročne',
+    'Net 30 days' => 'Splatnosť 30 dní',
+    'Net 45 days' => 'Splatnosť 45 dní',
+    'Net 60 days' => 'Splatnosť 60 dní',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Objednávka obsahuje odstránené produkty alebo služby, prosím upravte objednávku',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes érdeklődő',
     'Leads'                              => 'Vevőjelöltek',
     'SINGLE_Leads'                       => 'Vevőjelölt',
     'LBL_RECORDS_LIST'                   => 'Vevőjelöltek listája',

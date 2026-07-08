@@ -72,6 +72,7 @@ $languageStrings = [
     'Product No' => 'Produktnummer',
     'Product Sheet' => 'Produktblatt',
     'Products' => 'Produkte',
+    'CV_ALL' => 'Alle Produkte',
     'Qty In Demand' => 'Bestellmenge',
     'Qty In Stock' => 'Lagerbestand',
     'Qty/Unit' => 'Menge/Einheit',

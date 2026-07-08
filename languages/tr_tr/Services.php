@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Tüm hizmetler',
     'Services'                => 'Hizmetler',
     'SINGLE_Services'         => 'Hizmet',
     'LBL_ADD_RECORD'          => 'Hizmet Ekle',

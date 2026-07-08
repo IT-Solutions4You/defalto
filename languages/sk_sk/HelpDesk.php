@@ -10,6 +10,7 @@
 
 $languageStrings = [
     'HelpDesk' => 'Riešenie problémov',
+    'CV_ALL' => 'Všetky požiadavky',
     'SINGLE_HelpDesk' => 'Riešenie problémov',
     'LBL_ADD_RECORD' => 'Pridať novú požiadavku',
     'LBL_RECORDS_LIST' => 'Zoznam požiadaviek',
@@ -92,6 +93,7 @@ $languageStrings = [
     'LBL_RESPOND' => 'Prosíme o reakciu na daný problém čo najskôr',
     'LBL_RESPONSE_TO_TICKET_NUMBER' => 'Reakcia na požiadavku č.',
     'LBL_ALTBODY' => 'Toto je textová verzia pre emailových klientov, ktoré nepodporujú HTML správy',
+    'Related to' => 'Súvisiace s',
 ];
 $jsLanguageStrings = [
     'LBL_ADD_DOCUMENT' => 'Pridať dokument',

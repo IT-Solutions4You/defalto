@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Összes kapcsolattartó',
     'Contacts'                        => 'Kapcsolatok',
     'SINGLE_Contacts'                 => 'Kapcsolat',
     'LBL_ADD_RECORD'                  => 'Kapcsolat hozzáadása',

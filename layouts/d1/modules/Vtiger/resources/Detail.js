@@ -1647,9 +1647,10 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
     registerPostLoadWidget() {
         const self = this,
-            container = self.getContainer();
+            container = self.getContainer(),
+            widgetPostLoadEvent = self.widgetPostLoad + '.summaryViewContainerEvents';
 
-        jQuery('.widget_contents', container).on(self.widgetPostLoad, function () {
+        jQuery('.widget_contents', container).off(widgetPostLoadEvent).on(widgetPostLoadEvent, function () {
             let selects = $(this).find('.select2');
 
             if (selects.length) {
@@ -1668,14 +1669,15 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
     registerSummaryViewContainerEvents: function () {
         const self = this,
-            container = self.getContainer();
+            container = self.getContainer(),
+            eventNamespace = '.summaryViewContainerEvents';
 
         self.loadWidgets();
         /**
          * Function to handle the ajax edit for summary view fields
          */
 
-        container.on('click', '.summary-table .fieldValue .editAction', function (e) {
+        container.off('click' + eventNamespace, '.summary-table .fieldValue .editAction').on('click' + eventNamespace, '.summary-table .fieldValue .editAction', function (e) {
             let currentTarget = jQuery(e.currentTarget),
                 currentTdElement = currentTarget.closest('.fieldValue');
 
@@ -1683,7 +1685,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             self.ajaxEditHandling(currentTdElement);
         });
 
-        container.on('click', '.createRecord', function (e) {
+        container.off('click' + eventNamespace, '.createRecord').on('click' + eventNamespace, '.createRecord', function (e) {
             let currentElement = jQuery(e.currentTarget),
                 form = currentElement.closest('form'),
                 recordElement = form.find('[name=record]'),
@@ -1720,7 +1722,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         /*
 		 * Register the event to edit the status for for related activities
 		 */
-        container.on('change', '.activityStatus .select2', function (e) {
+        container.off('change' + eventNamespace, '.activityStatus .select2').on('change' + eventNamespace, '.activityStatus .select2', function (e) {
             let currentTarget = jQuery(e.currentTarget),
                 currentDiv = currentTarget.closest('.activityStatus'),
                 editElement = currentDiv.find('.edit');

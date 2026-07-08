@@ -34,6 +34,7 @@ $languageStrings = [
     'Quote No' => 'Angebotsnr.',
     'Quote Stage' => 'Angebotsstufe',
     'Quotes' => 'Angebote',
+    'CV_ALL' => 'Alle Angebote',
     'Rejected' => 'abgelehnt',
     'Related To' => 'bezogen auf',
     'SINGLE_Quotes' => 'Angebot',

@@ -958,7 +958,6 @@
 		<field name="productname" type="C" size="50">
 			<notnull />
 		</field>
-		<field name="productcode" type="C" size="40" />
 		<field name="productcategory" type="C" size="200" />
 		<field name="manufacturer" type="C" size="200" />
 		<field name="qty_per_unit" type="N" size="11.2">

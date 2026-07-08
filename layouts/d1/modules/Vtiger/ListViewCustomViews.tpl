@@ -36,7 +36,7 @@
                                             {assign var=SHARED_MEMBER_COUNT value=1}
                                         {/if}
                                     {/foreach}
-                                    {assign var=VIEWNAME value={vtranslate($CUSTOM_VIEW->get('viewname'), $MODULE)}}
+                                    {assign var=VIEWNAME value=$CUSTOM_VIEW->getDisplayName()}
                                     {append var=CUSTOM_VIEW_NAMES value=$VIEWNAME}
                                     <option class="custom_view_filter" value="{$CUSTOM_VIEW->getId()}"
                                             {if $VIEWID eq $CUSTOM_VIEW->getId() && ($CURRENT_TAG eq '')} selected="selected" {/if}

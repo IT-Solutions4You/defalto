@@ -61,6 +61,7 @@ $languageStrings = [
     'Tax Document' => 'Daňový doklad k přijaté platbě',
     'Final Invoice' => 'Finální faktura',
     'Invoice' => 'Faktury',
+    'CV_ALL' => 'Všechny faktury',
     'LBL_ACTION' => 'Akce',
     'S&amp;H Percent' => 'Procento S&H',
     'S&amp;H Amount' => 'Částka S&H',

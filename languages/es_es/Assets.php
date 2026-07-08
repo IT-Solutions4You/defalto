@@ -25,6 +25,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Todos los activos',
     'Assets'                   => 'Recursos',
     'SINGLE_Assets'            => 'Recurso',
     'LBL_ADD_RECORD'           => 'Añadir Recurso',

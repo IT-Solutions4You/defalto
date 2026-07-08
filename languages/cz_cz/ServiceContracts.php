@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Všechny servisní smlouvy',
     'SINGLE_ServiceContracts' => 'Smlouva',
     'LBL_ADD_RECORD' => 'Přidat smlouvu',
     'LBL_RECORDS_LIST' => 'Seznam smluv',

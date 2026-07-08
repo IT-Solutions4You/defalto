@@ -10,6 +10,61 @@
 
 class Documents_Install_Model extends Core_Install_Model
 {
+    /**
+     * Fields shown in the record header, in display order.
+     *
+     * Core maps this list to vtiger_field.headerfield/headerfieldsequence.
+     */
+    public array $blocksHeaderFields = [
+        'folderid',
+        'filename',
+        'filesize',
+        'filedownloadcount',
+        'filestatus',
+        'assigned_user_id',
+    ];
+
+    /**
+     * Fields used in the default list filter, in column order.
+     *
+     * Core maps this list to vtiger_field.filter/filter_sequence.
+     */
+    public array $blocksListFields = [
+        'notes_title',
+        'filename',
+        'assigned_user_id',
+        'folderid',
+        'filelocationtype',
+        'filestatus',
+    ];
+
+    /**
+     * Fields available in quick create, in form order.
+     *
+     * Core maps this list to vtiger_field.quickcreate/quicksequence.
+     */
+    public array $blocksQuickCreateFields = [
+        'notes_title',
+        'assigned_user_id',
+        'folderid',
+        'filename',
+        'filelocationtype',
+        'fileversion',
+        'filestatus',
+        'notecontent',
+    ];
+
+    /**
+     * Fields shown in record summary widgets/sections, in display order.
+     *
+     * Core maps this list to vtiger_field.summaryfield/summaryfieldsequence.
+     */
+    public array $blocksSummaryFields = [
+        'notes_title',
+        'assigned_user_id',
+        'folderid',
+        'filename',
+    ];
 
     public array $registerRelatedLists = [
         ['Documents', 'Contacts', 'Contacts', '', 'get_related_list', '',],
@@ -58,12 +113,8 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 0,
                     'typeofdata' => 'V~M',
-                    'quickcreate' => 0,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 1,
                     'entity_identifier' => 1,
                 ],
                 'assigned_user_id' => [
@@ -75,12 +126,8 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 0,
                     'typeofdata' => 'V~M',
-                    'quickcreate' => 0,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 4,
                 ],
                 'folderid' => [
                     'name' => 'folderid',
@@ -91,13 +138,9 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 1,
                     'defaultvalue' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 5,
                     'ajaxeditable' => 0,
                 ],
                 'modifiedby' => [
@@ -112,7 +155,6 @@ class Documents_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'displaytype' => 3,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
                 ],
                 'source' => [
                     'name' => 'source',
@@ -126,7 +168,6 @@ class Documents_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'displaytype' => 2,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
                 ],
             ],
             'LBL_FILE_INFORMATION' => [
@@ -139,12 +180,8 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 0,
                     'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 2,
                     'ajaxeditable' => 0,
                 ],
                 'filetype' => [
@@ -159,7 +196,6 @@ class Documents_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'displaytype' => 2,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
                     'ajaxeditable' => 0,
                 ],
                 'filesize' => [
@@ -174,7 +210,6 @@ class Documents_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'displaytype' => 2,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
                     'ajaxeditable' => 0,
                 ],
                 'filelocationtype' => [
@@ -186,13 +221,9 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 0,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 0,
                     'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
                     'defaultvalue' => 'I',
-                    'filter' => 1,
-                    'filter_sequence' => 6,
                     'ajaxeditable' => 0,
                 ],
                 'fileversion' => [
@@ -204,10 +235,8 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
                 ],
                 'filestatus' => [
                     'name' => 'filestatus',
@@ -218,13 +247,9 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
                     'defaultvalue' => '1',
-                    'filter' => 1,
-                    'filter_sequence' => 7,
                 ],
                 'filedownloadcount' => [
                     'name' => 'filedownloadcount',
@@ -238,7 +263,6 @@ class Documents_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'displaytype' => 2,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
                     'ajaxeditable' => 0,
                 ],
             ],
@@ -252,10 +276,8 @@ class Documents_Install_Model extends Core_Install_Model
                     'readonly' => 1,
                     'presence' => 2,
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
                     'displaytype' => 1,
                     'masseditable' => 1,
-                    'summaryfield' => 0,
                     'ajaxeditable' => 0,
                 ],
             ],
@@ -273,7 +295,6 @@ class Documents_Install_Model extends Core_Install_Model
                     'quickcreate' => 3,
                     'displaytype' => 1,
                     'masseditable' => 0,
-                    'summaryfield' => 0,
                     'ajaxeditable' => 0,
                 ],
             ]

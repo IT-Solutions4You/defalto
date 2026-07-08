@@ -79,6 +79,7 @@ $languageStrings = [
     'LexPon Inc.' => 'LexPon Inc.',
     'MetBeat Corp' => 'MetBeat Corp',
     'Products' => 'Produkty',
+    'CV_ALL' => 'Všechny produkty',
     'LBL_MORE_CURRENCIES' => 'více měn',
     'LBL_ADD_TO_PRICEBOOKS' => 'Přidat do ceníků',
     'Website' => 'Web',

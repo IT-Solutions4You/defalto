@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Alle Serviceverträge',
     'Actual Duration' => 'ggw. Dauer (in Tagen)',
     'Administrative' => 'administrativ',
     'Archived' => 'archiviert',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'CV_ALL' => 'Toutes les organisations',
     'Accounts'                   => 'Comptes',
     'SINGLE_Accounts'            => 'Compte',
     'LBL_ADD_RECORD'             => 'Ajouter un Compte',
@@ -27,11 +28,9 @@ $languageStrings = [
     'Account Name'               => 'Nom compte',
     'Account No'                 => 'Compte N°',
     'Website'                    => 'Site Web',
-    'Ticker Symbol'              => 'Symbole boursier',
     'Member Of'                  => 'Filiale de',
     'Employees'                  => 'Effectif',
     'Ownership'                  => 'Propriétaire',
-    'SIC Code'                   => 'Code APE',
     'Other Email'                => 'Autre email',
     'Analyst'                    => 'Analyste',
     'Competitor'                 => 'Concurrent',
@@ -53,8 +52,9 @@ $languageStrings = [
     'Other Phone'      => 'Téléphone Secondaire',
     'Phone'            => 'Téléphone Principal',
     'Email'            => 'E-Mail Principale',
-    'Company Reg. No.' => 'Company Reg. No.',
-    'VAT ID'           => 'VAT ID',
+    'Company Reg. No.' => 'N° d\'immatriculation',
+    'VAT Nr' => 'N° fiscal',
+    'VAT Number' => 'N° TVA',
 ];
 $jsLanguageStrings = [
     'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Voulez-vous réellement supprimer ce compte ?',
