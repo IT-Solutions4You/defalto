@@ -12,6 +12,6 @@ class Installer extends CRMExtension
 {
     public string $moduleLabel = 'Installer';
     public string $moduleName = 'Installer';
-    public string $moduleVersion = '1.18';
+    public string $moduleVersion = '1.19';
     public string $parentName = 'Tools';
 }

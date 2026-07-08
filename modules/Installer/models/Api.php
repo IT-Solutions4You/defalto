@@ -104,7 +104,10 @@ class Installer_Api_Model extends Vtiger_Net_Client
      */
     public function getSystemInstall(): array
     {
-        $licenses = $this->getLicenses(Installer_License_Model::MEMBERSHIP_PACKAGE);
+        $licenses = array_merge(
+            $this->getLicenses(Installer_License_Model::MEMBERSHIP_PACKAGE),
+            $this->getLicenses(Installer_License_Model::EXTENSION_PACKAGE),
+        );
 
         if (empty($licenses)) {
             $licenses = [];
