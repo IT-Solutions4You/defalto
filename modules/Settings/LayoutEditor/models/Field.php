@@ -33,6 +33,70 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model
         'campaignrelstatus',
     ];
 
+    public function save($blockInstance = false)
+    {
+        $fieldId = parent::save($blockInstance);
+        $moduleModel = $this->getModuleForQuickCreateSequenceUpdate($blockInstance);
+
+        if ($moduleModel) {
+            self::updateQuickCreateSequence($moduleModel);
+        }
+
+        return $fieldId;
+    }
+
+    protected function getModuleForQuickCreateSequenceUpdate($blockInstance = false)
+    {
+        $moduleModel = $this->getModule();
+        if ($moduleModel) {
+            return $moduleModel;
+        }
+
+        if ($blockInstance && !empty($blockInstance->module)) {
+            return Vtiger_Module_Model::getInstanceFromModuleObject($blockInstance->module);
+        }
+
+        if (!empty($this->block) && !empty($this->block->module)) {
+            return Vtiger_Module_Model::getInstanceFromModuleObject($this->block->module);
+        }
+
+        return false;
+    }
+
+    public static function updateQuickCreateSequence($moduleModel): void
+    {
+        $tabId = method_exists($moduleModel, 'getId') ? $moduleModel->getId() : ($moduleModel->id ?? null);
+        if (!$tabId) {
+            return;
+        }
+
+        $db = PearDatabase::getInstance();
+        $quickCreateValues = [self::QUICKCREATE_MANDATORY, self::QUICKCREATE_ENABLED];
+
+        $db->pquery(
+            'UPDATE vtiger_field SET quickcreatesequence = NULL WHERE tabid = ? AND quickcreate NOT IN (' . generateQuestionMarks($quickCreateValues) . ')',
+            array_merge([$tabId], $quickCreateValues)
+        );
+
+        $result = $db->pquery(
+            'SELECT vtiger_field.fieldid FROM vtiger_field
+                INNER JOIN vtiger_blocks ON vtiger_field.block = vtiger_blocks.blockid
+                WHERE vtiger_field.tabid = ? AND vtiger_field.quickcreate IN (' . generateQuestionMarks($quickCreateValues) . ')
+                ORDER BY vtiger_blocks.sequence, vtiger_field.sequence, vtiger_field.fieldid',
+            array_merge([$tabId], $quickCreateValues)
+        );
+
+        $sequence = 1;
+        while ($row = $db->fetchByAssoc($result)) {
+            $db->pquery(
+                'UPDATE vtiger_field SET quickcreatesequence = ? WHERE fieldid = ?',
+                [$sequence++, $row['fieldid']]
+            );
+        }
+
+        Vtiger_Cache::flushModuleandBlockFieldsCache($moduleModel);
+    }
+
     /**
      * Function to Move the field
      *
