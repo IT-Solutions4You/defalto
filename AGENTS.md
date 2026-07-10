@@ -7,6 +7,8 @@
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
+- Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
+- Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
 
 ## JavaScript / Scripts Checks
 
@@ -36,8 +38,7 @@
 - Prefer Bootstrap utilities and existing shared skin rules before adding custom CSS for common spacing, alignment, display, and button layout.
 - Do not add inline `<style>` blocks to Smarty templates when the rule can live in the skin, shared custom stylesheet, or module resource CSS.
 - CSS resources are cache-busted by `vresource_url()` using `$defalto_current_version` from `version.php`.
-- When changing any rendered application style file, bump the resource/application patch version in `version.php`. For example, if the version is `1.0.0`, update it to `1.0.1` in the same change.
-- Do not bump the version for comments-only or generated-map-only changes that do not alter rendered CSS.
+- When changing any rendered application style file, also make sure the general functional-change version bump rule was followed. For example, if the version is `1.0.0`, update it to `1.0.1` in the same change.
 - After changing LESS source, make sure the corresponding generated CSS is updated when this repo expects committed CSS output.
 
 ## PHP / Install Structure Checks
