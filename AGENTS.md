@@ -7,6 +7,8 @@
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
+- Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
+- Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
 
 ## Versioning
 
