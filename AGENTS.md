@@ -7,6 +7,51 @@
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
+- Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
+- Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
+
+## Versioning
+
+- When making a runtime application change in PHP, JavaScript, Smarty templates, CSS/LESS, install/schema logic, or database-affecting behavior, bump the patch identifier in `version.php` in the same change.
+- If the change affects rendered or cache-busted browser assets, also bump the application/display patch version in `version.php` so `vresource_url()` invalidates cached resources.
+- Do not bump `version.php` for documentation-only changes, comments-only changes, tests-only changes, generated-map-only changes, or analysis notes that do not alter runtime behavior.
+
+## Function Naming
+
+- When creating new reusable PHP or JavaScript methods, choose a clear action prefix from the existing intent families before inventing another verb.
+- Use `get` and `set` for simple value access or assignment without persistence.
+- Use `is` and `has` for boolean state checks.
+- Use `exists` only when the method specifically checks storage-backed existence and the surrounding code already follows that wording.
+- Use `get` or `retrieve` for lookup/query methods that may return records, models, or collections without changing state.
+- Use `retrieve` for hydrating state from an external source; use `load` only when the surrounding class already uses that wording or the method loads local object/UI state.
+- Use `save`, `create`, `update`, and `delete` for persistence operations that write application data.
+- Use `add` and `remove` for changing collections, relations, UI lists, or module setup; prefer `create` when a persisted record or table is created.
+- Use `clear` for resetting a value, cache, or collection.
+- Use `read`, `write`, and `append` for file, stream, request/response, or low-level IO style operations.
+- Use `register` for event, listener, link, script, or handler setup.
+- Use `trigger` and `handle` for event-style flows where one method emits or delegates and the other reacts.
+- Use `process` for request/action/view entry points.
+- Use `requires`, `check`, and `validate` for permission, request, requirement, and data checks.
+- Use `show` and `hide` for UI visibility methods.
+- Use `init` and `initialize` for setup/bootstrap methods; keep existing class or framework conventions when choosing between them.
+- Use `pre` and `post` prefixes for lifecycle hooks around an existing operation, such as `preProcess` and `postProcess`.
+- Use `install` and `migrate` for module installation and data/schema migration flows.
+- Use `convert` and `transform` for value or structure conversion without persistence side effects.
+- Use `import` and `export` for package, file, or data transfer boundaries.
+- Use `send` for email, notification, request, or message dispatch.
+- For database-oriented reads, prefer the repo's established `retrieve`, `get`, and `fetch` wording before introducing a rarer verb.
+- Use `retrieve` when the method hydrates model/helper state or assembles data from storage; use `fetch` for direct row/result loading from the database, for example `fetchInvoiceRows()`.
+- Use `get` when the value is expected to exist or is a normal model accessor, for example `getInvoiceNumber()`.
+- Use `load` only for legacy/local patterns that already use that wording or when the method loads and prepares object/UI state, for example `loadInvoiceDetails()`.
+- Do not introduce `find`, `findById`, or `findAll` as generic repository naming in this codebase; prefer `retrieve`, `get`, or `fetch` according to the method behavior.
+- Use `select` only in technical DB helper layers for direct SELECT wrappers, for example `selectInvoices()`; prefer `retrieve`, `get`, or `fetch` in module/domain models.
+- Use `count` only for aggregate record counts, for example `countInvoices()`.
+- When iterating database result sets, use `while ($row = $db->fetchByAssoc($result))` or the local `$adb->fetchByAssoc(...)` variant. Do not add new `fetch_array()` loops.
+- Use `query_result()` or `query_result_rowdata()` for a single known row/value, not for new multi-row loops. If several rows are expected, loop with `while` and fetch rows directly.
+- For database writes, use `insert` for inserting a new row, `create` for application-level record creation, `update` for updating an existing record, `save` for insert-or-update behavior, and `delete` for permanent deletion.
+- Use `remove` for deleting a relation or detaching an item rather than deleting the underlying record, for example `removeProductRelation()`.
+- Use `exists` only for storage-backed existence checks, preferably as an object-first method name such as `invoiceExists()`, and only when it reads naturally next to the surrounding code.
+- Prefer the prefix that matches the side effect. For example, do not name a database write `set...`, do not name a boolean check `get...`, and do not name a collection query `retrieve...` unless it hydrates local object state.
 
 ## JavaScript / Scripts Checks
 
@@ -36,8 +81,8 @@
 - Prefer Bootstrap utilities and existing shared skin rules before adding custom CSS for common spacing, alignment, display, and button layout.
 - Do not add inline `<style>` blocks to Smarty templates when the rule can live in the skin, shared custom stylesheet, or module resource CSS.
 - CSS resources are cache-busted by `vresource_url()` using `$defalto_current_version` from `version.php`.
-- When changing any rendered application style file, bump the resource/application patch version in `version.php`. For example, if the version is `1.0.0`, update it to `1.0.1` in the same change.
-- Do not bump the version for comments-only or generated-map-only changes that do not alter rendered CSS.
+- When changing any rendered application style file, follow the shared Versioning rules above.
+- Do not bump the version for comments-only or generated-map-only changes that do not alter rendered CSS or runtime behavior.
 - After changing LESS source, make sure the corresponding generated CSS is updated when this repo expects committed CSS output.
 
 ## PHP / Install Structure Checks
@@ -51,4 +96,4 @@
 
 - Run `php -l` on touched PHP files.
 - Run the scripts validator when module resource JavaScript changes.
-- Check that `version.php` was bumped when rendered application styles changed.
+- Check that `version.php` was bumped when runtime application behavior or rendered/cache-busted assets changed.

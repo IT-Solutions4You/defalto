@@ -902,6 +902,9 @@ jQuery.Class("Vtiger_Helper_Js",{
         }
     },
     showPopup: function (content, params) {
+        let self = this,
+            backdropIndex = self.getZIndex();
+
         this.retrievePopupContainer();
 
         if (typeof params === "undefined") {
@@ -927,6 +930,9 @@ jQuery.Class("Vtiger_Helper_Js",{
 
         container.html(content).modal(params);
         container.html(content).modal('show');
+        container.css('z-index', self.getZIndex());
+
+        self.setBackdropIndex(backdropIndex);
 
         vtUtils.applyFieldElementsView(container);
 
