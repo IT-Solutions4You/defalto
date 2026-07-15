@@ -229,7 +229,7 @@ class VTUpdateFieldsTask extends VTTask
                     //for Product Unit Price value converted with based product currency
                     if ($fieldInstance && $fieldInstance->getFieldDataType() == 'currency' && $fieldName == 'unit_price') {
                         $fieldValue = $this->calculateProductUnitPrice($fieldValue);
-                    } else {
+                    } elseif (!$fieldInstance || $fieldInstance->getFieldDataType() !== 'currency') {
                         $fieldValue = $this->convertValueToUserFormat($fieldInstance, $fieldValue);
                     }
                 } else {
@@ -280,17 +280,13 @@ class VTUpdateFieldsTask extends VTTask
                     $fieldValueInDB = $fieldValue;
                 }
 
-                if ($fieldInstance && $fieldInstance->getFieldDataType() === 'double') {
-                    //The replacing of UTF-8 non-breaking space characters with space is to handle if the decimal separator is space.
-                    $decimalSeparator = str_replace("\xC2\xA0", ' ', html_entity_decode($current_user->currency_decimal_separator, ENT_QUOTES, $default_charset));
+                if ($fieldInstance && in_array($fieldInstance->getFieldDataType(), ['currency', 'double'], true)) {
+                    $fieldValue = $this->convertNumericValueToDBFormat($fieldValue);
+                    $fieldValueInDB = $this->convertNumericValueToDBFormat($fieldValueInDB);
 
-                    if (empty($decimalSeparator)) {
-                        $decimalSeparator = ' ';
+                    if ($fieldValue === null || $fieldValueInDB === null) {
+                        continue;
                     }
-
-                    /* When user prference digit grouping separator is dot(.), the dot will be removed while saving.
-                    so the value converted to the user format which will not conflict while saving */
-                    $fieldValue = str_replace(".", "$decimalSeparator", $fieldValue);
                 }
 
                 if ($fieldInstance && $fieldInstance->getFieldDataType() == 'reference') {
@@ -390,6 +386,47 @@ class VTUpdateFieldsTask extends VTTask
         }
 
         return $fieldValue;
+    }
+
+    /**
+     * Convert a workflow numeric value to the canonical database format.
+     *
+     * @param mixed $fieldValue
+     *
+     * @return string|null
+     */
+    public function convertNumericValueToDBFormat($fieldValue): ?string
+    {
+        global $current_user, $default_charset;
+
+        if ($fieldValue === null || $fieldValue === '') {
+            return $fieldValue;
+        }
+
+        $charset = $default_charset ?: 'UTF-8';
+        $value = html_entity_decode(trim((string)$fieldValue), ENT_QUOTES, $charset);
+        $value = str_replace("\xC2\xA0", ' ', $value);
+
+        if (is_numeric($value)) {
+            return $value;
+        }
+
+        $groupingSeparator = html_entity_decode((string)($current_user->currency_grouping_separator ?? ''), ENT_QUOTES, $charset);
+        $decimalSeparator = html_entity_decode((string)($current_user->currency_decimal_separator ?? ''), ENT_QUOTES, $charset);
+        $groupingSeparator = str_replace("\xC2\xA0", ' ', $groupingSeparator);
+        $decimalSeparator = str_replace("\xC2\xA0", ' ', $decimalSeparator);
+
+        if ($groupingSeparator !== '' && $groupingSeparator !== $decimalSeparator) {
+            $value = str_replace($groupingSeparator, '', $value);
+        }
+
+        if ($decimalSeparator !== '' && $decimalSeparator !== '.') {
+            $value = str_replace($decimalSeparator, '.', $value);
+        }
+
+        $value = preg_replace('/\s+/u', '', $value);
+
+        return is_numeric($value) ? $value : null;
     }
 
     /**
