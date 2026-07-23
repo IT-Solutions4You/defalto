@@ -81,8 +81,8 @@
 - Prefer Bootstrap utilities and existing shared skin rules before adding custom CSS for common spacing, alignment, display, and button layout.
 - Do not add inline `<style>` blocks to Smarty templates when the rule can live in the skin, shared custom stylesheet, or module resource CSS.
 - CSS resources are cache-busted by `vresource_url()` using `$defalto_current_version` from `version.php`.
-- When changing any rendered application style file, follow the shared Versioning rules above.
-- Do not bump the version for comments-only or generated-map-only changes that do not alter rendered CSS or runtime behavior.
+- When changing any rendered application style file, bump the resource/application patch version in `version.php`. For example, if the version is `1.0.0`, update it to `1.0.1` in the same change.
+- Do not bump the version for comments-only or generated-map-only changes that do not alter rendered CSS.
 - After changing LESS source, make sure the corresponding generated CSS is updated when this repo expects committed CSS output.
 
 ## PHP / Install Structure Checks
@@ -96,4 +96,4 @@
 
 - Run `php -l` on touched PHP files.
 - Run the scripts validator when module resource JavaScript changes.
-- Check that `version.php` was bumped when runtime application behavior or rendered/cache-busted assets changed.
+- Check that `version.php` was bumped when rendered application styles changed.
