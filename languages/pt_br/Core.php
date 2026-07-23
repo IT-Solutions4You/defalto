@@ -575,6 +575,7 @@ $languageStrings = [
     'Apparel'                 => 'Vestuário',
     'Banking'                 => 'Banco',
     'Billing Address'         => 'Endereço Faturamento',
+    'Address' => 'Endereço',
     'Billing City'            => 'Cidade Faturamento',
     'Billing Code'            => 'CEP Faturamento',
     'Billing Country'         => 'País Faturamento',

@@ -428,6 +428,7 @@ $languageStrings = [
     'Apparel'                                  => 'Одежда',
     'Banking'                                  => 'Банковское дело',
     'Billing Address'                          => 'Юридический Адрес',
+    'Address' => 'Адрес',
     'Billing City'                             => 'Биллинг Город',
     'Billing Code'                             => 'Биллинг Почтовый индекс',
     'Billing Country'                          => 'Биллинг Страна',

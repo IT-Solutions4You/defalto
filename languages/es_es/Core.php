@@ -391,6 +391,7 @@ $languageStrings = [
     'Adjustment' => 'Ajuste',
     'Annual Revenue' => 'Facturación Anual',
     'Billing Address' => 'Dirección (Factura)',
+    'Address' => 'Dirección',
     'Billing City' => 'Población (Factura)',
     'Billing Code' => 'Código Postal (Factura)',
     'Billing Country' => 'País (Factura)',

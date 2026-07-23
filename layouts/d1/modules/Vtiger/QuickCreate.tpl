@@ -32,7 +32,13 @@
                         <input type="hidden" name="sourceModule" value="{$PARENT_MODULE}" />
                         <input type="hidden" name="sourceRecord" value="{$PARENT_ID}" />
                     {/if}
-                    <div class="quickCreateContent">
+                    {* Quick create renders a flat field list (no blocks), so there is no
+                       address block to carry the mapping. Expose it on the form container
+                       instead — the autocomplete JS locates a group's inputs by name
+                       anywhere inside .addressEditBlock, and silently skips any group whose
+                       zip/city field is not part of the quick-create layout. *}
+                    {assign var=ADDRESS_MAP value=Core_Address_BlockUIType::getAddressGroups($MODULE)}
+                    <div class="quickCreateContent{if !empty($ADDRESS_MAP)} addressEditBlock{/if}"{if !empty($ADDRESS_MAP)} data-address-module="{$MODULE}" data-address-map='{$ADDRESS_MAP|@json_encode|escape:'html'}'{/if}>
                         <div class="massEditTable container-fluid">
                             <div class="row">
                                 {foreach key=FIELD_NAME item=FIELD_MODEL from=$RECORD_STRUCTURE name=blockfields}

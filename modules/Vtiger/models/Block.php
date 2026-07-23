@@ -290,6 +290,41 @@ class Vtiger_Block_Model extends Vtiger_Block
         return Core_BlockUiType_Model::getNameForUIType($blockUiType);
     }
 
+    /**
+     * Returns the distinct block UI type names used by the given module's blocks
+     * (e.g. ['Base', 'Address', 'InventoryItem']). Used to auto-load the matching
+     * block resource scripts (modules.Core.resources.{Name}Block etc.) per module,
+     * so individual modules no longer need their own view overrides just for that.
+     *
+     * 'Base' is always included; blocks whose UI type is not registered in
+     * df_blockuitype fall back to it implicitly and are skipped by the join.
+     *
+     * @param string $moduleName
+     *
+     * @return string[]
+     * @throws Exception
+     */
+    public static function getUiTypes(string $moduleName): array
+    {
+        $uiTypes = ['Base'];
+
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            'SELECT DISTINCT ut.name
+               FROM vtiger_blocks b
+               INNER JOIN vtiger_tab t ON t.tabid = b.tabid
+               INNER JOIN df_blockuitype ut ON ut.blockuitype = b.blockuitype
+              WHERE t.name = ?',
+            [$moduleName]
+        );
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $uiTypes[] = ucfirst($row['name']);
+        }
+
+        return array_values(array_unique($uiTypes));
+    }
+
     public function getEditViewId(): string
     {
         $label = str_replace(['LBL_', ' '], ['', ''], (string)$this->get('label'));

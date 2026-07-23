@@ -523,6 +523,7 @@ $languageStrings = [
     'Apparel'                => 'حلة',
     'Banking'                => 'مصرفي',
     'Billing Address'        => 'عنوان الدفع',
+    'Address' => 'عنوان',
     'Billing City'           => 'مدينة الدفع',
     'Billing Code'           => 'كود الدفع',
     'Billing Country'        => 'دولة الدفع',

@@ -19,13 +19,21 @@
 class Settings_Country_Update_Model
 {
     /**
-     * Default download source (GeoNames). Override per install by setting
-     * $postal_codes_source_base in config.inc.php to point at our own mirror — the
-     * mirror must keep the GeoNames layout: {base}zip/{CODE}.zip and
-     * {base}dump/countryInfo.txt. Recommended for distributed installs so they fetch
-     * from our server instead of hammering GeoNames directly.
+     * Our own GeoNames mirror — the default source for all installs. Refreshed
+     * quarterly from GeoNames by a server-side job (runs on geonames.defalto.online),
+     * so installs fetch from us instead of hammering GeoNames directly and are
+     * unaffected if GeoNames changes its URLs. The dedicated subdomain's docroot
+     * serves the published export dir, so files sit at the base directly, keeping
+     * the GeoNames layout: {base}zip/{CODE}.zip and {base}dump/countryInfo.txt.
      */
-    public const DEFAULT_SOURCE_BASE = 'https://download.geonames.org/export/';
+    public const MIRROR_SOURCE_BASE = 'https://geonames.defalto.online/';
+
+    /**
+     * Upstream GeoNames. Always tried last, as an automatic fallback if the mirror
+     * (and any configured override) is unreachable, so a mirror outage never blocks
+     * an install's postal-code update.
+     */
+    public const GEONAMES_SOURCE_BASE = 'https://download.geonames.org/export/';
 
     /**
      * @return self
@@ -66,14 +74,12 @@ class Settings_Country_Update_Model
         $countryInfoPath = $dir . 'countryInfo.txt';
 
         try {
-            $base = $this->getSourceBase();
-
             // 1. Postal codes (city / PSČ / state).
-            $this->download($base . 'zip/' . $basename . '.zip', $zipPath);
+            $this->downloadFromSources('zip/' . $basename . '.zip', $zipPath);
             $postalTxt = $this->extractZip($zipPath, $dir, $basename . '.txt');
 
             // 2. Country names (English), used to top up its4you_countries.
-            $this->download($base . 'dump/countryInfo.txt', $countryInfoPath);
+            $this->downloadFromSources('dump/countryInfo.txt', $countryInfoPath);
 
             $data = Settings_Country_Data_Model::getInstance();
             $rows = $data->import($postalTxt, $version, 'GeoNames', $countryCode);
@@ -90,16 +96,81 @@ class Settings_Country_Update_Model
     }
 
     /**
-     * Base download URL: GeoNames by default, overridable via the
-     * $postal_codes_source_base config so installs can fetch from our mirror.
+     * Ordered list of base download URLs, tried in turn until one succeeds:
+     *   1. $postal_codes_source_base from config.inc.php (if set) — per-install
+     *      override, e.g. a customer behind a firewall pointing elsewhere;
+     *   2. our own mirror (the default) — {@see self::MIRROR_SOURCE_BASE};
+     *   3. upstream GeoNames — {@see self::GEONAMES_SOURCE_BASE}, the last-resort
+     *      fallback so a mirror outage never blocks an update.
+     * Each entry is normalised to a trailing slash; duplicates are removed so an
+     * override equal to the mirror/GeoNames is not fetched twice.
+     *
+     * @return array<int, string> non-empty list of base URLs, each ending in '/'
      */
-    protected function getSourceBase(): string
+    protected function getSourceBases(): array
     {
         global $postal_codes_source_base;
 
-        $base = !empty($postal_codes_source_base) ? (string)$postal_codes_source_base : self::DEFAULT_SOURCE_BASE;
+        $candidates = [];
 
-        return rtrim($base, '/') . '/';
+        if (!empty($postal_codes_source_base)) {
+            $candidates[] = (string)$postal_codes_source_base;
+        }
+
+        $candidates[] = self::MIRROR_SOURCE_BASE;
+        $candidates[] = self::GEONAMES_SOURCE_BASE;
+
+        $bases = [];
+
+        foreach ($candidates as $candidate) {
+            $candidate = trim($candidate);
+
+            if ('' === $candidate) {
+                continue;
+            }
+
+            $candidate = rtrim($candidate, '/') . '/';
+
+            if (!in_array($candidate, $bases, true)) {
+                $bases[] = $candidate;
+            }
+        }
+
+        return $bases;
+    }
+
+    /**
+     * Download a GeoNames-layout file (e.g. "zip/SK.zip", "dump/countryInfo.txt")
+     * trying each configured source in order, falling back to the next on any
+     * failure. Per-file fallback is deliberate: a partial mirror (missing a single
+     * file) still resolves that file from GeoNames.
+     *
+     * @param string $relativePath path relative to a source base, no leading slash
+     * @param string $destPath     local file to write the download to
+     *
+     * @return void
+     * @throws Exception if every source failed (message aggregates each attempt)
+     */
+    protected function downloadFromSources(string $relativePath, string $destPath): void
+    {
+        $relativePath = ltrim($relativePath, '/');
+        $errors = [];
+
+        foreach ($this->getSourceBases() as $base) {
+            try {
+                $this->download($base . $relativePath, $destPath);
+
+                return;
+            } catch (Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+
+        throw new Exception(sprintf(
+            'All postal-code sources failed for "%s": %s',
+            $relativePath,
+            implode(' | ', $errors)
+        ));
     }
 
     /**

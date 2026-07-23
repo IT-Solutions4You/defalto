@@ -4349,6 +4349,24 @@ input:focus:-ms-input-placeholder { -- IE 10+
     width: 90%;
 }
 
+/* Address blocks: the street textarea spans the full width like the other fields
+   and stays about two rows tall (the shared widget hardcodes rows="3"). Keyed off
+   .addressEditBlock, which both the inline ajax editor and the edit-view address
+   block carry, so all three places (detail inline, key-fields inline, edit) match. */
+.addressEditBlock textarea.inputElement.form-control {
+    width: 100%;
+    height: 4rem;
+    min-height: 4rem;
+    resize: vertical;
+}
+
+/* The inline editor uses placeholders instead of labels, so keep them clearly
+   lighter than a real value (opacity:1 — Firefox dims placeholders by default). */
+.addressGroupEditForm ::placeholder {
+    color: #a8a8a8;
+    opacity: 1;
+}
+
 .text-break-all {
     word-break: break-all;
 }

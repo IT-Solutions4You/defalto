@@ -428,6 +428,7 @@ $languageStrings = [
     'Apparel'                                  => 'Apparel',
     'Banking'                                  => 'Banking',
     'Billing Address'                          => 'Fatura Adresi',
+    'Address' => 'Adres',
     'Billing City'                             => 'Fatura Şehir',
     'Billing Code'                             => 'Faturalama Posta Kodu',
     'Billing Country'                          => 'Fatura Ülke',

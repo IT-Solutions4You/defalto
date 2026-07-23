@@ -481,6 +481,7 @@ $languageStrings = [
     'Annual Revenue' => 'Annual Revenue',
     'Apparel' => 'Apparel',
     'Banking' => 'Banking',
+    'Address' => 'Address',
     'Billing Address' => 'Billing Address',
     'Billing City' => 'Billing City',
     'Billing Code' => 'Billing Postal Code',

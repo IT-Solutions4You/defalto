@@ -427,6 +427,7 @@ $languageStrings = [
     'Apparel'                                  => 'Ruházat - Felszerelés',
     'Banking'                                  => 'Bank',
     'Billing Address'                          => 'Utca, házszám (Számlázási cím)',
+    'Address' => 'Cím',
     'Billing City'                             => 'Város (Számlázási cím)',
     'Billing Code'                             => 'Irányítószám (Számlázási cím)',
     'Billing Country'                          => 'Ország (Számlázási cím)',

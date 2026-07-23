@@ -59,7 +59,19 @@ class Core_PostalCode_Model
             $by = preg_match('~^\d~', $term) ? 'zip' : 'city';
         }
 
-        $column = 'zip' === $by ? 'postal_code' : 'place_name';
+        $isZip = 'zip' === $by;
+        $column = $isZip ? 'postal_code' : 'place_name';
+
+        // For postal codes, ignore spaces on BOTH sides so a user typing "08001"
+        // still matches a stored "080 01" (and vice versa). City names keep their
+        // spaces — there they are meaningful. Stripping spaces from the column
+        // defeats the postal_code index, but a country-filtered scan is small.
+        if ($isZip) {
+            $term = str_replace(' ', '', $term);
+            $searchExpr = "REPLACE(" . $column . ", ' ', '')";
+        } else {
+            $searchExpr = $column;
+        }
 
         if ($limit <= 0) {
             $limit = self::DEFAULT_LIMIT;
@@ -79,7 +91,7 @@ class Core_PostalCode_Model
             $params[] = $countryCode;
         }
 
-        $where .= $column . ' LIKE ?';
+        $where .= $searchExpr . ' LIKE ?';
         $params[] = $like;
 
         $sql = 'SELECT DISTINCT postal_code, place_name, admin_name1, admin_name2, country_code'
@@ -94,11 +106,14 @@ class Core_PostalCode_Model
         $rows = [];
 
         while ($result && $row = $db->fetchByAssoc($result)) {
+            // Place/region names can be stored HTML-entity-encoded (e.g. "Mal&yacute;
+            // &Scaron;ari&scaron;"); decode so the API returns clean UTF-8 that the
+            // autocomplete both displays and writes into the record verbatim.
             $rows[] = [
                 'postal_code' => $row['postal_code'],
-                'place_name' => $row['place_name'],
-                'admin_name1' => $row['admin_name1'],
-                'admin_name2' => $row['admin_name2'],
+                'place_name' => decode_html($row['place_name']),
+                'admin_name1' => null !== $row['admin_name1'] ? decode_html($row['admin_name1']) : null,
+                'admin_name2' => null !== $row['admin_name2'] ? decode_html($row['admin_name2']) : null,
                 'country_code' => $row['country_code'],
             ];
         }

@@ -428,6 +428,7 @@ $languageStrings = [
     'Apparel'                                  => 'Apparel',
     'Banking'                                  => 'Banking',
     'Billing Address'                          => 'Postadres',
+    'Address' => 'Adres',
     'Billing City'                             => 'Factuur Plaats',
     'Billing Code'                             => 'Factuur Postcode',
     'Billing Country'                          => 'Factuur Land',

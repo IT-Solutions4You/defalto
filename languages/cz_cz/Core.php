@@ -475,6 +475,7 @@ $languageStrings = [
     'Apparel' => 'Oděvnictví',
     'Banking' => 'Bankovnictví',
     'Billing Address' => 'Fakturační adresa',
+    'Address' => 'Adresa',
     'Billing City' => 'Město',
     'Billing Code' => 'PSČ',
     'Billing Country' => 'Země',

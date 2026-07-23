@@ -431,6 +431,7 @@ $languageStrings = [
     'Apparel' => 'Abbigliamento',
     'Banking' => 'Bancario',
     'Billing Address' => 'Indirizzo di fatturazione',
+    'Address' => 'Indirizzo',
     'Billing City' => 'Fatturazione Città',
     'Billing Code' => 'Codice di fatturazione',
     'Billing Country' => 'Fatturazione Paese',

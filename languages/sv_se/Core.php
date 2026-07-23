@@ -522,6 +522,7 @@ $languageStrings = [
     'Apparel'                => 'Kläder',
     'Banking'                => 'Bankväsen',
     'Billing Address'        => 'Faktureringsadress',
+    'Address' => 'Adress',
     'Billing City'           => 'Faktureringsstad',
     'Billing Code'           => 'Faktureringskod',
     'Billing Country'        => 'Faktureringsland',

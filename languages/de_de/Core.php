@@ -62,6 +62,7 @@ $languageStrings = [
     'Balance' => 'Bilanz',
     'Banking' => 'Bankwesen',
     'Billing Address' => 'Rechnung: Adresse',
+    'Address' => 'Adresse',
     'Billing City' => 'Rechnung: Ort',
     'Billing Code' => 'Rechnung: PLZ',
     'Billing Country' => 'Rechnung: Land',
