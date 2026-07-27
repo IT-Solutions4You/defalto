@@ -13,7 +13,7 @@
  *
  * Downloads the postal archive (allCountries.zip, or a single-country file such as
  * SK.zip) plus countryInfo.txt, extracts them into a working directory under
- * cache/country/, then hands them to Settings_Country_Data_Model for the actual
+ * cache/country/, then hands them to Settings_PostalCodes_Record_Model for the actual
  * DB import. Used by both the manual "Update now" action and the cron task.
  */
 class Settings_Country_Update_Model
@@ -81,7 +81,7 @@ class Settings_Country_Update_Model
             // 2. Country names (English), used to top up its4you_countries.
             $this->downloadFromSources('dump/countryInfo.txt', $countryInfoPath);
 
-            $data = Settings_Country_Data_Model::getInstance();
+            $data = Settings_PostalCodes_Record_Model::getInstance();
             $rows = $data->import($postalTxt, $version, 'GeoNames', $countryCode);
             $countriesAdded = $data->importCountryInfo($countryInfoPath);
 

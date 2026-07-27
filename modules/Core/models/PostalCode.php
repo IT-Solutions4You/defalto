@@ -10,16 +10,16 @@
 
 /**
  * Read interface over the local postal-code dataset (`df_postalcodes`, populated by
- * Settings_Country_Data_Model from GeoNames). Powers the address auto-completion:
+ * Settings_PostalCodes_Record_Model from GeoNames). Powers the address auto-completion:
  * a postal code OR a city name (both directions) maps to the matching place / PSČ
  * plus its region (admin_name1) and country.
  *
  * Reference data only — this is a pure reader; the table itself is owned/created by
- * Settings_Country_Data_Model.
+ * Settings_PostalCodes_Record_Model.
  */
 class Core_PostalCode_Model
 {
-    /** Same table as Settings_Country_Data_Model::TABLE (kept here to avoid a Settings dependency from Core). */
+    /** Same table as Settings_PostalCodes_Record_Model::TABLE (kept here to avoid a Settings dependency from Core). */
     public const TABLE = 'df_postalcodes';
 
     protected const DEFAULT_LIMIT = 20;
