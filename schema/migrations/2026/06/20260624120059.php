@@ -25,7 +25,7 @@ if (!class_exists('Migration_20260624120059')) {
          */
         public function migrate(string $strFileName): void
         {
-            $dataModel = new Settings_Country_Data_Model();
+            $dataModel = new Settings_PostalCodes_Record_Model();
             $dataModel->createTables();
 
             $countryModel = Core_Country_Model::getInstance();

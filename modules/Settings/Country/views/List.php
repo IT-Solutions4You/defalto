@@ -20,7 +20,7 @@ class Settings_Country_List_View extends Settings_Vtiger_Index_View
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE', $module);
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
-        $dataModel = Settings_Country_Data_Model::getInstance();
+        $dataModel = Settings_PostalCodes_Record_Model::getInstance();
 
         $viewer->assign('COUNTRIES', $countryModel->getCountries());
         $viewer->assign('POSTAL_META', $dataModel->getMeta());

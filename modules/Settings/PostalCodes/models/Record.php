@@ -19,7 +19,7 @@
  * The live table is reference data only (records store the chosen city/PSČ as
  * plain text, no FK points here), therefore the whole table can be replaced safely.
  */
-class Settings_Country_Data_Model extends Core_DatabaseData_Model
+class Settings_PostalCodes_Record_Model extends Core_DatabaseData_Model
 {
     public const TABLE = 'df_postalcodes';
     public const META = 'df_postalcodes_meta';
