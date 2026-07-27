@@ -31,6 +31,8 @@ class Core_CreateTables_Config
         'Settings_LayoutEditor_RelatedListSettings_Model',
         'Settings_LayoutEditor_PopupSettings_Model',
         'Core_Country_Model',
+        'Settings_PostalCodes_Record_Model',
+        'Settings_Country_AddressMap_Model',
     ];
 
     public static function getAll(): array

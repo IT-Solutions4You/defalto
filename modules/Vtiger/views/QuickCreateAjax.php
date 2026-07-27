@@ -97,6 +97,6 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View
 
         Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);
 
-        return $this->checkAndConvertJsScripts($jsFileNames);
+        return array_merge($this->checkAndConvertJsScripts($jsFileNames), $this->getBlockUiTypeScripts($moduleName));
     }
 }

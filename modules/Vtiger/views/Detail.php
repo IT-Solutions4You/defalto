@@ -351,7 +351,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return $jsScriptInstances;
+        return array_merge($jsScriptInstances, $this->getBlockUiTypeScripts($moduleName));
     }
 
     public function getQuickPreviewHeaderScripts(Vtiger_Request $request)
