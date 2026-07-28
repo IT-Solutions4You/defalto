@@ -11,6 +11,11 @@
 class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
 {
     /**
+     * Name of the field holding the active status of an item (Products, Services)
+     */
+    public const ACTIVE_FIELD_NAME = 'discontinued';
+
+    /**
      * @inheritDoc
      */
     public function process(Vtiger_Request $request)
@@ -20,7 +25,6 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
 
         $parentRecordId = $request->get('parent_id');
         $parentModuleName = $request->get('parent_module');
-        $relatedModule = $request->get('module');
 
         $baseRecordId = $request->get('base_record');
         $baseRecordModel = Vtiger_Record_Model::getInstanceById($baseRecordId);
@@ -31,7 +35,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $searchModuleModel = Vtiger_Module_Model::getInstance($searchModule);
 
         if (!empty($searchValue)) {
-            $records = $searchModuleModel->searchRecord($searchValue, $parentRecordId, $parentModuleName, $relatedModule);
+            $records = $searchModuleModel->searchRecord($searchValue, $parentRecordId, $parentModuleName, $baseModuleName);
         } else {
             $records = $this->searchRecord($searchModule);
         }
@@ -72,7 +76,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
                 }
             }
 
-            $sequenceBasedRecords = $searchModuleModel->searchRecordsOnNumber($searchValue, $relatedModule);
+            $sequenceBasedRecords = $searchModuleModel->searchRecordsOnNumber($searchValue);
 
             if ($sequenceBasedRecords) {
                 foreach ($sequenceBasedRecords as $recordId => $recordModel) {
@@ -149,12 +153,21 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
     {
         $db = PearDatabase::getInstance();
         $matchingRecords = [];
+        $searchModuleModel = Vtiger_Module_Model::getInstance($searchModule);
+        $activeJoinQuery = $activeConditionQuery = '';
+        $activeFieldModel = $searchModuleModel->getField(self::ACTIVE_FIELD_NAME);
 
-        $query = 'SELECT DISTINCT crmid, setype, createdtime 
-                FROM vtiger_crmentity 
+        if ($activeFieldModel && $searchModuleModel->basetableid) {
+            $activeTableName = $activeFieldModel->get('table');
+            $activeJoinQuery = ' INNER JOIN ' . $activeTableName . ' ON ' . $activeTableName . '.' . $searchModuleModel->basetableid . ' = vtiger_crmentity.crmid ';
+            $activeConditionQuery = ' AND ' . $activeTableName . '.' . $activeFieldModel->get('column') . ' = 1 ';
+        }
+
+        $query = 'SELECT DISTINCT vtiger_crmentity.crmid, vtiger_crmentity.setype, vtiger_crmentity.createdtime
+                FROM vtiger_crmentity ' . $activeJoinQuery . '
                 WHERE vtiger_crmentity.deleted = 0
-                    AND setype = ?
-                ORDER BY label
+                    AND vtiger_crmentity.setype = ? ' . $activeConditionQuery . '
+                ORDER BY vtiger_crmentity.label
                 LIMIT 0, 20';
         $result = $db->pquery($query, [$searchModule]);
 

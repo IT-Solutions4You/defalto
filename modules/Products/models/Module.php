@@ -163,11 +163,10 @@ class Products_Module_Model extends Vtiger_Module_Model
      * Function to search records based on number fields
      *
      * @param <String> $searchValue
-     * @param <String> $relatedModule
      *
      * @return array|void $matchedRecordModels
      */
-    public function searchRecordsOnNumber($searchValue, $relatedModule)
+    public function searchRecordsOnNumber($searchValue)
     {
         $db = PearDatabase::getInstance();
         $moduleName = $this->getName();
