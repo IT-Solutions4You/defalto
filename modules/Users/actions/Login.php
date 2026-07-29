@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -15,7 +16,6 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 class Users_Login_Action extends Core_Controller_Action
 {
     /**
@@ -37,7 +37,7 @@ class Users_Login_Action extends Core_Controller_Action
     /**
      * @throws Exception
      */
-    function process(Vtiger_Request $request)
+    public function process(Vtiger_Request $request)
     {
         $username = $request->get('username');
         $password = $request->getRaw('password');
@@ -45,48 +45,36 @@ class Users_Login_Action extends Core_Controller_Action
         $user = CRMEntity::getInstance('Users');
         $user->column_fields['user_name'] = $username;
 
-        if ($user->doLogin($password)) {
-            session_regenerate_id(true); // to overcome session id reuse.
-
-            $userid = $user->retrieve_user_id($username);
-            Vtiger_Session::set('AUTHUSERID', $userid);
-
-            // For Backward compatability
-            // TODO Remove when switch-to-old look is not needed
-            $_SESSION['authenticated_user_id'] = $userid;
-            $_SESSION['app_unique_key'] = vglobal('application_unique_key');
-            $_SESSION['authenticated_user_language'] = vglobal('default_language');
-
-            //Enabled session variable for KCFINDER
-            $_SESSION['KCFINDER'] = [];
-            $_SESSION['KCFINDER']['disabled'] = false;
-            $_SESSION['KCFINDER']['uploadURL'] = '../../../test/upload';
-            $_SESSION['KCFINDER']['uploadDir'] = __DIR__ . '/../../../test/upload';
-            $_SESSION['KCFINDER']['deniedExts'] = implode(" ", vglobal('upload_badext'));
-            // End
-
-            //Track the login History
-            /** @var Users_Module_Model $moduleModel */
-            $moduleModel = Users_Module_Model::getInstance('Users');
-            $moduleModel->saveLoginHistory($username);
-            //End
-
-            if (isset($_SESSION['return_params'])) {
-                $return_params = $_SESSION['return_params'];
-                header('Location: index.php?' . urldecode($return_params));
-                exit;
-            }
-
-            if ($moduleModel->isFirstLoginHistory($username)) {
-                header('Location: index.php?module=Tour&view=Index');
-                exit;
-            }
-
-            header('Location: index.php');
-            exit();
-        } else {
+        if (!$user->doLogin($password)) {
             header('Location: index.php?module=Users&parent=Settings&view=Login&error=login');
             exit;
         }
+
+        $userId = (int)$user->retrieve_user_id($username);
+        $authentication = [
+            'complete' => true,
+            'redirect_url' => '',
+        ];
+
+        Core_Modifiers_Model::modifyVariableForClass(
+            get_class($this),
+            'authentication',
+            'Users',
+            $authentication,
+            $userId,
+            (string)$username,
+            $request
+        );
+
+        if (empty($authentication['complete'])) {
+            session_regenerate_id(true);
+            $redirectUrl = (string)($authentication['redirect_url'] ?? '');
+
+            header('Location: ' . ($redirectUrl !== '' ? $redirectUrl : 'index.php'));
+            exit;
+        }
+
+        header('Location: ' . Users_Authentication_Model::completeLogin($userId, (string)$username));
+        exit;
     }
 }
