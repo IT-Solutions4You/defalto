@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+$languageStrings = [
+    'TwoFactorAuthentication' => '2FA',
+    'SINGLE_TwoFactorAuthentication' => '2FA',
+    'LBL_MODULE_NAME' => '2FA',
+    'LBL_EDIT' => 'Upravit',
+    'LBL_SAVE' => 'Uložit',
+    'LBL_CANCEL' => 'Zrušit',
+    'LBL_TAB_GENERAL' => 'Obecná nastavení',
+    'LBL_STATUS' => 'Stav',
+    'LBL_STATUS_INTRO' => 'Zapněte nebo vypněte dvoufaktorové ověření pro celé CRM. Přihlašovací formulář je směrován přes 2FA endpoint pouze tehdy, když je toto nastavení aktivní.',
+    'LBL_ACTIVE' => 'Aktivní',
+    'LBL_INACTIVE' => 'Neaktivní',
+    'LBL_ACTIVATE_CONFIRM' => 'Aktivací budete od všech uživatelů (kromě vyňatých) vyžadovat druhý přihlašovací krok. Před pokračováním se ujistěte, že funguje odesílání e-mailů a že máte uložené záložní kódy - jinak se můžete zamknout. Pokračovat?',
+    'LBL_DEACTIVATE_CONFIRM' => 'Po deaktivaci budou uživatelé směrováni přes standardní přihlášení bez druhého kroku. Pokračovat?',
+    'LBL_ACTIVATE_FAILED' => 'Dvoufaktorový přihlašovací flow se nepodařilo aktivovat.',
+    'LBL_NOT_ACTIVE_NOTE' => 'Dvoufaktorové ověření je nainstalováno, ale zatím není aktivní. Dokud jej níže neaktivujete, druhý přihlašovací krok se nevyžaduje.',
+    'LBL_ENFORCE_ALL_NOTE' => 'Dvoufaktorové ověření je aktivní a vyžaduje se od všech uživatelů. Standardně dostane každý uživatel při přihlášení jednorázový kód e-mailem. Přidáním uživatele do seznamu výjimek jej z toho vyjmete.',
+    'LBL_ENFORCE_OFF_NOTE' => 'Dvoufaktorové ověření je momentálně vypnuto pro všechny uživatele.',
+    'LBL_AVAILABLE_METHODS' => 'Dostupné metody',
+    'LBL_AVAILABLE_METHODS_INTRO' => 'Vyberte, které metody druhého faktoru mohou uživatelé používat. Ponecháte-li obě zapnuté, každý uživatel si vybere při přihlášení; zapnutím pouze jedné ji vyžadujete od všech. Alespoň jedna metoda musí zůstat zapnutá.',
+    'LBL_METHOD_EMAIL' => 'Jednorázový kód e-mailem',
+    'LBL_METHOD_TOTP' => 'Autentizační aplikace (TOTP)',
+    'LBL_EMAIL_NEEDS_SERVER' => 'Pro povolení e-mailových kódů nastavte server odchozí pošty (Nastavení > Odchozí server).',
+    'LBL_TAB_USERS' => 'Uživatelé',
+    'LBL_TAB_VALIDATION' => 'Validace',
+    'LBL_VALIDATION_INTRO' => 'Checks the Defalto login hook, modifier registration, database schema, and enabled authentication services.',
+    'LBL_VALIDATION_CHECK' => 'Kontrola',
+    'LBL_VALIDATION_RESULT' => 'Výsledek',
+    'LBL_VALIDATION_OK' => 'V pořádku',
+    'LBL_VALIDATION_MODULE' => '2FA modul',
+    'LBL_VALIDATION_LOGIN_RUNTIME' => 'Defalto login runtime',
+    'LBL_VALIDATION_LOGIN_MODIFIER' => '2FA login modifier',
+    'LBL_VALIDATION_LOGIN_RUNTIME_INVALID' => 'The shared Defalto login completion runtime is incomplete.',
+    'LBL_VALIDATION_LOGIN_MODIFIER_INVALID' => 'The 2FA modifier is not registered for the Users login action.',
+    'LBL_DETAILS' => 'Details',
+    'LBL_VALIDATION_SCHEMA' => 'Databázové schéma',
+    'LBL_VALIDATION_CONFIGURATION' => 'Konfigurace 2FA',
+    'LBL_VALIDATION_METHODS' => 'Metody ověření',
+    'LBL_VALIDATION_MAIL' => 'Odchozí poštovní server',
+    'LBL_VALIDATION_EMAILS_EXTENSION' => 'E-mailová služba Defalto',
+    'LBL_VALIDATION_NOT_ACTIVE' => 'Požadovaný modul není aktivní.',
+    'LBL_VALIDATION_NOT_REQUIRED' => 'Aktuální konfigurace tuto kontrolu nevyžaduje.',
+    'LBL_VALIDATION_MISSING' => 'Chybí povinné soubory, tabulky nebo sloupce.',
+    'LBL_VALIDATION_CONFIG_INVALID' => 'Konfigurační řádek 2FA chybí nebo není platný.',
+    'LBL_VALIDATION_METHODS_MISSING' => 'Musí být povolena alespoň jedna metoda ověření.',
+    'LBL_VALIDATION_MAIL_MISSING' => 'E-mailová metoda je povolena, ale odchozí poštovní server není nastaven.',
+    'LBL_VALIDATION_EMAILS_EXTENSION_INVALID' => 'E-mailová služba Defalto není aktivní nebo její mailer není dostupný.',
+    'LBL_USERS_INTRO' => 'Každý aktivní uživatel má dvoufaktorové ověření standardně zapnuté. Vypnutím jej z něj vyjmete (pouze heslo), změníte metodu, případně resetujete jeho aplikaci při ztrátě zařízení.',
+    'LBL_USER' => 'Uživatel',
+    'LBL_USER_NOT_FOUND' => 'Uživatel nenalezen.',
+    'LBL_METHOD_NOT_ALLOWED' => 'Vybraná metoda ověření není povolena.',
+    'LBL_2FA' => '2FA',
+    'LBL_ACTIONS' => 'Akce',
+    'LBL_RESET' => 'Reset',
+    'LBL_RESET_CONFIRM' => 'Resetovat dvoufaktorové ověření pro tohoto uživatele? Jeho autentizační aplikace a záložní kódy přestanou fungovat a při dalším přihlášení si je nastaví znovu.',
+    'LBL_METHOD' => 'Metoda',
+    'LBL_UNUSED_CODES' => 'Nepoužité záložní kódy',
+    'LBL_EMAILS_INTRO' => 'Přizpůsobte si předmět a obsah tohoto e-mailu. Použijte zástupné proměnné níže - při odeslání e-mailu se nahradí skutečnými hodnotami. Původní text obnovíte tlačítkem Obnovit výchozí.',
+    'LBL_TPL_TITLE_LOGIN' => 'Šablona ověřovacího kódu při přihlášení',
+    'LBL_TPL_TITLE_BACKUP' => 'Šablona záložních kódů',
+    'LBL_TPL_SUBJECT' => 'Předmět',
+    'LBL_TPL_BODY' => 'Obsah',
+    'LBL_TPL_VARS' => 'Dostupné proměnné',
+    'LBL_RESET_DEFAULT' => 'Obnovit výchozí',
+];
+
+$jsLanguageStrings = [
+    'JS_SAVED' => 'Uloženo.',
+    'JS_METHOD_SAVED' => 'Metoda uložena.',
+    'JS_METHODS_SAVED' => 'Dostupné metody aktualizovány.',
+    'JS_AT_LEAST_ONE_METHOD' => 'Alespoň jedna metoda musí zůstat zapnutá.',
+    'JS_RESET_TPL_CONFIRM' => 'Obnovit tuto šablonu na výchozí text?',
+];
