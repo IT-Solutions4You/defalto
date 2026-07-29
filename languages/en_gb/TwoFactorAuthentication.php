@@ -1,0 +1,54 @@
+<?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+$languageStrings = [
+    'TwoFactorAuthentication' => '2FA',
+    'LBL_2FA_TITLE' => 'Two-step verification',
+    'LBL_EMAIL_PROMPT' => 'We sent a verification code to your email address. Enter it below to continue.',
+    'LBL_TOTP_PROMPT' => 'Enter the code from your authenticator app to continue.',
+    'LBL_CODE_PLACEHOLDER' => 'Verification code',
+    'LBL_VERIFY' => 'Verify',
+    'LBL_RESEND_CODE' => 'Resend code',
+    'LBL_BACK_TO_LOGIN' => 'Back to login',
+    'LBL_BACKUP_HINT' => 'Lost access? You can enter one of your backup codes instead.',
+    'LBL_USE_OTHER_METHOD' => 'Use another method',
+    'LBL_CHOOSE_METHOD' => 'Choose how you want to verify your identity.',
+    'LBL_CHOICE_EMAIL' => 'Send a code to my email',
+    'LBL_CHOICE_EMAIL_SUB' => 'A one-time code is sent to your email address',
+    'LBL_CHOICE_TOTP' => 'Use my authenticator app',
+    'LBL_CHOICE_TOTP_SUB' => 'Google Authenticator, Microsoft Authenticator, Authy...',
+    'LBL_ENROLL_PROMPT' => 'Scan this QR code with your authenticator app, then enter the 6-digit code it shows to finish setup.',
+    'LBL_MANUAL_KEY' => 'Can\'t scan? Enter this key manually:',
+    'LBL_ENROLL_VERIFY' => 'Confirm and continue',
+    'LBL_BACKUP_CODES_WARNING' => 'Save these backup codes somewhere safe. Each works once and lets you sign in if you lose access to your app. They are shown only now.',
+    'LBL_BACKUP_CODES' => 'Backup codes',
+    'LBL_MANAGE_TITLE' => 'Two-factor authentication',
+    'LBL_AUTH_METHOD' => 'Authentication method',
+    'LBL_OPT_EMAIL' => 'Email one-time code',
+    'LBL_OPT_APP' => 'Authenticator app',
+    'LBL_METHOD_NOT_SET' => '— (chooses at login)',
+    'LBL_ADMIN' => 'Admin',
+    'LBL_METHOD_SAVED' => 'Your authentication method has been saved.',
+    'LBL_APP_STATUS_ON' => 'Your authenticator app is set up.',
+    'LBL_APP_STATUS_OFF' => 'You have not set up an authenticator app yet.',
+    'LBL_SETUP_APP' => 'Set up authenticator app',
+    'LBL_RECONFIGURE_APP' => 'Reconfigure authenticator app',
+    'LBL_REGEN_BACKUP' => 'Regenerate backup codes',
+    'LBL_UNUSED_CODES' => 'Unused backup codes',
+    'LBL_BACKUP_CODES_INTRO_USER' => 'Backup codes let you sign in if you lose access to your second factor. Each code works once.',
+    'LBL_INVALID_CODE' => 'The code you entered is incorrect or has expired. Please try again.',
+    'LBL_TOO_MANY_ATTEMPTS' => 'Too many failed attempts. Please wait %d minute(s) before trying again.',
+    'LBL_CODE_RESENT' => 'A new verification code has been sent to your email address.',
+    'LBL_TPL_LOGIN_SUBJECT' => 'Your verification code',
+    'LBL_TPL_LOGIN_BODY' => '<p>Hello $username$,</p><p>Your one-time verification code is: <strong>$code$</strong></p><p>It is valid for $minutes$ minute(s). If you did not try to sign in, please contact your administrator.</p><p>$company$</p>',
+    'LBL_TPL_BACKUP_SUBJECT' => 'Your two-factor backup codes',
+    'LBL_TPL_BACKUP_BODY' => '<p>Hello $username$,</p><p>Here are your two-factor backup codes. Each code works once:</p><p>$codes$</p><p>Keep them somewhere safe.</p><p>$company$</p>',
+    'LBL_DONE' => 'Done',
+];
