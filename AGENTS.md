@@ -55,6 +55,9 @@
 
 ## JavaScript / Scripts Checks
 
+- Combine adjacent JavaScript variable declarations in the same lexical scope into one comma-separated declaration. Use one `const` when every binding is constant; if any binding in the adjacent group needs reassignment, declare the whole group with one `let`. Format longer initialized groups on continuation lines under the first declaration.
+- Do not merge declarations across executable statements, conditions, early returns, callbacks, loops, or different scopes merely to reduce the declaration count; preserving initialization order and scope takes precedence over grouping.
+- Avoid form control names that shadow native `HTMLFormElement` properties or methods, especially `method`, `action`, `submit`, `reset`, `elements`, `length`, `name`, `target`, `encoding`, and `enctype`. Audit third-party form and CSRF integrations when adding or renaming named controls.
 - New module scripts should live in `layouts/d1/modules/<Module>/resources/*.js`.
 - Load page-specific scripts from the owning view/controller through `getHeaderScripts(Vtiger_Request $request)` and `$this->checkAndConvertJsScripts($jsFileNames)`.
 - Use loader names such as `modules.<Module>.resources.Edit`, `modules.<Module>.resources.Detail`, or `modules.<Module>.resources.<Script>` when the file is inside the layout module resources folder.
@@ -87,6 +90,9 @@
 
 ## PHP / Install Structure Checks
 
+- Before completing a new, copied, or renamed module, compare every overridden method with the actual parent class or interface declaration. Match visibility, staticness, parameter types and defaults, reference/variadic markers, and return types; do not rely on the legacy source module's signature.
+- Audit controller lifecycle overrides especially carefully, including `validateRequest()`, `checkPermission()`, `preProcess()`, `postProcess()`, `process()`, `getHeaderScripts()`, and `getHeaderCss()`. An isolated `php -l` does not detect inheritance incompatibilities when the parent class is not loaded, so also load the child with its real parent or an equivalent compatibility harness.
+- Do not add a local `try/catch` in an action or view only to convert an `Exception` into `Vtiger_Response::setError()`. Let the central WebUI exception handler produce the standard action error response. Catch locally only when the code can recover, try a defined fallback, perform required cleanup, or add context before rethrowing; never swallow an exception that the framework should handle.
 - Use `Core_Install_Model` for field creation, field deletion, related lists, filters, popup fields, and layout field defaults.
 - Use `blocksHeaderFields`, `blocksSummaryFields`, `blocksListFields`, and `blocksQuickCreateFields` for module layout defaults instead of hardcoding vtiger field flags in unrelated places.
 - Use `Core_DatabaseTable_Model` for schema column lifecycle changes such as create, rename, or drop column.

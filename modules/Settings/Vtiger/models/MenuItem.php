@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 /**
  * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
  *
@@ -15,17 +16,12 @@
  * These contributions are licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  */
-
 /*
  * Vtiger Settings MenuItem Model Class
  */
 
 class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
 {
-    protected static $itemsTable = 'vtiger_settings_field';
-    protected static $itemId = 'fieldid';
-    protected $menu;
-
     public static array $defaultMenuItemLinks = [
         'LBL_USER_MANAGEMENT' => [
             1 => ['LBL_USERS', 'index.php?module=Users&parent=Settings&view=List', 'LBL_USER_DESCRIPTION', 1],
@@ -42,30 +38,30 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             ['LBL_CUSTOMIZE_MODENT_NUMBER', 'index.php?module=Vtiger&parent=Settings&view=CustomRecordNumbering', 'LBL_CUSTOMIZE_MODENT_NUMBER_DESCRIPTION'],
         ],
         'LBL_AUTOMATION' => [
-            1 => ['Webforms'           ,'index.php?module=Webforms&parent=Settings&view=List', 'LBL_WEBFORMS_DESCRIPTION'],
-            ['Scheduler'          ,'index.php?module=CronTasks&parent=Settings&view=List', 'Allows you to Configure Cron Task'],
-            ['LBL_LIST_WORKFLOWS' ,'index.php?module=Workflows&parent=Settings&view=List', 'LBL_LIST_WORKFLOWS_DESCRIPTION', 1],
+            1 => ['Webforms', 'index.php?module=Webforms&parent=Settings&view=List', 'LBL_WEBFORMS_DESCRIPTION'],
+            ['Scheduler', 'index.php?module=CronTasks&parent=Settings&view=List', 'Allows you to Configure Cron Task'],
+            ['LBL_LIST_WORKFLOWS', 'index.php?module=Workflows&parent=Settings&view=List', 'LBL_LIST_WORKFLOWS_DESCRIPTION', 1],
         ],
         'LBL_CONFIGURATION' => [
-            1 => ['LBL_COMPANY_DETAILS'      ,'index.php?parent=Settings&module=Vtiger&view=CompanyDetails', 'LBL_COMPANY_DESCRIPTION'],
-            ['LBL_CURRENCY_SETTINGS'    ,'index.php?parent=Settings&module=Currency&view=List','LBL_CURRENCY_DESCRIPTION'],
-            ['LBL_MAIL_SERVER_SETTINGS' ,'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail', 'LBL_MAIL_SERVER_DESCRIPTION'],
-            ['LBL_CONFIG_EDITOR'     ,'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail', 'LBL_CONFIG_EDITOR_DESCRIPTION'],
-            ['LBL_PICKLIST_EDITOR'      ,'index.php?parent=Settings&module=Picklist&view=Index', 'LBL_PICKLIST_DESCRIPTION', 1],
-            ['LBL_PICKLIST_DEPENDENCY'  ,'index.php?parent=Settings&module=PickListDependency&view=List', 'LBL_PICKLIST_DEPENDENCY_DESCRIPTION'],
-            ['LBL_MENU_EDITOR'          ,'index.php?module=MenuEditor&parent=Settings&view=Index',],
+            1 => ['LBL_COMPANY_DETAILS', 'index.php?parent=Settings&module=Vtiger&view=CompanyDetails', 'LBL_COMPANY_DESCRIPTION'],
+            ['LBL_CURRENCY_SETTINGS', 'index.php?parent=Settings&module=Currency&view=List', 'LBL_CURRENCY_DESCRIPTION'],
+            ['LBL_MAIL_SERVER_SETTINGS', 'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail', 'LBL_MAIL_SERVER_DESCRIPTION'],
+            ['LBL_CONFIG_EDITOR', 'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail', 'LBL_CONFIG_EDITOR_DESCRIPTION'],
+            ['LBL_PICKLIST_EDITOR', 'index.php?parent=Settings&module=Picklist&view=Index', 'LBL_PICKLIST_DESCRIPTION', 1],
+            ['LBL_PICKLIST_DEPENDENCY', 'index.php?parent=Settings&module=PickListDependency&view=List', 'LBL_PICKLIST_DEPENDENCY_DESCRIPTION'],
+            ['LBL_MENU_EDITOR', 'index.php?module=MenuEditor&parent=Settings&view=Index',],
         ],
         'LBL_MARKETING_SALES' => [
-            1 => ['LBL_LEAD_MAPPING'        ,'index.php?parent=Settings&module=Leads&view=MappingDetail', ''],
-            ['LBL_OPPORTUNITY_MAPPING' ,'index.php?parent=Settings&module=Potentials&view=MappingDetail', ''],
+            1 => ['LBL_LEAD_MAPPING', 'index.php?parent=Settings&module=Leads&view=MappingDetail', ''],
+            ['LBL_OPPORTUNITY_MAPPING', 'index.php?parent=Settings&module=Potentials&view=MappingDetail', ''],
         ],
         'LBL_INVENTORY' => [
-            1 => ['INVENTORYTERMSANDCONDITIONS' ,'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit', 'LBL_INV_TANDC_DESCRIPTION']
+            1 => ['INVENTORYTERMSANDCONDITIONS', 'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit', 'LBL_INV_TANDC_DESCRIPTION']
         ],
         'LBL_MY_PREFERENCES' => [
-            1 => ['My Preferences'    ,'index.php?module=Users&view=PreferenceDetail&parent=Settings&record=1', ''],
-            ['Calendar Settings' ,'index.php?module=Users&parent=Settings&view=Calendar&record=1', ''],
-            ['LBL_MY_TAGS'       ,'index.php?module=Tags&parent=Settings&view=List&record=1', ''],
+            1 => ['My Preferences', 'index.php?module=Users&view=PreferenceDetail&parent=Settings&record=1', ''],
+            ['Calendar Settings', 'index.php?module=Users&parent=Settings&view=Calendar&record=1', ''],
+            ['LBL_MY_TAGS', 'index.php?module=Tags&parent=Settings&view=List&record=1', ''],
         ],
         'LBL_EXTENSIONS' => [
         ],
@@ -76,210 +72,117 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             1 => ['LBL_PBXMANAGER', 'index.php?module=PBXManager&parent=Settings&view=Index', 'PBXManager module Configuration'],
         ],
     ];
+    protected static $itemId = 'fieldid';
+    protected static $itemsTable = 'vtiger_settings_field';
+    protected $menu;
 
     /**
-     * Function to get the Id of the menu item
-     * @return <Number> - Menu Item Id
+     * @param string $name
+     * @return void
      */
-    public function getId()
+    public static function activate(string $name): void
     {
-        return $this->get(self::$itemId);
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', [$name]);
     }
 
     /**
-     * Function to get the Menu to which the Item belongs
-     * @return Settings_Vtiger_Menu_Model instance
+     * @param string $label
+     * @param string $linkUrl
+     * @param object $menu
+     * @return Settings_Vtiger_MenuItem_Model|bool
      */
-    public function getMenu()
+    public static function createItem(string $label, string $linkUrl, object $menu, string $description = '', int $sequence = 0, int $pinned = 0): Settings_Vtiger_MenuItem_Model|bool
     {
-        return $this->menu;
-    }
+        $link = Settings_Vtiger_MenuItem_Model::getInstance($label, $menu);
 
-    /**
-     * Function to set the Menu to which the Item belongs, given Menu Id
-     *
-     * @param <Number> $menuId
-     *
-     * @return Settings_Vtiger_MenuItem_Model
-     */
-    public function setMenu($menuId)
-    {
-        $this->menu = Settings_Vtiger_Menu_Model::getInstanceById($menuId);
+        if (!$link) {
+            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => $label]);
+        }
 
-        return $this;
-    }
+        $link->set('blockid', $menu->getId());
+        $link->set('linkto', $linkUrl);
 
-    /**
-     * Function to set the Menu to which the Item belongs, given Menu Model instance
-     *
-     * @param <Settings_Vtiger_Menu_Model> $menu - Settings Menu Model instance
-     *
-     * @return Settings_Vtiger_MenuItem_Model
-     */
-    public function setMenuFromInstance($menu)
-    {
-        $this->menu = $menu;
-
-        return $this;
-    }
-
-    /**
-     * Function to get the url to get to the Settings Menu Item
-     * @return <String> - Menu Item landing url
-     */
-    public function getUrl()
-    {
-        $url = decode_html($this->get('linkto'));
-        $menu = $this->getMenu();
-        $url .= '&block=' . $this->getMenu()->getId() . '&fieldid=' . $this->getId();
-
-        return $url;
-    }
-
-    /**
-     * Function to get the module name, to which the Settings Menu Item belongs to
-     * @return <String> - Module to which the Menu Item belongs
-     */
-    public function getModuleName()
-    {
-        return 'Settings:Vtiger';
-    }
-
-    /**
-     *  Function to get the pin and unpin action url
-     */
-    public function getPinUnpinActionUrl()
-    {
-        return 'index.php?module=Vtiger&parent=Settings&action=Basic&mode=updateFieldPinnedStatus&fieldid=' . $this->getId();
-    }
-
-    /**
-     * Function to verify whether menuitem is pinned or not
-     * @return <Boolean> true to pinned, false to not pinned.
-     */
-    public function isPinned()
-    {
-        $pinStatus = $this->get('pinned');
-
-        return $pinStatus == '1' ? true : false;
-    }
-
-    /**
-     * Function which will update the pin status
-     *
-     * @param <Boolean> $pinned - true to enable , false to disable
-     */
-    private function updatePinStatus($pinned = false)
-    {
-        $db = PearDatabase::getInstance();
-
-        $pinnedStaus = 0;
+        if ($description) {
+            $link->set('description', $description);
+        }
+        if ($sequence) {
+            $link->set('sequence', $sequence);
+        }
         if ($pinned) {
-            $pinnedStaus = 1;
+            $link->set('pinned', $pinned);
         }
 
-        $query = 'UPDATE ' . self::$itemsTable . ' SET pinned=' . $pinnedStaus . ' WHERE ' . self::$itemId . '=' . $this->getId();
-        $db->pquery($query, []);
+        $link->save();
+
+        return $link;
     }
 
     /**
-     * Function which will enable the field as pinned
+     * @throws Exception
      */
-    public function markPinned()
+    public function createLinks(): void
     {
-        $this->updatePinStatus(1);
-    }
+        self::deleteItem('Configuration Editor');
 
-    /**
-     * Function which will disable the field pinned status
-     */
-    public function unMarkPinned()
-    {
-        $this->updatePinStatus();
-    }
+        foreach (self::$defaultMenuItemLinks as $blockName => $fields) {
+            foreach ($fields as $sequence => $field) {
+                [$label, $link, $description, $pinned] = array_pad($field, 4, null);
 
-    /**
-     * Function to get the instance of the Menu Item model given the valuemap array
-     *
-     * @param <Array> $valueMap
-     *
-     * @return Settings_Vtiger_MenuItem_Model instance
-     */
-    public static function getInstanceFromArray($valueMap)
-    {
-        return new self($valueMap);
-    }
+                $menu = Settings_Vtiger_Menu_Model::createMenu($blockName);
 
-    /**
-     * Function to get the instance of the Menu Item model, given name and Menu instance
-     *
-     * @param <String>                     $name
-     * @param <Settings_Vtiger_Menu_Model> $menuModel
-     *
-     * @return Settings_Vtiger_MenuItem_Model instance
-     */
-    public static function getInstance($name, $menuModel = false)
-    {
-        $db = PearDatabase::getInstance();
-
-        $sql = 'SELECT * FROM ' . self::$itemsTable . ' WHERE name = ?';
-        $params = [$name];
-
-        if ($menuModel) {
-            $sql .= ' AND blockid = ?';
-            $params[] = $menuModel->getId();
-        }
-        $result = $db->pquery($sql, $params);
-
-        if ($db->num_rows($result) > 0) {
-            $rowData = $db->query_result_rowdata($result, 0);
-            $menuItem = Settings_Vtiger_MenuItem_Model::getInstanceFromArray($rowData);
-            if ($menuModel) {
-                $menuItem->setMenuFromInstance($menuModel);
-            } else {
-                $menuItem->setMenu($rowData['blockid']);
+                self::createItem($label, $link, $menu, (string)$description, (int)$sequence, (int)$pinned);
             }
-
-            return $menuItem;
         }
-
-        return false;
     }
 
     /**
-     * Function to get the instance of the Menu Item model, given item id and Menu instance
-     *
-     * @param <String>                     $name
-     * @param <Settings_Vtiger_Menu_Model> $menuModel
-     *
-     * @return Settings_Vtiger_MenuItem_Model instance
+     * @throws Exception
      */
-    public static function getInstanceById($id, $menuModel = false)
+    public function createTables(): void
     {
-        $db = PearDatabase::getInstance();
+        $this->getSettingsMenuItemTable()
+            ->createTable(self::$itemId)
+            ->createColumn('blockid', 'int(19) DEFAULT NULL')
+            ->createColumn('name', 'varchar(250) DEFAULT NULL')
+            ->createColumn('iconpath', 'varchar(300) DEFAULT NULL')
+            ->createColumn('description', 'text DEFAULT NULL')
+            ->createColumn('linkto', 'text DEFAULT NULL')
+            ->createColumn('sequence', 'int(19) DEFAULT NULL')
+            ->createColumn('active', 'int(19) DEFAULT \'0\'')
+            ->createColumn('pinned', 'int(1) DEFAULT \'0\'')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`fieldid`)')
+            ->createKey('CONSTRAINT `fk_1_vtiger_settings_field` FOREIGN KEY IF NOT EXISTS (`blockid`) REFERENCES `vtiger_settings_blocks` (`blockid`) ON DELETE CASCADE');
+    }
 
-        $sql = 'SELECT * FROM ' . self::$itemsTable . ' WHERE ' . self::$itemId . ' = ?';
-        $params = [$id];
+    /**
+     * @param string $name
+     * @return void
+     */
+    public static function deactivate(string $name): void
+    {
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', [$name]);
+    }
 
-        if ($menuModel) {
-            $sql .= ' WHERE blockid = ?';
-            $params[] = $menuModel->getId();
+    /**
+     * @return void
+     */
+    public function delete(): void
+    {
+        $table = (new Core_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
+        $table->deleteData([
+            'name' => $this->get('name'),
+        ]);
+    }
+
+    public static function deleteItem(string $label): void
+    {
+        $instance = self::getInstance($label);
+
+        if ($instance) {
+            $instance->delete();
         }
-        $result = $db->pquery($sql, $params);
-
-        if ($db->num_rows($result) > 0) {
-            $rowData = $db->query_result_rowdata($result, 0);
-            $menuItem = Settings_Vtiger_MenuItem_Model::getInstanceFromArray($rowData);
-            if ($menuModel) {
-                $menuItem->setMenuFromInstance($menuModel);
-            } else {
-                $menuItem->setMenu($rowData['blockid']);
-            }
-
-            return $menuItem;
-        }
-
-        return false;
     }
 
     /**
@@ -343,6 +246,175 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
     }
 
     /**
+     * Function to get the Id of the menu item
+     * @return <Number> - Menu Item Id
+     */
+    public function getId()
+    {
+        return $this->get(self::$itemId);
+    }
+
+    /**
+     * Function to get the instance of the Menu Item model, given name and Menu instance
+     *
+     * @param <String> $name
+     * @param <Settings_Vtiger_Menu_Model> $menuModel
+     *
+     * @return Settings_Vtiger_MenuItem_Model instance
+     */
+    public static function getInstance($name, $menuModel = false)
+    {
+        $db = PearDatabase::getInstance();
+
+        $sql = 'SELECT * FROM ' . self::$itemsTable . ' WHERE name = ?';
+        $params = [$name];
+
+        if ($menuModel) {
+            $sql .= ' AND blockid = ?';
+            $params[] = $menuModel->getId();
+        }
+        $result = $db->pquery($sql, $params);
+
+        if ($db->num_rows($result) > 0) {
+            $rowData = $db->query_result_rowdata($result, 0);
+            $menuItem = Settings_Vtiger_MenuItem_Model::getInstanceFromArray($rowData);
+            if ($menuModel) {
+                $menuItem->setMenuFromInstance($menuModel);
+            } else {
+                $menuItem->setMenu($rowData['blockid']);
+            }
+
+            return $menuItem;
+        }
+
+        return false;
+    }
+
+    /**
+     * Function to get the instance of the Menu Item model, given item id and Menu instance
+     *
+     * @param <String> $name
+     * @param <Settings_Vtiger_Menu_Model> $menuModel
+     *
+     * @return Settings_Vtiger_MenuItem_Model instance
+     */
+    public static function getInstanceById($id, $menuModel = false)
+    {
+        $db = PearDatabase::getInstance();
+
+        $sql = 'SELECT * FROM ' . self::$itemsTable . ' WHERE ' . self::$itemId . ' = ?';
+        $params = [$id];
+
+        if ($menuModel) {
+            $sql .= ' WHERE blockid = ?';
+            $params[] = $menuModel->getId();
+        }
+        $result = $db->pquery($sql, $params);
+
+        if ($db->num_rows($result) > 0) {
+            $rowData = $db->query_result_rowdata($result, 0);
+            $menuItem = Settings_Vtiger_MenuItem_Model::getInstanceFromArray($rowData);
+            if ($menuModel) {
+                $menuItem->setMenuFromInstance($menuModel);
+            } else {
+                $menuItem->setMenu($rowData['blockid']);
+            }
+
+            return $menuItem;
+        }
+
+        return false;
+    }
+
+    /**
+     * Function to get the instance of the Menu Item model given the valuemap array
+     *
+     * @param <Array> $valueMap
+     *
+     * @return Settings_Vtiger_MenuItem_Model instance
+     */
+    public static function getInstanceFromArray($valueMap)
+    {
+        return new self($valueMap);
+    }
+
+    /**
+     * Function to get the Menu to which the Item belongs
+     * @return Settings_Vtiger_Menu_Model instance
+     */
+    public function getMenu()
+    {
+        return $this->menu;
+    }
+
+    /**
+     * Function to set the Menu to which the Item belongs, given Menu Id
+     *
+     * @param <Number> $menuId
+     *
+     * @return Settings_Vtiger_MenuItem_Model
+     */
+    public function setMenu($menuId)
+    {
+        $this->menu = Settings_Vtiger_Menu_Model::getInstanceById($menuId);
+
+        return $this;
+    }
+
+    /**
+     * Function to get the module name, to which the Settings Menu Item belongs to
+     * @return <String> - Module to which the Menu Item belongs
+     */
+    public function getModuleName()
+    {
+        $linkUrl = decode_html((string)$this->get('linkto'));
+        $query = parse_url($linkUrl, PHP_URL_QUERY);
+
+        if (!is_string($query)) {
+            return 'Settings:Vtiger';
+        }
+
+        parse_str($query, $queryParameters);
+        $moduleName = $queryParameters['module'] ?? '';
+
+        if (!is_string($moduleName) || empty($moduleName)) {
+            return 'Settings:Vtiger';
+        }
+
+        $parentModuleName = $queryParameters['parent'] ?? '';
+
+        if (is_string($parentModuleName) && !empty($parentModuleName)) {
+            return $parentModuleName . ':' . $moduleName;
+        }
+
+        return $moduleName;
+    }
+
+    public static function getNewSequence($blockId = null)
+    {
+        $sql = sprintf('SELECT max(sequence) AS max_seq FROM %s', self::$itemsTable);
+        $params = [];
+
+        if (!empty($blockId)) {
+            $sql .= ' WHERE blockid=? ';
+            $params = [$blockId];
+        }
+
+        $adb = PearDatabase::getInstance();
+        $sequenceResult = $adb->pquery($sql, $params);
+
+        return intval($adb->query_result($sequenceResult, 0, 'max_seq')) + 1;
+    }
+
+    /**
+     *  Function to get the pin and unpin action url
+     */
+    public function getPinUnpinActionUrl()
+    {
+        return 'index.php?module=Vtiger&parent=Settings&action=Basic&mode=updateFieldPinnedStatus&fieldid=' . $this->getId();
+    }
+
+    /**
      * Function to get the pinned items
      *
      * @param array of fieldids.
@@ -391,20 +463,41 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
         return $menuItemModels;
     }
 
-    public static function getNewSequence($blockId = null)
+    public function getSettingsMenuItemTable(): Core_DatabaseData_Model
     {
-        $sql = sprintf('SELECT max(sequence) AS max_seq FROM %s', self::$itemsTable);
-        $params = [];
+        return (new Core_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
+    }
 
-        if (!empty($blockId)) {
-            $sql .= ' WHERE blockid=? ';
-            $params = [$blockId];
-        }
+    /**
+     * Function to get the url to get to the Settings Menu Item
+     * @return <String> - Menu Item landing url
+     */
+    public function getUrl()
+    {
+        $url = decode_html($this->get('linkto'));
+        $menu = $this->getMenu();
+        $url .= '&block=' . $this->getMenu()->getId() . '&fieldid=' . $this->getId();
 
-        $adb = PearDatabase::getInstance();
-        $sequenceResult = $adb->pquery($sql, $params);
+        return $url;
+    }
 
-        return intval($adb->query_result($sequenceResult, 0, 'max_seq')) + 1;
+    /**
+     * Function to verify whether menuitem is pinned or not
+     * @return <Boolean> true to pinned, false to not pinned.
+     */
+    public function isPinned()
+    {
+        $pinStatus = $this->get('pinned');
+
+        return $pinStatus == '1' ? true : false;
+    }
+
+    /**
+     * Function which will enable the field as pinned
+     */
+    public function markPinned()
+    {
+        $this->updatePinStatus(1);
     }
 
     /**
@@ -423,16 +516,16 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             $db = PearDatabase::getInstance();
             $table->insertData([
                 self::$itemId => $db->getUniqueID(self::$itemsTable),
-                'blockid'     => $this->get('blockid'),
-                'name'        => $this->get('name'),
-                'linkto'      => $this->get('linkto'),
-                'sequence'    => $this->get('sequence'),
+                'blockid' => $this->get('blockid'),
+                'name' => $this->get('name'),
+                'linkto' => $this->get('linkto'),
+                'sequence' => $this->get('sequence'),
             ]);
         } else {
             $table->updateData([
-                'blockid'  => $this->get('blockid'),
-                'name'     => $this->get('name'),
-                'linkto'   => $this->get('linkto'),
+                'blockid' => $this->get('blockid'),
+                'name' => $this->get('name'),
+                'linkto' => $this->get('linkto'),
                 'sequence' => $this->get('sequence'),
             ], [
                 self::$itemId => $data[self::$itemId],
@@ -441,111 +534,42 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @return void
+     * Function to set the Menu to which the Item belongs, given Menu Model instance
+     *
+     * @param <Settings_Vtiger_Menu_Model> $menu - Settings Menu Model instance
+     *
+     * @return Settings_Vtiger_MenuItem_Model
      */
-    public function delete(): void
+    public function setMenuFromInstance($menu)
     {
-        $table = (new Core_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
-        $table->deleteData([
-            'name' => $this->get('name'),
-        ]);
+        $this->menu = $menu;
+
+        return $this;
     }
 
     /**
-     * @param string $label
-     * @param string $linkUrl
-     * @param object $menu
-     * @return Settings_Vtiger_MenuItem_Model|bool
+     * Function which will disable the field pinned status
      */
-    public static function createItem(string $label, string $linkUrl, object $menu, string $description = '', int $sequence = 0, int $pinned = 0): Settings_Vtiger_MenuItem_Model|bool
+    public function unMarkPinned()
     {
-        $link = Settings_Vtiger_MenuItem_Model::getInstance($label, $menu);
+        $this->updatePinStatus();
+    }
 
-        if (!$link) {
-            $link = Settings_Vtiger_MenuItem_Model::getInstanceFromArray(['name' => $label]);
+    /**
+     * Function which will update the pin status
+     *
+     * @param <Boolean> $pinned - true to enable , false to disable
+     */
+    private function updatePinStatus($pinned = false)
+    {
+        $db = PearDatabase::getInstance();
+
+        $pinnedStaus = 0;
+        if ($pinned) {
+            $pinnedStaus = 1;
         }
 
-        $link->set('blockid', $menu->getId());
-        $link->set('linkto', $linkUrl);
-
-        if($description) $link->set('description', $description);
-        if($sequence) $link->set('sequence', $sequence);
-        if($pinned) $link->set('pinned', $pinned);
-
-        $link->save();
-
-        return $link;
-    }
-
-    public static function deleteItem(string $label): void
-    {
-        $instance = self::getInstance($label);
-
-        if ($instance) {
-            $instance->delete();
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function createLinks(): void
-    {
-        self::deleteItem('Configuration Editor');
-
-        foreach (self::$defaultMenuItemLinks as $blockName => $fields) {
-            foreach ($fields as $sequence => $field) {
-                [$label, $link, $description, $pinned] = array_pad($field, 4, null);
-
-                $menu = Settings_Vtiger_Menu_Model::createMenu($blockName);
-
-                self::createItem($label, $link, $menu, (string)$description, (int)$sequence, (int)$pinned);
-            }
-        }
-    }
-
-    public function getSettingsMenuItemTable(): Core_DatabaseData_Model
-    {
-        return (new Core_DatabaseData_Model())->getTable(self::$itemsTable, self::$itemId);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function createTables(): void
-    {
-        $this->getSettingsMenuItemTable()
-            ->createTable(self::$itemId)
-            ->createColumn('blockid','int(19) DEFAULT NULL')
-            ->createColumn('name','varchar(250) DEFAULT NULL')
-            ->createColumn('iconpath','varchar(300) DEFAULT NULL')
-            ->createColumn('description','text DEFAULT NULL')
-            ->createColumn('linkto','text DEFAULT NULL')
-            ->createColumn('sequence','int(19) DEFAULT NULL')
-            ->createColumn('active','int(19) DEFAULT \'0\'')
-            ->createColumn('pinned','int(1) DEFAULT \'0\'')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`fieldid`)')
-            ->createKey('CONSTRAINT `fk_1_vtiger_settings_field` FOREIGN KEY IF NOT EXISTS (`blockid`) REFERENCES `vtiger_settings_blocks` (`blockid`) ON DELETE CASCADE')
-        ;
-    }
-
-    /**
-     * @param string $name
-     * @return void
-     */
-    public static function activate(string $name): void
-    {
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', [$name]);
-    }
-
-    /**
-     * @param string $name
-     * @return void
-     */
-    public static function deactivate(string $name): void
-    {
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', [$name]);
+        $query = 'UPDATE ' . self::$itemsTable . ' SET pinned=' . $pinnedStaus . ' WHERE ' . self::$itemId . '=' . $this->getId();
+        $db->pquery($query, []);
     }
 }
