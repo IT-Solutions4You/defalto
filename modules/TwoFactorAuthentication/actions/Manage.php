@@ -8,9 +8,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-use JetBrains\PhpStorm\NoReturn;
-
-
 /**
  * Handles the logged-in self-service actions for the "My two-factor
  * authentication" page (enrollment, switching method, backup codes).
