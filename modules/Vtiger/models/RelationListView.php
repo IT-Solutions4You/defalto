@@ -171,30 +171,12 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model
                 $relationField = $relationModel->getRelationField();
                 $relationParameters .= '&' . $relationField->getName() . '=' . $parentRecordModule->getId();
             }
-            $vtigerDocumentTypes = [
-                [
-                    'type'  => 'I',
-                    'label' => 'LBL_INTERNAL_DOCUMENT_TYPE',
-                    'url'   => 'index.php?module=Documents&view=EditAjax&type=I' . $relationParameters
-                ],
-                [
-                    'type'  => 'E',
-                    'label' => 'LBL_EXTERNAL_DOCUMENT_TYPE',
-                    'url'   => 'index.php?module=Documents&view=EditAjax&type=E' . $relationParameters
-                ],
-                [
-                    'type'  => 'W',
-                    'label' => 'LBL_WEBDOCUMENT_TYPE',
-                    'url'   => 'index.php?module=Documents&view=EditAjax&type=W' . $relationParameters
-                ]
-            ];
             $addLinkList[] = [
-                'linktype'      => 'LISTVIEWBASIC',
-                'linklabel'     => 'Vtiger',
-                'linkurl'       => $this->getCreateViewUrl(),
-                'linkicon'      => 'Vtiger.png',
-                'linkdropdowns' => $vtigerDocumentTypes,
-                'linkclass'     => 'addDocumentToVtiger',
+                'linktype'    => 'LISTVIEWBASIC',
+                'linklabel'   => 'LBL_FILE_UPLOAD',
+                'linkurl'     => 'index.php?module=Documents&view=QuickCreateAjax&service=Vtiger&operation=UploadToVtiger&type=I' . $relationParameters,
+                'linkicon'    => 'fa-upload',
+                'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
             ];
         } else {
             if (Users_Privileges_Model::isPermitted($relatedModel->getName(), 'CreateView')) {

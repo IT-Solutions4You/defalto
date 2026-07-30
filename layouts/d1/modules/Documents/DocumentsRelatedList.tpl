@@ -41,44 +41,14 @@
                                     <span class="ms-2">{$RELATED_LINK->getLabel()}</span>
                                 </button>
                             {/if}
-                            {if $RELATED_LINK->getLabel() eq 'Vtiger'}
+                            {if $RELATED_LINK->getLabel() eq 'LBL_FILE_UPLOAD'}
                                 {if $IS_CREATE_PERMITTED}
-                                    <div class="dropdown">
-                                        <button type="button" class="btn btn-outline-secondary me-2 dropdown-toggle" data-bs-toggle="dropdown">
-                                            <span class="fa fa-plus" title="{vtranslate('LBL_NEW_DOCUMENT', $MODULE)}"></span>&nbsp;&nbsp;{vtranslate('LBL_NEW_DOCUMENT', $RELATED_MODULE_NAME)}&nbsp; <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li class="dropdown-header"><i class="fa fa-upload"></i> {vtranslate('LBL_FILE_UPLOAD', $RELATED_MODULE_NAME)}</li>
-                                            <li id="VtigerAction">
-                                                <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger',{$PARENT_ID},'{$MODULE}')">
-                                                    <i class="fa-solid fa-house"></i>
-                                                    <span class="ms-2">{vtranslate('LBL_TO_SERVICE', $RELATED_MODULE_NAME, {vtranslate('LBL_CRM', $RELATED_MODULE_NAME)})}</span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li class="dropdown-header">
-                                                <i class="fa fa-link"></i>
-                                                <span class="ms-2">{vtranslate('LBL_LINK_EXTERNAL_DOCUMENT', $RELATED_MODULE_NAME)}</span>
-                                            </li>
-                                            <li id="shareDocument">
-                                                <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('E',{$PARENT_ID},'{$MODULE}')">
-                                                    <i class="fa fa-external-link"></i>
-                                                    <span class="ms-2">{vtranslate('LBL_FROM_SERVICE', $RELATED_MODULE_NAME, {vtranslate('LBL_FILE_URL', $RELATED_MODULE_NAME)})}</span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li id="createDocument">
-                                                <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('W',{$PARENT_ID},'{$MODULE}')">
-                                                    <i class="fa fa-file-text"></i>
-                                                    <span class="ms-2">{vtranslate('LBL_CREATE_NEW', $RELATED_MODULE_NAME, {vtranslate('SINGLE_Documents', $RELATED_MODULE_NAME)})}</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <button type="button"
+                                            class="btn btn-outline-secondary me-2"
+                                            onclick="Documents_Index_Js.uploadTo('Vtiger', {$PARENT_ID}, '{$MODULE}')">
+                                        <i class="fa-solid fa-upload" aria-hidden="true"></i>
+                                        <span class="ms-2">{vtranslate('LBL_FILE_UPLOAD', $RELATED_MODULE_NAME)}</span>
+                                    </button>
                                 {/if}
                             {/if}
                         {/foreach}

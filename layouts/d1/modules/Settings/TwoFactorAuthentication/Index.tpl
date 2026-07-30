@@ -157,6 +157,9 @@
                                         </button>
                                         <select class="form-select form-select-sm two-factor-authentication-method-select d-none"
                                                 data-userid="{$USER.id}">
+                                            <option value="" {if $USER.method eq ''}selected{/if}>
+                                                {vtranslate('LBL_METHOD_NOT_SET', $QUALIFIED_MODULE)}
+                                            </option>
                                             {if $ALLOW_EMAIL}
                                                 <option value="email" {if $USER.method eq 'email'}selected{/if}>
                                                     {vtranslate('LBL_OPT_EMAIL', $QUALIFIED_MODULE)}
