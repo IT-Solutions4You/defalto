@@ -104,11 +104,9 @@ class Settings_TwoFactorAuthentication_Users_Action extends Settings_Vtiger_Inde
     {
         $response = new Vtiger_Response();
         $userId = $this->getUserId($request);
-        $method = $request->get('method') === TwoFactorAuthentication_Service_Helper::METHOD_TOTP
-            ? TwoFactorAuthentication_Service_Helper::METHOD_TOTP
-            : TwoFactorAuthentication_Service_Helper::METHOD_EMAIL;
+        $method = (string)$request->get('method');
 
-        if (!TwoFactorAuthentication_Service_Helper::isMethodAllowed($method)) {
+        if ($method !== '' && !TwoFactorAuthentication_Service_Helper::isMethodAllowed($method)) {
             throw new Exception(vtranslate('LBL_METHOD_NOT_ALLOWED', 'Settings:TwoFactorAuthentication'));
         }
 
