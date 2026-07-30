@@ -22,49 +22,11 @@
                                     <div class="row">
                                 {/if}
                                 {if $singularLabel == 'SINGLE_Documents'}
-                                    <div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if} dropdown">
-                                        <a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModuleSubmenu fs-6 text-muted" data-name="{$moduleModel->getName()}" data-bs-toggle="dropdown" data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">
+                                    <div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if}">
+                                        <a id="menubar_quickCreate_{$moduleModel->getName()}" class="d-flex text-muted" data-name="{$moduleModel->getName()}" href="javascript:Documents_Index_Js.uploadTo('Vtiger')">
                                             <span class="lh-base">{$moduleModel->getModuleIcon()}</span>
-                                            <span class="quick-create-module ps-3">
-                                                                    {vtranslate($singularLabel,$moduleName)}
-                                                                    <i class="fa fa-caret-down quickcreateMoreDropdownAction"></i>
-                                                                </span>
+                                            <span class="ps-3 quick-create-module">{vtranslate($singularLabel, $moduleName)}</span>
                                         </a>
-                                        <ul class="dropdown-menu dropdown-menu-end quickcreateMoreDropdown" aria-labelledby="menubar_quickCreate_{$moduleModel->getName()}">
-                                            <li>
-                                                <h6 class="dropdown-header">
-                                                    <i class="fa fa-upload"></i>
-                                                    <span class="ps-3">{vtranslate('LBL_FILE_UPLOAD', $moduleName)}</span>
-                                                </h6>
-                                            </li>
-                                            <li id="VtigerAction">
-                                                <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger')">
-                                                    <i class="fa fa-home"></i>
-                                                    <span class="ps-3">{vtranslate('LBL_TO_SERVICE', $moduleName, {vtranslate('LBL_CRM', $moduleName)})}</span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li>
-                                                <h6 class="dropdown-header">
-                                                    <i class="fa fa-link"></i>
-                                                    <span class="ps-3">{vtranslate('LBL_LINK_EXTERNAL_DOCUMENT', $moduleName)}</span>
-                                                </h6>
-                                            </li>
-                                            <li id="shareDocument">
-                                                <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('E')">
-                                                    <i class="fa fa-external-link"></i>
-                                                    <span class="ps-3">{vtranslate('LBL_FROM_SERVICE', $moduleName, {vtranslate('LBL_FILE_URL', $moduleName)})}</span>
-                                                </a>
-                                            </li>
-                                            <li id="createDocument">
-                                                <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('W')">
-                                                    <i class="fa fa-file-text"></i>
-                                                    <span class="ps-3">{vtranslate('LBL_CREATE_NEW', $moduleName, {vtranslate('SINGLE_Documents', $moduleName)})}</span>
-                                                </a>
-                                            </li>
-                                        </ul>
                                     </div>
                                 {else}
                                     <div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if}">
