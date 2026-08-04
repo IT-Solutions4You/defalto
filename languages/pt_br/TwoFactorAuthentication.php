@@ -1,0 +1,54 @@
+<?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+$languageStrings = [
+    'TwoFactorAuthentication' => '2FA',
+    'LBL_2FA_TITLE' => 'Verificação em duas etapas',
+    'LBL_EMAIL_PROMPT' => 'Enviamos um código de verificação para o seu e-mail. Digite-o abaixo para continuar.',
+    'LBL_TOTP_PROMPT' => 'Digite o código do seu aplicativo autenticador para continuar.',
+    'LBL_CODE_PLACEHOLDER' => 'Código de verificação',
+    'LBL_VERIFY' => 'Verificar',
+    'LBL_RESEND_CODE' => 'Reenviar código',
+    'LBL_BACK_TO_LOGIN' => 'Voltar ao login',
+    'LBL_BACKUP_HINT' => 'Perdeu o acesso? Você pode inserir um dos seus códigos de backup.',
+    'LBL_USE_OTHER_METHOD' => 'Usar outro método',
+    'LBL_CHOOSE_METHOD' => 'Escolha como deseja verificar sua identidade.',
+    'LBL_CHOICE_EMAIL' => 'Enviar um código para o meu e-mail',
+    'LBL_CHOICE_EMAIL_SUB' => 'Um código de uso único é enviado para o seu e-mail',
+    'LBL_CHOICE_TOTP' => 'Usar meu aplicativo autenticador',
+    'LBL_CHOICE_TOTP_SUB' => 'Google Authenticator, Microsoft Authenticator, Authy...',
+    'LBL_ENROLL_PROMPT' => 'Escaneie este código QR com seu aplicativo autenticador e digite o código de 6 dígitos exibido para concluir a configuração.',
+    'LBL_MANUAL_KEY' => 'Não consegue escanear? Digite esta chave manualmente:',
+    'LBL_ENROLL_VERIFY' => 'Confirmar e continuar',
+    'LBL_BACKUP_CODES_WARNING' => 'Guarde estes códigos de backup em local seguro. Cada um funciona uma vez e permite que você entre se perder o acesso ao seu aplicativo. Eles são exibidos apenas agora.',
+    'LBL_BACKUP_CODES' => 'Códigos de backup',
+    'LBL_MANAGE_TITLE' => 'Autenticação de dois fatores',
+    'LBL_AUTH_METHOD' => 'Método de autenticação',
+    'LBL_OPT_EMAIL' => 'Código de uso único por e-mail',
+    'LBL_OPT_APP' => 'Aplicativo autenticador',
+    'LBL_METHOD_NOT_SET' => '— (escolhe no login)',
+    'LBL_ADMIN' => 'Admin',
+    'LBL_METHOD_SAVED' => 'Seu método de autenticação foi salvo.',
+    'LBL_APP_STATUS_ON' => 'Seu aplicativo autenticador está configurado.',
+    'LBL_APP_STATUS_OFF' => 'Você ainda não configurou um aplicativo autenticador.',
+    'LBL_SETUP_APP' => 'Configurar aplicativo autenticador',
+    'LBL_RECONFIGURE_APP' => 'Reconfigurar aplicativo autenticador',
+    'LBL_REGEN_BACKUP' => 'Gerar novos códigos de backup',
+    'LBL_UNUSED_CODES' => 'Códigos de backup não usados',
+    'LBL_BACKUP_CODES_INTRO_USER' => 'Os códigos de backup permitem que você entre se perder o acesso ao seu segundo fator. Cada código funciona uma vez.',
+    'LBL_INVALID_CODE' => 'O código digitado está incorreto ou expirou. Tente novamente.',
+    'LBL_TOO_MANY_ATTEMPTS' => 'Muitas tentativas malsucedidas. Aguarde %d minuto(s) antes de tentar novamente.',
+    'LBL_CODE_RESENT' => 'Um novo código de verificação foi enviado para o seu e-mail.',
+    'LBL_TPL_LOGIN_SUBJECT' => 'Seu código de verificação',
+    'LBL_TPL_LOGIN_BODY' => '<p>Olá $username$,</p><p>Seu código de verificação de uso único é: <strong>$code$</strong></p><p>Ele é válido por $minutes$ minuto(s). Se você não tentou entrar, entre em contato com o seu administrador.</p><p>$company$</p>',
+    'LBL_TPL_BACKUP_SUBJECT' => 'Seus códigos de backup de dois fatores',
+    'LBL_TPL_BACKUP_BODY' => '<p>Olá $username$,</p><p>Aqui estão seus códigos de backup de dois fatores. Cada código funciona uma vez:</p><p>$codes$</p><p>Guarde-os em local seguro.</p><p>$company$</p>',
+    'LBL_DONE' => 'Concluído',
+];

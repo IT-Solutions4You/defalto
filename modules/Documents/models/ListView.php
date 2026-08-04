@@ -35,31 +35,13 @@ class Documents_ListView_Model extends Vtiger_ListView_Model
 
         $createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
         if ($createPermission) {
-            $vtigerDocumentTypes = [
-                [
-                    'type'  => 'I',
-                    'label' => 'LBL_INTERNAL_DOCUMENT_TYPE',
-                    'url'   => 'index.php?module=Documents&view=EditAjax&type=I'
-                ],
-                [
-                    'type'  => 'E',
-                    'label' => 'LBL_EXTERNAL_DOCUMENT_TYPE',
-                    'url'   => 'index.php?module=Documents&view=EditAjax&type=E'
-                ],
-                [
-                    'type'  => 'W',
-                    'label' => 'LBL_WEBDOCUMENT_TYPE',
-                    'url'   => 'index.php?module=Documents&view=EditAjax&type=W'
-                ]
-            ];
             $basicLinks = [
                 [
-                    'linktype'      => 'LISTVIEWBASIC',
-                    'linklabel'     => 'Vtiger',
-                    'linkurl'       => $moduleModel->getCreateRecordUrl(),
-                    'linkicon'      => 'Vtiger.png',
-                    'linkdropdowns' => $vtigerDocumentTypes,
-                    'linkclass'     => 'addDocumentToVtiger',
+                    'linktype'    => 'LISTVIEWBASIC',
+                    'linklabel'   => 'LBL_FILE_UPLOAD',
+                    'linkurl'     => 'javascript:Documents_Index_Js.uploadTo("Vtiger")',
+                    'linkicon'    => 'fa-upload',
+                    'style_class' => Vtiger_Link_Model::PRIMARY_STYLE_CLASS,
                 ],
                 [
                     'linktype'  => 'LISTVIEWBASIC',

@@ -1,0 +1,55 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+.two-factor-authentication-page {
+    min-height: 100vh;
+}
+
+.two-factor-authentication-panel {
+    max-width: 30rem;
+}
+
+.two-factor-authentication-logo {
+    display: block;
+    width: auto;
+    max-width: min(100%, 18rem);
+    height: auto;
+    max-height: 4rem;
+    margin-right: auto;
+    margin-left: auto;
+    object-fit: contain;
+}
+
+.two-factor-authentication-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.5rem;
+}
+
+.two-factor-authentication-cover {
+    background: url('../../../resources/Images/login-background.png') center center / cover no-repeat;
+}
+
+.two-factor-authentication-code {
+    letter-spacing: 0.35rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.two-factor-authentication-qr svg {
+    display: block;
+    width: min(100%, 13rem);
+    height: auto;
+    margin: 0 auto;
+}
+
+.two-factor-authentication-key {
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+}

@@ -55,6 +55,9 @@
 
 ## JavaScript / Scripts Checks
 
+- Combine adjacent JavaScript variable declarations in the same lexical scope into one comma-separated declaration. Use one `const` when every binding is constant; if any binding in the adjacent group needs reassignment, declare the whole group with one `let`. Format longer initialized groups on continuation lines under the first declaration.
+- Do not merge declarations across executable statements, conditions, early returns, callbacks, loops, or different scopes merely to reduce the declaration count; preserving initialization order and scope takes precedence over grouping.
+- Avoid form control names that shadow native `HTMLFormElement` properties or methods, especially `method`, `action`, `submit`, `reset`, `elements`, `length`, `name`, `target`, `encoding`, and `enctype`. Audit third-party form and CSRF integrations when adding or renaming named controls.
 - New module scripts should live in `layouts/d1/modules/<Module>/resources/*.js`.
 - Load page-specific scripts from the owning view/controller through `getHeaderScripts(Vtiger_Request $request)` and `$this->checkAndConvertJsScripts($jsFileNames)`.
 - Use loader names such as `modules.<Module>.resources.Edit`, `modules.<Module>.resources.Detail`, or `modules.<Module>.resources.<Script>` when the file is inside the layout module resources folder.
@@ -87,6 +90,14 @@
 
 ## PHP / Install Structure Checks
 
+- Before completing a new, copied, or renamed module, compare every overridden method with the actual parent class or interface declaration. Match visibility, staticness, parameter types and defaults, reference/variadic markers, and return types; do not rely on the legacy source module's signature.
+- Audit controller lifecycle overrides especially carefully, including `validateRequest()`, `checkPermission()`, `preProcess()`, `postProcess()`, `process()`, `getHeaderScripts()`, and `getHeaderCss()`. An isolated `php -l` does not detect inheritance incompatibilities when the parent class is not loaded, so also load the child with its real parent or an equivalent compatibility harness.
+- Do not add a local `try/catch` in an action or view only to convert an `Exception` into `Vtiger_Response::setError()`. Let the central WebUI exception handler produce the standard action error response. Catch locally only when the code can recover, try a defined fallback, perform required cleanup, or add context before rethrowing; never swallow an exception that the framework should handle.
+- Keep all runtime database reads and writes in model classes. Helpers orchestrate domain behavior and call model APIs; actions and views validate or present data and must not contain SQL or private database accessors.
+- Create a dedicated model for every module-owned table and name the model after the table's domain suffix, for example `df_two_factor_backup_code` is represented by `TwoFactorAuthentication_BackupCode_Model`. Keep that table's CRUD and atomic updates in its model; for shared system tables, reuse the existing owning Core, Vtiger, Settings, or module model instead of creating a duplicate local data model.
+- Make table-backed runtime models extend `Core_DatabaseData_Model`, declare their protected `$table` and `$tableId`, initialize the shared connection through `retrieveDB()`, and prefer `selectData()`, `insertData()`, `updateData()`, and `deleteData()` for ordinary CRUD. Use `getDB()` with custom SQL only when the shared CRUD API cannot express a required aggregate, join, upsert, or atomic conditional update without changing its semantics.
+- Before adding domain methods to a `Core_DatabaseData_Model` subclass, audit inherited method names and signatures such as `save()`, `delete()`, `getId()`, and `getName()`. Use a specific domain name such as `saveTemplate()` when different parameters or behavior would make an override incompatible.
+- Keep install, migration, and schema lifecycle queries in the owning install/database model. A cross-table read belongs to the model representing the primary domain result and should not leak SQL back into a helper.
 - Use `Core_Install_Model` for field creation, field deletion, related lists, filters, popup fields, and layout field defaults.
 - Use `blocksHeaderFields`, `blocksSummaryFields`, `blocksListFields`, and `blocksQuickCreateFields` for module layout defaults instead of hardcoding vtiger field flags in unrelated places.
 - Use `Core_DatabaseTable_Model` for schema column lifecycle changes such as create, rename, or drop column.

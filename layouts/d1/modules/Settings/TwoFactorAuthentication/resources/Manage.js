@@ -1,0 +1,14 @@
+/*
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+Settings_Vtiger_Index_Js('Settings_TwoFactorAuthentication_Manage_Js', {}, {
+    registerEvents: function () {
+        this._super();
+    },
+})

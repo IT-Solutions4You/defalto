@@ -1,0 +1,161 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+#dragAndDropOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100001;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+#dragAndDropOverlay.active {
+    display: block;
+}
+
+#dragAndDropOverlay .drag-and-drop-box {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 700px;
+    padding: 60px 30px;
+    border: 3px dashed #5bc0de;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.97);
+    text-align: center;
+    color: #444;
+    pointer-events: none;
+}
+
+#dragAndDropOverlay .drag-and-drop-box > i {
+    font-size: 48px;
+    color: #5bc0de;
+    display: block;
+    margin-bottom: 15px;
+}
+
+#dragAndDropOverlay .drag-and-drop-box h4 {
+    margin: 0 0 5px 0;
+}
+
+#dragAndDropOverlay.dragover .drag-and-drop-box {
+    border-color: #5cb85c;
+    background: rgba(240, 255, 240, 0.97);
+}
+
+#dragAndDropOverlay.dragover .drag-and-drop-box > i {
+    color: #5cb85c;
+}
+
+#dragAndDropOverlay .drag-and-drop-disabled,
+#dragAndDropOverlay.dragover .drag-and-drop-disabled {
+    border-color: #d9534f;
+    background: rgba(255, 245, 245, 0.97);
+    color: #888;
+}
+
+#dragAndDropOverlay .drag-and-drop-disabled > i,
+#dragAndDropOverlay.dragover .drag-and-drop-disabled > i {
+    color: #d9534f;
+}
+
+#dragAndDropOverlay.drag-and-drop-upload-allowed .drag-and-drop-disabled,
+#dragAndDropOverlay:not(.drag-and-drop-upload-allowed) .drag-and-drop-enabled {
+    display: none;
+}
+
+.drag-and-drop-file-list {
+    max-height: min(14rem, 32vh);
+    overflow-y: auto;
+}
+
+.drag-and-drop-batch-row {
+    min-height: 3rem;
+}
+
+.drag-and-drop-batch-row:last-child {
+    border-bottom-width: 1px;
+}
+
+.drag-and-drop-batch-status {
+    width: 1.25rem;
+    text-align: center;
+}
+
+.drag-and-drop-batch-name {
+    min-width: 0;
+}
+
+.drag-and-drop-batch-size {
+    white-space: nowrap;
+}
+
+.drag-and-drop-batch-remove {
+    line-height: 1;
+    text-decoration: none;
+}
+
+.drag-and-drop-batch-remove:hover,
+.drag-and-drop-batch-remove:focus {
+    background-color: var(--bs-danger-bg-subtle, #f8d7da);
+    color: var(--bs-danger-text-emphasis, #842029) !important;
+}
+
+.drag-and-drop-batch-progress {
+    height: 0.2rem;
+    background: transparent;
+}
+
+.drag-and-drop-batch-progress-bar {
+    width: 0;
+    background-color: var(--bs-primary-color, #5e81f4);
+    transition: width 0.15s linear;
+}
+
+form[name="dragAndDropUpload"] .fieldValue select,
+form[name="dragAndDropUpload"] .fieldValue input[type="text"],
+form[name="dragAndDropUpload"] .fieldValue .select2-container,
+form[name="dragAndDropUpload"] .fieldValue textarea {
+    width: 100% !important;
+}
+
+form[name="dragAndDropUpload"] textarea[name="notecontent"] {
+    min-height: 6rem;
+    resize: vertical;
+}
+
+.drag-and-drop-batch-status .fa-check,
+.drag-and-drop-batch-progress-bar.drag-and-drop-success {
+    color: var(--bs-success, #198754);
+}
+
+.drag-and-drop-batch-status .fa-xmark,
+.drag-and-drop-batch-progress-bar.drag-and-drop-error {
+    color: var(--bs-danger, #dc3545);
+}
+
+.drag-and-drop-batch-progress-bar.drag-and-drop-success {
+    background-color: var(--bs-success, #198754);
+}
+
+.drag-and-drop-batch-progress-bar.drag-and-drop-error {
+    background-color: var(--bs-danger, #dc3545);
+}
+
+@media (max-width: 575.98px) {
+    .drag-and-drop-batch-row {
+        padding-right: 0.5rem !important;
+        padding-left: 0.75rem !important;
+    }
+}
