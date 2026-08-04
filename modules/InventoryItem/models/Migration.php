@@ -8,7 +8,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class InventoryItem_Migratino_Model extends Vtiger_Base_Model
+class InventoryItem_Migration_Model extends Vtiger_Base_Model
 {
     protected array $inventoryModules = ['Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'];
 
