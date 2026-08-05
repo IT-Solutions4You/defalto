@@ -13,6 +13,7 @@
                 {foreach from=$BLOCKS item=BLOCK name=BLOCKS_NAME}
                     {assign var=BLOCK_LABEL value=$BLOCK->getLabel()}
                     {if false eq Reporting_Block_Model::isNavigationTab($BLOCK_LABEL)}{continue}{/if}
+                    {if false eq Reporting_Block_Model::isAvailableForReportType($BLOCK_LABEL, $RECORD->get('report_type'))}{continue}{/if}
                     <div class="nav-item me-2">
                         <a class="nav-link {if 1 eq $smarty.foreach.BLOCKS_NAME.index}active{/if}" href="{$RECORD->getEditViewTabUrl($BLOCK_LABEL)}">
                             {$BLOCK->getIcon()}
@@ -22,9 +23,10 @@
                 {/foreach}
             </div>
         </div>
-        {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getTableData() TABLE_STYLE=$RECORD->getTableStyle()}
-        {if $RECORD->hasCalculations()}
-            {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getTableCalculations() TABLE_STYLE=[]}
+        {if $RECORD->isSummaryReport()}
+            {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getGroupedTableData() TABLE_ROW_TYPES=$RECORD->getGroupedTableRowTypes() TABLE_STYLE=$RECORD->getTableStyle() TABLE_GROUPS_COLLAPSIBLE=true TABLE_SCROLLABLE=true}
+        {else}
+            {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getTableData() TABLE_ROW_TYPES=$RECORD->getTableRowTypes() TABLE_STYLE=$RECORD->getTableStyle() TABLE_SCROLLABLE=true}
         {/if}
     </div>
 {/strip}

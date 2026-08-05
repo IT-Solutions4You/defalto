@@ -16,6 +16,7 @@ class Reporting_Detail_View extends Vtiger_Detail_View
         $this->exposeMethod('getReport');
         $this->exposeMethod('getReportXLS');
         $this->exposeMethod('getReportPDF');
+        $this->exposeMethod('showChart');
     }
 
     /**
@@ -28,10 +29,11 @@ class Reporting_Detail_View extends Vtiger_Detail_View
         $moduleName = $request->getModule();
         $recordId = $request->getRecord();
         $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
-        $tableData = $recordModel->getTableData();
 
-        if ($recordModel->hasCalculations()) {
-            $tableData = array_merge($tableData, $recordModel->getTableCalculations());
+        if ($recordModel->isSummaryReport()) {
+            $tableData = $recordModel->getGroupedExportTableData();
+        } else {
+            $tableData = $recordModel->getExportTableData();
         }
 
         $instance = Reporting_XLS_Model::getInstance();
@@ -53,7 +55,8 @@ class Reporting_Detail_View extends Vtiger_Detail_View
         $viewer->assign('RECORD', $recordModel);
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('BLOCKS', $blockModels);
-        $viewer->assign('HAS_CALCULATIONS', $recordModel->hasCalculations());
+        $viewer->assign('IS_SUMMARY_REPORT', $recordModel->isSummaryReport());
+        $viewer->assign('PDF_CHART', Reporting_PDFChart_Helper::getPDFData($recordModel, $recordModel->getChartData()));
         $table = $viewer->view('ReportPDF.tpl', $moduleName, true);
 
         $instance = Reporting_PDF_Model::getInstance();
@@ -79,4 +82,48 @@ class Reporting_Detail_View extends Vtiger_Detail_View
 
         return $viewer->view('ReportWidget.tpl', $moduleName, true);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function showChart(Vtiger_Request $request): string
+    {
+        $moduleName = $request->getModule();
+        $recordModel = Vtiger_Record_Model::getInstanceById($request->getRecord(), $moduleName);
+        $chartData = $recordModel->getChartData();
+        $viewer = $this->getViewer($request);
+
+        $viewer->assign('HAS_CHART_DATA', !empty($chartData));
+        $viewer->assign(
+            'CHART_DATA_JSON',
+            json_encode($chartData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+        );
+        $viewer->assign('MODULE_NAME', $moduleName);
+
+        return $viewer->view('ReportChart.tpl', $moduleName, true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+
+        return array_merge($headerScriptInstances, $this->getChartScripts());
+    }
+
+    public function getOverlayHeaderScripts(Vtiger_Request $request): array
+    {
+        return array_merge(parent::getOverlayHeaderScripts($request), $this->getChartScripts());
+    }
+
+    protected function getChartScripts(): array
+    {
+        return $this->checkAndConvertJsScripts([
+            'modules.Reporting.resources.Table',
+            '~/vendor/defalto/libraries/chartjs/dist/chart.umd.min.js',
+        ]);
+    }
+
 }

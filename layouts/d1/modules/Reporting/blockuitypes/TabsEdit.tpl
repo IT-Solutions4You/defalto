@@ -8,6 +8,7 @@
  *}
 {if $BLOCK_FIELDS|php7_count gt 0}
     {assign var=PRIMARY_MODULE value=$RECORD->get('primary_module')}
+    {assign var=REPORT_TYPE value=$RECORD->get('report_type')}
     <div class="fieldBlockContainer mb-3 border-bottom {if 1 neq $smarty.foreach.blockIterator.iteration}{/if}" data-block="{$BLOCK_LABEL}">
         {if $PRIMARY_MODULE}
             <div class="container-fluid px-4 pt-3">
@@ -17,10 +18,14 @@
                 <div class="nav nav-tabs">
                     {foreach from=$BLOCK_LIST item=BLOCK key=BLOCK_LABEL}
                         {if false eq Reporting_Block_Model::isNavigationTab($BLOCK_LABEL)}{continue}{/if}
+                        {if false eq Reporting_Block_Model::isAvailableForReportType($BLOCK_LABEL, $REPORT_TYPE)}{continue}{/if}
                         <li class="nav-item me-2">
                             <button type="button" class="nav-link" data-show-block="{$BLOCK_LABEL}">
                                 {$BLOCK->getIcon()}
                                 <span class="ms-2">{vtranslate($BLOCK_LABEL, $QUALIFIED_MODULE)}</span>
+                                <span class="reportingTabError text-danger ms-2 d-none" role="img">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                </span>
                             </button>
                         </li>
                     {/foreach}

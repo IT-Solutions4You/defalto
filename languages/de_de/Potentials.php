@@ -20,6 +20,8 @@
 $languageStrings = [
     '--None--' => '--ohne--',
     'Amount' => 'Betrag',
+    'Currency' => 'Währung',
+    'Conversion Rate' => 'Umrechnungskurs',
     'Campaign Source' => 'Kampagnen Quelle',
     'Closed Lost' => 'verloren',
     'Closed Won' => 'gewonnen',

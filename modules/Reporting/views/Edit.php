@@ -11,6 +11,22 @@
 class Reporting_Edit_View extends Vtiger_Edit_View
 {
     /**
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
+    {
+        return array_merge(parent::getHeaderScripts($request), $this->getTableScripts());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOverlayHeaderScripts(Vtiger_Request $request)
+    {
+        return array_merge(parent::getOverlayHeaderScripts($request), $this->getTableScripts());
+    }
+
+    /**
      * @throws Exception
      */
     public function process(Vtiger_Request $request)
@@ -24,7 +40,55 @@ class Reporting_Edit_View extends Vtiger_Edit_View
             return;
         }
 
+        $this->setDefaultEditCurrency($request);
+        $this->setDefaultEditSharingType($request);
         parent::process($request);
+    }
+
+    protected function setDefaultEditCurrency(Vtiger_Request $request): void
+    {
+        if ($request->has('currency_id') && '' !== (string)$request->get('currency_id')) {
+            return;
+        }
+
+        $moduleName = $request->getModule();
+        $recordId = $request->getRecord();
+
+        if (!empty($recordId)) {
+            $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+
+            if (!empty($recordModel->get('currency_id'))) {
+                return;
+            }
+        }
+
+        $request->set('currency_id', Users_Record_Model::getCurrentUserModel()->getCurrencyId());
+    }
+
+    protected function setDefaultEditSharingType(Vtiger_Request $request): void
+    {
+        if ($request->has('sharing_type') && '' !== trim((string)$request->get('sharing_type'))) {
+            return;
+        }
+
+        $recordId = $request->getRecord();
+
+        if (!empty($recordId)) {
+            $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $request->getModule());
+
+            if ('' !== trim((string)$recordModel->get('sharing_type'))) {
+                return;
+            }
+        }
+
+        $request->set('sharing_type', 'private');
+    }
+
+    protected function setDefaultReportingCurrency(Vtiger_Record_Model $recordModel): void
+    {
+        if (empty($recordModel->get('currency_id'))) {
+            $recordModel->set('currency_id', Users_Record_Model::getCurrentUserModel()->getCurrencyId());
+        }
     }
 
     /**
@@ -55,16 +119,36 @@ class Reporting_Edit_View extends Vtiger_Edit_View
             }
         }
 
+        $this->setDefaultReportingCurrency($recordModel);
+
         $recordModel->set('max_entries', 5);
 
         $viewer = $this->getViewer($request);
         $viewer->assign('RECORD', $recordModel);
         $viewer->assign('MODULE_NAME', $moduleName);
-        $viewer->assign('TABLE_DATA', $recordModel->getTableData());
-        $viewer->assign('TABLE_STYLE', $recordModel->getTableStyle());
+        $viewer->assign('TABLE_GROUPS_COLLAPSIBLE', $recordModel->isSummaryReport());
+        $viewer->assign('TABLE_SCROLLABLE', true);
+
+        if ($recordModel->isSummaryReport()) {
+            $viewer->assign('TABLE_DATA', $recordModel->getGroupedTableData());
+            $viewer->assign('TABLE_ROW_TYPES', $recordModel->getGroupedTableRowTypes());
+            $viewer->assign('TABLE_STYLE', $recordModel->getTableStyle());
+        } else {
+            $viewer->assign('TABLE_DATA', $recordModel->getTableData());
+            $viewer->assign('TABLE_ROW_TYPES', $recordModel->getTableRowTypes());
+            $viewer->assign('TABLE_STYLE', $recordModel->getTableStyle());
+        }
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('ReportTable.tpl', $moduleName);
     }
+
+    protected function getTableScripts(): array
+    {
+        return $this->checkAndConvertJsScripts([
+            'modules.Reporting.resources.Table',
+        ]);
+    }
+
 }

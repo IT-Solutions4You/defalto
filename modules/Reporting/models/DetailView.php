@@ -12,14 +12,31 @@ class Reporting_DetailView_Model extends Vtiger_DetailView_Model
 {
     public array $skipDetailLinkByLabel = ['LBL_ADD_TAG', 'LBL_KEY_FIELDS'];
 
+    public function getWidgets()
+    {
+        return [];
+    }
+
     public function getDetailViewLinks($linkParams)
     {
+        $recordModel = $this->getRecord();
         $links = [
             [
                 'linktype'  => 'DETAILVIEWWIDGET',
                 'linklabel' => 'Reporting',
                 'linkurl'   => sprintf('module=Reporting&view=Detail&mode=getReport&record=%d', $linkParams['RECORD']),
             ],
+        ];
+
+        if ($recordModel->isSummaryReport()) {
+            $links[] = [
+                'linktype'  => 'DETAILVIEWWIDGET',
+                'linklabel' => 'LBL_CHART',
+                'linkurl'   => sprintf('module=Reporting&view=Detail&mode=showChart&record=%d', $linkParams['RECORD']),
+            ];
+        }
+
+        $links = array_merge($links, [
             [
                 'linktype'  => 'DETAILVIEWBASIC',
                 'linklabel' => 'Export XLS',
@@ -33,8 +50,25 @@ class Reporting_DetailView_Model extends Vtiger_DetailView_Model
                 'linkurl'   => sprintf('index.php?module=Reporting&view=Detail&mode=getReportPDF&record=%d', $linkParams['RECORD']),
             ],
             $this->getTagsLinkInfo(),
-        ];
+        ]);
 
         return Vtiger_Link_Model::merge(parent::getDetailViewLinks($linkParams), Vtiger_Link_Model::checkAndConvertLinks($links));
+    }
+
+    public function getDetailViewRelatedLinks()
+    {
+        $relatedLinks = parent::getDetailViewRelatedLinks();
+        $recordModel = $this->getRecord();
+
+        if ($recordModel->isSummaryReport()) {
+            $relatedLinks[] = [
+                'linktype' => 'DETAILVIEWTAB',
+                'linklabel' => 'LBL_CHART',
+                'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showChart',
+                'linkicon' => '<i class="fa-solid fa-chart-column"></i>',
+            ];
+        }
+
+        return $relatedLinks;
     }
 }

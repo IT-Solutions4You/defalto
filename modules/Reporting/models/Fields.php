@@ -12,6 +12,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 {
     public static array $moduleLabels = [];
     public static array $moduleVariables = [];
+    public static array $moduleCurrencyFields = [];
 
     public static array $customFields = [
         'id' => 'Record Id',
@@ -55,7 +56,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
          * @var Vtiger_Field_Model $referenceField
          */
         foreach ($fields as $field) {
-            $options[$field->get('name')] = vtranslate($field->get('label'), $field->getModuleName());
+            $options[$field->get('name')] = self::getTranslatedFieldLabel($field);
         }
 
         $fields = $module->getFieldsByType(['reference', 'owner']);
@@ -71,12 +72,9 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
                 foreach ($referenceFields as $referenceField) {
                     $referenceFieldName = $referenceField->get('name');
-                    $referenceFieldLabel = $referenceField->get('label');
 
-                    $options[implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate($fieldLabel, $moduleName) . ' - ' . vtranslate(
-                            $referenceFieldLabel,
-                            $referenceModuleName
-                        );
+                    $options[implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] =
+                        vtranslate($fieldLabel, $moduleName) . ' - ' . self::getTranslatedFieldLabel($referenceField);
                 }
             }
         }
@@ -102,6 +100,13 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
         return $fields;
     }
 
+    protected static function getTranslatedFieldLabel(Vtiger_Field_Model $field): string
+    {
+        $moduleName = self::isCustomField($field->get('name')) ? 'Reporting' : $field->getModuleName();
+
+        return vtranslate($field->get('label'), $moduleName);
+    }
+
     public static function getFieldVariables($moduleName): array
     {
         if (!empty(self::$moduleVariables[$moduleName])) {
@@ -117,7 +122,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
          * @var Vtiger_Field_Model $referenceField
          */
         foreach ($fields as $field) {
-            $options['default'][$field->get('name')] = vtranslate(($field->block->label ?? ''), $field->getModuleName()) . '##' . vtranslate($field->get('label'), $field->getModuleName());
+            $options['default'][$field->get('name')] = vtranslate(($field->block->label ?? ''), $field->getModuleName()) . '##' . self::getTranslatedFieldLabel($field);
         }
 
         $fields = $module->getFieldsByType(['reference', 'owner']);
@@ -133,12 +138,11 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
                 foreach ($referenceFields as $referenceField) {
                     $referenceFieldName = $referenceField->get('name');
-                    $referenceFieldLabel = $referenceField->get('label');
 
                     $options[implode(':', [$fieldName, $referenceModuleName])][implode(':', [$fieldName, $referenceModuleName, $referenceFieldName])] = vtranslate(
                             ($referenceField->block->label ?? ''),
                             $referenceField->getModuleName()
-                        ) . '##' . vtranslate($referenceFieldLabel, $referenceModuleName);
+                        ) . '##' . self::getTranslatedFieldLabel($referenceField);
                 }
             }
         }
@@ -146,6 +150,52 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
         self::$moduleVariables[$moduleName] = $options;
 
         return $options;
+    }
+
+    public static function getCurrencyFields(string $moduleName): array
+    {
+        if ('' === $moduleName) {
+            return [];
+        }
+
+        if (isset(self::$moduleCurrencyFields[$moduleName])) {
+            return self::$moduleCurrencyFields[$moduleName];
+        }
+
+        $currencyFields = [];
+        $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return [];
+        }
+
+        foreach ($module->getFields() as $field) {
+            if ('currency' === $field->getFieldDataType()) {
+                $currencyFields[] = $field->get('name');
+            }
+        }
+
+        foreach ($module->getFieldsByType(['reference', 'owner']) as $field) {
+            foreach (self::getFieldModules($field) as $referenceModuleName) {
+                $referenceModule = Vtiger_Module_Model::getInstance($referenceModuleName);
+
+                if (!$referenceModule) {
+                    continue;
+                }
+
+                foreach ($referenceModule->getFields() as $referenceField) {
+                    if ('currency' === $referenceField->getFieldDataType()) {
+                        $currencyFields[] = implode(':', [
+                            $field->get('name'),
+                            $referenceModuleName,
+                            $referenceField->get('name'),
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return self::$moduleCurrencyFields[$moduleName] = array_values(array_unique($currencyFields));
     }
 
     public static function getFieldModules($field)

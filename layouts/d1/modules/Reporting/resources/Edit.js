@@ -14,6 +14,11 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
     advancedFilter: false,
     container: false,
     renderTableTimeOut: false,
+    renderTableRequestCount: 0,
+    renderTableLoadingStartedAt: false,
+    renderTableLoadingTimeout: false,
+    renderTableMinimumLoadingTime: 1000,
+    tableWidthBarVisible: false,
     editFieldElement: false,
     getContainer() {
         return this.container;
@@ -27,22 +32,47 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         this.registerCalculations();
         this.registerLabels();
         this.registerFilters();
+        this.registerGrouping();
+        this.registerSharing();
+        this.registerCurrencyBehavior();
+        Reporting_Table_Js.getInstance().registerEvents(container);
         this.registerRenderedTable();
         this.registerWidth();
         this.registerAlign();
+        this.registerSaveButtonState();
     },
     getFormFields() {
-        let self = this,
+        const self = this,
             fields = [];
 
         $.each(self.getContainer().find('[name="fields[]"]'), function (index, element) {
-            fields.push($(element).val())
-        })
+            const field = $(element).val();
+
+            if (field && -1 === $.inArray(field, fields)) {
+                fields.push(field);
+            }
+        });
 
         return fields;
     },
     getFormValue(key) {
         return this.getContainer().find('[name="' + key + '"]').val();
+    },
+    getFormGrouping() {
+        return this.getContainer().find('[name="group_by[]"]').val() || [];
+    },
+    getTableColumnFields() {
+        const fields = this.getFormFields();
+
+        if ('summary' === this.getFormValue('report_type')) {
+            $.each(this.getFormGrouping(), function (index, field) {
+                if (-1 === $.inArray(field, fields)) {
+                    fields.push(field);
+                }
+            });
+        }
+
+        return fields;
     },
     getFormLabels() {
         let self = this,
@@ -57,12 +87,120 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         return labels;
     },
+    getFormCalculations() {
+        let calculations = {};
+
+        this.getContainer().find('.selectedCalculations').each(function () {
+            const element = $(this),
+                fieldName = element.attr('data-name');
+
+            if (!fieldName) {
+                return;
+            }
+
+            calculations[fieldName] = {
+                name: fieldName,
+                label: element.find('.fieldLabel').val(),
+                sum: element.find('.fieldSum input').is(':checked') ? 'Yes' : '',
+                avg: element.find('.fieldAvg input').is(':checked') ? 'Yes' : '',
+                min: element.find('.fieldMin input').is(':checked') ? 'Yes' : '',
+                max: element.find('.fieldMax input').is(':checked') ? 'Yes' : '',
+            };
+        });
+
+        return calculations;
+    },
+    getCurrencyFields() {
+        const currencyFieldsElement = this.getContainer().find('.currencyFields').first();
+
+        if (!currencyFieldsElement.length) {
+            return [];
+        }
+
+        try {
+            return JSON.parse(currencyFieldsElement.text()) || [];
+        } catch (error) {
+            return [];
+        }
+    },
+    hasSelectedCurrencyFields() {
+        const currencyFields = this.getCurrencyFields();
+
+        return this.getFormFields().some(function (fieldName) {
+            return -1 !== $.inArray(fieldName, currencyFields);
+        });
+    },
+    isGroupByCurrencyEnabled() {
+        return this.getContainer().find('[name="group_by_currency"]:checkbox').is(':checked');
+    },
+    registerCurrencyBehavior() {
+        const self = this,
+            events = [
+                'add.selected.fields',
+                'delete.selected.fields',
+                'change.selected.calculations',
+            ];
+
+        self.updateCurrencyBehavior();
+        self.getContainer().on('change', '[name="group_by_currency"]:checkbox', function () {
+            self.updateCurrencyBehavior();
+            self.updateSaveButtonState();
+            self.retrieveRenderTableTimeout();
+        });
+
+        $.each(events, function (index, eventName) {
+            app.event.on(eventName, function () {
+                self.updateCurrencyBehavior();
+            });
+        });
+    },
+    updateCurrencyBehavior() {
+        const groupByCurrencyField = this.getContainer().find('[name="group_by_currency"]:checkbox'),
+            groupByCurrencyContainer = groupByCurrencyField.closest('.py-2'),
+            currencyField = this.getContainer().find('[name="currency_id"]'),
+            currencyContainer = currencyField.closest('.py-2'),
+            hasCurrencyFields = this.hasSelectedCurrencyFields();
+
+        groupByCurrencyContainer.toggleClass('d-none', !hasCurrencyFields);
+
+        if (!hasCurrencyFields && groupByCurrencyField.is(':checked')) {
+            groupByCurrencyField.prop('checked', false);
+        }
+
+        const groupByCurrency = hasCurrencyFields && groupByCurrencyField.is(':checked'),
+            currencyValueMirror = currencyContainer.find('.reportingCurrencyValueMirror');
+
+        currencyContainer.toggleClass('opacity-50', groupByCurrency);
+        currencyField.prop('disabled', groupByCurrency);
+        currencyField.attr('aria-disabled', groupByCurrency ? 'true' : 'false');
+
+        if (groupByCurrency) {
+            if (currencyValueMirror.length) {
+                currencyValueMirror.val(currencyField.val());
+            } else {
+                $('<input>', {
+                    class: 'reportingCurrencyValueMirror',
+                    name: 'currency_id',
+                    type: 'hidden',
+                    value: currencyField.val(),
+                }).appendTo(currencyContainer);
+            }
+        } else {
+            currencyValueMirror.remove();
+        }
+    },
     registerRenderedTable() {
         let self = this;
 
         self.retrieveRenderedTable();
 
-        self.getContainer().on('click', '.renderedTable', function () {
+        self.getContainer().on('click', '.renderTableButton', function () {
+            self.retrieveRenderedTable();
+        });
+        self.getContainer().on('change', '[name="report_type"], [name="primary_module"]', function () {
+            self.updatePreviewTutorial(self.getPreviewRequirements());
+        });
+        self.getContainer().on('change', '[name="currency_id"]', function () {
             self.retrieveRenderTableTimeout();
         });
 
@@ -74,6 +212,8 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             'delete.selected.sorts',
             'sort.selected.sorts',
             'add.selected.sorts',
+            'change.selected.calculations',
+            'change.selected.grouping',
         ];
 
         $.each(events, function (index, value) {
@@ -81,6 +221,218 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
                 self.retrieveRenderTableTimeout();
             });
         });
+    },
+    getPreviewRequirements() {
+        const reportType = this.getFormValue('report_type'),
+            primaryModule = this.getFormValue('primary_module'),
+            currencyId = this.getFormValue('currency_id'),
+            fields = this.getFormFields(),
+            grouping = this.getFormGrouping(),
+            isSummary = 'summary' === reportType;
+
+        return {
+            module: Boolean(reportType && primaryModule),
+            currency: this.isGroupByCurrencyEnabled() || Boolean(currencyId),
+            columns: 0 < fields.length,
+            grouping: !isSummary || 0 < grouping.length,
+            summary: isSummary,
+        };
+    },
+    isPreviewReady(requirements) {
+        return requirements.module && requirements.currency && requirements.columns && requirements.grouping;
+    },
+    getMissingRequiredFields() {
+        return this.getForm().find('[data-rule-required="true"]:enabled').filter(function () {
+            const value = $(this).val();
+
+            return $.isArray(value) ? !value.length : !$.trim(String(value || ''));
+        });
+    },
+    getSaveValidationIssues() {
+        const requirements = this.getPreviewRequirements(),
+            missingRequiredFields = this.getMissingRequiredFields(),
+            requiredBlocks = [],
+            issues = [];
+
+        missingRequiredFields.each(function () {
+            const block = $(this).closest('[data-block]').attr('data-block') || '';
+
+            if (-1 === $.inArray(block, requiredBlocks)) {
+                requiredBlocks.push(block);
+            }
+        });
+        $.each(requiredBlocks, function (index, block) {
+            issues.push({
+                block: block,
+                message: app.vtranslate('JS_REPORT_SAVE_MISSING_REQUIRED_FIELDS'),
+            });
+        });
+        if (missingRequiredFields.length && !requiredBlocks.length) {
+            issues.push({
+                block: '',
+                message: app.vtranslate('JS_REPORT_SAVE_MISSING_REQUIRED_FIELDS'),
+            });
+        }
+        if (!requirements.module) {
+            issues.push({block: 'LBL_TABS', message: app.vtranslate('JS_REPORT_SAVE_SELECT_MODULE')});
+        }
+        if (!requirements.currency) {
+            issues.push({block: 'LBL_DETAILS', message: app.vtranslate('JS_REPORT_SAVE_SELECT_CURRENCY')});
+        }
+        if (!requirements.columns) {
+            issues.push({block: 'LBL_COLUMNS', message: app.vtranslate('JS_REPORT_SAVE_ADD_COLUMN')});
+        }
+        if (!requirements.grouping) {
+            issues.push({block: 'LBL_GROUPING', message: app.vtranslate('JS_REPORT_SAVE_SELECT_GROUPING')});
+        }
+        if (!this.isSharingReady()) {
+            issues.push({block: 'LBL_SHARING', message: app.vtranslate('JS_REPORT_SAVE_SELECT_SHARING')});
+        }
+
+        return issues;
+    },
+    getSharingType() {
+        return String(this.getFormValue('sharing_type') || 'private').toLowerCase();
+    },
+    isSharingReady() {
+        const selectedMembers = this.getContainer().find('[name="sharing[]"]').val() || [];
+
+        return 'selected' !== this.getSharingType() || 0 < selectedMembers.length;
+    },
+    updateSaveButtonState() {
+        const issues = this.getSaveValidationIssues();
+
+        this.getForm().find('.saveButton').prop('disabled', 0 < issues.length);
+        this.updateSaveTabStates(issues);
+    },
+    updateSaveTabStates(issues) {
+        const tabs = this.getNavigationTabs();
+
+        tabs
+            .removeAttr('aria-invalid')
+            .find('.reportingTabError')
+            .removeData('messages')
+            .addClass('d-none')
+            .removeAttr('title aria-label');
+
+        $.each(issues, function (index, issue) {
+            const tab = tabs.filter('[data-show-block="' + issue.block + '"]'),
+                error = tab.find('.reportingTabError'),
+                messages = error.data('messages') || [];
+
+            if (!tab.length || -1 !== $.inArray(issue.message, messages)) {
+                return;
+            }
+
+            messages.push(issue.message);
+            error.data('messages', messages);
+        });
+
+        tabs.each(function () {
+            const tab = $(this),
+                error = tab.find('.reportingTabError'),
+                messages = error.data('messages') || [];
+
+            if (!messages.length) {
+                return;
+            }
+
+            tab.attr('aria-invalid', 'true');
+            error
+                .removeClass('d-none')
+                .attr('title', messages.join(' · '))
+                .attr('aria-label', messages.join(' · '))
+                .removeData('messages');
+        });
+    },
+    registerSaveButtonState() {
+        const self = this,
+            events = [
+                'add.selected.fields',
+                'delete.selected.fields',
+                'change.selected.grouping',
+            ];
+
+        self.updateSaveButtonState();
+        self.getForm().on(
+            'input change',
+            '[data-rule-required="true"], [name="report_type"], [name="primary_module"], [name="currency_id"], [name="group_by_currency"], [name="fields[]"], [name="group_by[]"]',
+            function () {
+                self.updateSaveButtonState();
+            }
+        );
+
+        $.each(events, function (index, eventName) {
+            app.event.on(eventName, function () {
+                self.updateSaveButtonState();
+            });
+        });
+    },
+    registerSharing() {
+        const self = this;
+
+        self.updateSharingFieldState();
+        self.getContainer().on('change', '[name="sharing_type"]', function () {
+            self.updateSharingFieldState();
+            self.updateSaveButtonState();
+        });
+        self.getContainer().on('change', '[name="sharing[]"]', function () {
+            self.updateSaveButtonState();
+        });
+    },
+    updateSharingFieldState() {
+        const sharingTypeField = this.getContainer().find('[name="sharing_type"]');
+        let sharingType = this.getSharingType();
+
+        if (!sharingTypeField.val() && sharingTypeField.find('option[value="private"]').length) {
+            sharingTypeField.val('private').trigger('change.select2');
+            sharingType = 'private';
+        }
+
+        const sharingField = this.getContainer().find('[name="sharing[]"]'),
+            sharingContainer = sharingField.closest('.py-2'),
+            selectedMembers = sharingField.val() || [],
+            isSelected = 'selected' === sharingType;
+
+        sharingContainer.toggleClass('d-none', !isSelected);
+        sharingField.prop('disabled', !isSelected);
+
+        if (!isSelected && selectedMembers.length) {
+            sharingField.val([]).trigger('change');
+        }
+    },
+    updatePreviewTutorial(requirements) {
+        const container = this.getContainer(),
+            tutorial = container.find('.reportingTableTutorial'),
+            table = container.find('.renderedTableContainer'),
+            groupingStep = tutorial.find('.reportingPreviewGroupingStep'),
+            renderButton = container.find('.renderTableButton'),
+            widthButton = container.find('.toggleTableWidthBarButton'),
+            isReady = this.isPreviewReady(requirements);
+
+        groupingStep.toggleClass('d-none', !requirements.summary);
+        renderButton.prop('disabled', this.isRenderedTableLoading() || !isReady);
+        widthButton.prop('disabled', !isReady || !table.find('.renderedTable').length);
+
+        tutorial.find('.reportingPreviewStep').each(function () {
+            const step = $(this),
+                requirement = step.data('preview-requirement'),
+                isComplete = Boolean(requirements[requirement]);
+
+            step.toggleClass('border-success', isComplete);
+            step.find('.previewStepPendingIcon').toggleClass('d-none', isComplete);
+            step.find('.previewStepCompleteIcon').toggleClass('d-none', !isComplete);
+        });
+
+        if (isReady) {
+            tutorial.addClass('d-none');
+            table.removeClass('d-none');
+        } else {
+            tutorial.removeClass('d-none');
+            table.addClass('d-none').empty();
+        }
+
+        this.updateTableWidthBarVisibility();
     },
     getFormSorts(container) {
         let self = this,
@@ -115,28 +467,105 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
     },
     retrieveRenderedTable() {
         let self = this,
-            params = {
+            requirements = self.getPreviewRequirements();
+
+        self.updatePreviewTutorial(requirements);
+
+        if (!self.isPreviewReady(requirements)) {
+            return;
+        }
+
+        let params = {
                 view: 'Edit',
                 mode: 'renderTable',
                 module: 'Reporting',
                 record: self.getFormValue('record'),
                 primary_module: self.getFormValue('primary_module'),
+                currency_id: self.getFormValue('currency_id'),
+                group_by_currency: self.isGroupByCurrencyEnabled() ? 1 : 0,
+                report_type: self.getFormValue('report_type'),
                 fields: self.getFormFields(),
                 labels: self.getFormLabels(),
                 sort_by: self.getFormSorts(),
+                calculation: self.getFormCalculations(),
+                group_by: self.getFormGrouping(),
+                chart_type: self.getFormValue('chart_type'),
                 filter: self.getFormFilters(),
                 width: self.getFormWidth(),
                 align: self.getFormAlign(),
             };
 
+        self.setRenderedTableLoading(true);
         app.helper.showProgress()
         app.request.post({data: params}).then(function (error, data) {
+            self.setRenderedTableLoading(false);
             app.helper.hideProgress()
 
             if (!error) {
-                self.getContainer().find('.renderedTable').html(data);
+                self.getContainer().find('.renderedTableContainer').html(data);
+                self.updateTableWidthBar(self.getTableColumnFields());
             }
         });
+    },
+    setRenderedTableLoading(isLoading) {
+        if (isLoading) {
+            if (this.renderTableLoadingTimeout) {
+                clearTimeout(this.renderTableLoadingTimeout);
+                this.renderTableLoadingTimeout = false;
+            }
+
+            this.startRenderedTableLoadingRequest();
+            this.updateRenderedTableLoadingState();
+
+            return;
+        }
+
+        this.finishRenderedTableLoadingRequest();
+
+        if (0 < this.renderTableRequestCount) {
+            this.updateRenderedTableLoadingState();
+
+            return;
+        }
+
+        const self = this,
+            elapsedTime = Date.now() - (this.renderTableLoadingStartedAt || Date.now()),
+            remainingTime = Math.max(0, this.renderTableMinimumLoadingTime - elapsedTime);
+
+        if (0 < remainingTime) {
+            this.renderTableLoadingTimeout = setTimeout(function () {
+                self.renderTableLoadingTimeout = false;
+                self.renderTableLoadingStartedAt = false;
+                self.updateRenderedTableLoadingState();
+            }, remainingTime);
+        } else {
+            this.renderTableLoadingStartedAt = false;
+        }
+
+        this.updateRenderedTableLoadingState();
+    },
+    startRenderedTableLoadingRequest() {
+        this.renderTableLoadingStartedAt = Date.now();
+        this.renderTableRequestCount++;
+    },
+    finishRenderedTableLoadingRequest() {
+        this.renderTableRequestCount = Math.max(0, this.renderTableRequestCount - 1);
+    },
+    isRenderedTableLoading() {
+        return 0 < this.renderTableRequestCount || Boolean(this.renderTableLoadingTimeout);
+    },
+    updateRenderedTableLoadingState() {
+        const button = this.getContainer().find('.renderTableButton'),
+            icon = button.find('.renderTableIcon'),
+            isLoading = this.isRenderedTableLoading();
+
+        if (isLoading) {
+            icon.addClass('fa-spin');
+        } else {
+            icon.removeClass('fa-spin');
+        }
+
+        button.prop('disabled', isLoading || !this.isPreviewReady(this.getPreviewRequirements()));
     },
     getFormWidth() {
         let self = this,
@@ -180,9 +609,18 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             self.showBlock(hrefParams['tab'] ? hrefParams['tab'] : 'LBL_DETAILS');
         }
 
+        self.updateNavigationButtons();
+
         container.on('click', '[data-show-block]', function () {
             self.hideBlocks();
             self.showBlock($(this).attr('data-show-block'));
+            self.updateNavigationButtons();
+        });
+
+        container.on('click', '.editViewBackButton, .editViewNextButton', function () {
+            const direction = $(this).hasClass('editViewBackButton') ? -1 : 1;
+
+            self.showAdjacentNavigationTab(direction);
         });
 
         container.on('click', '.selectModule', function () {
@@ -198,6 +636,35 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             window.onbeforeunload = null;
             window.location.href = href + '&primary_module=' + module + '&report_type=' + type;
         });
+    },
+    getNavigationTabs() {
+        return this.getContainer().find('[data-show-block]');
+    },
+    showAdjacentNavigationTab(direction) {
+        const tabs = this.getNavigationTabs(),
+            activeIndex = tabs.index(tabs.filter('.active').first()),
+            targetIndex = activeIndex + direction,
+            targetTab = tabs.eq(targetIndex);
+
+        if (activeIndex < 0 || targetIndex < 0 || targetIndex >= tabs.length) {
+            return;
+        }
+
+        targetTab.trigger('click');
+        window.scrollTo({
+            behavior: 'smooth',
+            top: this.getContainer().offset().top,
+        });
+    },
+    updateNavigationButtons() {
+        const container = this.getContainer(),
+            tabs = this.getNavigationTabs(),
+            activeIndex = tabs.index(tabs.filter('.active').first()),
+            backButton = container.find('.editViewBackButton'),
+            nextButton = container.find('.editViewNextButton');
+
+        backButton.toggleClass('d-none', activeIndex <= 0);
+        nextButton.toggleClass('d-none', activeIndex < 0 || activeIndex >= tabs.length - 1);
     },
     hideBlock(name) {
         this.getContainer().find('[data-block="' + name + '"]').addClass('visually-hidden')
@@ -323,6 +790,10 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         self.updateCalculations();
 
+        self.getContainer().on('change', '.selectedCalculations :checkbox', function () {
+            app.event.trigger('change.selected.calculations');
+        });
+
         app.event.on('add.selected.fields', function () {
             self.updateCalculations();
         });
@@ -331,6 +802,94 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             let field = element.find('[name="fields[]"]').val();
 
             $('.selectedCalculations[data-name="' + field + '"]').remove();
+        });
+    },
+    registerGrouping() {
+        const self = this,
+            events = [
+                'add.selected.fields',
+                'delete.selected.fields',
+                'sort.selected.fields',
+                'label.selected.fields',
+            ];
+
+        self.updateGroupingOptions();
+
+        self.getContainer().on('change', '[name="group_by[]"]', function () {
+            self.updateGroupingButtons();
+            app.event.trigger('change.selected.grouping');
+        });
+        self.getContainer().on('click', '.groupSelected', function () {
+            const button = $(this),
+                fieldName = button.attr('data-field'),
+                groupingField = self.getContainer().find('[name="group_by[]"]'),
+                selectedGrouping = groupingField.val() || [],
+                selectedIndex = $.inArray(fieldName, selectedGrouping);
+
+            if (!fieldName || !groupingField.length) {
+                return;
+            }
+
+            if (-1 === selectedIndex) {
+                selectedGrouping.push(fieldName);
+            } else {
+                selectedGrouping.splice(selectedIndex, 1);
+            }
+
+            groupingField.val(selectedGrouping).trigger('change');
+        });
+
+        $.each(events, function (index, eventName) {
+            app.event.on(eventName, function () {
+                self.updateGroupingOptions();
+            });
+        });
+    },
+    updateGroupingOptions() {
+        const groupingField = this.getContainer().find('[name="group_by[]"]'),
+            selectedGrouping = groupingField.val() || [],
+            availableGrouping = [];
+
+        this.getContainer().find('.selectedFields').each(function () {
+            const selectedField = $(this),
+                fieldName = selectedField.find('[name="fields[]"]').val(),
+                fieldLabel = selectedField.find('.fieldLabel').text().trim();
+
+            if (fieldName && !availableGrouping.some(function (field) { return field.name === fieldName; })) {
+                availableGrouping.push({name: fieldName, label: fieldLabel});
+            }
+        });
+
+        groupingField.empty();
+
+        $.each(availableGrouping, function (index, field) {
+            groupingField.append(new Option(
+                field.label,
+                field.name,
+                false,
+                -1 !== $.inArray(field.name, selectedGrouping)
+            ));
+        });
+
+        groupingField.trigger('change.select2');
+        this.updateGroupingButtons();
+
+        if (selectedGrouping.length !== (groupingField.val() || []).length) {
+            app.event.trigger('change.selected.grouping');
+        }
+    },
+    updateGroupingButtons() {
+        const selectedGrouping = this.getFormGrouping();
+
+        this.getContainer().find('.groupSelected').each(function () {
+            const button = $(this),
+                isSelected = -1 !== $.inArray(button.attr('data-field'), selectedGrouping);
+
+            button
+                .attr('aria-pressed', isSelected ? 'true' : 'false')
+                .toggleClass('fw-semibold', isSelected)
+                .find('.groupSelectedCheck')
+                .toggleClass('invisible', !isSelected);
         });
     },
     getFieldOptions() {
@@ -799,44 +1358,277 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         const self = this;
 
         self.getForm().on('submit', function (e) {
+            const isModuleSelectionStep = 0 < self.getContainer().find('.selectModule').length,
+                groupingFields = self.getFormGrouping();
+
+            if ('summary' === self.getFormValue('report_type') && !isModuleSelectionStep && !groupingFields.length) {
+                e.preventDefault();
+                app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_GROUPING_FIELD')});
+
+                return false;
+            }
+
             self.retrieveFilterValues();
 
             return true;
         })
     },
     registerWidth() {
-        let self = this;
+        const self = this,
+            events = [
+                'add.selected.fields',
+                'delete.selected.fields',
+                'sort.selected.fields',
+                'label.selected.fields',
+                'change.selected.grouping',
+            ];
 
         self.retrieveWidth();
 
-        app.event.on('add.selected.fields', function () {
+        $.each(events, function (index, eventName) {
+            app.event.on(eventName, function () {
+                self.retrieveWidth();
+            });
+        });
+
+        self.getContainer().on('change', '[name="report_type"]', function () {
             self.retrieveWidth();
+        });
+
+        self.getContainer().on('input change', '.reportingTableWidthInput', function (event) {
+            const input = $(this),
+                field = input.data('field'),
+                width = 'change' === event.type ? self.getTableWidthInputValue(input.val()) : input.val();
+
+            input.val(width);
+            self.setWidthSelected(field, width);
+            self.updateRenderedTableColumnWidth(field, width);
+        });
+
+        self.getContainer().on('click', '.resetTableWidths', function () {
+            self.getContainer().find('.reportingTableWidthInput').each(function () {
+                $(this).val('').trigger('input');
+            });
+        });
+
+        self.getContainer().on('click', '.toggleTableWidthBarButton', function () {
+            self.tableWidthBarVisible = !self.tableWidthBarVisible;
+            self.updateTableWidthBarVisibility();
         });
     },
     retrieveWidth() {
-        let self = this,
+        const self = this,
             container = self.getContainer(),
             containerSelected = container.find('.containerSelectedWidth'),
             cloneHtml = container.find('.containerCloneWidth').html(),
-            fields = container.find('[name="fields[]"]');
+            fields = self.getTableColumnFields();
 
-        $.each(fields, function (index, element) {
-            let value = $(element).val(),
+        $.each(fields, function (index, value) {
+            const name = 'width[' + value + ']',
                 clone = $(cloneHtml),
-                name = 'width[' + value + ']';
+                fieldElement = containerSelected.find('[name="' + name + '"]');
 
             clone.find('.fieldValue').attr('name', name);
             clone.data('field', value);
-            clone.find('.fieldLabel').text(self.getFieldLabel(value));
 
-            if (value && !containerSelected.find('[name="' + name + '"]').length) {
+            if (value && !fieldElement.length) {
                 containerSelected.append(clone);
             }
         });
+
+        containerSelected.find('.selectedWidth').each(function () {
+            if (-1 === $.inArray($(this).data('field'), fields)) {
+                $(this).remove();
+            }
+        });
+
+        self.updateTableWidthBar(fields);
     },
     updateWidthSelected(field, width) {
-        this.retrieveWidth()
-        this.getContainer().find('[name="width[' + field + ']"]').val(width);
+        this.retrieveWidth();
+        this.setWidthSelected(field, width);
+    },
+    setWidthSelected(field, width) {
+        const container = this.getContainer();
+
+        container.find('[name="width[' + field + ']"]').val(width);
+        container.find('.reportingTableWidthInput').filter(function () {
+            return field === $(this).data('field');
+        }).val(width);
+    },
+    updateTableWidthBar(fields) {
+        const self = this,
+            container = self.getContainer(),
+            table = container.find('.renderedTable'),
+            config = container.find('.reportingTableWidthConfig'),
+            autoLabel = config.data('auto-label'),
+            widthLabel = config.data('width-label');
+
+        if (!table.length || !table.find('tr').length) {
+            return;
+        }
+
+        let bar = table.find('.reportingTableWidthBar'),
+            toolbar = table.find('.reportingTableWidthToolbar');
+
+        if (!bar.length) {
+            const firstRow = table.find('tr').first(),
+                toolbarCell = $('<th>', {
+                    class: 'bg-body-secondary bg-opacity-50 border-bottom p-2 text-end',
+                    colspan: fields.length,
+                }),
+                resetButton = $('<button>', {
+                    class: 'resetTableWidths btn btn-sm btn-outline-secondary text-nowrap',
+                    type: 'button',
+                }),
+                resetIcon = $('<i>', {
+                    class: 'fa-solid fa-rotate-left me-1',
+                });
+
+            toolbar = $('<tr>', {
+                class: 'reportingTableWidthToolbar',
+            });
+            bar = $('<tr>', {
+                class: 'reportingTableWidthBar bg-body-secondary bg-opacity-50 border-bottom',
+            });
+            resetButton.append(resetIcon, $('<span>', {text: autoLabel}));
+            toolbarCell.append(resetButton);
+            toolbar.append(toolbarCell);
+            firstRow.before(toolbar, bar);
+        } else {
+            toolbar.find('th').attr('colspan', fields.length);
+        }
+
+        bar.empty();
+
+        $.each(fields, function (index, field) {
+            const label = self.getFieldLabel(field) || field,
+                value = container.find('[name="width[' + field + ']"]').val() || '',
+                inputId = 'reportingTableWidth' + index,
+                cell = $('<th>', {
+                    class: 'bg-body-secondary bg-opacity-50 p-2 align-middle',
+                    scope: 'col',
+                }),
+                input = $('<input>', {
+                    'aria-label': widthLabel + ': ' + label,
+                    'aria-valuemin': 100,
+                    class: 'reportingTableWidthInput form-control form-control-sm w-100',
+                    'data-field': field,
+                    'data-min-width': 100,
+                    id: inputId,
+                    inputmode: 'decimal',
+                    min: 100,
+                    placeholder: autoLabel,
+                    size: 6,
+                    type: 'text',
+                    value: value,
+                });
+
+            cell.append(input);
+            bar.append(cell);
+        });
+
+        self.updateTableWidthBarVisibility();
+    },
+    updateTableWidthBarVisibility() {
+        const container = this.getContainer(),
+            bar = container.find('.reportingTableWidthBar'),
+            widthRows = container.find('.reportingTableWidthBar, .reportingTableWidthToolbar'),
+            button = container.find('.toggleTableWidthBarButton'),
+            isVisible = this.tableWidthBarVisible && Boolean(bar.length);
+
+        widthRows.toggleClass('d-none', !isVisible);
+        button
+            .toggleClass('active', isVisible)
+            .attr('aria-expanded', String(isVisible))
+            .prop('disabled', !bar.length);
+    },
+    updateRenderedTableColumnWidth(field, value) {
+        const columnIndex = $.inArray(field, this.getTableColumnFields()),
+            width = this.getRenderedTableColumnWidth(value),
+            table = this.getContainer().find('.renderedTable');
+
+        if (-1 === columnIndex || !table.length) {
+            return;
+        }
+
+        table.find('col').eq(columnIndex).css('width', width);
+        table.find('tr').not('.reportingTableWidthToolbar').each(function () {
+            $(this).children().eq(columnIndex).css({
+                'min-width': 'auto' === width ? '' : width,
+                width: width,
+            });
+        });
+
+        this.updateRenderedTableWidth();
+    },
+    updateRenderedTableWidth() {
+        const self = this,
+            container = self.getContainer(),
+            table = container.find('.renderedTable'),
+            tableWidths = [];
+        let hasConfiguredWidths = false;
+
+        $.each(self.getTableColumnFields(), function (index, field) {
+            const value = container.find('[name="width[' + field + ']"]').val(),
+                width = self.getRenderedTableColumnWidth(value);
+
+            if (width && 'auto' !== width) {
+                hasConfiguredWidths = true;
+            }
+
+            tableWidths.push(width && 'auto' !== width ? width : '100px');
+        });
+
+        if (!hasConfiguredWidths) {
+            table.css({
+                'min-width': '',
+                'table-layout': '',
+                width: '',
+            });
+
+            return;
+        }
+
+        const tableWidth = 'calc(' + tableWidths.join(' + ') + ')';
+
+        table.css({
+            'min-width': tableWidth,
+            'table-layout': 'fixed',
+            width: tableWidth,
+        });
+    },
+    getRenderedTableColumnWidth(value) {
+        const width = $.trim(String(value || '').replace(/;+$/, '')),
+            pixelWidth = width.match(/^(\d+(?:\.\d+)?)px$/i);
+
+        if (!width) {
+            return '';
+        }
+
+        if ($.isNumeric(width)) {
+            return Math.max(100, Number(width)) + 'px';
+        }
+
+        if (pixelWidth) {
+            return Math.max(100, Number(pixelWidth[1])) + 'px';
+        }
+
+        if ('auto' === width.toLowerCase()) {
+            return 'auto';
+        }
+
+        return /^\d+(?:\.\d+)?(?:px|%|em|rem|ch|vw|cm|mm|in|pt|pc)$/i.test(width) ? width : '';
+    },
+    getTableWidthInputValue(value) {
+        const width = $.trim(String(value || '').replace(/;+$/, '')),
+            pixelWidth = width.match(/^(\d+(?:\.\d+)?)px$/i);
+
+        if (pixelWidth) {
+            return Math.max(100, Number(pixelWidth[1])) + 'px';
+        }
+
+        return $.isNumeric(width) ? String(Math.max(100, Number(width))) : width;
     },
     registerAlign() {
         let self = this;
