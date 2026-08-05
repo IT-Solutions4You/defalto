@@ -28,20 +28,107 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         return $this->getTableModel()->getTable();
     }
 
+    public function getExportTableData(): array
+    {
+        if (empty($this->getPrimaryModule())) {
+            return [];
+        }
+
+        $this->retrieveQueryGenerator();
+        $this->retrieveTable();
+
+        return $this->getTableModel()->getExportTable();
+    }
+
     public function getTableStyle(): array
     {
-        $width = $this->getWidth();
-        $align = $this->getAlign();
-        $row = 0;
+        $widths = $this->getWidth();
+        $alignments = $this->getAlign();
+        $fields = $this->getFields();
+        $normalizedWidths = [];
         $style = [];
 
-        foreach ($this->getFields() as $field) {
-            $style['th'][$row] = 'width:' . ($width[$field] ?? '') . '; text-align:' . ($align[$field] ?? '') . ';';
-            $style['td'][$row] = 'text-align:' . ($align[$field] ?? '') . ';';
-            $row++;
+        if ($this->isSummaryReport()) {
+            $fields = array_values(array_unique(array_merge(
+                $fields,
+                $this->getGroupByFields(),
+                $this->getCalculationFields(),
+            )));
+        } else {
+            $fields = array_values(array_unique(array_merge($fields, $this->getCalculationFields())));
+        }
+
+        foreach ($fields as $columnIndex => $field) {
+            $normalizedWidths[$columnIndex] = $this->getTableColumnWidth($widths[$field] ?? '');
+        }
+
+        $hasConfiguredWidths = !empty(array_filter(
+            $normalizedWidths,
+            static fn(string $width): bool => '' !== $width && 'auto' !== $width
+        ));
+        $tableWidths = [];
+
+        foreach ($fields as $columnIndex => $field) {
+            $width = $normalizedWidths[$columnIndex];
+            $webWidth = $hasConfiguredWidths && ('' === $width || 'auto' === $width) ? '100px' : $width;
+            $align = $this->getTableColumnAlign($alignments[$field] ?? '');
+            $widthStyle = $width ? 'width:' . $width . ';' : '';
+            $alignStyle = $align ? 'text-align:' . $align . ';' : '';
+
+            $style['col'][$columnIndex] = $widthStyle;
+            $style['web_col'][$columnIndex] = $webWidth ? 'width:' . $webWidth . ';' : '';
+            $style['min'][$columnIndex] = $webWidth ? 'min-width:' . $webWidth . ';' : '';
+            $style['th'][$columnIndex] = $widthStyle . $alignStyle;
+            $style['td'][$columnIndex] = $widthStyle . $alignStyle;
+
+            if ($hasConfiguredWidths) {
+                $tableWidths[] = $webWidth;
+            }
+        }
+
+        if ($hasConfiguredWidths) {
+            $tableWidth = 'calc(' . implode(' + ', $tableWidths) . ')';
+            $style['table'] = 'table-layout:fixed;width:' . $tableWidth . ';min-width:' . $tableWidth . ';';
         }
 
         return $style;
+    }
+
+    protected function getTableColumnWidth(mixed $value): string
+    {
+        $value = trim(rtrim(trim((string)$value), ';'));
+
+        if ('' === $value) {
+            return '';
+        }
+
+        if (is_numeric($value)) {
+            $number = (float)$value;
+
+            return max(100, $number) . 'px';
+        }
+
+        if ('auto' === strtolower($value)) {
+            return 'auto';
+        }
+
+        if (preg_match('/^(\d+(?:\.\d+)?)px$/i', $value, $matches)) {
+            return max(100, (float)$matches[1]) . 'px';
+        }
+
+        return preg_match('/^\d+(?:\.\d+)?(?:px|%|em|rem|ch|vw|cm|mm|in|pt|pc)$/i', $value)
+            ? $value
+            : '';
+    }
+
+    protected function getTableColumnAlign(mixed $value): string
+    {
+        return match (strtolower(trim((string)$value))) {
+            'left', 'start' => 'left',
+            'center' => 'center',
+            'right', 'end' => 'right',
+            default => '',
+        };
     }
 
     /**
@@ -57,6 +144,134 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $this->retrieveTable();
 
         return $this->getTableModel()->getTableCalculations();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getTableRowTypes(): array
+    {
+        if (empty($this->getPrimaryModule())) {
+            return [];
+        }
+
+        $this->retrieveQueryGenerator();
+        $this->retrieveTable();
+
+        return $this->getTableModel()->getTableRowTypes();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getGroupedTableData(): array
+    {
+        if (!$this->isSummaryReport() || empty($this->getGroupByFields()) || empty($this->getPrimaryModule())) {
+            return [];
+        }
+
+        $this->retrieveQueryGenerator();
+        $this->retrieveTable();
+
+        return $this->getTableModel()->getGroupedTable();
+    }
+
+    public function getGroupedExportTableData(): array
+    {
+        if (!$this->isSummaryReport() || empty($this->getGroupByFields()) || empty($this->getPrimaryModule())) {
+            return [];
+        }
+
+        $this->retrieveQueryGenerator();
+        $this->retrieveTable();
+
+        return $this->getTableModel()->getGroupedExportTable();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getGroupedTableRowTypes(): array
+    {
+        if (!$this->isSummaryReport() || empty($this->getGroupByFields()) || empty($this->getPrimaryModule())) {
+            return [];
+        }
+
+        $this->retrieveQueryGenerator();
+        $this->retrieveTable();
+
+        return $this->getTableModel()->getGroupedTableRowTypes();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getChartData(): array
+    {
+        if (!$this->isSummaryReport() || empty($this->getGroupByFields())) {
+            return [];
+        }
+
+        $this->retrieveQueryGenerator();
+        $this->retrieveTable();
+
+        $groupedData = $this->getTableModel()->getGroupedData();
+
+        if (empty($groupedData)) {
+            return [];
+        }
+
+        $labels = [];
+        $datasets = [];
+
+        foreach ($groupedData as $group) {
+            $labels[] = html_entity_decode(strip_tags((string)$group['label']), ENT_QUOTES | ENT_HTML5);
+        }
+
+        $availableMetrics = [];
+
+        foreach ($groupedData as $group) {
+            foreach ($group['metrics'] as $metricKey => $metric) {
+                $availableMetrics[$metricKey] ??= $metric;
+            }
+        }
+
+        if (empty($availableMetrics)) {
+            $datasets[] = [
+                'label' => vtranslate('LBL_COUNT', 'Reporting'),
+                'data' => array_column($groupedData, 'count'),
+            ];
+        } else {
+            foreach ($availableMetrics as $metricKey => $metric) {
+                $values = [];
+
+                foreach ($groupedData as $group) {
+                    $values[] = $group['metrics'][$metricKey]['value'] ?? 0;
+                }
+
+                $datasets[] = [
+                    'label' => html_entity_decode(strip_tags((string)$metric['label']), ENT_QUOTES | ENT_HTML5),
+                    'data' => $values,
+                ];
+            }
+        }
+
+        return [
+            'type' => $this->getChartType(),
+            'data' => [
+                'labels' => $labels,
+                'datasets' => $datasets,
+            ],
+            'options' => [
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'plugins' => [
+                    'legend' => [
+                        'position' => 'bottom',
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function getTableModel(): Reporting_Table_Model|bool
@@ -75,6 +290,10 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $table->setTableColumns($this->getFields());
         $table->setTableLabels($this->getLabels());
         $table->setTableCalculations($this->getCalculations());
+        $table->setTableAlignments($this->getAlign());
+        $table->setGroupBy($this->getGroupByFields());
+        $table->setGroupByCurrency($this->isGroupByCurrencyEnabled());
+        $table->setReportingCurrencyId($this->getReportingCurrencyId());
 
         $this->tableModel = $table;
     }
@@ -86,7 +305,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         }
 
         $query = Core_QueryGenerator_Model::getInstance($this->getPrimaryModule());
-        $query->setLimit($this->getMaxEntries());
+        $query->setLimit(0);
         $query->setOrderByClauseRequired(true);
         $query->setOrderByColumns($this->getOrderByColumns());
         $query->parseAdvFilterList($this->getFormatedFilters());
@@ -100,9 +319,80 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         return (int)$this->get('max_entries') ?: (int)$list_max_entries_per_page;
     }
 
+    public function getReportingCurrencyId(): int
+    {
+        $currencyId = (int)$this->get('currency_id');
+
+        if (0 < $currencyId) {
+            return $currencyId;
+        }
+
+        return Users_Record_Model::getCurrentUserModel()->getCurrencyId();
+    }
+
+    public function isGroupByCurrencyEnabled(): bool
+    {
+        return (bool)$this->get('group_by_currency');
+    }
+
     public function getCalculations(): array
     {
         return $this->getArrayFromJson('calculation');
+    }
+
+    public function getCalculationFields(): array
+    {
+        $fields = [];
+
+        foreach ($this->getCalculations() as $fieldName => $calculation) {
+            $fieldName = (string)($calculation['name'] ?? $fieldName);
+
+            if ('' !== $fieldName) {
+                $fields[] = $fieldName;
+            }
+        }
+
+        return array_values(array_unique($fields));
+    }
+
+    public function isSummaryReport(): bool
+    {
+        return 'summary' === $this->get('report_type');
+    }
+
+    public function getGroupBy(): string
+    {
+        return (string)$this->get('group_by');
+    }
+
+    public function getGroupByFields(): array
+    {
+        $groupBy = decode_html($this->getGroupBy());
+        $groupByFields = json_decode($groupBy, true);
+
+        if (!is_array($groupByFields)) {
+            $groupByFields = empty($groupBy) ? [] : [$groupBy];
+        }
+
+        $selectedFields = $this->getFields();
+        $groupByFields = array_values(array_unique(array_filter(array_map('strval', $groupByFields))));
+
+        return array_values(array_intersect($groupByFields, $selectedFields));
+    }
+
+    public function save(): void
+    {
+        $this->set('group_by', json_encode($this->getGroupByFields()));
+
+        parent::save();
+    }
+
+    public function getChartType(): string
+    {
+        $chartType = (string)$this->get('chart_type');
+        $allowedTypes = ['bar', 'line', 'pie', 'doughnut'];
+
+        return in_array($chartType, $allowedTypes, true) ? $chartType : 'bar';
     }
 
     /**

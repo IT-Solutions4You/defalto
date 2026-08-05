@@ -71,7 +71,9 @@ class Reporting_XLS_Model extends Vtiger_Base_Model
 
     public function generateCellValue($value): string
     {
-        return strip_tags($value);
+        $value = html_entity_decode(strip_tags((string)$value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return str_replace("\u{00A0}", ' ', $value);
     }
 
     public function getXLXS(): string

@@ -20,6 +20,11 @@ class Reporting_Block_Model extends Vtiger_Block_Model
         return !isset(self::$customUITypeNames[$value]);
     }
 
+    public static function isAvailableForReportType(string $blockLabel, string $reportType): bool
+    {
+        return !in_array($blockLabel, ['LBL_GROUPING', 'LBL_CHARTS'], true) || 'summary' === $reportType;
+    }
+
     public function getUITypeName(): string
     {
         return self::$customUITypeNames[$this->getLabel()] ?? parent::getUITypeName();
@@ -32,6 +37,8 @@ class Reporting_Block_Model extends Vtiger_Block_Model
         return match ($label) {
             'LBL_COLUMNS' => '<i class="bi bi-layout-three-columns"></i>',
             'LBL_CALCULATIONS' => '<i class="bi bi-calculator"></i>',
+            'LBL_GROUPING' => '<i class="fa-solid fa-layer-group"></i>',
+            'LBL_CHARTS' => '<i class="fa-solid fa-chart-column"></i>',
             'LBL_LABELS' => '<i class="bi bi-bookmark"></i>',
             'LBL_FILTERS' => '<i class="bi bi-funnel"></i>',
             'LBL_SHARING' => '<i class="bi bi-share"></i>',

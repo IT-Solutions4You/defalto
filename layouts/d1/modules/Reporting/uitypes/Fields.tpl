@@ -14,9 +14,11 @@
     {assign var=FIELD_OPTIONS value=$UITYPE_MODEL->getFieldOptions($PRIMARY_MODULE)}
     {assign var=MODULE_OPTIONS value=$UITYPE_MODEL->getModuleOptions($PRIMARY_MODULE)}
     {assign var=LABEL_OPTIONS value=$UITYPE_MODEL->getLabelOptions($PRIMARY_MODULE, $RECORD->getLabels())}
+    {assign var=CURRENCY_FIELDS value=Reporting_Fields_Model::getCurrencyFields($PRIMARY_MODULE)}
     <div class="containerFields" data-field="" data-label="">
         <div class="labelFields visually-hidden">{json_encode($LABEL_OPTIONS)}</div>
         <div class="fieldOptions visually-hidden">{json_encode($FIELD_OPTIONS)}</div>
+        <div class="currencyFields visually-hidden">{json_encode($CURRENCY_FIELDS)}</div>
         <div class="modalFields visually-hidden">
             {include file='uitypes/FieldsEditLabelModal.tpl'|vtemplate_path:$QUALIFIED_MODULE}
             {include file='uitypes/FieldsNewFieldModal.tpl'|vtemplate_path:$QUALIFIED_MODULE}

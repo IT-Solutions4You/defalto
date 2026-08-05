@@ -27,6 +27,16 @@
                     <i class="bi bi-x-lg"></i>
                     <span class="ms-2">{vtranslate('LBL_SORT_CLEAR', $QUALIFIED_MODULE)}</span>
                 </button>
+                {if 'summary' === $RECORD->get('report_type')}
+                    <button type="button"
+                            class="groupSelected dropdown-item d-flex align-items-center"
+                            data-field="{$FIELD_VALUE}"
+                            aria-pressed="false">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span class="ms-2">{vtranslate('LBL_GROUP_BY', $QUALIFIED_MODULE)}</span>
+                        <i class="groupSelectedCheck bi bi-check-lg ms-auto invisible"></i>
+                    </button>
+                {/if}
                 <hr class="dropdown-divider">
                 <button type="button" class="moveSelected dropdown-item" data-value="left">
                     <i class="bi bi-arrow-left"></i>

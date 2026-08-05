@@ -50,4 +50,62 @@ class Reporting extends CRMEntity
     {
         $this->saveSharing();
     }
+
+    public function saveSharing(): void
+    {
+        if (empty($this->id)) {
+            return;
+        }
+
+        $sharingType = $this->getSharingType();
+        $viewMembers = match ($sharingType) {
+            'all' => [$this->getAllUsersSharingMember()],
+            'selected' => $this->getSelectedSharingMembers(),
+            default => [],
+        };
+        $sharingModel = new Core_SharingRecord_Model();
+
+        $sharingModel->setRecordId((int)$this->id);
+        $sharingModel->setMemberViewList($viewMembers);
+        $sharingModel->setMemberEditList([]);
+        $sharingModel->save();
+    }
+
+    protected function getSharingType(): string
+    {
+        $sharingType = strtolower(trim((string)($this->column_fields['sharing_type'] ?? '')));
+
+        if (in_array($sharingType, ['all', 'private', 'selected'], true)) {
+            return $sharingType;
+        }
+
+        return empty($this->column_fields['sharing']) ? 'private' : 'selected';
+    }
+
+    protected function getAllUsersSharingMember(): string
+    {
+        $baseRole = Settings_Roles_Record_Model::getBaseRole();
+
+        if (!$baseRole) {
+            throw new RuntimeException('The base role required for sharing the report with all users is missing.');
+        }
+
+        return Settings_Groups_Member_Model::getQualifiedId(
+            Settings_Groups_Member_Model::MEMBER_TYPE_ROLE_AND_SUBORDINATES,
+            $baseRole->getId(),
+        );
+    }
+
+    protected function getSelectedSharingMembers(): array
+    {
+        $selectedMembers = array_filter(explode(' |##| ', (string)($this->column_fields['sharing'] ?? '')));
+        $availableMembers = [];
+        $sharingModel = new Core_SharingRecord_Model();
+
+        foreach ($sharingModel->getMembersOptions() as $members) {
+            $availableMembers = array_merge($availableMembers, array_keys($members));
+        }
+
+        return array_values(array_unique(array_intersect($selectedMembers, $availableMembers)));
+    }
 }

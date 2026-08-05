@@ -24,9 +24,72 @@ class Reporting_Install_Model extends Core_Install_Model
     {
     }
 
+    public function installModule()
+    {
+        $isNewModule = !Vtiger_Module::getInstance($this->moduleName);
+
+        parent::installModule();
+
+        if ($isNewModule) {
+            $moduleInstance = Vtiger_Module::getInstance($this->moduleName);
+
+            if ($moduleInstance) {
+                $moduleInstance->setDefaultSharing('Private');
+            }
+        }
+    }
+
     public function retrieveBlocks(): void
     {
         self::$fieldsConfig['Reporting'] = $this->getBlocks();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createField(string $fieldName, array $fieldParams): Vtiger_Field_Model|bool
+    {
+        $fieldInstance = parent::createField($fieldName, $fieldParams);
+
+        if ('chart_type' === $fieldName && $fieldInstance && !empty($fieldParams['block'])) {
+            $blockInstance = $fieldParams['block'];
+            $fieldInstance->block = $blockInstance;
+            $fieldInstance->getFieldTable()->updateData(
+                ['block' => $blockInstance->id],
+                ['fieldid' => $fieldInstance->id],
+            );
+        }
+
+        if ('sharing_type' === $fieldName && $fieldInstance) {
+            $this->setSharingTypeFieldSequence($fieldInstance);
+        }
+
+        return $fieldInstance;
+    }
+
+    protected function setSharingTypeFieldSequence(Vtiger_Field_Model $sharingTypeField): void
+    {
+        $sharingField = $this->getFieldInstance('sharing');
+
+        if (!$sharingField->getId()) {
+            return;
+        }
+
+        $sharingSequence = (int)$sharingField->get('sequence');
+        $sharingTypeSequence = (int)$sharingTypeField->get('sequence');
+
+        if ($sharingTypeSequence < $sharingSequence) {
+            return;
+        }
+
+        $sharingTypeField->getFieldTable()->updateData(
+            ['sequence' => $sharingSequence],
+            ['fieldid' => $sharingTypeField->getId()],
+        );
+        $sharingField->getFieldTable()->updateData(
+            ['sequence' => $sharingSequence + 1],
+            ['fieldid' => $sharingField->getId()],
+        );
     }
 
     public function getBlocks(): array
@@ -39,7 +102,8 @@ class Reporting_Install_Model extends Core_Install_Model
                     'table' => 'df_reporting',
                     'uitype' => 15,
                     'picklist_values' => [
-                        'tabular'
+                        'tabular',
+                        'summary',
                     ],
                     'filter' => 1,
                     'filter_sequence' => 2,
@@ -98,6 +162,23 @@ class Reporting_Install_Model extends Core_Install_Model
                     'table' => 'df_reporting',
                     'headerfield' => 1,
                 ],
+                'currency_id' => [
+                    'label' => 'Currency',
+                    'uitype' => 117,
+                    'typeofdata' => 'I~M',
+                ],
+                'group_by_currency' => [
+                    'label' => 'Group calculations by currency',
+                    'uitype' => 56,
+                    'typeofdata' => 'C~O',
+                    'defaultvalue' => 0,
+                ],
+                'conversion_rate' => [
+                    'label' => 'Conversion Rate',
+                    'uitype' => 1,
+                    'presence' => Vtiger_Field_Model::PRESENCE_HIDDEN,
+                    'typeofdata' => 'N~O',
+                ],
             ],
             'LBL_COLUMNS' => [
                 'fields' => [
@@ -143,6 +224,31 @@ class Reporting_Install_Model extends Core_Install_Model
                     'ajaxeditable' => 0,
                 ],
             ],
+            'LBL_GROUPING' => [
+                'group_by' => [
+                    'columntype' => 'TEXT',
+                    'column' => 'group_by',
+                    'label' => 'Group By',
+                    'table' => 'df_reporting',
+                    'ajaxeditable' => 0,
+                ],
+            ],
+            'LBL_CHARTS' => [
+                'chart_type' => [
+                    'column' => 'chart_type',
+                    'label' => 'Chart Type',
+                    'table' => 'df_reporting',
+                    'uitype' => 15,
+                    'picklist_values' => [
+                        'bar',
+                        'line',
+                        'pie',
+                        'doughnut',
+                    ],
+                    'defaultvalue' => 'bar',
+                    'ajaxeditable' => 0,
+                ],
+            ],
             'LBL_FILTERS' => [
                 'filter' => [
                     'columntype' => 'TEXT',
@@ -163,6 +269,20 @@ class Reporting_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'filter' => 1,
                     'filter_sequence' => 6,
+                ],
+                'sharing_type' => [
+                    'column' => 'sharing_type',
+                    'label' => 'Sharing Access',
+                    'table' => 'df_reporting',
+                    'uitype' => 15,
+                    'picklist_values' => [
+                        'private',
+                        'all',
+                        'selected',
+                    ],
+                    'defaultvalue' => 'private',
+                    'typeofdata' => 'V~M',
+                    'ajaxeditable' => 0,
                 ],
                 'sharing' => [
                     'uitype' => 33,
@@ -196,8 +316,19 @@ class Reporting_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        if (Vtiger_Utils::CheckTable('df_reporting')) {
+            $this->getTable('df_reporting', 'reportingid')
+                ->createColumn('group_by', 'TEXT')
+                ->createColumn('currency_id', 'INT(19) DEFAULT NULL')
+                ->createColumn('group_by_currency', 'TINYINT(1) NOT NULL DEFAULT 0')
+                ->createColumn('conversion_rate', 'DECIMAL(25,8) DEFAULT NULL')
+                ->createColumn('sharing_type', 'VARCHAR(20) NOT NULL DEFAULT \'selected\'')
+            ;
+        }
+
         $this->createPicklistTable('vtiger_primary_module', 'primary_moduleid', 'primary_module');
         $this->createPicklistTable('vtiger_folder', 'folderid', 'folder');
+        $this->createPicklistTable('vtiger_sharing_type', 'sharing_typeid', 'sharing_type');
         $this->createPicklistTable('vtiger_sharing', 'sharingid', 'sharing');
     }
 }
