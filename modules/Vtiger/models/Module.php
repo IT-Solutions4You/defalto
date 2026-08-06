@@ -1233,6 +1233,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
 								FROM vtiger_modtracker_basic
 								INNER JOIN vtiger_crmentity ON vtiger_modtracker_basic.crmid = vtiger_crmentity.crmid
 								AND module = ?';
+        $sql .= $this->getHistoryDuplicateRelationExclusionQuery();
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $params = [$this->getName()];
@@ -1295,6 +1296,43 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         }
 
         return false;
+    }
+
+    /**
+     * Excludes relation activities duplicated by a target record activity.
+     *
+     * A standalone relation remains visible. A relation is hidden only when the
+     * same action also created or updated its target record. The target record's
+     * created time covers comments whose relation is tracked before the final
+     * ModTracker create entry.
+     *
+     * @return string
+     */
+    protected function getHistoryDuplicateRelationExclusionQuery(): string
+    {
+        return ' AND NOT EXISTS (
+            SELECT 1
+            FROM vtiger_modtracker_relations history_relation
+            INNER JOIN vtiger_crmentity history_target_record
+                ON history_target_record.crmid = history_relation.targetid
+            INNER JOIN vtiger_modtracker_basic history_target_activity
+                ON history_target_activity.crmid = history_relation.targetid
+                AND history_target_activity.module = history_relation.targetmodule
+                AND history_target_activity.whodid = vtiger_modtracker_basic.whodid
+                AND history_target_activity.status IN (0, 2)
+                AND (
+                    history_target_activity.changedon BETWEEN
+                        DATE_SUB(vtiger_modtracker_basic.changedon, INTERVAL 5 SECOND)
+                        AND DATE_ADD(vtiger_modtracker_basic.changedon, INTERVAL 5 SECOND)
+                    OR (
+                        history_target_activity.status = 2
+                        AND history_target_record.createdtime BETWEEN
+                            DATE_SUB(vtiger_modtracker_basic.changedon, INTERVAL 5 SECOND)
+                            AND DATE_ADD(vtiger_modtracker_basic.changedon, INTERVAL 5 SECOND)
+                    )
+                )
+            WHERE history_relation.id = vtiger_modtracker_basic.id
+        )';
     }
 
     /**
