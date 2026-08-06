@@ -61,10 +61,6 @@
 				<div class="col-lg-4 fieldLabel" >
                     <label class="d-block w-100 muted text-break" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
                         {vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}
-                        {if $FIELD_MODEL->getFieldDataType() eq 'currency'}
-                            {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($RECORD->getCurrencyId())}
-                            <span class="ms-2">({$CURRENCY_INFO['symbol']})</span>
-                        {/if}
                     </label>
                 </div>
 				<div class="col-lg-8 fieldValue">
