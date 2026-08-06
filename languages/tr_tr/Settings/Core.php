@@ -327,6 +327,14 @@ $languageStrings = [
     'LBL_XERO'                      => 'Xero',
     'LBL_TALLY'                     => 'Taksitli',
     'LBL_SHOPPINGCART'              => 'ShoppingCart',
+    'company_reg_no' => 'Şirket sicil no',
+    'bank_name' => 'Banka adı',
+    'bank_account_no' => 'Banka hesap numarası',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Açıklama',
+    'country_id' => 'Ülke',
+    'LBL_BANK_INFORMATION' => 'Banka bilgileri',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',

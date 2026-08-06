@@ -332,6 +332,14 @@ $languageStrings = [
     'LBL_TALLY'                   => 'Талли',
     'LBL_SHOPPINGCART'            => 'Shoppingcart сам',
 
+    'company_reg_no' => 'Регистрационный номер компании',
+    'bank_name' => 'Название банка',
+    'bank_account_no' => 'Номер банковского счёта',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Описание',
+    'country_id' => 'Страна',
+    'LBL_BANK_INFORMATION' => 'Банковские реквизиты',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Пожалуйста, выберите по крайней мере одного члена для группы',
