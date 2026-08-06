@@ -379,6 +379,14 @@ $languageStrings = [
     'LBL_XERO'                               => 'Ksero',
     'LBL_TALLY'                              => 'Tully',
     'LBL_SHOPPINGCART'                       => 'Fura sam',
+    'company_reg_no' => 'Numer rejestracyjny firmy',
+    'bank_name' => 'Nazwa banku',
+    'bank_account_no' => 'Numer rachunku bankowego',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Opis',
+    'country_id' => 'Kraj',
+    'LBL_BANK_INFORMATION' => 'Dane bankowe',
 ];
 $jsLanguageStrings = [
     'JS_DEFAULT_TAX_MODE_SET_AS'               => 'Tryb domyślny ustawiony jako podatek ',

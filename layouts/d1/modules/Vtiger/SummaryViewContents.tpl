@@ -34,7 +34,7 @@
             {assign var=ADDR_EDITABLE value=($ADDR_CAN_EDIT && $ADDR_EDIT_GROUPS[$ADDR.index])}
             <div id="{$MODULE_NAME}_Detail_field_addressGroup{$ADDR.index}" class="summaryViewEntries row align-items-center py-2 addressGroup" data-address-group-index="{$ADDR.index}">
                 <div class="col-lg-4 fieldLabel">
-                    <label class="muted text-truncate" title="{$ADDR.label|escape}">{$ADDR.label|escape}</label>
+                    <label class="d-block w-100 muted text-break" title="{$ADDR.label|escape}">{$ADDR.label|escape}</label>
                 </div>
                 <div class="col-lg-8 fieldValue">
                     <div class="row align-items-center justify-content-between">
@@ -59,7 +59,7 @@
         {/if}
 			<div class="summaryViewEntries row align-items-center py-2">
 				<div class="col-lg-4 fieldLabel" >
-                    <label class="muted text-truncate" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
+                    <label class="d-block w-100 muted text-break" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
                         {vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}
                         {if $FIELD_MODEL->getFieldDataType() eq 'currency'}
                             {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($RECORD->getCurrencyId())}

@@ -333,6 +333,14 @@ $languageStrings = [
     'LBL_XERO'                    => 'Xero',
     'LBL_TALLY'                   => 'Egyezik',
     'LBL_SHOPPINGCART'            => 'ShoppingCart',
+    'company_reg_no' => 'Cégjegyzékszám',
+    'bank_name' => 'Bank neve',
+    'bank_account_no' => 'Bankszámlaszám',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Leírás',
+    'country_id' => 'Ország',
+    'LBL_BANK_INFORMATION' => 'Banki adatok',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',

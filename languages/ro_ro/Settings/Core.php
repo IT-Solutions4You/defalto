@@ -332,6 +332,14 @@ $languageStrings = [
     'LBL_XERO'                    => 'Xerox',
     'LBL_TALLY'                   => 'Corespund',
     'LBL_SHOPPINGCART'            => 'Shoppingcart de mine',
+    'company_reg_no' => 'Nr. registrul comerțului',
+    'bank_name' => 'Numele băncii',
+    'bank_account_no' => 'Numărul contului bancar',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Descriere',
+    'country_id' => 'Țară',
+    'LBL_BANK_INFORMATION' => 'Informații bancare',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',
