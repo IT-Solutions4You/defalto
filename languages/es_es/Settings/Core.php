@@ -374,6 +374,14 @@ $languageStrings = [
     'LBL_TALLY'                   => 'Tally',
     'LBL_SHOPPINGCART'            => 'ShoppingCart',
 
+    'company_reg_no' => 'N.º reg. empresa',
+    'bank_name' => 'Nombre del banco',
+    'bank_account_no' => 'Número de cuenta bancaria',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Descripción',
+    'country_id' => 'País',
+    'LBL_BANK_INFORMATION' => 'Información bancaria',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Selecciona al menos un miembro para el grupo',

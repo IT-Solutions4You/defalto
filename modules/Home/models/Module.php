@@ -125,6 +125,7 @@ class Home_Module_Model extends Vtiger_Module_Model
 				FROM vtiger_modtracker_basic
 				INNER JOIN vtiger_crmentity ON vtiger_modtracker_basic.crmid = vtiger_crmentity.crmid
 				AND module NOT IN ("ModComments","Users") ';
+        $sql .= $this->getHistoryDuplicateRelationExclusionQuery();
 
         $currentUser = Users_Record_Model::getCurrentUserModel();
         if ($userId === 'all') {

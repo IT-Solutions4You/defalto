@@ -389,6 +389,14 @@ $languageStrings = [
     'LBL_TALLY'                   => 'Tally',
     'LBL_SHOPPINGCART'            => 'Carrinho Compras',
     'LBL_PHONE_CONFIGURATION'     => 'Configurações Telefone',
+    'company_reg_no' => 'N.º reg. empresa',
+    'bank_name' => 'Nome do banco',
+    'bank_account_no' => 'Número da conta bancária',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Descrição',
+    'country_id' => 'País',
+    'LBL_BANK_INFORMATION' => 'Informações bancárias',
 ];
 
 $jsLanguageStrings = [

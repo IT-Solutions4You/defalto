@@ -7,9 +7,57 @@
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
+- Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
+- Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
+
+## Versioning
+
+- When making a runtime application change in PHP, JavaScript, Smarty templates, CSS/LESS, install/schema logic, or database-affecting behavior, bump the patch identifier in `version.php` in the same change.
+- If the change affects rendered or cache-busted browser assets, also bump the application/display patch version in `version.php` so `vresource_url()` invalidates cached resources.
+- Do not bump `version.php` for documentation-only changes, comments-only changes, tests-only changes, generated-map-only changes, or analysis notes that do not alter runtime behavior.
+
+## Function Naming
+
+- When creating new reusable PHP or JavaScript methods, choose a clear action prefix from the existing intent families before inventing another verb.
+- Use `get` and `set` for simple value access or assignment without persistence.
+- Use `is` and `has` for boolean state checks.
+- Use `exists` only when the method specifically checks storage-backed existence and the surrounding code already follows that wording.
+- Use `get` or `retrieve` for lookup/query methods that may return records, models, or collections without changing state.
+- Use `retrieve` for hydrating state from an external source; use `load` only when the surrounding class already uses that wording or the method loads local object/UI state.
+- Use `save`, `create`, `update`, and `delete` for persistence operations that write application data.
+- Use `add` and `remove` for changing collections, relations, UI lists, or module setup; prefer `create` when a persisted record or table is created.
+- Use `clear` for resetting a value, cache, or collection.
+- Use `read`, `write`, and `append` for file, stream, request/response, or low-level IO style operations.
+- Use `register` for event, listener, link, script, or handler setup.
+- Use `trigger` and `handle` for event-style flows where one method emits or delegates and the other reacts.
+- Use `process` for request/action/view entry points.
+- Use `requires`, `check`, and `validate` for permission, request, requirement, and data checks.
+- Use `show` and `hide` for UI visibility methods.
+- Use `init` and `initialize` for setup/bootstrap methods; keep existing class or framework conventions when choosing between them.
+- Use `pre` and `post` prefixes for lifecycle hooks around an existing operation, such as `preProcess` and `postProcess`.
+- Use `install` and `migrate` for module installation and data/schema migration flows.
+- Use `convert` and `transform` for value or structure conversion without persistence side effects.
+- Use `import` and `export` for package, file, or data transfer boundaries.
+- Use `send` for email, notification, request, or message dispatch.
+- For database-oriented reads, prefer the repo's established `retrieve`, `get`, and `fetch` wording before introducing a rarer verb.
+- Use `retrieve` when the method hydrates model/helper state or assembles data from storage; use `fetch` for direct row/result loading from the database, for example `fetchInvoiceRows()`.
+- Use `get` when the value is expected to exist or is a normal model accessor, for example `getInvoiceNumber()`.
+- Use `load` only for legacy/local patterns that already use that wording or when the method loads and prepares object/UI state, for example `loadInvoiceDetails()`.
+- Do not introduce `find`, `findById`, or `findAll` as generic repository naming in this codebase; prefer `retrieve`, `get`, or `fetch` according to the method behavior.
+- Use `select` only in technical DB helper layers for direct SELECT wrappers, for example `selectInvoices()`; prefer `retrieve`, `get`, or `fetch` in module/domain models.
+- Use `count` only for aggregate record counts, for example `countInvoices()`.
+- When iterating database result sets, use `while ($row = $db->fetchByAssoc($result))` or the local `$adb->fetchByAssoc(...)` variant. Do not add new `fetch_array()` loops.
+- Use `query_result()` or `query_result_rowdata()` for a single known row/value, not for new multi-row loops. If several rows are expected, loop with `while` and fetch rows directly.
+- For database writes, use `insert` for inserting a new row, `create` for application-level record creation, `update` for updating an existing record, `save` for insert-or-update behavior, and `delete` for permanent deletion.
+- Use `remove` for deleting a relation or detaching an item rather than deleting the underlying record, for example `removeProductRelation()`.
+- Use `exists` only for storage-backed existence checks, preferably as an object-first method name such as `invoiceExists()`, and only when it reads naturally next to the surrounding code.
+- Prefer the prefix that matches the side effect. For example, do not name a database write `set...`, do not name a boolean check `get...`, and do not name a collection query `retrieve...` unless it hydrates local object state.
 
 ## JavaScript / Scripts Checks
 
+- Combine adjacent JavaScript variable declarations in the same lexical scope into one comma-separated declaration. Use one `const` when every binding is constant; if any binding in the adjacent group needs reassignment, declare the whole group with one `let`. Format longer initialized groups on continuation lines under the first declaration.
+- Do not merge declarations across executable statements, conditions, early returns, callbacks, loops, or different scopes merely to reduce the declaration count; preserving initialization order and scope takes precedence over grouping.
+- Avoid form control names that shadow native `HTMLFormElement` properties or methods, especially `method`, `action`, `submit`, `reset`, `elements`, `length`, `name`, `target`, `encoding`, and `enctype`. Audit third-party form and CSRF integrations when adding or renaming named controls.
 - New module scripts should live in `layouts/d1/modules/<Module>/resources/*.js`.
 - Load page-specific scripts from the owning view/controller through `getHeaderScripts(Vtiger_Request $request)` and `$this->checkAndConvertJsScripts($jsFileNames)`.
 - Use loader names such as `modules.<Module>.resources.Edit`, `modules.<Module>.resources.Detail`, or `modules.<Module>.resources.<Script>` when the file is inside the layout module resources folder.
@@ -42,6 +90,14 @@
 
 ## PHP / Install Structure Checks
 
+- Before completing a new, copied, or renamed module, compare every overridden method with the actual parent class or interface declaration. Match visibility, staticness, parameter types and defaults, reference/variadic markers, and return types; do not rely on the legacy source module's signature.
+- Audit controller lifecycle overrides especially carefully, including `validateRequest()`, `checkPermission()`, `preProcess()`, `postProcess()`, `process()`, `getHeaderScripts()`, and `getHeaderCss()`. An isolated `php -l` does not detect inheritance incompatibilities when the parent class is not loaded, so also load the child with its real parent or an equivalent compatibility harness.
+- Do not add a local `try/catch` in an action or view only to convert an `Exception` into `Vtiger_Response::setError()`. Let the central WebUI exception handler produce the standard action error response. Catch locally only when the code can recover, try a defined fallback, perform required cleanup, or add context before rethrowing; never swallow an exception that the framework should handle.
+- Keep all runtime database reads and writes in model classes. Helpers orchestrate domain behavior and call model APIs; actions and views validate or present data and must not contain SQL or private database accessors.
+- Create a dedicated model for every module-owned table and name the model after the table's domain suffix, for example `df_two_factor_backup_code` is represented by `TwoFactorAuthentication_BackupCode_Model`. Keep that table's CRUD and atomic updates in its model; for shared system tables, reuse the existing owning Core, Vtiger, Settings, or module model instead of creating a duplicate local data model.
+- Make table-backed runtime models extend `Core_DatabaseData_Model`, declare their protected `$table` and `$tableId`, initialize the shared connection through `retrieveDB()`, and prefer `selectData()`, `insertData()`, `updateData()`, and `deleteData()` for ordinary CRUD. Use `getDB()` with custom SQL only when the shared CRUD API cannot express a required aggregate, join, upsert, or atomic conditional update without changing its semantics.
+- Before adding domain methods to a `Core_DatabaseData_Model` subclass, audit inherited method names and signatures such as `save()`, `delete()`, `getId()`, and `getName()`. Use a specific domain name such as `saveTemplate()` when different parameters or behavior would make an override incompatible.
+- Keep install, migration, and schema lifecycle queries in the owning install/database model. A cross-table read belongs to the model representing the primary domain result and should not leak SQL back into a helper.
 - Use `Core_Install_Model` for field creation, field deletion, related lists, filters, popup fields, and layout field defaults.
 - Use `blocksHeaderFields`, `blocksSummaryFields`, `blocksListFields`, and `blocksQuickCreateFields` for module layout defaults instead of hardcoding vtiger field flags in unrelated places.
 - Use `Core_DatabaseTable_Model` for schema column lifecycle changes such as create, rename, or drop column.

@@ -47,7 +47,12 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
     {
         $records = [];
         $adb = PearDatabase::getInstance();
-        $query = $this->getQuery() . sprintf(' LIMIT %s', $this->getLimit());
+        $query = $this->getQuery();
+
+        if (0 < $this->getLimit()) {
+            $query .= sprintf(' LIMIT %d', $this->getLimit());
+        }
+
         $result = $adb->pquery($query);
         $index = $this->getBaseTableIndex();
 

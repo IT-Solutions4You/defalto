@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_POSTAL_CODES_AVAILABLE' => 'Kody pocztowe dostępne',
+    'LBL_ADDRESS_FIELD_MAPPING' => 'Mapowanie pól adresowych',
+    'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Określ, które pola adresowe zawierają kod pocztowy i miejscowość (oraz opcjonalnie województwo i kraj), aby mogły być automatycznie uzupełniane.',
+    'LBL_ADD_ADDRESS_GROUP' => 'Dodaj grupę adresową',
+    'LBL_GROUP_LABEL' => 'Etykieta',
+    'LBL_GROUP_LABEL_PLACEHOLDER' => 'np. Rozliczeniowy',
+    'LBL_ZIP_FIELD' => 'Pole kodu pocztowego',
+    'LBL_CITY_FIELD' => 'Pole miejscowości',
+    'LBL_STATE_FIELD' => 'Pole województwa',
+    'LBL_COUNTRY_FIELD' => 'Pole kraju',
+    'LBL_NOT_MAPPED' => 'Nie zmapowano',
+    'LBL_ADDRESS_ZIP_CITY_REQUIRED' => 'Każda grupa adresowa wymaga pola kodu pocztowego i pola miejscowości.',
+    'LBL_ADDRESS_MAPPING_SAVED' => 'Mapowanie pól adresowych zapisane',
+    'LBL_POSTAL_CODE_DATABASE' => 'Baza kodów pocztowych',
+    'LBL_DATASET_VERSION' => 'Wersja',
+    'LBL_RECORDS' => 'rekordów',
+    'LBL_NO_DATASET_IMPORTED' => 'Nie zaimportowano jeszcze danych kodów pocztowych',
+    'LBL_COUNTRY_CODE_OPTIONAL' => 'Kod kraju (opcjonalnie)',
+    'LBL_UPDATE_NOW' => 'Aktualizuj teraz',
+    'LBL_POSTAL_UPDATE_HINT' => 'Pozostaw puste, aby zaimportować cały świat, lub wpisz 2-literowy kod kraju (np. SK), aby zaimportować jeden kraj.',
+    'LBL_POSTAL_CODES_UPDATED' => 'Baza kodów pocztowych została zaktualizowana',
 
     // Footer
     'APPTITLE'                                => 'Vtiger CRM',
@@ -460,6 +481,7 @@ $languageStrings = [
     'Apparel'           => 'Odzież',
     'Banking'           => 'Bank',
     'Billing Address'   => 'Adres korespondencyjny - Ulica',
+    'Address' => 'Adres',
     'Billing City'      => 'Adres korespondencyjny - Miasto',
     'Billing Code'      => 'Adres korespondencyjny - Kod pocztowy',
     'Billing Country'   => 'Adres korespondencyjny - Kraj',

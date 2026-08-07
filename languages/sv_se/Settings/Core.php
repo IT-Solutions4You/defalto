@@ -381,6 +381,14 @@ $languageStrings = [
     'LBL_XERO'                      => 'Xero',
     'LBL_TALLY'                     => 'Stämmer',
     'LBL_SHOPPINGCART'              => 'Varukorg',
+    'company_reg_no' => 'Företagsregistreringsnr.',
+    'bank_name' => 'Banknamn',
+    'bank_account_no' => 'Bankkontonummer',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Beskrivning',
+    'country_id' => 'Land',
+    'LBL_BANK_INFORMATION' => 'Bankuppgifter',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Vänligen välj minst en medlem för en grupp',

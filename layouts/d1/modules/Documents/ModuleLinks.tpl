@@ -10,47 +10,20 @@
     <div id="appnavcontent" class="d-flex p-3" aria-expanded="false">
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}
             {if $BASIC_ACTION->getLabel() eq 'LBL_ADD_RECORD'}
-                <div class="dropdown">
-                    <button type="button" class="btn module-buttons me-2 {$BASIC_ACTION->getStyleClass()}" data-bs-toggle="dropdown">
-                        <span class="fa fa-plus" title="{vtranslate('LBL_NEW_DOCUMENT', $MODULE)}"></span>
-                        <span class="mx-2">{vtranslate('LBL_NEW_DOCUMENT', $MODULE)}</span>
-                        <i class="fa-solid fa-caret-down"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header">
-                            <i class="fa fa-upload"></i>
-                            <span class="ms-2">{vtranslate('LBL_FILE_UPLOAD', $MODULE)}</span>
-                        </li>
-                        <li id="VtigerAction">
-                            <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger')">
-                                <i class="fa fa-home"></i>
-                                <span class="ms-2">{vtranslate('LBL_TO_SERVICE', $MODULE_NAME, {vtranslate('LBL_CRM', $MODULE_NAME)})}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li class="dropdown-header">
-                            <i class="fa fa-link"></i>
-                            <span class="ms-2">{vtranslate('LBL_LINK_EXTERNAL_DOCUMENT', $MODULE)}</span>
-                        </li>
-                        <li id="shareDocument">
-                            <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('E')">
-                                <i class="fa fa-external-link"></i>
-                                <span class="ms-2">{vtranslate('LBL_FROM_SERVICE', $MODULE_NAME, {vtranslate('LBL_FILE_URL', $MODULE_NAME)})}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li id="createDocument">
-                            <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('W')">
-                                <i class="fa fa-file-text"></i>
-                                <span class="ms-2">{vtranslate('LBL_CREATE_NEW', $MODULE_NAME, {vtranslate('SINGLE_Documents', $MODULE_NAME)})}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <button id="{$MODULE}_listView_basicAction_LBL_FILE_UPLOAD"
+                        type="button"
+                        class="btn module-buttons me-2 {$BASIC_ACTION->getStyleClass()}"
+                        onclick="Documents_Index_Js.uploadTo('Vtiger')">
+                    <i class="fa-solid fa-upload" aria-hidden="true"></i>
+                    <span class="ms-2">{vtranslate('LBL_FILE_UPLOAD', $MODULE)}</span>
+                </button>
+                <button id="{$MODULE}_listView_basicAction_{$BASIC_ACTION->getLabel()}"
+                        type="button"
+                        class="btn btn-outline-secondary module-buttons me-2"
+                        onclick='window.location.href = "{$BASIC_ACTION->getUrl()}&app={$SELECTED_MENU_CATEGORY}"'>
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    <span class="ms-2">{vtranslate('LBL_NEW_DOCUMENT', $MODULE)}</span>
+                </button>
             {elseif $BASIC_ACTION->getLabel() == 'LBL_IMPORT'}
                 <button id="{$MODULE}_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn btn-outline-secondary addButton module-buttons me-2"
                         {if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}

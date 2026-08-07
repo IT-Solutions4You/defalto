@@ -377,10 +377,26 @@ Vtiger_Date_Field_Js('Workflows_Datetime_Field_Js', {}, {
     }
 });
 
-Vtiger_Currency_Field_Js('Workflows_Currency_Field_Js', {}, {
+Workflows_Field_Js('Workflows_Currency_Field_Js', {}, {
     getUi: function () {
-        let html = '<input type="text" class="WorkflowCurrencyField getPopupUi marginLeftZero currency inputElement form-control" name="' + this.getName() + '" value="' + this.getValue() + '"  />' + '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />',
+        let html = '<input type="text" class="WorkflowCurrencyField getPopupUi marginLeftZero currency inputElement form-control" name="' + this.getName() + '" />' +
+                '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />',
             element = jQuery(html);
+
+        element.filter('.getPopupUi').val(app.htmlDecode(this.getValue()));
+
+        return this.addValidationToElement(element);
+    }
+});
+
+Workflows_Field_Js('Workflows_Double_Field_Js', {}, {
+    getUi: function () {
+        let html = '<input type="text" class="WorkflowDoubleField getPopupUi inputElement form-control" name="' + this.getName() + '" />' +
+                '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />',
+            element = jQuery(html);
+
+        element.filter('.getPopupUi').val(app.htmlDecode(this.getValue()));
+
         return this.addValidationToElement(element);
     }
 });

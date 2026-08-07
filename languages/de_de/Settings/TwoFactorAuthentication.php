@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+$languageStrings = [
+    'TwoFactorAuthentication' => '2FA',
+    'SINGLE_TwoFactorAuthentication' => '2FA',
+    'LBL_MODULE_NAME' => '2FA',
+    'LBL_EDIT' => 'Bearbeiten',
+    'LBL_SAVE' => 'Speichern',
+    'LBL_CANCEL' => 'Abbrechen',
+    'LBL_TAB_GENERAL' => 'Allgemeine Einstellungen',
+    'LBL_STATUS' => 'Status',
+    'LBL_STATUS_INTRO' => 'Schalten Sie die Zwei-Faktor-Authentifizierung für das gesamte CRM ein oder aus. Das Anmeldeformular wird nur bei aktiver Einstellung über den 2FA-Endpunkt geleitet.',
+    'LBL_ACTIVE' => 'Aktiv',
+    'LBL_INACTIVE' => 'Inaktiv',
+    'LBL_ACTIVATE_CONFIRM' => 'Durch die Aktivierung wird für alle Benutzer (außer den ausgenommenen) ein zweiter Anmeldeschritt erforderlich. Stellen Sie zuvor sicher, dass der E-Mail-Versand funktioniert und dass Sie Backup-Codes gespeichert haben - andernfalls könnten Sie ausgesperrt werden. Fortfahren?',
+    'LBL_DEACTIVATE_CONFIRM' => 'Nach der Deaktivierung werden Benutzer ohne zweiten Schritt über die Standardanmeldung geleitet. Fortfahren?',
+    'LBL_ACTIVATE_FAILED' => 'Der Zwei-Faktor-Anmeldeablauf konnte nicht aktiviert werden.',
+    'LBL_NOT_ACTIVE_NOTE' => 'Die Zwei-Faktor-Authentifizierung ist installiert, aber noch nicht aktiv. Es ist kein zweiter Anmeldeschritt erforderlich, bis Sie sie unten aktivieren.',
+    'LBL_ENFORCE_ALL_NOTE' => 'Die Zwei-Faktor-Authentifizierung ist aktiv und für alle Benutzer erforderlich. Standardmäßig erhält jeder Benutzer bei der Anmeldung einen Einmalcode per E-Mail. Fügen Sie einen Benutzer zur Ausnahmeliste hinzu, um ihn davon auszunehmen.',
+    'LBL_ENFORCE_OFF_NOTE' => 'Die Zwei-Faktor-Authentifizierung ist derzeit für alle Benutzer deaktiviert.',
+    'LBL_AVAILABLE_METHODS' => 'Verfügbare Methoden',
+    'LBL_AVAILABLE_METHODS_INTRO' => 'Wählen Sie, welche Zweitfaktor-Methoden Benutzer verwenden können. Lassen Sie beide aktiviert, damit jeder Benutzer bei der Anmeldung wählen kann; aktivieren Sie nur eine, um sie für alle vorzuschreiben. Mindestens eine Methode muss aktiviert bleiben.',
+    'LBL_METHOD_EMAIL' => 'Einmalcode per E-Mail',
+    'LBL_METHOD_TOTP' => 'Authenticator-App (TOTP)',
+    'LBL_EMAIL_NEEDS_SERVER' => 'Richten Sie einen Postausgangsserver ein (Einstellungen > Postausgangsserver), um E-Mail-Codes zu aktivieren.',
+    'LBL_TAB_USERS' => 'Benutzer',
+    'LBL_TAB_VALIDATION' => 'Validierung',
+    'LBL_VALIDATION_INTRO' => 'Checks the Defalto login hook, modifier registration, database schema, and enabled authentication services.',
+    'LBL_VALIDATION_CHECK' => 'Prüfung',
+    'LBL_VALIDATION_RESULT' => 'Ergebnis',
+    'LBL_VALIDATION_OK' => 'OK',
+    'LBL_VALIDATION_MODULE' => '2FA-Modul',
+    'LBL_VALIDATION_LOGIN_RUNTIME' => 'Defalto login runtime',
+    'LBL_VALIDATION_LOGIN_MODIFIER' => '2FA login modifier',
+    'LBL_VALIDATION_LOGIN_RUNTIME_INVALID' => 'The shared Defalto login completion runtime is incomplete.',
+    'LBL_VALIDATION_LOGIN_MODIFIER_INVALID' => 'The 2FA modifier is not registered for the Users login action.',
+    'LBL_DETAILS' => 'Details',
+    'LBL_VALIDATION_SCHEMA' => 'Datenbankschema',
+    'LBL_VALIDATION_CONFIGURATION' => '2FA-Konfiguration',
+    'LBL_VALIDATION_METHODS' => 'Authentifizierungsmethoden',
+    'LBL_VALIDATION_MAIL' => 'Postausgangsserver',
+    'LBL_VALIDATION_EMAILS_EXTENSION' => 'Defalto-E-Mail-Dienst',
+    'LBL_VALIDATION_NOT_ACTIVE' => 'Das erforderliche Modul ist nicht aktiv.',
+    'LBL_VALIDATION_NOT_REQUIRED' => 'Diese Prüfung ist für die aktuelle Konfiguration nicht erforderlich.',
+    'LBL_VALIDATION_MISSING' => 'Erforderliche Dateien, Tabellen oder Spalten fehlen.',
+    'LBL_VALIDATION_CONFIG_INVALID' => 'Die 2FA-Konfigurationszeile fehlt oder ist ungültig.',
+    'LBL_VALIDATION_METHODS_MISSING' => 'Mindestens eine Authentifizierungsmethode muss aktiviert sein.',
+    'LBL_VALIDATION_MAIL_MISSING' => 'Die E-Mail-Methode ist aktiviert, aber der Postausgangsserver ist nicht konfiguriert.',
+    'LBL_VALIDATION_EMAILS_EXTENSION_INVALID' => 'Der Defalto-E-Mail-Dienst ist inaktiv oder sein Mailer ist nicht verfügbar.',
+    'LBL_USERS_INTRO' => 'Für jeden aktiven Benutzer ist die Zwei-Faktor-Authentifizierung standardmäßig aktiviert. Schalten Sie sie für einen Benutzer aus, um ihn auszunehmen (nur Passwort), ändern Sie seine Methode oder setzen Sie seinen Authenticator zurück, wenn er sein Gerät verloren hat.',
+    'LBL_USER' => 'Benutzer',
+    'LBL_USER_NOT_FOUND' => 'Benutzer nicht gefunden.',
+    'LBL_METHOD_NOT_ALLOWED' => 'Die ausgewählte Authentifizierungsmethode ist nicht aktiviert.',
+    'LBL_2FA' => '2FA',
+    'LBL_ACTIONS' => 'Aktionen',
+    'LBL_RESET' => 'Zurücksetzen',
+    'LBL_RESET_CONFIRM' => 'Zwei-Faktor-Authentifizierung für diesen Benutzer zurücksetzen? Seine Authenticator-App und Backup-Codes funktionieren nicht mehr und er richtet sie bei der nächsten Anmeldung erneut ein.',
+    'LBL_METHOD' => 'Methode',
+    'LBL_UNUSED_CODES' => 'Unbenutzte Backup-Codes',
+    'LBL_EMAILS_INTRO' => 'Passen Sie Betreff und Inhalt dieser E-Mail an. Verwenden Sie die untenstehenden Platzhalter - sie werden beim Senden der E-Mail durch die echten Werte ersetzt. Mit der Schaltfläche Auf Standard zurücksetzen stellen Sie den Originaltext wieder her.',
+    'LBL_TPL_TITLE_LOGIN' => 'Vorlage für Anmelde-Bestätigungscode',
+    'LBL_TPL_TITLE_BACKUP' => 'Vorlage für Backup-Codes',
+    'LBL_TPL_SUBJECT' => 'Betreff',
+    'LBL_TPL_BODY' => 'Inhalt',
+    'LBL_TPL_VARS' => 'Verfügbare Platzhalter',
+    'LBL_RESET_DEFAULT' => 'Auf Standard zurücksetzen',
+];
+
+$jsLanguageStrings = [
+    'JS_SAVED' => 'Gespeichert.',
+    'JS_METHOD_SAVED' => 'Methode gespeichert.',
+    'JS_METHODS_SAVED' => 'Verfügbare Methoden aktualisiert.',
+    'JS_AT_LEAST_ONE_METHOD' => 'Mindestens eine Methode muss aktiviert bleiben.',
+    'JS_RESET_TPL_CONFIRM' => 'Diese Vorlage auf ihren Standardtext zurücksetzen?',
+];

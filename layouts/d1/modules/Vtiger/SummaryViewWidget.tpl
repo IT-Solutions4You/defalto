@@ -16,47 +16,12 @@
                 {if 'Documents' eq $DETAIL_VIEW_WIDGET->getLabel()}
                     {assign var=PARENT_ID value=$RECORD->getId()}
                     <div class="pull-right">
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-sm text-secondary fw-bold" data-bs-toggle="dropdown">
-                                <i class="fa-solid fa-plus"></i>
-                                <span class="ms-2">{vtranslate('LBL_NEW_DOCUMENT', 'Documents')}</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <div class="dropdown-header">
-                                        <i class="fa fa-upload"></i>
-                                        <span class="ms-2">{vtranslate('LBL_FILE_UPLOAD', 'Documents')}</span>
-                                    </div>
-                                </li>
-                                <li id="VtigerAction">
-                                    <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger',{$PARENT_ID},'{$MODULE_NAME}')">
-                                        <i class="fa fa-home"></i>
-                                        <span class="ms-2">{vtranslate('LBL_TO_SERVICE', 'Documents', vtranslate('LBL_CRM', 'Documents'))}</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <div class="dropdown-header">
-                                        <i class="fa fa-link"></i>
-                                        <span class="ms-2">{vtranslate('LBL_LINK_EXTERNAL_DOCUMENT', 'Documents')}</span>
-                                    </div>
-                                </li>
-                                <li id="shareDocument">
-                                    <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('E',{$PARENT_ID},'{$MODULE_NAME}')">
-                                        <i class="fa fa-external-link"></i>
-                                        <span class="ms-2">{vtranslate('LBL_FROM_SERVICE', 'Documents', vtranslate('LBL_FILE_URL', 'Documents'))}</span>
-                                    </a>
-                                </li>
-                                <li id="createDocument">
-                                    <a class="dropdown-item" href="javascript:Documents_Index_Js.createDocument('W',{$PARENT_ID},'{$MODULE_NAME}')">
-                                        <i class="fa fa-file-text"></i>
-                                        <span class="ms-2">{vtranslate('LBL_CREATE_NEW', 'Documents', vtranslate('SINGLE_Documents', 'Documents'))}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <button type="button"
+                                class="btn btn-sm text-secondary fw-bold"
+                                onclick="Documents_Index_Js.uploadTo('Vtiger', {$PARENT_ID}, '{$MODULE_NAME}')">
+                            <i class="fa-solid fa-upload" aria-hidden="true"></i>
+                            <span class="ms-2">{vtranslate('LBL_FILE_UPLOAD', 'Documents')}</span>
+                        </button>
                     </div>
                 {else}
                     <div class="pull-right">

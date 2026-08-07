@@ -337,6 +337,14 @@ $languageStrings = [
     'Calendar Settings'           => 'Config. de calendario',
     'Module'                      => 'Módulo',
     'Conditions'                  => 'Condiciones',
+    'company_reg_no' => 'N.º reg. empresa',
+    'bank_name' => 'Nombre del banco',
+    'bank_account_no' => 'Número de cuenta bancaria',
+    'iban' => 'IBAN',
+    'swift' => 'SWIFT',
+    'description' => 'Descripción',
+    'country_id' => 'País',
+    'LBL_BANK_INFORMATION' => 'Información bancaria',
 ];
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Por favor seleccione por lo menos un miembro para un grupo',

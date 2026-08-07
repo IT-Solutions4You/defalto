@@ -18,6 +18,27 @@
  */
 
 $languageStrings = [
+    'LBL_POSTAL_CODES_AVAILABLE' => 'الرموز البريدية متاحة',
+    'LBL_ADDRESS_FIELD_MAPPING' => 'تعيين حقول العنوان',
+    'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'حدّد حقول العنوان التي تحتوي على الرمز البريدي والمدينة (واختيارياً المنطقة والدولة) ليتم تعبئتها تلقائياً.',
+    'LBL_ADD_ADDRESS_GROUP' => 'إضافة مجموعة عنوان',
+    'LBL_GROUP_LABEL' => 'التسمية',
+    'LBL_GROUP_LABEL_PLACEHOLDER' => 'مثال: الفوترة',
+    'LBL_ZIP_FIELD' => 'حقل الرمز البريدي',
+    'LBL_CITY_FIELD' => 'حقل المدينة',
+    'LBL_STATE_FIELD' => 'حقل المنطقة',
+    'LBL_COUNTRY_FIELD' => 'حقل الدولة',
+    'LBL_NOT_MAPPED' => 'غير معيَّن',
+    'LBL_ADDRESS_ZIP_CITY_REQUIRED' => 'تحتاج كل مجموعة عنوان إلى حقل رمز بريدي وحقل مدينة.',
+    'LBL_ADDRESS_MAPPING_SAVED' => 'تم حفظ تعيين حقول العنوان',
+    'LBL_POSTAL_CODE_DATABASE' => 'قاعدة بيانات الرموز البريدية',
+    'LBL_DATASET_VERSION' => 'الإصدار',
+    'LBL_RECORDS' => 'سجلات',
+    'LBL_NO_DATASET_IMPORTED' => 'لم يتم استيراد أي بيانات للرموز البريدية بعد',
+    'LBL_COUNTRY_CODE_OPTIONAL' => 'رمز الدولة (اختياري)',
+    'LBL_UPDATE_NOW' => 'تحديث الآن',
+    'LBL_POSTAL_UPDATE_HINT' => 'اتركه فارغًا لاستيراد العالم بأكمله، أو أدخل رمز دولة من حرفين (مثل SK) لاستيراد دولة واحدة.',
+    'LBL_POSTAL_CODES_UPDATED' => 'تم تحديث قاعدة بيانات الرموز البريدية',
 
     // Footer
     'APPTITLE'                                => 'vtiger CRM',
@@ -502,6 +523,7 @@ $languageStrings = [
     'Apparel'                => 'حلة',
     'Banking'                => 'مصرفي',
     'Billing Address'        => 'عنوان الدفع',
+    'Address' => 'عنوان',
     'Billing City'           => 'مدينة الدفع',
     'Billing Code'           => 'كود الدفع',
     'Billing Country'        => 'دولة الدفع',
