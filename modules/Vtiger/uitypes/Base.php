@@ -28,7 +28,7 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model
      */
     public function getReportDisplayValue(mixed $value, bool|int $record, object|bool $recordInstance): string
     {
-        $displayValue = $this->getDisplayValue($value, $record, $recordInstance);
+        $displayValue = (string)$this->getDisplayValue($value, $record, $recordInstance);
 
         if ($recordInstance && $this->isReportValueUrl()) {
             return sprintf('<a href="%s">%s</a>', $recordInstance->getDetailViewUrl(), strip_tags($displayValue));
@@ -47,7 +47,7 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model
      */
     public function getRelatedBlockDisplayValue(mixed $value, bool|int $record, object|bool $recordInstance): string
     {
-        return $this->getDisplayValue($value, $record, $recordInstance);
+        return (string)$this->getDisplayValue($value, $record, $recordInstance);
     }
 
     /**
