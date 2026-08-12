@@ -6,7 +6,9 @@
 - Keep module PHP code under `modules/<Module>/{actions,models,views,helpers,handlers,dashboards,uitypes}`.
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
+- When adding a new custom framework component that could belong to either Vtiger or Core, create it under `modules/Core` with a `Core_...` class name. Do not add new custom framework components under `modules/Vtiger`.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
+- Keep all instructions and example text in `AGENTS.md` in English. Translate user-facing confirmations at response time to the language used by the user in the current request.
 - Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
 - Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
 
@@ -90,6 +92,7 @@
 
 ## PHP / Install Structure Checks
 
+- Let `Vtiger_Loader` autoload framework component classes whose names and paths follow the `Module_Component_Type` convention, such as `Core_DateFilter_Helper` in `modules/Core/helpers/DateFilter.php`. Do not add manual `require`, `require_once`, `include`, or `include_once` statements for these components; verify the class-to-path mapping before removing a legacy include. Standalone scripts and tests may explicitly bootstrap files when the application autoloader is not initialized.
 - Before completing a new, copied, or renamed module, compare every overridden method with the actual parent class or interface declaration. Match visibility, staticness, parameter types and defaults, reference/variadic markers, and return types; do not rely on the legacy source module's signature.
 - Audit controller lifecycle overrides especially carefully, including `validateRequest()`, `checkPermission()`, `preProcess()`, `postProcess()`, `process()`, `getHeaderScripts()`, and `getHeaderCss()`. An isolated `php -l` does not detect inheritance incompatibilities when the parent class is not loaded, so also load the child with its real parent or an equivalent compatibility harness.
 - Do not add a local `try/catch` in an action or view only to convert an `Exception` into `Vtiger_Response::setError()`. Let the central WebUI exception handler produce the standard action error response. Catch locally only when the code can recover, try a defined fallback, perform required cleanup, or add context before rethrowing; never swallow an exception that the framework should handle.
@@ -102,6 +105,23 @@
 - Use `blocksHeaderFields`, `blocksSummaryFields`, `blocksListFields`, and `blocksQuickCreateFields` for module layout defaults instead of hardcoding vtiger field flags in unrelated places.
 - Use `Core_DatabaseTable_Model` for schema column lifecycle changes such as create, rename, or drop column.
 - Put settings/list-view settings links in the module model `getSettingLinks()` or the existing Installer/Vtiger settings-link flow.
+
+## Date, Time, and Time Zone Checks
+
+- Whenever programming behavior involving dates or times, trace the complete value flow between the user, application/server, database, exports, scheduled jobs, and rendered output before completing the change.
+- Verify that date-only values remain calendar dates without unintended time-zone conversion and that date-time values are converted exactly once between the user's time zone and the database time zone.
+- Check relative periods and range boundaries around local midnight, different positive and negative UTC offsets, the configured first day of the week, and daylight-saving transitions where a day can contain 23 or 25 hours.
+- Test time-sensitive behavior with representative zones including UTC, Europe/Bratislava, a negative-offset zone, and a high positive-offset zone. Include interactive report execution and any relevant background, scheduled, or export execution context.
+- After successful verification, report the result in one short sentence in the user's current language, equivalent to: `Time zone behavior was checked and the functionality will work correctly.` Do not make this claim when the checks fail or remain incomplete; state the concrete issue instead.
+
+## Currency and Monetary Calculation Checks
+
+- Whenever programming behavior involving currency or monetary values, trace the complete value flow between the record currency, user currency, application/base currency, reporting currency, database storage, calculations, rendered output, exports, and scheduled jobs before completing the change.
+- Verify the conversion direction and exchange-rate source explicitly. Check that values are not converted twice, left unconverted, or aggregated across mixed currencies before normalization to the intended reporting currency.
+- Preserve monetary precision during intermediate calculations and apply the repository's established decimal precision and rounding rules only at the correct boundary. Do not use binary floating-point arithmetic when the existing decimal or currency helpers can preserve exact monetary semantics.
+- Check zero, null, negative, very large, and fractional values; missing or zero exchange rates; inactive currencies; currencies with different decimal scales; and totals affected by per-line versus final-total rounding.
+- Test the same calculation with matching currencies and with multiple different record, user, base, and reporting currencies. Verify list views, detail views, reports, grouping, summaries, charts, PDF/XLS exports, and background execution when they are relevant to the changed flow.
+- After successful verification, report the result in one short sentence in the user's current language, equivalent to: `Calculations with different currencies were checked and should work correctly.` Do not make this claim when the checks fail or remain incomplete; state the concrete issue instead.
 
 ## Validation
 
