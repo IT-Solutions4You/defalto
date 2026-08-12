@@ -11,6 +11,7 @@
     {assign var=PRIMARY_MODULE value=$RECORD->get('primary_module')}
     {assign var=FIELD_UITYPE value=$FIELD_MODEL->getUITypeModel()}
     {assign var=SELECTED_VALUES value=$FIELD_UITYPE->getSelectedValue($FIELD_VALUE)}
+    <input type="hidden" name="align[]" value="">
     <div class="containerAlign container-fluid">
         <div class="containerCloneAlign visually-hidden">
             {include file='uitypes/AlignSelected.tpl'|vtemplate_path:$QUALIFIED_MODULE FIELD_VALUE='' FIELD_DISPLAY_VALUE=''}

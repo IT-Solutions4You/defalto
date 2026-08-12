@@ -51,7 +51,7 @@ class Reporting_Install_Model extends Core_Install_Model
     {
         $fieldInstance = parent::createField($fieldName, $fieldParams);
 
-        if ('chart_type' === $fieldName && $fieldInstance && !empty($fieldParams['block'])) {
+        if (in_array($fieldName, ['chart_type', 'chart_position', 'chart_config'], true) && $fieldInstance && !empty($fieldParams['block'])) {
             $blockInstance = $fieldParams['block'];
             $fieldInstance->block = $blockInstance;
             $fieldInstance->getFieldTable()->updateData(
@@ -248,6 +248,25 @@ class Reporting_Install_Model extends Core_Install_Model
                     'defaultvalue' => 'bar',
                     'ajaxeditable' => 0,
                 ],
+                'chart_position' => [
+                    'column' => 'chart_position',
+                    'label' => 'Chart Position',
+                    'table' => 'df_reporting',
+                    'uitype' => 15,
+                    'picklist_values' => [
+                        'above',
+                        'below',
+                    ],
+                    'defaultvalue' => 'above',
+                    'ajaxeditable' => 0,
+                ],
+                'chart_config' => [
+                    'columntype' => 'TEXT',
+                    'column' => 'chart_config',
+                    'label' => 'Chart Axes',
+                    'table' => 'df_reporting',
+                    'ajaxeditable' => 0,
+                ],
             ],
             'LBL_FILTERS' => [
                 'filter' => [
@@ -319,6 +338,8 @@ class Reporting_Install_Model extends Core_Install_Model
         if (Vtiger_Utils::CheckTable('df_reporting')) {
             $this->getTable('df_reporting', 'reportingid')
                 ->createColumn('group_by', 'TEXT')
+                ->createColumn('chart_config', 'TEXT')
+                ->createColumn('chart_position', 'VARCHAR(20) NOT NULL DEFAULT \'above\'')
                 ->createColumn('currency_id', 'INT(19) DEFAULT NULL')
                 ->createColumn('group_by_currency', 'TINYINT(1) NOT NULL DEFAULT 0')
                 ->createColumn('conversion_rate', 'DECIMAL(25,8) DEFAULT NULL')

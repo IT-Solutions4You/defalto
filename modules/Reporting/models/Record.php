@@ -10,6 +10,8 @@
 
 class Reporting_Record_Model extends Vtiger_Record_Model
 {
+    public const CHART_NUMERIC_TYPES = Reporting_Chart_Model::NUMERIC_DATA_TYPES;
+
     public bool|Core_QueryGenerator_Model $query = false;
     public bool|Reporting_Table_Model $tableModel = false;
 
@@ -48,14 +50,15 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $normalizedWidths = [];
         $style = [];
 
-        if ($this->isSummaryReport()) {
-            $fields = array_values(array_unique(array_merge(
-                $fields,
-                $this->getGroupByFields(),
-                $this->getCalculationFields(),
-            )));
-        } else {
-            $fields = array_values(array_unique(array_merge($fields, $this->getCalculationFields())));
+        $fields = array_values(array_unique(array_merge($fields, $this->getCalculationFields())));
+
+        if (empty($fields) && $this->isSummaryReport() && !empty($this->getGroupByFields())) {
+            $fields = [Reporting_Table_Model::GROUP_SUMMARY_COLUMN];
+        }
+
+        if ($this->hasRecordCountCalculation()) {
+            $fields[] = Reporting_Table_Model::RECORD_COUNT_COLUMN;
+            $fields = array_values(array_unique($fields));
         }
 
         foreach ($fields as $columnIndex => $field) {
@@ -208,14 +211,24 @@ class Reporting_Record_Model extends Vtiger_Record_Model
      */
     public function getChartData(): array
     {
-        if (!$this->isSummaryReport() || empty($this->getGroupByFields())) {
+        if (!$this->isSummaryReport()) {
+            return [];
+        }
+
+        $configuration = $this->getChartConfiguration();
+
+        if ('' === $configuration['x']['field'] || empty($configuration['series'])) {
             return [];
         }
 
         $this->retrieveQueryGenerator();
         $this->retrieveTable();
 
-        $groupedData = $this->getTableModel()->getGroupedData();
+        $chartTable = clone $this->getTableModel();
+        $chartTable->setGroupBy($this->getGroupByFields());
+        $chartTable->setGroupByIntervals($this->getGroupByIntervals());
+        $chartTable->setTableCalculations($this->getChartCalculations($configuration['series']));
+        $groupedData = $chartTable->getGroupedData();
 
         if (empty($groupedData)) {
             return [];
@@ -228,20 +241,130 @@ class Reporting_Record_Model extends Vtiger_Record_Model
             $labels[] = html_entity_decode(strip_tags((string)$group['label']), ENT_QUOTES | ENT_HTML5);
         }
 
-        $availableMetrics = [];
+        $datasets = $this->getChartDatasets($groupedData, $configuration['series']);
 
-        foreach ($groupedData as $group) {
-            foreach ($group['metrics'] as $metricKey => $metric) {
-                $availableMetrics[$metricKey] ??= $metric;
-            }
+        if (empty($datasets)) {
+            return [];
         }
 
-        if (empty($availableMetrics)) {
-            $datasets[] = [
-                'label' => vtranslate('LBL_COUNT', 'Reporting'),
-                'data' => array_column($groupedData, 'count'),
+        $chartType = $this->getChartType();
+        $options = [
+            'responsive' => true,
+            'maintainAspectRatio' => false,
+            'plugins' => [
+                'legend' => [
+                    'position' => 'bottom',
+                ],
+            ],
+        ];
+
+        if (in_array($chartType, ['bar', 'line'], true)) {
+            $options['scales'] = [
+                'x' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => $this->getChartXAxisLabel(),
+                    ],
+                ],
+                'y' => [
+                    'beginAtZero' => true,
+                    'title' => [
+                        'display' => true,
+                        'text' => vtranslate('LBL_CHART_Y_AXIS', 'Reporting'),
+                    ],
+                ],
             ];
-        } else {
+        }
+
+        return [
+            'type' => $chartType,
+            'data' => [
+                'labels' => $labels,
+                'datasets' => $datasets,
+            ],
+            'options' => $options,
+        ];
+    }
+
+    protected function getChartXAxisLabel(): string
+    {
+        $fieldLabels = Reporting_Fields_Model::getFieldLabels($this->getPrimaryModule());
+        $fieldLabels = array_replace(
+            $fieldLabels,
+            array_intersect_key(array_filter($this->getLabels()), $fieldLabels),
+        );
+        $intervalLabels = [
+            'day' => vtranslate('LBL_DATE_UNIT_DAY'),
+            'week' => vtranslate('LBL_DATE_UNIT_WEEK'),
+            'month' => vtranslate('LBL_DATE_UNIT_MONTH'),
+            'quarter' => vtranslate('LBL_DATE_UNIT_QUARTER'),
+            'year' => vtranslate('LBL_DATE_UNIT_YEAR'),
+        ];
+        $labels = [];
+
+        foreach ($this->getGroupByConfigurations() as $configuration) {
+            $label = $fieldLabels[$configuration['field']] ?? $configuration['field'];
+
+            if ('' !== $configuration['interval']) {
+                $label .= ' (' . ($intervalLabels[$configuration['interval']] ?? $configuration['interval']) . ')';
+            }
+
+            $labels[] = $label;
+        }
+
+        return implode(' / ', $labels);
+    }
+
+    protected function getChartCalculations(array $series): array
+    {
+        $fieldLabels = Reporting_Fields_Model::getFieldLabels($this->getPrimaryModule());
+        $calculations = [];
+
+        foreach ($series as $item) {
+            $fieldName = $item['field'];
+            $operation = $item['aggregation'];
+
+            if ('' === $fieldName) {
+                continue;
+            }
+
+            $calculations[$fieldName] ??= [
+                'name' => $fieldName,
+                'label' => $fieldLabels[$fieldName] ?? $fieldName,
+                'sum' => '',
+                'avg' => '',
+                'min' => '',
+                'max' => '',
+            ];
+            $calculations[$fieldName][$operation] = 'Yes';
+        }
+
+        return $calculations;
+    }
+
+    protected function getChartDatasets(array $groupedData, array $series): array
+    {
+        $datasets = [];
+
+        foreach ($series as $item) {
+            if ('count' === $item['aggregation'] && '' === $item['field']) {
+                $datasets[] = [
+                    'label' => vtranslate('LBL_CHART_COUNT_RECORDS', 'Reporting'),
+                    'data' => array_column($groupedData, 'count'),
+                ];
+                continue;
+            }
+
+            $availableMetrics = [];
+
+            foreach ($groupedData as $group) {
+                foreach ($group['metrics'] as $metricKey => $metric) {
+                    if ($item['field'] === ($metric['field'] ?? '') && $item['aggregation'] === ($metric['operation'] ?? '')) {
+                        $availableMetrics[$metricKey] ??= $metric;
+                    }
+                }
+            }
+
             foreach ($availableMetrics as $metricKey => $metric) {
                 $values = [];
 
@@ -256,22 +379,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
             }
         }
 
-        return [
-            'type' => $this->getChartType(),
-            'data' => [
-                'labels' => $labels,
-                'datasets' => $datasets,
-            ],
-            'options' => [
-                'responsive' => true,
-                'maintainAspectRatio' => false,
-                'plugins' => [
-                    'legend' => [
-                        'position' => 'bottom',
-                    ],
-                ],
-            ],
-        ];
+        return $datasets;
     }
 
     public function getTableModel(): Reporting_Table_Model|bool
@@ -292,6 +400,8 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $table->setTableCalculations($this->getCalculations());
         $table->setTableAlignments($this->getAlign());
         $table->setGroupBy($this->getGroupByFields());
+        $table->setGroupByIntervals($this->getGroupByIntervals());
+        $table->setGroupBySortDirections($this->getGroupBySortDirections());
         $table->setGroupByCurrency($this->isGroupByCurrencyEnabled());
         $table->setReportingCurrencyId($this->getReportingCurrencyId());
 
@@ -305,11 +415,40 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         }
 
         $query = Core_QueryGenerator_Model::getInstance($this->getPrimaryModule());
+        $query->setFields($this->getQueryFields());
         $query->setLimit(0);
         $query->setOrderByClauseRequired(true);
         $query->setOrderByColumns($this->getOrderByColumns());
         $query->parseAdvFilterList($this->getFormatedFilters());
         $this->query = $query;
+    }
+
+    public function getQueryFields(): array
+    {
+        $fields = array_merge(['id'], $this->getFields(), $this->getCalculationFields());
+
+        if ($this->isSummaryReport()) {
+            $fields = array_merge(
+                $fields,
+                $this->getGroupByFields(),
+                Reporting_Chart_Model::getFields($this->getChartConfiguration())
+            );
+        }
+
+        $queryFields = [];
+
+        foreach (array_unique($fields) as $fieldName) {
+            $fieldName = (string)$fieldName;
+            [$fieldName, $referenceModule, $referenceField] = array_pad(explode(':', $fieldName), 3, null);
+
+            if ($referenceModule && $referenceField) {
+                $fieldName = sprintf('(%s ; (%s) %s)', $fieldName, $referenceModule, $referenceField);
+            }
+
+            $queryFields[] = $fieldName;
+        }
+
+        return array_values(array_unique(array_filter($queryFields)));
     }
 
     public function getMaxEntries(): int
@@ -347,7 +486,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         foreach ($this->getCalculations() as $fieldName => $calculation) {
             $fieldName = (string)($calculation['name'] ?? $fieldName);
 
-            if ('' !== $fieldName) {
+            if ('' !== $fieldName && Reporting_Table_Model::RECORD_COUNT_COLUMN !== $fieldName) {
                 $fields[] = $fieldName;
             }
         }
@@ -367,22 +506,150 @@ class Reporting_Record_Model extends Vtiger_Record_Model
 
     public function getGroupByFields(): array
     {
-        $groupBy = decode_html($this->getGroupBy());
-        $groupByFields = json_decode($groupBy, true);
+        return array_column($this->getGroupByConfigurations(), 'field');
+    }
 
-        if (!is_array($groupByFields)) {
-            $groupByFields = empty($groupBy) ? [] : [$groupBy];
+    public function getGroupByIntervals(): array
+    {
+        $intervals = [];
+
+        foreach ($this->getGroupByConfigurations() as $configuration) {
+            if ('' !== $configuration['interval']) {
+                $intervals[$configuration['field']] = $configuration['interval'];
+            }
         }
 
-        $selectedFields = $this->getFields();
-        $groupByFields = array_values(array_unique(array_filter(array_map('strval', $groupByFields))));
+        return $intervals;
+    }
 
-        return array_values(array_intersect($groupByFields, $selectedFields));
+    public function getGroupByConfigurations(): array
+    {
+        if (empty($this->getPrimaryModule())) {
+            return [];
+        }
+
+        $availableFields = array_keys(Reporting_Fields_Model::getFieldLabels($this->getPrimaryModule()));
+        $configurations = [];
+
+        foreach (Reporting_Grouping_Model::getConfigurations($this->getGroupBy()) as $configuration) {
+            if (in_array($configuration['field'], $availableFields, true)) {
+                $configurations[] = $configuration;
+            }
+        }
+
+        return $configurations;
+    }
+
+    public function getChartConfiguration(): array
+    {
+        $storedValue = trim((string)$this->get('chart_config'));
+        $configuration = Reporting_Chart_Model::getConfiguration($storedValue);
+        $groupingConfigurations = [];
+
+        foreach ($this->getGroupByConfigurations() as $groupingConfiguration) {
+            $groupingConfigurations[$groupingConfiguration['field']] = $groupingConfiguration;
+        }
+
+        $configuration['x'] = empty($groupingConfigurations)
+            ? ['field' => '', 'interval' => '']
+            : reset($groupingConfigurations);
+
+        $availableSeries = $this->getCalculationChartSeries();
+        $selectedSeries = [];
+        $series = [];
+
+        foreach ($availableSeries as $item) {
+            $series[$item['aggregation'] . ':' . $item['field']] = $item;
+        }
+
+        foreach ($configuration['series'] as $item) {
+            $seriesKey = $item['aggregation'] . ':' . $item['field'];
+
+            if (isset($series[$seriesKey])) {
+                $selectedSeries[$seriesKey] = $series[$seriesKey];
+            }
+        }
+
+        $configuration['series'] = !empty($selectedSeries)
+            ? array_values($selectedSeries)
+            : (empty($series) ? [] : [reset($series)]);
+
+        if (empty($this->getPrimaryModule())) {
+            return $configuration;
+        }
+
+        $fieldDataTypes = Reporting_Fields_Model::getFieldDataTypes($this->getPrimaryModule());
+        $xField = $configuration['x']['field'];
+
+        if (!isset($fieldDataTypes[$xField]) || !isset($groupingConfigurations[$xField])) {
+            $configuration['x'] = ['field' => '', 'interval' => ''];
+        } elseif (!in_array($fieldDataTypes[$xField], ['date', 'datetime'], true)) {
+            $configuration['x']['interval'] = '';
+        }
+
+        $validSeries = [];
+
+        foreach ($configuration['series'] as $item) {
+            if ('count' === $item['aggregation'] && '' === $item['field']) {
+                $validSeries['count:'] = ['field' => '', 'aggregation' => 'count'];
+                continue;
+            }
+
+            if (in_array($fieldDataTypes[$item['field']] ?? '', self::CHART_NUMERIC_TYPES, true)) {
+                $validSeries[$item['aggregation'] . ':' . $item['field']] = $item;
+            }
+        }
+
+        $configuration['series'] = array_values($validSeries);
+
+        return $configuration;
+    }
+
+    protected function getCalculationChartSeries(): array
+    {
+        $series = [];
+        $recordCount = $this->hasRecordCountCalculation();
+
+        foreach ($this->getCalculations() as $fieldName => $calculation) {
+            $fieldName = (string)($calculation['name'] ?? $fieldName);
+
+            if ('' === $fieldName) {
+                continue;
+            }
+
+            if (Reporting_Table_Model::RECORD_COUNT_COLUMN === $fieldName) {
+                continue;
+            }
+
+            foreach (['sum', 'avg', 'min', 'max'] as $operation) {
+                if ('Yes' === ($calculation[$operation] ?? '')) {
+                    $series[] = ['field' => $fieldName, 'aggregation' => $operation];
+                }
+            }
+        }
+
+        if ($recordCount) {
+            array_unshift($series, ['field' => '', 'aggregation' => 'count']);
+        }
+
+        return $series;
+    }
+
+    public function hasRecordCountCalculation(): bool
+    {
+        foreach ($this->getCalculations() as $calculation) {
+            if ('Yes' === ($calculation['count'] ?? '')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function save(): void
     {
-        $this->set('group_by', json_encode($this->getGroupByFields()));
+        $this->set('group_by', json_encode($this->getGroupByConfigurations()));
+        $this->set('chart_config', json_encode($this->getChartConfiguration()));
 
         parent::save();
     }
@@ -395,6 +662,11 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         return in_array($chartType, $allowedTypes, true) ? $chartType : 'bar';
     }
 
+    public function getChartPosition(): string
+    {
+        return 'below' === (string)$this->get('chart_position') ? 'below' : 'above';
+    }
+
     /**
      * @return bool
      */
@@ -403,8 +675,10 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $calculations = $this->getCalculations();
 
         foreach ($calculations as $calculation) {
-            if ('Yes' === $calculation['sum'] || 'Yes' === $calculation['avg'] || 'Yes' === $calculation['min'] || 'Yes' === $calculation['max']) {
-                return true;
+            foreach (['count', 'sum', 'avg', 'min', 'max'] as $operation) {
+                if ('Yes' === ($calculation[$operation] ?? '')) {
+                    return true;
+                }
             }
         }
 
@@ -421,17 +695,13 @@ class Reporting_Record_Model extends Vtiger_Record_Model
      */
     public function getOrderByColumns(): array
     {
-        $sortFields = json_decode(decode_html($this->get('sort_by')), true);
         $primaryModule = Vtiger_Module_Model::getInstance($this->getPrimaryModule());
         $data = [];
 
-        foreach ($sortFields as $sortField) {
-            [$orderBy, $sortOrder] = explode(' ', $sortField);
+        foreach ($this->getSortConfigurations() as $sortConfiguration) {
+            $orderBy = $sortConfiguration['field'];
+            $sortOrder = $sortConfiguration['direction'];
             [$orderBy] = explode(':', $orderBy);
-
-            if (empty($orderBy) || empty($sortOrder)) {
-                continue;
-            }
 
             $field = $primaryModule->getField($orderBy);
 
@@ -441,6 +711,41 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         }
 
         return $data;
+    }
+
+    public function getGroupBySortDirections(): array
+    {
+        $groupByFields = $this->getGroupByFields();
+        $directions = [];
+
+        foreach ($this->getSortConfigurations() as $sortConfiguration) {
+            if (in_array($sortConfiguration['field'], $groupByFields, true)) {
+                $directions[$sortConfiguration['field']] = $sortConfiguration['direction'];
+            }
+        }
+
+        return $directions;
+    }
+
+    protected function getSortConfigurations(): array
+    {
+        $configurations = [];
+
+        foreach ($this->getArrayFromJson('sort_by') as $sortField) {
+            [$fieldName, $direction] = array_pad(preg_split('/\s+/', trim((string)$sortField), 2), 2, '');
+            $direction = strtoupper($direction);
+
+            if ('' === $fieldName || !in_array($direction, ['ASC', 'DESC'], true)) {
+                continue;
+            }
+
+            $configurations[] = [
+                'field' => $fieldName,
+                'direction' => $direction,
+            ];
+        }
+
+        return $configurations;
     }
 
     /**

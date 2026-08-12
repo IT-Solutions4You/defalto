@@ -33,6 +33,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         this.registerLabels();
         this.registerFilters();
         this.registerGrouping();
+        this.registerChartAxes();
         this.registerSharing();
         this.registerCurrencyBehavior();
         Reporting_Table_Js.getInstance().registerEvents(container);
@@ -59,20 +60,53 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         return this.getContainer().find('[name="' + key + '"]').val();
     },
     getFormGrouping() {
-        return this.getContainer().find('[name="group_by[]"]').val() || [];
+        return this.getContainer().find('select[name="group_by_fields[]"]').val() || [];
+    },
+    getFormGroupingRequestValues() {
+        const self = this,
+            intervals = {};
+
+        self.getContainer().find('.dateGroupingInterval').each(function () {
+            const element = $(this),
+                fieldName = element.attr('data-field'),
+                interval = element.val() || '';
+
+            if (fieldName) {
+                intervals[fieldName] = interval;
+            }
+        });
+
+        return $.map(self.getFormGrouping(), function (fieldName) {
+            return JSON.stringify({
+                field: fieldName,
+                interval: intervals[fieldName] || '',
+            });
+        });
+    },
+    updateGroupingRequestValues() {
+        const container = this.getContainer().find('.groupingRequestValues');
+
+        container.empty().append($('<input>', {
+            type: 'hidden',
+            name: 'group_by[]',
+            value: '',
+        }));
+
+        $.each(this.getFormGroupingRequestValues(), function (index, value) {
+            container.append($('<input>', {
+                type: 'hidden',
+                name: 'group_by[]',
+                value: value,
+            }));
+        });
+    },
+    getRequestCollectionValue(value) {
+        const isEmpty = $.isArray(value) ? !value.length : $.isEmptyObject(value);
+
+        return isEmpty ? [''] : value;
     },
     getTableColumnFields() {
-        const fields = this.getFormFields();
-
-        if ('summary' === this.getFormValue('report_type')) {
-            $.each(this.getFormGrouping(), function (index, field) {
-                if (-1 === $.inArray(field, fields)) {
-                    fields.push(field);
-                }
-            });
-        }
-
-        return fields;
+        return this.getFormFields();
     },
     getFormLabels() {
         let self = this,
@@ -88,7 +122,14 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         return labels;
     },
     getFormCalculations() {
-        let calculations = {};
+        const recordCount = this.getContainer().find('.recordCountCalculation'),
+            calculations = {
+                __record_count: {
+                    name: '__record_count',
+                    label: recordCount.attr('data-label'),
+                    count: recordCount.find('.fieldRecordCount').is(':checked') ? 'Yes' : '',
+                },
+            };
 
         this.getContainer().find('.selectedCalculations').each(function () {
             const element = $(this),
@@ -130,6 +171,26 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             return -1 !== $.inArray(fieldName, currencyFields);
         });
     },
+    hasCurrencyFieldInUsedModules() {
+        const currencyFields = this.getCurrencyFields(),
+            selectedFields = this.getFormFields();
+
+        return currencyFields.some(function (currencyField) {
+            const currencyFieldInfo = currencyField.split(':');
+
+            if (1 === currencyFieldInfo.length) {
+                return true;
+            }
+
+            return selectedFields.some(function (selectedField) {
+                const selectedFieldInfo = selectedField.split(':');
+
+                return 3 === selectedFieldInfo.length
+                    && currencyFieldInfo[0] === selectedFieldInfo[0]
+                    && currencyFieldInfo[1] === selectedFieldInfo[1];
+            });
+        });
+    },
     isGroupByCurrencyEnabled() {
         return this.getContainer().find('[name="group_by_currency"]:checkbox').is(':checked');
     },
@@ -159,9 +220,11 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             groupByCurrencyContainer = groupByCurrencyField.closest('.py-2'),
             currencyField = this.getContainer().find('[name="currency_id"]'),
             currencyContainer = currencyField.closest('.py-2'),
-            hasCurrencyFields = this.hasSelectedCurrencyFields();
+            hasCurrencyFields = this.hasSelectedCurrencyFields(),
+            hasCurrencyFieldInUsedModules = this.hasCurrencyFieldInUsedModules();
 
         groupByCurrencyContainer.toggleClass('d-none', !hasCurrencyFields);
+        currencyContainer.toggleClass('d-none', !hasCurrencyFieldInUsedModules);
 
         if (!hasCurrencyFields && groupByCurrencyField.is(':checked')) {
             groupByCurrencyField.prop('checked', false);
@@ -214,6 +277,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             'add.selected.sorts',
             'change.selected.calculations',
             'change.selected.grouping',
+            'change.selected.chart',
         ];
 
         $.each(events, function (index, value) {
@@ -232,8 +296,8 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         return {
             module: Boolean(reportType && primaryModule),
-            currency: this.isGroupByCurrencyEnabled() || Boolean(currencyId),
-            columns: 0 < fields.length,
+            currency: !this.hasCurrencyFieldInUsedModules() || this.isGroupByCurrencyEnabled() || Boolean(currencyId),
+            columns: 0 < fields.length || (isSummary && 0 < grouping.length),
             grouping: !isSummary || 0 < grouping.length,
             summary: isSummary,
         };
@@ -284,6 +348,12 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         }
         if (!requirements.grouping) {
             issues.push({block: 'LBL_GROUPING', message: app.vtranslate('JS_REPORT_SAVE_SELECT_GROUPING')});
+        }
+        if (requirements.summary && !this.getChartConfiguration().x.field) {
+            issues.push({block: 'LBL_CHARTS', message: app.vtranslate('JS_REPORT_SAVE_SELECT_CHART_X')});
+        }
+        if (requirements.summary && !this.getChartConfiguration().series.length) {
+            issues.push({block: 'LBL_CHARTS', message: app.vtranslate('JS_REPORT_SAVE_ADD_CHART_SERIES')});
         }
         if (!this.isSharingReady()) {
             issues.push({block: 'LBL_SHARING', message: app.vtranslate('JS_REPORT_SAVE_SELECT_SHARING')});
@@ -351,12 +421,13 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
                 'add.selected.fields',
                 'delete.selected.fields',
                 'change.selected.grouping',
+                'change.selected.chart',
             ];
 
         self.updateSaveButtonState();
         self.getForm().on(
             'input change',
-            '[data-rule-required="true"], [name="report_type"], [name="primary_module"], [name="currency_id"], [name="group_by_currency"], [name="fields[]"], [name="group_by[]"]',
+            '[data-rule-required="true"], [name="report_type"], [name="primary_module"], [name="currency_id"], [name="group_by_currency"], [name="fields[]"], select[name="group_by_fields[]"], .dateGroupingInterval, .chartXAxisField, .chartXAxisInterval, .chartYAxisCalculation',
             function () {
                 self.updateSaveButtonState();
             }
@@ -412,7 +483,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         groupingStep.toggleClass('d-none', !requirements.summary);
         renderButton.prop('disabled', this.isRenderedTableLoading() || !isReady);
-        widthButton.prop('disabled', !isReady || !table.find('.renderedTable').length);
+        widthButton.prop('disabled', !isReady || !this.getTableColumnFields().length || !table.find('.renderedTable').length);
 
         tutorial.find('.reportingPreviewStep').each(function () {
             const step = $(this),
@@ -484,15 +555,17 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
                 currency_id: self.getFormValue('currency_id'),
                 group_by_currency: self.isGroupByCurrencyEnabled() ? 1 : 0,
                 report_type: self.getFormValue('report_type'),
-                fields: self.getFormFields(),
-                labels: self.getFormLabels(),
-                sort_by: self.getFormSorts(),
-                calculation: self.getFormCalculations(),
-                group_by: self.getFormGrouping(),
+                fields: self.getRequestCollectionValue(self.getFormFields()),
+                labels: self.getRequestCollectionValue(self.getFormLabels()),
+                sort_by: self.getRequestCollectionValue(self.getFormSorts()),
+                calculation: self.getRequestCollectionValue(self.getFormCalculations()),
+                group_by: self.getRequestCollectionValue(self.getFormGroupingRequestValues()),
                 chart_type: self.getFormValue('chart_type'),
+                chart_position: self.getFormValue('chart_position'),
+                chart_config: JSON.stringify(self.getChartConfiguration()),
                 filter: self.getFormFilters(),
-                width: self.getFormWidth(),
-                align: self.getFormAlign(),
+                width: self.getRequestCollectionValue(self.getFormWidth()),
+                align: self.getRequestCollectionValue(self.getFormAlign()),
             };
 
         self.setRenderedTableLoading(true);
@@ -504,7 +577,43 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             if (!error) {
                 self.getContainer().find('.renderedTableContainer').html(data);
                 self.updateTableWidthBar(self.getTableColumnFields());
+                self.renderChartPreview();
             }
+        });
+    },
+    renderChartPreview() {
+        const containers = this.getContainer().find('.renderedTableContainer .reportingChart:not(.chartCreated)'),
+            palette = ['#0d6efd', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#ffc107', '#198754', '#20c997', '#0dcaf0'];
+
+        containers.each(function () {
+            const container = $(this),
+                canvas = container.find('canvas'),
+                dataElement = container.siblings('.reportingChartData');
+
+            if (!canvas.length || !dataElement.length || 'undefined' === typeof Chart) {
+                return;
+            }
+
+            let chartData;
+
+            try {
+                chartData = JSON.parse(dataElement.val());
+            } catch (error) {
+                return;
+            }
+
+            $.each(chartData.data.datasets, function (index, dataset) {
+                if ('pie' === chartData.type || 'doughnut' === chartData.type) {
+                    dataset.backgroundColor = palette.slice(0, dataset.data.length);
+                } else {
+                    dataset.backgroundColor = palette[index % palette.length] + '40';
+                    dataset.borderColor = palette[index % palette.length];
+                    dataset.borderWidth = 2;
+                }
+            });
+
+            container.addClass('chartCreated');
+            app.helper.showChart(canvas, chartData);
         });
     },
     setRenderedTableLoading(isLoading) {
@@ -790,7 +899,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         self.updateCalculations();
 
-        self.getContainer().on('change', '.selectedCalculations :checkbox', function () {
+        self.getContainer().on('change', '.selectedCalculations :checkbox, .fieldRecordCount', function () {
             app.event.trigger('change.selected.calculations');
         });
 
@@ -799,9 +908,10 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
         });
 
         app.event.on('delete.selected.fields', function (event, element) {
-            let field = element.find('[name="fields[]"]').val();
+            const field = element.find('[name="fields[]"]').val();
 
             $('.selectedCalculations[data-name="' + field + '"]').remove();
+            app.event.trigger('change.selected.calculations');
         });
     },
     registerGrouping() {
@@ -815,14 +925,19 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         self.updateGroupingOptions();
 
-        self.getContainer().on('change', '[name="group_by[]"]', function () {
+        self.getContainer().on('change', 'select[name="group_by_fields[]"]', function () {
+            self.updateDateGroupingOptions();
             self.updateGroupingButtons();
+            app.event.trigger('change.selected.grouping');
+        });
+        self.getContainer().on('change', '.dateGroupingInterval', function () {
+            self.updateGroupingRequestValues();
             app.event.trigger('change.selected.grouping');
         });
         self.getContainer().on('click', '.groupSelected', function () {
             const button = $(this),
                 fieldName = button.attr('data-field'),
-                groupingField = self.getContainer().find('[name="group_by[]"]'),
+                groupingField = self.getContainer().find('select[name="group_by_fields[]"]'),
                 selectedGrouping = groupingField.val() || [],
                 selectedIndex = $.inArray(fieldName, selectedGrouping);
 
@@ -844,39 +959,205 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
                 self.updateGroupingOptions();
             });
         });
+
+    },
+    getChartConfiguration() {
+        const container = this.getContainer().find('.reportingChartAxes'),
+            xAxisField = container.find('.chartXAxisField'),
+            xField = xAxisField.attr('data-field') || '',
+            interval = xAxisField.attr('data-interval') || '',
+            selectedCalculations = container.find('.chartYAxisCalculation').val() || [],
+            series = [];
+
+        $.each(selectedCalculations, function (index, selectedCalculation) {
+            const separatorIndex = selectedCalculation.indexOf(':');
+
+            if (-1 === separatorIndex) {
+                return;
+            }
+            series.push({
+                field: selectedCalculation.substring(separatorIndex + 1),
+                aggregation: selectedCalculation.substring(0, separatorIndex),
+            });
+        });
+
+        return {
+            x: {
+                field: xField,
+                interval: interval,
+            },
+            series: series,
+        };
+    },
+    updateChartConfigurationValue() {
+        this.getContainer().find('.chartConfigurationValue').val(JSON.stringify(this.getChartConfiguration()));
+    },
+    updateChartXAxisValue() {
+        const container = this.getContainer(),
+            chartField = container.find('.chartXAxisField'),
+            groupingOptions = container.find('select[name="group_by_fields[]"] option:selected'),
+            labels = [],
+            firstGrouping = groupingOptions.first(),
+            fieldName = firstGrouping.val() || '',
+            firstInterval = container.find('.dateGroupingInterval').filter(function () {
+                return fieldName === $(this).attr('data-field');
+            }).val() || '';
+
+        groupingOptions.each(function () {
+            const groupingOption = $(this),
+                groupingField = groupingOption.val(),
+                interval = container.find('.dateGroupingInterval').filter(function () {
+                    return groupingField === $(this).attr('data-field');
+                }),
+                intervalLabel = interval.val() ? interval.find('option:selected').text().trim() : '';
+
+            labels.push(groupingOption.text().trim() + (intervalLabel ? ' (' + intervalLabel + ')' : ''));
+        });
+
+        chartField
+            .attr('data-field', fieldName)
+            .attr('data-interval', firstInterval)
+            .val(labels.length ? labels.join(' / ') : chartField.data('placeholder'));
+    },
+    getCalculationChartOptions() {
+        const select = this.getContainer().find('.chartYAxisCalculation'),
+            calculations = this.getFormCalculations(),
+            options = [];
+
+        if ('Yes' === calculations.__record_count.count) {
+            options.push({
+                value: 'count:',
+                label: select.data('count-label'),
+            });
+        }
+        $.each(calculations, function (fieldName, calculation) {
+            if ('__record_count' === fieldName) {
+                return;
+            }
+            $.each(['sum', 'avg', 'min', 'max'], function (index, aggregation) {
+                if ('Yes' === calculation[aggregation]) {
+                    options.push({
+                        value: aggregation + ':' + fieldName,
+                        label: calculation.label + ' (' + select.data(aggregation + '-label') + ')',
+                    });
+                }
+            });
+        });
+
+        return options;
+    },
+    updateChartCalculationOptions() {
+        const select = this.getContainer().find('.chartYAxisCalculation'),
+            selectedValues = select.val() || [],
+            options = this.getCalculationChartOptions();
+
+        select.empty();
+        $.each(options, function (index, option) {
+            select.append($('<option>', {value: option.value, text: option.label}));
+        });
+        const availableValues = $.map(options, function (option) {
+                return option.value;
+            }),
+            retainedValues = selectedValues.filter(function (selectedValue) {
+                return -1 !== $.inArray(selectedValue, availableValues);
+            });
+
+        select.val(retainedValues.length ? retainedValues : (options[0] ? [options[0].value] : []));
+        select.prop('disabled', !options.length).trigger('change.select2');
+        this.updateChartConfigurationValue();
+    },
+    registerChartAxes() {
+        const self = this,
+            container = self.getContainer().find('.reportingChartAxes');
+
+        if (!container.length) {
+            return;
+        }
+
+        self.updateChartXAxisValue();
+        self.updateChartCalculationOptions();
+        self.updateChartConfigurationValue();
+
+        container.on('change', '.chartYAxisCalculation', function () {
+            self.updateChartConfigurationValue();
+            app.event.trigger('change.selected.chart');
+        });
+        app.event.on('change.selected.calculations', function () {
+            self.updateChartCalculationOptions();
+            app.event.trigger('change.selected.chart');
+        });
+        app.event.on('change.selected.grouping', function () {
+            self.updateChartXAxisValue();
+            self.updateChartConfigurationValue();
+            app.event.trigger('change.selected.chart');
+        });
+        self.getContainer().on('change', '[name="chart_type"], [name="chart_position"]', function () {
+            app.event.trigger('change.selected.chart');
+        });
     },
     updateGroupingOptions() {
-        const groupingField = this.getContainer().find('[name="group_by[]"]'),
-            selectedGrouping = groupingField.val() || [],
-            availableGrouping = [];
+        const groupingField = this.getContainer().find('select[name="group_by_fields[]"]');
 
         this.getContainer().find('.selectedFields').each(function () {
             const selectedField = $(this),
                 fieldName = selectedField.find('[name="fields[]"]').val(),
-                fieldLabel = selectedField.find('.fieldLabel').text().trim();
+                fieldLabel = selectedField.find('.fieldLabel').text().trim(),
+                groupingOption = groupingField.find('option').filter(function () {
+                    return fieldName === $(this).val();
+                });
 
-            if (fieldName && !availableGrouping.some(function (field) { return field.name === fieldName; })) {
-                availableGrouping.push({name: fieldName, label: fieldLabel});
+            if (fieldName && fieldLabel && groupingOption.length) {
+                groupingOption.text(fieldLabel);
             }
-        });
-
-        groupingField.empty();
-
-        $.each(availableGrouping, function (index, field) {
-            groupingField.append(new Option(
-                field.label,
-                field.name,
-                false,
-                -1 !== $.inArray(field.name, selectedGrouping)
-            ));
         });
 
         groupingField.trigger('change.select2');
         this.updateGroupingButtons();
+        this.updateDateGroupingOptions();
+    },
+    updateDateGroupingOptions() {
+        const self = this,
+            groupingField = self.getContainer().find('select[name="group_by_fields[]"]'),
+            container = self.getContainer().find('.reportingDateGroupingOptions'),
+            intervals = container.data('intervals') || {},
+            currentIntervals = container.data('current-intervals') || {};
 
-        if (selectedGrouping.length !== (groupingField.val() || []).length) {
-            app.event.trigger('change.selected.grouping');
-        }
+        container.find('.dateGroupingInterval').each(function () {
+            const element = $(this),
+                fieldName = element.attr('data-field');
+
+            if (fieldName) {
+                currentIntervals[fieldName] = element.val() || '';
+            }
+        });
+
+        container.empty();
+
+        groupingField.find('option:selected[data-date-grouping="1"]').each(function () {
+            const option = $(this),
+                fieldName = option.val(),
+                row = $('<div>', {class: 'row align-items-center g-2 mb-2 dateGroupingOption'}),
+                label = $('<label>', {class: 'col-md-6 col-form-label'}).text(
+                    container.attr('data-label') + ': ' + option.text().trim()
+                ),
+                selectContainer = $('<div>', {class: 'col-md-6'}),
+                select = $('<select>', {
+                    class: 'form-select dateGroupingInterval',
+                    'data-field': fieldName,
+                });
+
+            $.each(intervals, function (interval, intervalLabel) {
+                select.append($('<option>').attr('value', interval).text(intervalLabel));
+            });
+
+            select.val(currentIntervals[fieldName] || '');
+            selectContainer.append(select);
+            row.append(label, selectContainer);
+            container.append(row);
+        });
+
+        container.data('current-intervals', currentIntervals);
+        self.updateGroupingRequestValues();
     },
     updateGroupingButtons() {
         const selectedGrouping = this.getFormGrouping();
@@ -1369,6 +1650,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             }
 
             self.retrieveFilterValues();
+            self.updateGroupingRequestValues();
 
             return true;
         })
@@ -1463,6 +1745,13 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
             config = container.find('.reportingTableWidthConfig'),
             autoLabel = config.data('auto-label'),
             widthLabel = config.data('width-label');
+
+        if (!fields.length) {
+            table.find('.reportingTableWidthBar, .reportingTableWidthToolbar').remove();
+            self.updateTableWidthBarVisibility();
+
+            return;
+        }
 
         if (!table.length || !table.find('tr').length) {
             return;

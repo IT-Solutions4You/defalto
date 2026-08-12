@@ -10,6 +10,7 @@
     {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
     {assign var=PRIMARY_MODULE value=$RECORD->get('primary_module')}
     {assign var=SELECTED_VALUES value=$FIELD_MODEL->getUITypeModel()->getSelectedValue($FIELD_VALUE)}
+    <input type="hidden" name="labels[]" value="">
     <div class="containerLabels container-fluid border rounded py-2 visually-hidden">
         <div class="containerCloneLabels visually-hidden">
             {include file='uitypes/LabelsSelected.tpl'|vtemplate_path:$QUALIFIED_MODULE FIELD_VALUE='' FIELD_NAME=''}
