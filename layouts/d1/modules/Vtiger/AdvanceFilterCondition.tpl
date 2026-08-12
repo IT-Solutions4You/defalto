@@ -72,7 +72,7 @@
 					{if $ADVANCE_FILTER_OPTION eq $CONDITION_INFO['comparator']}
 							selected
 					{/if}
-					>{vtranslate($ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION])}</option>
+					>{if isset($DATE_FILTERS[$ADVANCE_FILTER_OPTION])}{$DATE_FILTERS[$ADVANCE_FILTER_OPTION]['label']}{else}{vtranslate($ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION])}{/if}</option>
 				{/foreach}
 			{/if}
 		</select>

@@ -10,6 +10,9 @@
 
 class Reporting_Table_Model extends Vtiger_Base_Model
 {
+    public const GROUP_SUMMARY_COLUMN = '__group_summary';
+    public const RECORD_COUNT_COLUMN = '__record_count';
+
     public static array $extensionModules = ['Users'];
     public array $fieldNames = [];
     public array $fields = [];
@@ -23,12 +26,15 @@ class Reporting_Table_Model extends Vtiger_Base_Model
     public array $tableCalculations = [];
     public array $tableAlignments = [];
     public array $groupBy = [];
+    protected array $groupByIntervals = [];
+    protected array $groupBySortDirections = [];
     protected ?array $groupedData = null;
     protected ?array $grandTotalRow = null;
     protected ?array $tableTotalRow = null;
     protected ?array $reportingCurrency = null;
     protected ?int $reportingCurrencyId = null;
     protected bool $groupByCurrency = false;
+    protected bool $recordCount = false;
     protected array $recordCurrencies = [];
 
     /**
@@ -132,6 +138,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         foreach ($fieldNames as $fieldName) {
             $table[0][] = $labels[$fieldName]
                 ?? $this->tableCalculations[$fieldName]['label']
+                ?? (self::RECORD_COUNT_COLUMN === $fieldName ? vtranslate('LBL_COUNT', 'Reporting') : null)
                 ?? $fieldName;
         }
 
@@ -157,6 +164,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         foreach ($fieldNames as $fieldName) {
             $table[0][] = $labels[$fieldName]
                 ?? $this->tableCalculations[$fieldName]['label']
+                ?? (self::RECORD_COUNT_COLUMN === $fieldName ? vtranslate('LBL_COUNT', 'Reporting') : null)
                 ?? $fieldName;
         }
 
@@ -259,13 +267,13 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         }
 
         $labels = $this->getTableLabels();
-        $groupLabels = array_combine($this->getGroupBy(), $this->getGroupByLabels());
         $table = [[]];
 
         foreach ($fieldNames as $fieldName) {
             $table[0][] = $labels[$fieldName]
-                ?? $groupLabels[$fieldName]
                 ?? $this->tableCalculations[$fieldName]['label']
+                ?? (self::GROUP_SUMMARY_COLUMN === $fieldName ? vtranslate('LBL_GROUP_BY', 'Reporting') : null)
+                ?? (self::RECORD_COUNT_COLUMN === $fieldName ? vtranslate('LBL_COUNT', 'Reporting') : null)
                 ?? $fieldName;
         }
 
@@ -295,13 +303,13 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         }
 
         $labels = $this->getTableLabels();
-        $groupLabels = array_combine($this->getGroupBy(), $this->getGroupByLabels());
         $table = [[]];
 
         foreach ($fieldNames as $fieldName) {
             $table[0][] = $labels[$fieldName]
-                ?? $groupLabels[$fieldName]
                 ?? $this->tableCalculations[$fieldName]['label']
+                ?? (self::GROUP_SUMMARY_COLUMN === $fieldName ? vtranslate('LBL_GROUP_BY', 'Reporting') : null)
+                ?? (self::RECORD_COUNT_COLUMN === $fieldName ? vtranslate('LBL_COUNT', 'Reporting') : null)
                 ?? $fieldName;
         }
 
@@ -368,10 +376,26 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         foreach ($this->getTableRecords() as $tableRecord) {
             $rawValues = [];
             $displayValues = [];
+            $sortValues = [];
 
             foreach ($groupByFields as $groupByField) {
                 $rawValue = $this->getRawFieldValue($groupByField, $tableRecord);
                 $displayValue = $this->getFieldValue($groupByField, $tableRecord);
+                $groupingInterval = $this->groupByIntervals[$groupByField] ?? '';
+                [$rawValue, $displayValue] = $this->getDateGroupingValue(
+                    $groupByField,
+                    $rawValue,
+                    $displayValue,
+                    $groupingInterval
+                );
+
+                if ('' !== $groupingInterval) {
+                    $sortValues[] = [
+                        'value' => $this->getDateGroupingSortValue($rawValue, $groupingInterval),
+                        'direction' => $this->groupBySortDirections[$groupByField] ?? 'ASC',
+                    ];
+                }
+
                 $rawValues[] = [
                     'type' => get_debug_type($rawValue),
                     'value' => $rawValue,
@@ -391,6 +415,8 @@ class Reporting_Table_Model extends Vtiger_Base_Model
                     'records' => [],
                     'rows' => [],
                     'metrics' => [],
+                    '_sort_values' => $sortValues,
+                    '_sequence' => count($groups),
                 ];
             }
 
@@ -401,15 +427,59 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         foreach ($groups as &$group) {
             $group['metrics'] = $this->getCalculationMetrics($group['records']);
 
-            foreach ($group['records'] as $record) {
-                $group['rows'][] = $this->getGroupedTableRecordRow($record);
+            if ($this->hasGroupedDetailColumns()) {
+                foreach ($group['records'] as $record) {
+                    $group['rows'][] = $this->getGroupedTableRecordRow($record);
+                }
             }
 
             unset($group['records']);
         }
         unset($group);
 
-        return $this->groupedData = $groups;
+        return $this->groupedData = $this->sortGroupedData($groups);
+    }
+
+    protected function sortGroupedData(array $groups): array
+    {
+        if (!empty($this->groupByIntervals)) {
+            uasort($groups, static function (array $left, array $right): int {
+                $leftValues = $left['_sort_values'] ?? [];
+                $rightValues = $right['_sort_values'] ?? [];
+                $valueCount = max(count($leftValues), count($rightValues));
+
+                for ($index = 0; $index < $valueCount; $index++) {
+                    $leftSort = $leftValues[$index] ?? [];
+                    $rightSort = $rightValues[$index] ?? [];
+                    $leftValue = $leftSort['value'] ?? null;
+                    $rightValue = $rightSort['value'] ?? null;
+                    $direction = 'DESC' === ($leftSort['direction'] ?? 'ASC') ? -1 : 1;
+
+                    if ($leftValue === $rightValue) {
+                        continue;
+                    }
+
+                    if (null === $leftValue) {
+                        return 1;
+                    }
+
+                    if (null === $rightValue) {
+                        return -1;
+                    }
+
+                    return $direction * ($leftValue <=> $rightValue);
+                }
+
+                return ($left['_sequence'] ?? 0) <=> ($right['_sequence'] ?? 0);
+            });
+        }
+
+        foreach ($groups as &$group) {
+            unset($group['_sort_values'], $group['_sequence']);
+        }
+        unset($group);
+
+        return $groups;
     }
 
     /**
@@ -465,7 +535,9 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     protected function getGroupedSummaryLabel(array $group): string
     {
-        return sprintf('%s (%d)', implode(', ', $group['labels']), $group['count']);
+        $label = implode(', ', $group['labels']);
+
+        return $this->recordCount ? $label : sprintf('%s (%d)', $label, $group['count']);
     }
 
     protected function getTotalLabel(array $metrics): string
@@ -663,6 +735,17 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         $formatRecord = reset($records);
         $metrics = [];
 
+        if ($this->recordCount) {
+            $metrics[self::RECORD_COUNT_COLUMN . ':count'] = [
+                'label' => vtranslate('LBL_COUNT_RECORDS', 'Reporting'),
+                'field' => self::RECORD_COUNT_COLUMN,
+                'operation' => 'count',
+                'operation_label' => vtranslate('LBL_COUNT', 'Reporting'),
+                'value' => (float)count($records),
+                'display' => (string)count($records),
+            ];
+        }
+
         foreach ($this->tableCalculations as $fieldName => $calculation) {
             if ($this->groupByCurrency && $this->isCurrencyField($fieldName)) {
                 $metrics = array_merge(
@@ -691,7 +774,9 @@ class Reporting_Table_Model extends Vtiger_Base_Model
                     'operation' => $operation,
                     'operation_label' => $operationLabel,
                     'value' => $calculatedValue,
-                    'display' => $this->getFormattedCalculationValue($fieldName, $formatRecord, $calculatedValue),
+                    'display' => 'count' === $operation
+                        ? (string)(int)$calculatedValue
+                        : $this->getFormattedCalculationValue($fieldName, $formatRecord, $calculatedValue),
                 ];
             }
         }
@@ -742,12 +827,14 @@ class Reporting_Table_Model extends Vtiger_Base_Model
                     'operation_label' => $operationLabel,
                     'currency_id' => $currencyId,
                     'value' => $calculatedValue,
-                    'display' => $this->getFormattedCalculationValue(
-                        $fieldName,
-                        $bucket['record'],
-                        $calculatedValue,
-                        $bucket['currency'],
-                    ),
+                    'display' => 'count' === $operation
+                        ? (string)(int)$calculatedValue
+                        : $this->getFormattedCalculationValue(
+                            $fieldName,
+                            $bucket['record'],
+                            $calculatedValue,
+                            $bucket['currency'],
+                        ),
                 ];
             }
         }
@@ -764,7 +851,9 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         $fieldNames ??= $this->getTableColumns();
 
         foreach ($fieldNames as $fieldName) {
-            $row[] = $this->getFieldValue($fieldName, $record);
+            $row[] = self::RECORD_COUNT_COLUMN === $fieldName
+                ? ''
+                : $this->getFieldValue($fieldName, $record);
         }
 
         return $row;
@@ -778,7 +867,9 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         $row = [];
 
         foreach ($this->getGroupedTableColumns() as $fieldName) {
-            $row[] = $this->getFieldValue($fieldName, $record);
+            $row[] = self::RECORD_COUNT_COLUMN === $fieldName
+                ? ''
+                : $this->getFieldValue($fieldName, $record);
         }
 
         return $row;
@@ -786,19 +877,39 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     protected function getGroupedTableColumns(): array
     {
-        return array_values(array_unique(array_merge(
+        $fieldNames = array_values(array_unique(array_merge(
             $this->getTableColumns(),
-            $this->getGroupBy(),
             array_keys($this->tableCalculations),
         )));
+
+        if (empty($fieldNames) && !empty($this->getGroupBy())) {
+            $fieldNames[] = self::GROUP_SUMMARY_COLUMN;
+        }
+
+        if ($this->recordCount) {
+            $fieldNames[] = self::RECORD_COUNT_COLUMN;
+        }
+
+        return array_values(array_unique($fieldNames));
+    }
+
+    protected function hasGroupedDetailColumns(): bool
+    {
+        return !empty($this->getTableColumns()) || !empty($this->tableCalculations);
     }
 
     protected function getTableColumnsWithCalculations(): array
     {
-        return array_values(array_unique(array_merge(
+        $fieldNames = array_values(array_unique(array_merge(
             $this->getTableColumns(),
             array_keys($this->tableCalculations),
         )));
+
+        if ($this->recordCount) {
+            $fieldNames[] = self::RECORD_COUNT_COLUMN;
+        }
+
+        return array_values(array_unique($fieldNames));
     }
 
     protected function getCalculationOperations(): array
@@ -838,28 +949,6 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         }
 
         return (string)$displayValue;
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function getGroupByLabels(): array
-    {
-        $labels = [];
-
-        foreach ($this->getGroupBy() as $fieldName) {
-            if (isset($this->tableLabels[$fieldName])) {
-                $labels[] = $this->tableLabels[$fieldName];
-                continue;
-            }
-
-            $field = $this->getField($fieldName);
-            $labels[] = $field
-                ? vtranslate($field->get('label'), $field->getModuleName())
-                : vtranslate('LBL_GROUP_BY', 'Reporting');
-        }
-
-        return $labels;
     }
 
     public function setFieldValue($fieldName, $formatRecord, $value): void
@@ -1244,11 +1333,22 @@ class Reporting_Table_Model extends Vtiger_Base_Model
     public function setTableCalculations(array $value): void
     {
         $calculations = [];
+        $this->recordCount = false;
 
         foreach ($value as $fieldName => $calculation) {
             $fieldName = (string)($calculation['name'] ?? $fieldName);
 
             if ('' === $fieldName) {
+                continue;
+            }
+
+            if ('Yes' === ($calculation['count'] ?? '')) {
+                $this->recordCount = true;
+            }
+
+            unset($calculation['count']);
+
+            if (self::RECORD_COUNT_COLUMN === $fieldName) {
                 continue;
             }
 
@@ -1282,6 +1382,114 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         $this->groupedData = null;
         $this->grandTotalRow = null;
         $this->tableTotalRow = null;
+    }
+
+    public function setGroupByIntervals(array $value): void
+    {
+        $this->groupByIntervals = array_filter(
+            $value,
+            static fn(string $interval): bool => in_array(
+                $interval,
+                Reporting_Grouping_Model::DATE_INTERVALS,
+                true
+            )
+        );
+        $this->groupedData = null;
+        $this->grandTotalRow = null;
+        $this->tableTotalRow = null;
+    }
+
+    public function setGroupBySortDirections(array $value): void
+    {
+        $this->groupBySortDirections = array_map(
+            static fn(mixed $direction): string => 'DESC' === strtoupper((string)$direction) ? 'DESC' : 'ASC',
+            $value,
+        );
+        $this->groupedData = null;
+    }
+
+    protected function getDateGroupingValue(
+        string $fieldName,
+        mixed $rawValue,
+        mixed $displayValue,
+        string $interval
+    ): array {
+        if ('' === $interval || null === $rawValue || '' === trim((string)$rawValue)) {
+            return [$rawValue, $displayValue];
+        }
+
+        $field = $this->getField($fieldName);
+
+        if (!$field || !in_array($field->getFieldDataType(), ['date', 'datetime'], true)) {
+            return [$rawValue, $displayValue];
+        }
+
+        try {
+            $date = 'datetime' === $field->getFieldDataType()
+                ? DateTimeField::convertToUserTimeZone((string)$rawValue)
+                : new DateTime((string)$rawValue);
+        } catch (Throwable) {
+            return [$rawValue, $displayValue];
+        }
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        [$startDate, $endDate] = Core_DateFilter_Helper::getGroupingPeriod(
+            $date,
+            $interval,
+            $currentUser->get('dayoftheweek')
+        );
+        $groupValue = $interval . ':' . $startDate;
+
+        if ('day' === $interval) {
+            $groupLabel = DateTimeField::convertToUserFormat($startDate);
+        } elseif ('month' === $interval) {
+            $groupLabel = sprintf(
+                '%s %s',
+                $this->getTranslatedMonthName((int)substr($startDate, 5, 2)),
+                substr($startDate, 0, 4),
+            );
+        } elseif ('year' === $interval) {
+            $groupLabel = substr($startDate, 0, 4);
+        } else {
+            $groupLabel = DateTimeField::convertToUserFormat($startDate)
+                . ' – '
+                . DateTimeField::convertToUserFormat($endDate);
+        }
+
+        return [$groupValue, $groupLabel];
+    }
+
+    protected function getDateGroupingSortValue(mixed $rawValue, string $interval): ?string
+    {
+        $prefix = $interval . ':';
+
+        if (!is_string($rawValue) || !str_starts_with($rawValue, $prefix)) {
+            return null;
+        }
+
+        $startDate = substr($rawValue, strlen($prefix));
+
+        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $startDate) ? $startDate : null;
+    }
+
+    protected function getTranslatedMonthName(int $month): string
+    {
+        $monthLabels = [
+            1 => 'LBL_MONTH_NAME_JANUARY',
+            2 => 'LBL_MONTH_NAME_FEBRUARY',
+            3 => 'LBL_MONTH_NAME_MARCH',
+            4 => 'LBL_MONTH_NAME_APRIL',
+            5 => 'LBL_MONTH_NAME_MAY',
+            6 => 'LBL_MONTH_NAME_JUNE',
+            7 => 'LBL_MONTH_NAME_JULY',
+            8 => 'LBL_MONTH_NAME_AUGUST',
+            9 => 'LBL_MONTH_NAME_SEPTEMBER',
+            10 => 'LBL_MONTH_NAME_OCTOBER',
+            11 => 'LBL_MONTH_NAME_NOVEMBER',
+            12 => 'LBL_MONTH_NAME_DECEMBER',
+        ];
+
+        return vtranslate($monthLabels[$month] ?? '', 'Core');
     }
 
     public function getRawFieldValue($value, $record)

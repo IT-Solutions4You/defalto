@@ -12,6 +12,7 @@
     {assign var=FIELD_UITYPE value=$FIELD_MODEL->getUITypeModel()}
     {assign var=SELECTED_VALUES value=$FIELD_UITYPE->getSelectedValue($FIELD_VALUE)}
     {assign var=LABEL_OPTIONS value=$FIELD_UITYPE->getLabelOptions($PRIMARY_MODULE, $RECORD->getLabels())}
+    <input type="hidden" name="sort_by[]" value="">
     <div class="containerSorts container-fluid">
         <div class="fieldLabel py-2 text-secondary">{vtranslate($FIELD_MODEL->getLabel(), $FIELD_MODEL->getModuleName())}</div>
         <div class="containerCloneSorts visually-hidden">

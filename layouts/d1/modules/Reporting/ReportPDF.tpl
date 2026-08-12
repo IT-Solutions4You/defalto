@@ -73,38 +73,15 @@
     <h3>{$RECORD->getName()}</h3>
     <p>{$RECORD->get('description')}</p>
     <br>
-    {if !empty($PDF_CHART['image'])}
-        <div class="reportingPdfChart">
-            <h4>{$PDF_CHART['title']|escape}</h4>
-            <p class="reportingPdfChartDescription">{$PDF_CHART['description']|escape}</p>
-            <img class="reportingPdfChartImage" src="{$PDF_CHART['image']}" alt="{$PDF_CHART['title']|escape}">
-            {if !empty($PDF_CHART['insights'])}
-                <div class="reportingPdfChartInfo">
-                    <strong>{vtranslate('LBL_PDF_CHART_ANALYSIS', $MODULE_NAME)}</strong>
-                    <ul>
-                        {foreach from=$PDF_CHART['insights'] item=CHART_INSIGHT}
-                            <li>{$CHART_INSIGHT|escape}</li>
-                        {/foreach}
-                    </ul>
-                </div>
-            {/if}
-            <div class="reportingPdfChartInfo">
-                <strong>{vtranslate('LBL_PDF_CHART_FILTERS', $MODULE_NAME)}</strong>
-                {if !empty($PDF_CHART['filters'])}
-                    <ul>
-                        {foreach from=$PDF_CHART['filters'] item=CHART_FILTER}
-                            <li>{$CHART_FILTER|escape}</li>
-                        {/foreach}
-                    </ul>
-                {else}
-                    <p>{vtranslate('LBL_PDF_CHART_NO_FILTERS', $MODULE_NAME)}</p>
-                {/if}
-            </div>
-        </div>
+    {if 'above' eq $RECORD->getChartPosition()}
+        {include file='ReportPDFChart.tpl'|vtemplate_path:$MODULE_NAME}
     {/if}
     {if $IS_SUMMARY_REPORT}
         {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getGroupedTableData() TABLE_ROW_TYPES=$RECORD->getGroupedTableRowTypes() TABLE_STYLE=$RECORD->getTableStyle() TABLE_GROUPS_COLLAPSIBLE=false TABLE_SCROLLABLE=false}
     {else}
         {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getTableData() TABLE_ROW_TYPES=$RECORD->getTableRowTypes() TABLE_STYLE=$RECORD->getTableStyle() TABLE_SCROLLABLE=false}
+    {/if}
+    {if 'below' eq $RECORD->getChartPosition()}
+        {include file='ReportPDFChart.tpl'|vtemplate_path:$MODULE_NAME}
     {/if}
 {/strip}

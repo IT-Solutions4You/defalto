@@ -28,14 +28,6 @@ class Reporting_DetailView_Model extends Vtiger_DetailView_Model
             ],
         ];
 
-        if ($recordModel->isSummaryReport()) {
-            $links[] = [
-                'linktype'  => 'DETAILVIEWWIDGET',
-                'linklabel' => 'LBL_CHART',
-                'linkurl'   => sprintf('module=Reporting&view=Detail&mode=showChart&record=%d', $linkParams['RECORD']),
-            ];
-        }
-
         $links = array_merge($links, [
             [
                 'linktype'  => 'DETAILVIEWBASIC',

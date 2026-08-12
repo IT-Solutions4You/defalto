@@ -354,6 +354,7 @@ class Reporting_PDFChart_Helper
     {
         $filters = [];
         $operatorLabels = Vtiger_Field_Model::getAdvancedFilterOptions();
+        $dateFilters = Vtiger_Field_Model::getDateFilterTypes();
 
         foreach ($recordModel->getFilter() as $group) {
             foreach ((array)($group['columns'] ?? []) as $condition) {
@@ -364,8 +365,16 @@ class Reporting_PDFChart_Helper
                 }
 
                 $comparator = (string)($condition['comparator'] ?? '');
-                $operatorLabel = $operatorLabels[$comparator] ?? self::getHumanizedText($comparator);
+                $operatorLabel = $operatorLabels[$comparator]
+                    ?? ($dateFilters[$comparator]['label'] ?? self::getHumanizedText($comparator));
                 $value = self::getPlainText($condition['value'] ?? '');
+
+                if ('lastperiod' === $comparator) {
+                    [$quantity, $unit] = array_pad(explode('|', $value, 2), 2, '');
+                    $unitLabel = $dateFilters[$comparator]['units'][$unit] ?? $unit;
+                    $value = trim($quantity . ' ' . vtranslate($unitLabel, 'Vtiger'));
+                }
+
                 $parts = array_filter([
                     self::getFilterFieldLabel($columnName),
                     vtranslate($operatorLabel, 'Vtiger'),

@@ -40,6 +40,10 @@ class Reporting_Edit_View extends Vtiger_Edit_View
             return;
         }
 
+        $this->getViewer($request)->assign(
+            'USE_DEFAULT_REPORT_FIELDS',
+            empty($request->getRecord()) && !$request->has('fields')
+        );
         $this->setDefaultEditCurrency($request);
         $this->setDefaultEditSharingType($request);
         parent::process($request);
@@ -133,21 +137,30 @@ class Reporting_Edit_View extends Vtiger_Edit_View
             $viewer->assign('TABLE_DATA', $recordModel->getGroupedTableData());
             $viewer->assign('TABLE_ROW_TYPES', $recordModel->getGroupedTableRowTypes());
             $viewer->assign('TABLE_STYLE', $recordModel->getTableStyle());
+            $chartData = $recordModel->getChartData();
+            $viewer->assign('IS_SUMMARY_REPORT', true);
+            $viewer->assign('HAS_CHART_DATA', !empty($chartData['data']['labels']));
+            $viewer->assign(
+                'CHART_DATA_JSON',
+                json_encode($chartData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+            );
         } else {
             $viewer->assign('TABLE_DATA', $recordModel->getTableData());
             $viewer->assign('TABLE_ROW_TYPES', $recordModel->getTableRowTypes());
             $viewer->assign('TABLE_STYLE', $recordModel->getTableStyle());
+            $viewer->assign('IS_SUMMARY_REPORT', false);
         }
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
-        $viewer->view('ReportTable.tpl', $moduleName);
+        $viewer->view('ReportPreview.tpl', $moduleName);
     }
 
     protected function getTableScripts(): array
     {
         return $this->checkAndConvertJsScripts([
             'modules.Reporting.resources.Table',
+            '~/vendor/defalto/libraries/chartjs/dist/chart.umd.min.js',
         ]);
     }
 

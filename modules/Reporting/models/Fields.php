@@ -13,6 +13,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
     public static array $moduleLabels = [];
     public static array $moduleVariables = [];
     public static array $moduleCurrencyFields = [];
+    public static array $moduleFieldDataTypes = [];
 
     public static array $customFields = [
         'id' => 'Record Id',
@@ -43,12 +44,21 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
     public static function getFieldLabels(string $moduleName): array
     {
+        if ('' === $moduleName) {
+            return [];
+        }
+
         if (!empty(self::$moduleLabels[$moduleName])) {
             return self::$moduleLabels[$moduleName];
         }
 
         $options = [];
         $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return [];
+        }
+
         $fields = array_merge($module->getFields(), self::getCustomFields());
 
         /**
@@ -68,6 +78,11 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
             foreach ($referenceModuleNames as $referenceModuleName) {
                 $reference = Vtiger_Module_Model::getInstance($referenceModuleName);
+
+                if (!$reference) {
+                    continue;
+                }
+
                 $referenceFields = array_merge($reference->getFields(), self::getCustomFields());
 
                 foreach ($referenceFields as $referenceField) {
@@ -82,6 +97,46 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
         self::$moduleLabels[$moduleName] = $options;
 
         return $options;
+    }
+
+    public static function getAllViewFields(string $moduleName): array
+    {
+        if ('' === $moduleName) {
+            return [];
+        }
+
+        $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return [];
+        }
+
+        $availableFields = $module->getFields();
+        $allView = CustomView_Record_Model::getAllFilterByModule($moduleName);
+        $fields = [];
+
+        foreach ($allView->getSelectedFields() as $columnName) {
+            $columnParts = explode(':', decode_html((string)$columnName));
+            $fieldName = $columnParts[2] ?? '';
+
+            if ('' !== $fieldName && isset($availableFields[$fieldName]) && !in_array($fieldName, $fields, true)) {
+                $fields[] = $fieldName;
+            }
+        }
+
+        if (!empty($fields)) {
+            return $fields;
+        }
+
+        foreach ($module->getNameFields() as $columnName) {
+            $field = $module->getFieldByColumn($columnName);
+
+            if ($field && !in_array($field->getName(), $fields, true)) {
+                $fields[] = $field->getName();
+            }
+        }
+
+        return $fields;
     }
 
     public static function getCustomFields(): array
@@ -109,12 +164,21 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
     public static function getFieldVariables($moduleName): array
     {
+        if (empty($moduleName)) {
+            return [];
+        }
+
         if (!empty(self::$moduleVariables[$moduleName])) {
             return self::$moduleVariables[$moduleName];
         }
 
         $options = [];
         $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return [];
+        }
+
         $fields = array_merge($module->getFields(), self::getCustomFields());
 
         /**
@@ -134,6 +198,11 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
             foreach ($referenceModuleNames as $referenceModuleName) {
                 $reference = Vtiger_Module_Model::getInstance($referenceModuleName);
+
+                if (!$reference) {
+                    continue;
+                }
+
                 $referenceFields = array_merge($reference->getFields(), self::getCustomFields());
 
                 foreach ($referenceFields as $referenceField) {
@@ -196,6 +265,69 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
         }
 
         return self::$moduleCurrencyFields[$moduleName] = array_values(array_unique($currencyFields));
+    }
+
+    public static function getFieldDataTypes(string $moduleName): array
+    {
+        if ('' === $moduleName) {
+            return [];
+        }
+
+        if (isset(self::$moduleFieldDataTypes[$moduleName])) {
+            return self::$moduleFieldDataTypes[$moduleName];
+        }
+
+        $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return [];
+        }
+
+        $dataTypes = [];
+
+        foreach ($module->getFields() as $field) {
+            $dataTypes[$field->get('name')] = (string)$field->getFieldDataType();
+        }
+
+        foreach (array_keys(self::$customFields) as $fieldName) {
+            $dataTypes[$fieldName] = 'string';
+        }
+
+        foreach ($module->getFieldsByType(['reference', 'owner']) as $field) {
+            foreach (self::getFieldModules($field) as $referenceModuleName) {
+                $referenceModule = Vtiger_Module_Model::getInstance($referenceModuleName);
+
+                if (!$referenceModule) {
+                    continue;
+                }
+
+                foreach ($referenceModule->getFields() as $referenceField) {
+                    $dataTypes[implode(':', [
+                        $field->get('name'),
+                        $referenceModuleName,
+                        $referenceField->get('name'),
+                    ])] = (string)$referenceField->getFieldDataType();
+                }
+
+                foreach (array_keys(self::$customFields) as $referenceFieldName) {
+                    $dataTypes[implode(':', [
+                        $field->get('name'),
+                        $referenceModuleName,
+                        $referenceFieldName,
+                    ])] = 'string';
+                }
+            }
+        }
+
+        return self::$moduleFieldDataTypes[$moduleName] = $dataTypes;
+    }
+
+    public static function getFieldsByDataTypes(string $moduleName, array $dataTypes): array
+    {
+        return array_keys(array_filter(
+            self::getFieldDataTypes($moduleName),
+            static fn(string $dataType): bool => in_array($dataType, $dataTypes, true)
+        ));
     }
 
     public static function getFieldModules($field)

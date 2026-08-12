@@ -22,6 +22,11 @@ class Reporting_Fields_UIType extends Core_Data_UIType
         }
 
         $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return $options;
+        }
+
         $fields = $module->getFields();
 
         /**
@@ -41,6 +46,11 @@ class Reporting_Fields_UIType extends Core_Data_UIType
 
             foreach ($referenceModuleNames as $referenceModuleName) {
                 $reference = Vtiger_Module_Model::getInstance($referenceModuleName);
+
+                if (!$reference) {
+                    continue;
+                }
+
                 $referenceFields = $reference->getFields();
 
                 foreach ($referenceFields as $referenceField) {
@@ -96,6 +106,11 @@ class Reporting_Fields_UIType extends Core_Data_UIType
         }
 
         $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return $options;
+        }
+
         $fields = $module->getFieldsByType(['reference', 'owner']);
 
         /**
@@ -113,13 +128,12 @@ class Reporting_Fields_UIType extends Core_Data_UIType
         return $options;
     }
 
-    public function getSelectedValue(mixed $fieldValue, $moduleName = ''): array
+    public function getSelectedValue(mixed $fieldValue, $moduleName = '', bool $useDefaultFields = false): array
     {
         $fields = parent::getSelectedValue($fieldValue);
 
-        if (empty($fields) && !empty($moduleName)) {
-            $module = Vtiger_Module_Model::getInstance($moduleName);
-            $fields = $module->getNameFields();
+        if (empty($fields) && $useDefaultFields && !empty($moduleName)) {
+            $fields = Reporting_Fields_Model::getAllViewFields($moduleName);
         }
 
         return $fields;

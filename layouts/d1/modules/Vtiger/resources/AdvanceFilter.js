@@ -931,7 +931,43 @@ Vtiger_Date_Field_Js('AdvanceFilter_Date_Field_Js', {}, {
         let comparatorSelectedOptionVal = this.get('comparatorElementVal'),
             dateSpecificConditions = this.get('dateSpecificConditions');
 
-        if (comparatorSelectedOptionVal === 'bw' || comparatorSelectedOptionVal === 'custom') {
+        if (comparatorSelectedOptionVal === 'lastperiod') {
+            let conditionInfo = dateSpecificConditions[comparatorSelectedOptionVal],
+                valueParts = this.getValue().split('|'),
+                quantity = parseInt(valueParts[0], 10),
+                selectedUnit = valueParts[1],
+                units = conditionInfo.units || {},
+                html = '<div class="input-group relativeDatePeriod">' +
+                    '<input class="form-control relativeDatePeriodQuantity" type="number" min="1" max="10000" step="1">' +
+                    '<select class="form-select relativeDatePeriodUnit"></select>' +
+                    '<input name="' + this.getName() + '" type="hidden">' +
+                    '</div>',
+                element = jQuery(html),
+                quantityElement = element.find('.relativeDatePeriodQuantity'),
+                unitElement = element.find('.relativeDatePeriodUnit'),
+                valueElement = element.find('input[type="hidden"]'),
+                updateValue = function () {
+                    let currentQuantity = Math.max(1, parseInt(quantityElement.val(), 10) || 1),
+                        currentUnit = unitElement.val() || 'day';
+
+                    quantityElement.val(currentQuantity);
+                    valueElement.val(currentQuantity + '|' + currentUnit);
+                };
+
+            quantity = Math.max(1, quantity || 1);
+            selectedUnit = Object.prototype.hasOwnProperty.call(units, selectedUnit) ? selectedUnit : 'day';
+
+            jQuery.each(units, function (unit, label) {
+                unitElement.append(jQuery('<option></option>').attr('value', unit).text(label));
+            });
+
+            quantityElement.val(quantity);
+            unitElement.val(selectedUnit);
+            element.on('input change', '.relativeDatePeriodQuantity, .relativeDatePeriodUnit', updateValue);
+            updateValue();
+
+            return element;
+        } else if (comparatorSelectedOptionVal === 'bw' || comparatorSelectedOptionVal === 'custom') {
             let html = '<div class="input-group date"><input class="form-control inputElement dateField" data-calendar-type="range" name="' + this.getName() + '" data-date-format="' + this.getDateFormat() + '" type="text" value="' + this.getValue() + '"></div>',
                 element = jQuery(html),
                 dateFieldUi = element.find('.dateField');
@@ -999,7 +1035,7 @@ Vtiger_Date_Field_Js('AdvanceFilter_Date_Field_Js', {}, {
     },
 
     _specialDateComparator: function (comp) {
-        var specialComparators = ['lessthandaysago', 'lessthandayslater', 'morethandaysago', 'morethandayslater', 'inlessthan', 'inmorethan', 'daysago', 'dayslater', 'lessthanhoursbefore', 'lessthanhourslater', 'morethanhoursbefore', 'morethanhourslater'];
+        var specialComparators = ['lessthandaysago', 'lessthandayslater', 'morethandaysago', 'morethandayslater', 'inlessthan', 'inmorethan', 'daysago', 'dayslater', 'lastperiod', 'lessthanhoursbefore', 'lessthanhourslater', 'morethanhoursbefore', 'morethanhourslater'];
         for (var index in specialComparators) {
             if (comp == specialComparators[index]) {
                 return true;

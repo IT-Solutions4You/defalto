@@ -11,8 +11,8 @@
 class Reporting_Field_Model extends Vtiger_Field_Model
 {
     public $module;
-    public static array $fullWidth = ['report_type', 'primary_module', 'fields', 'sort_by', 'calculation', 'labels', 'filter', 'sharing_type', 'sharing'];
-    public static array $customWidth = ['fields', 'labels', 'filter', 'calculation', 'sort_by', 'width', 'align'];
+    public static array $fullWidth = ['report_type', 'primary_module', 'fields', 'sort_by', 'calculation', 'labels', 'filter', 'chart_config', 'sharing_type', 'sharing'];
+    public static array $customWidth = ['fields', 'labels', 'filter', 'calculation', 'sort_by', 'width', 'align', 'chart_config'];
     public static array $disabledAjaxEditable = [
         'report_type',
         'primary_module',
@@ -23,6 +23,8 @@ class Reporting_Field_Model extends Vtiger_Field_Model
         'filter',
         'group_by',
         'chart_type',
+        'chart_position',
+        'chart_config',
         'group_by_currency',
         'sharing_type',
         'sharing',
@@ -53,6 +55,7 @@ class Reporting_Field_Model extends Vtiger_Field_Model
             'width' => 'width',
             'align' => 'align',
             'group_by' => 'grouping',
+            'chart_config' => 'chartaxes',
             default => parent::getFieldDataType(),
         };
     }

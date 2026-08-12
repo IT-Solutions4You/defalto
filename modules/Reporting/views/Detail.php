@@ -80,6 +80,15 @@ class Reporting_Detail_View extends Vtiger_Detail_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('BLOCKS', $blockModels);
 
+        if ($recordModel->isSummaryReport()) {
+            $chartData = $recordModel->getChartData();
+            $viewer->assign('HAS_CHART_DATA', !empty($chartData['data']['labels']));
+            $viewer->assign(
+                'CHART_DATA_JSON',
+                json_encode($chartData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
+            );
+        }
+
         return $viewer->view('ReportWidget.tpl', $moduleName, true);
     }
 
