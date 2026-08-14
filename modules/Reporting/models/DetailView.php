@@ -12,21 +12,10 @@ class Reporting_DetailView_Model extends Vtiger_DetailView_Model
 {
     public array $skipDetailLinkByLabel = ['LBL_ADD_TAG', 'LBL_KEY_FIELDS'];
 
-    public function getWidgets()
-    {
-        return [];
-    }
-
     public function getDetailViewLinks($linkParams)
     {
         $recordModel = $this->getRecord();
-        $links = [
-            [
-                'linktype'  => 'DETAILVIEWWIDGET',
-                'linklabel' => 'Reporting',
-                'linkurl'   => sprintf('module=Reporting&view=Detail&mode=getReport&record=%d', $linkParams['RECORD']),
-            ],
-        ];
+        $links = [];
 
         $links = array_merge($links, [
             [

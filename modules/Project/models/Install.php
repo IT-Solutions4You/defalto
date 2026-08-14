@@ -10,6 +10,17 @@
 
 class Project_Install_Model extends Core_Install_Model
 {
+    public bool $registerDefaultSummaryWidgets = false;
+    public array $registerSummaryWidgets = [
+        ['Project', 'LBL_KEY_METRICS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyMetrics', '', 0],
+        ['Project', 'LBL_TASKS', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectTask&page=1&limit=5', '', 1],
+        ['Project', 'LBL_KEY_FIELDS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyFields&showDetails=1', '', 2],
+        ['Project', 'LBL_MILESTONES', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectMilestone&page=1&limit=5', '', 3],
+        ['Project', 'Documents', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=Documents&page=1&limit=5', '', 6],
+        ['Project', 'Appointments', 'module=Project&view=Widget&record=$RECORD$&mode=showAppointments&relatedModule=Appointments&page=1&limit=5', '', 5],
+        ['Project', 'ModComments', 'module=Project&view=Widget&record=$RECORD$&mode=showComments&relatedModule=ModComments&page=1&limit=5', '', 7],
+        ['Project', 'HelpDesk', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=HelpDesk&page=1&limit=5', '', 9],
+    ];
     public static array $progressValues = [
         '10%' => '10%',
         '20%' => '20%',

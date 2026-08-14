@@ -182,7 +182,12 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
         if ($moduleName == 'Documents') {
             $folderValue = $request->get('folder_value');
             if (!empty($folderValue)) {
-                $queryGenerator->addCondition($request->get('folder_id'), $folderValue, 'e');
+                $queryGenerator->addCondition(
+                    $request->get('folder_id'),
+                    $folderValue,
+                    'e',
+                    QueryGenerator::$AND
+                );
             }
         }
 

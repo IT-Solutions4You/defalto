@@ -99,7 +99,7 @@ class ModComments extends ModCommentsCore
         foreach ($moduleNames as $moduleName) {
             $module = Vtiger_Module::getInstance($moduleName);
             if ($module) {
-                $module->addLink($widgetType, $widgetName, "block://ModComments:modules/ModComments/ModComments.php");
+                $module->deleteLink($widgetType, $widgetName, "block://ModComments:modules/ModComments/ModComments.php");
                 $module->setRelatedList($modCommentsModule, 'ModComments', [''], 'get_comments');
                 $commentWidgetModules[] = $moduleName;
             }

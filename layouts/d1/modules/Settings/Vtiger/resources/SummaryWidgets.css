@@ -1,0 +1,24 @@
+.summaryWidgetsColumn {
+    min-height: 12rem;
+}
+
+.summaryWidgetAddMenu {
+    min-width: 18rem;
+    max-height: 24rem;
+    overflow-y: auto;
+}
+
+.summaryWidgetDragHandle {
+    cursor: grab;
+}
+
+.summaryWidgetDragHandle:active {
+    cursor: grabbing;
+}
+
+.summaryWidgetSortablePlaceholder {
+    min-height: 3.25rem;
+    margin-bottom: .5rem;
+    border: 1px dashed var(--bs-secondary);
+    border-radius: var(--bs-border-radius);
+}

@@ -40,6 +40,7 @@ class Vtiger_Link_Model extends Vtiger_Link
     public $_module;
     public $linkclass;
     public $linkdropdowns;
+    public $editable = false;
 
     /**
      * Function to get the value of a given property
@@ -404,6 +405,24 @@ class Vtiger_Link_Model extends Vtiger_Link
         }
 
         return (string)$this->get('link_template');
+    }
+
+    /**
+     * Return query parameters stored in the link URL.
+     */
+    public function getUrlParameters(): array
+    {
+        $url = html_entity_decode((string)$this->get('linkurl'), ENT_QUOTES, 'UTF-8');
+        $query = parse_url($url, PHP_URL_QUERY);
+
+        if ($query === null) {
+            $query = ltrim($url, '?');
+        }
+
+        $parameters = [];
+        parse_str($query, $parameters);
+
+        return $parameters;
     }
 
     /**

@@ -286,7 +286,12 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         if ($moduleName == 'Documents') {
             $folderValue = $this->get('folder_value');
             if (!empty($folderValue)) {
-                $queryGenerator->addCondition($this->get('folder_id'), $folderValue, 'e');
+                $queryGenerator->addCondition(
+                    $this->get('folder_id'),
+                    $folderValue,
+                    'e',
+                    QueryGenerator::$AND
+                );
             }
         }
 

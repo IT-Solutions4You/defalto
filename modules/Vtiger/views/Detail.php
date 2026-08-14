@@ -387,7 +387,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
         $viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStructure->getStructure());
-        $viewer->assign('RELATED_ACTIVITIES', $this->getEvents($request));
 
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $pagingModel = new Vtiger_Paging_Model();
@@ -421,7 +420,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View
 
         $viewer = $this->getViewer($request);
         $viewer->assign('RECORD', $recordModel);
-        $viewer->assign('MODULE_SUMMARY', $this->showModuleSummaryView($request));
 
         $viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());

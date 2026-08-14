@@ -28,19 +28,9 @@ class ITS4YouEmails_DetailView_Model extends Vtiger_DetailView_Model
             $links[] = $relatedLinkEntry;
         }
 
-        $links[] = $this->getKeyFieldsWidgetInfo();
-        $links[] = [
-            'linktype'  => 'DETAILVIEWWIDGET',
-            'linklabel' => 'LBL_MESSAGE',
-            'linkurl'   => 'module=ITS4YouEmails&view=BodyWidget&record=' . $this->getRecord()->getId(),
-            'linkicon'  => '',
-        ];
-        $links[] = [
-            'linktype'  => 'DETAILVIEWWIDGET',
-            'linklabel' => 'LBL_ATTACHMENTS',
-            'linkurl'   => 'module=ITS4YouEmails&view=AttachmentsWidget&record=' . $this->getRecord()->getId(),
-            'linkicon'  => '',
-        ];
+        foreach ($this->getWidgets() as $widget) {
+            $links[] = $widget;
+        }
 
         if ($currentUserModel->isAdminUser()) {
             foreach ($moduleModel->getSettingLinks() as $settingsLink) {

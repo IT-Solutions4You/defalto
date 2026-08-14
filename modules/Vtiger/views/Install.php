@@ -13,7 +13,11 @@ class Vtiger_Install_View extends Vtiger_Basic_View
     public function buttons(Vtiger_Request $request): void
     {
         $viewer = $this->getViewer($request);
-        $viewer->view('InstallView.tpl', 'Install');
+        $viewer->assign('DEFAULT_LAYOUT', Vtiger_Viewer::getDefaultLayoutName());
+        $viewer->assign('INSTALL_MODE', $request->getMode());
+        $viewer->assign('LANGUAGE', Vtiger_Language_Handler::getLanguage());
+        $viewer->assign('PAGETITLE', vtranslate('LBL_INSTALL_WIZARD', 'Core'));
+        $viewer->view('InstallView.tpl', 'Core');
     }
 
     /**
@@ -57,12 +61,24 @@ class Vtiger_Install_View extends Vtiger_Basic_View
      */
     public function process(Vtiger_Request $request)
     {
+        $this->buttons($request);
+        $this->processInstallMode($request);
+        $this->finished($request);
+        $this->showInstallFooter($request);
+    }
+
+    /**
+     * Executes the requested installation operation without rendering the view.
+     *
+     * @throws Exception
+     */
+    public function processInstallMode(Vtiger_Request $request): void
+    {
         $mode = $request->getMode();
         $this->exposeMethod('install');
         $this->exposeMethod('update');
         $this->exposeMethod('migrate');
         $this->exposeMethod('delete');
-        $this->buttons($request);
 
         if (!empty($mode) && $this->isMethodExposed($mode)) {
             error_reporting(E_ALL);
@@ -72,13 +88,17 @@ class Vtiger_Install_View extends Vtiger_Basic_View
 
             $this->invokeExposedMethod($mode, $request);
         }
-
-        $this->finished($request);
     }
 
-    public function finished($request)
+    public function finished(Vtiger_Request $request): void
     {
         Core_Install_Model::logSuccess('Finished: ' . var_export($request->getAll(), true));
+    }
+
+    public function showInstallFooter(Vtiger_Request $request): void
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->view('InstallViewFooter.tpl', 'Core');
     }
 
     /**
