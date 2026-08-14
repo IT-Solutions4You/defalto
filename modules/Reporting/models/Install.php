@@ -10,6 +10,10 @@
 
 class Reporting_Install_Model extends Core_Install_Model
 {
+    public bool $registerDefaultSummaryWidgets = false;
+    public array $registerSummaryWidgets = [
+        ['Reporting', 'Reporting', 'module=Reporting&view=Widget&record=$RECORD$&mode=showReport', '', 0],
+    ];
     protected string $moduleName = 'Reporting';
     protected string $parentName = 'Tools';
 
