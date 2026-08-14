@@ -12,6 +12,7 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
 {
     protected bool $groupByClauseRequired = false;
     protected array $groupByColumns = [];
+    protected array $structuredWhereConditions = [];
 
     public const NOT_EMPTY = 'ny';
     public const EMPTY = 'y';
@@ -53,7 +54,7 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
             $query .= sprintf(' LIMIT %d', $this->getLimit());
         }
 
-        $result = $adb->pquery($query);
+        $result = $adb->pquery($query, $this->getQueryParameters());
         $index = $this->getBaseTableIndex();
 
         while ($row = $adb->fetchByAssoc($result)) {
@@ -62,6 +63,154 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
         }
 
         return $records;
+    }
+
+    public function addColumnCondition(
+        string $tableName,
+        string $columnName,
+        string $operator,
+        mixed $value
+    ): self {
+        $qualifiedColumn = $this->getQualifiedColumn($tableName, $columnName);
+        $operator = strtoupper(trim($operator));
+
+        if (!in_array($operator, ['=', '!=', '<>', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE'], true)) {
+            throw new InvalidArgumentException('Unsupported SQL column operator.');
+        }
+
+        if ($value === null) {
+            if ($operator === '=') {
+                return $this->addStructuredWhereCondition($qualifiedColumn . ' IS NULL');
+            }
+
+            if (in_array($operator, ['!=', '<>'], true)) {
+                return $this->addStructuredWhereCondition($qualifiedColumn . ' IS NOT NULL');
+            }
+
+            throw new InvalidArgumentException('NULL supports only equality operators.');
+        }
+
+        return $this->addStructuredWhereCondition(
+            $qualifiedColumn . ' ' . $operator . ' ?',
+            [$value]
+        );
+    }
+
+    public function addFieldColumnCondition(string $fieldName, string $operator, mixed $value): self
+    {
+        $field = $this->getModuleFields()[$fieldName] ?? null;
+
+        if (!$field) {
+            throw new InvalidArgumentException('Unknown module field.');
+        }
+
+        $this->addWhereField($fieldName);
+
+        return $this->addColumnCondition(
+            $field->getTableName(),
+            $field->getColumnName(),
+            $operator,
+            $value
+        );
+    }
+
+    public function addColumnValuesCondition(
+        string $tableName,
+        string $columnName,
+        array $values,
+        bool $exclude = false
+    ): self {
+        $values = array_values($values);
+
+        if (!$values) {
+            return $this->addStructuredWhereCondition($exclude ? '1=1' : '1=0');
+        }
+
+        return $this->addStructuredWhereCondition(
+            $this->getQualifiedColumn($tableName, $columnName)
+            . ($exclude ? ' NOT IN (' : ' IN (')
+            . generateQuestionMarks($values)
+            . ')',
+            $values
+        );
+    }
+
+    public function addRecordIdsCondition(array $recordIds, bool $exclude = false): self
+    {
+        return $this->addColumnValuesCondition(
+            $this->meta->getEntityBaseTable(),
+            $this->getBaseTableIndex(),
+            $recordIds,
+            $exclude
+        );
+    }
+
+    public function getQueryParameters(): array
+    {
+        $parameters = [];
+
+        foreach ($this->structuredWhereConditions as $condition) {
+            array_push($parameters, ...$condition['parameters']);
+        }
+
+        return $parameters;
+    }
+
+    public function getQueryData(bool $sortClause = false): array
+    {
+        return [
+            'query' => $this->getQuery($sortClause),
+            'parameters' => $this->getQueryParameters(),
+        ];
+    }
+
+    public function clearConditionals(): void
+    {
+        parent::clearConditionals();
+        $this->structuredWhereConditions = [];
+        $this->reset();
+    }
+
+    public function getWhereClause(): string
+    {
+        if ($this->query || $this->whereClause) {
+            return $this->whereClause;
+        }
+
+        $whereClause = parent::getWhereClause();
+
+        foreach ($this->structuredWhereConditions as $condition) {
+            $whereClause .= ' AND (' . $condition['expression'] . ')';
+        }
+
+        $this->whereClause = $whereClause;
+
+        return $whereClause;
+    }
+
+    protected function addStructuredWhereCondition(string $expression, array $parameters = []): self
+    {
+        $this->structuredWhereConditions[] = [
+            'expression' => $expression,
+            'parameters' => array_values($parameters),
+        ];
+        $this->reset();
+
+        return $this;
+    }
+
+    protected function getQualifiedColumn(string $tableName, string $columnName): string
+    {
+        if (!$this->isSqlIdentifier($tableName) || !$this->isSqlIdentifier($columnName)) {
+            throw new InvalidArgumentException('Invalid SQL identifier.');
+        }
+
+        return $tableName . '.' . $columnName;
+    }
+
+    protected function isSqlIdentifier(string $value): bool
+    {
+        return $value !== '' && preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $value) === 1;
     }
 
     public function getBaseTableIndex()

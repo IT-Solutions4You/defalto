@@ -1533,6 +1533,15 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                 'linkicon'  => '',
             ];
 
+            if ($this->isEntityModule() && $this->isSummaryViewSupported()) {
+                $settingsLinks[] = [
+                    'linktype'  => 'LISTVIEWSETTING',
+                    'linklabel' => 'LBL_SUMMARY_WIDGETS',
+                    'linkurl'   => 'index.php?parent=Settings&module=Vtiger&view=SummaryWidgets&sourceModule=' . $this->getName(),
+                    'linkicon'  => '',
+                ];
+            }
+
             if ($this->hasSequenceNumberField()) {
                 $settingsLinks[] = [
                     'linktype'  => 'LISTVIEWSETTING',

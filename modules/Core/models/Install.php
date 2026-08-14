@@ -440,6 +440,12 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public array $registerCustomLinks = [];
     /**
+     * Summary widget links in the format
+     * [module, label, url, icon, sequence, handlerInfo, legacyLabels].
+     */
+    public array $registerSummaryWidgets = [];
+    public bool $registerDefaultSummaryWidgets = true;
+    /**
      * @var array
      * [events, file, class, condition, dependOn, modules]
      */
@@ -981,10 +987,16 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             case 'module.enabled':
             case 'module.postupdate':
                 $this->addCustomLinks();
+                $this->updateSummaryWidgets();
+                break;
+            case 'module.preupdate':
+                $this->deleteCustomLinks();
                 break;
             case 'module.disabled':
+                $this->deleteCustomLinks();
+                break;
             case 'module.preuninstall':
-            case 'module.preupdate':
+                $this->updateSummaryWidgets(false);
                 $this->deleteCustomLinks();
                 break;
         }
@@ -1412,6 +1424,197 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 }
             }
         }
+    }
+
+    public function getSummaryWidgets(): array
+    {
+        $widgets = [];
+
+        if ($this->registerDefaultSummaryWidgets) {
+            foreach ($this->getDefaultSummaryWidgets() as $widget) {
+                $widgets[$widget[0] . ':' . $widget[1]] = $widget;
+            }
+        }
+
+        foreach ($this->registerSummaryWidgets as $widget) {
+            $widgets[$widget[0] . ':' . $widget[1]] = $widget;
+        }
+
+        return array_values($widgets);
+    }
+
+    protected function getDefaultSummaryWidgets(): array
+    {
+        $moduleName = $this->getModuleName();
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$moduleModel || !$moduleModel->isEntityModule() || !$moduleModel->isSummaryViewSupported()) {
+            return [];
+        }
+
+        $baseUrl = 'module=$MODULE$&view=Widget&record=$RECORD$&mode=';
+        $widgets = [
+            [$moduleName, 'LBL_KEY_FIELDS', $baseUrl . 'showKeyFields&showDetails=1', '', 0],
+        ];
+
+        if ($moduleModel->isModuleRelated('Appointments')) {
+            $widgets[] = [$moduleName, 'Appointments', $baseUrl . 'showAppointments&relatedModule=Appointments&page=1&limit=5', '', 1];
+        }
+
+        if ($moduleModel->isModuleRelated('Documents')) {
+            $widgets[] = [$moduleName, 'Documents', $baseUrl . 'showRelatedRecords&relatedModule=Documents&page=1&limit=5', '', 2];
+        }
+
+        if ($moduleModel->isCommentEnabled()) {
+            $widgets[] = [
+                $moduleName,
+                'ModComments',
+                $baseUrl . 'showComments&relatedModule=ModComments&page=1&limit=5',
+                '',
+                3,
+                null,
+                ['DetailViewBlockCommentWidget'],
+            ];
+        }
+
+        return $widgets;
+    }
+
+    public function updateSummaryWidgets(bool $register = true): void
+    {
+        foreach ($this->getSummaryWidgets() as $widget) {
+            [$moduleName, $label, $url, $icon, $sequence, $handlerInfo, $legacyLabels] = array_pad($widget, 7, null);
+            $module = Vtiger_Module::getInstance($moduleName);
+
+            if (!$module) {
+                continue;
+            }
+
+            if (!$register) {
+                Vtiger_Link::deleteLink($module->id, 'DETAILVIEWWIDGET', $label);
+                continue;
+            }
+
+            $labels = array_values(array_unique(array_merge([$label], (array)$legacyLabels)));
+            $result = $this->db->pquery(
+                'SELECT linkid, linklabel, linkurl FROM vtiger_links WHERE tabid=? AND linktype=? AND linklabel IN ('
+                . generateQuestionMarks($labels) . ') ORDER BY linkid',
+                [$module->id, 'DETAILVIEWWIDGET', $labels]
+            );
+            $existingLinks = [];
+
+            while ($row = $this->db->fetchByAssoc($result)) {
+                $existingLinks[] = $row;
+            }
+
+            usort($existingLinks, static function (array $first, array $second) use ($label): int {
+                $firstIsActive = !str_starts_with((string)$first['linkurl'], 'block://');
+                $secondIsActive = !str_starts_with((string)$second['linkurl'], 'block://');
+
+                if ($firstIsActive !== $secondIsActive) {
+                    return $firstIsActive ? -1 : 1;
+                }
+
+                $firstIsCurrent = $first['linklabel'] === $label;
+                $secondIsCurrent = $second['linklabel'] === $label;
+
+                if ($firstIsCurrent !== $secondIsCurrent) {
+                    return $firstIsCurrent ? -1 : 1;
+                }
+
+                return (int)$first['linkid'] <=> (int)$second['linkid'];
+            });
+
+            $currentLink = array_shift($existingLinks);
+            $linkId = (int)($currentLink['linkid'] ?? 0);
+
+            if ($linkId) {
+                // Sequence and the blocked URL are user settings and must survive module updates.
+                $linkInfo = [
+                    'linklabel' => $label,
+                    'linkicon' => $icon,
+                    'handler_path' => $handlerInfo['path'] ?? null,
+                    'handler_class' => $handlerInfo['class'] ?? null,
+                    'handler' => $handlerInfo['method'] ?? null,
+                ];
+
+                if (!str_starts_with((string)$currentLink['linkurl'], 'block://')) {
+                    $linkInfo['linkurl'] = $url;
+                }
+
+                Vtiger_Link::updateLink($module->id, $linkId, $linkInfo);
+            } else {
+                Vtiger_Link::addLink($module->id, 'DETAILVIEWWIDGET', $label, $url, $icon, (int)$sequence, $handlerInfo);
+            }
+
+            Vtiger_Cache::delete('links-' . $module->id, ['DETAILVIEWWIDGET']);
+        }
+    }
+
+    public static function updateAllSummaryWidgets(): void
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=?', [1]);
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $moduleName = $row['name'];
+            $installFile = 'modules/' . $moduleName . '/models/Install.php';
+
+            if (!is_file($installFile)) {
+                continue;
+            }
+
+            $installClass = Vtiger_Loader::getComponentClassName('Model', 'Install', $moduleName);
+
+            if (!class_exists($installClass)) {
+                continue;
+            }
+
+            self::getInstance('module.postupdate', $moduleName)->updateSummaryWidgets();
+        }
+    }
+
+    public static function getSummaryWidgetDefinitions(string $targetModuleName): array
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT name FROM vtiger_tab ORDER BY name');
+        $definitions = [];
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $moduleName = $row['name'];
+            $installFile = 'modules/' . $moduleName . '/models/Install.php';
+
+            if (!is_file($installFile)) {
+                continue;
+            }
+
+            $installClass = Vtiger_Loader::getComponentClassName('Model', 'Install', $moduleName);
+
+            if (!class_exists($installClass)) {
+                continue;
+            }
+
+            $installModel = self::getInstance('module.postupdate', $moduleName);
+            $widgets = $moduleName === $targetModuleName
+                ? $installModel->getSummaryWidgets()
+                : $installModel->registerSummaryWidgets;
+
+            foreach ($widgets as $widget) {
+                [$widgetModuleName, $label] = array_pad($widget, 2, null);
+
+                if ($widgetModuleName === $targetModuleName && $label) {
+                    $definitions[$label] = $widget;
+                }
+            }
+        }
+
+        uasort($definitions, static function (array $first, array $second): int {
+            $sequenceComparison = (int)($first[4] ?? 0) <=> (int)($second[4] ?? 0);
+
+            return $sequenceComparison ?: strcmp((string)($first[1] ?? ''), (string)($second[1] ?? ''));
+        });
+
+        return $definitions;
     }
 
     /**

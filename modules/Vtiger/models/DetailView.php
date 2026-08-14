@@ -370,19 +370,79 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
     {
         $moduleModel = $this->getModule();
         $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-        $widgets = [];
-        $widgets[] = $this->getKeyFieldsWidgetInfo();
-        $widgets[] = $this->getAppointmentsWidgetInfo();
-        $widgets[] = $this->getDocumentsWidgetInfo();
-        $widgets[] = $this->getCommentWidgetInfo();
+        $linkParameters = [
+            '$MODULE$' => $this->getModuleName(),
+            '$RECORD$' => $this->getRecord()->getId(),
+        ];
+        $linksByType = Vtiger_Link_Model::getAllByType($moduleModel->getId(), ['DETAILVIEWWIDGET']);
+        $widgetLinks = $linksByType['DETAILVIEWWIDGET'] ?? [];
+        $availableWidgets = [];
 
-        $widgetLinks = [];
+        foreach ($widgetLinks as $widgetLink) {
+            if (str_starts_with((string)$widgetLink->get('linkurl'), 'block://')) {
+                continue;
+            }
 
-        foreach ($widgets as $widgetDetails) {
-            $widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);
+            $widgetLink->set('linkurl', strtr((string)$widgetLink->get('linkurl'), $linkParameters));
+            $urlParameters = $widgetLink->getUrlParameters();
+            $targetModuleName = $urlParameters['module'] ?? $this->getModuleName();
+            $targetModuleModel = Vtiger_Module_Model::getInstance($targetModuleName);
+            $relatedModuleName = $urlParameters['relatedModule'] ?? '';
+
+            if (!$targetModuleModel
+                || !$targetModuleModel->isActive()
+                || !$userPrivilegesModel->hasModuleActionPermission($targetModuleModel->getId(), 'DetailView')) {
+                continue;
+            }
+
+            if ($relatedModuleName) {
+                $relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModuleName);
+                $isDynamicListWidget = ($urlParameters['view'] ?? '') === 'Widget'
+                    && ($urlParameters['mode'] ?? '') === 'showList';
+
+                if (!$relatedModuleModel
+                    || (!$isDynamicListWidget && !$moduleModel->isModuleRelated($relatedModuleName))
+                    || !$userPrivilegesModel->hasModuleActionPermission($relatedModuleModel->getId(), 'DetailView')) {
+                    continue;
+                }
+
+                $widgetLink->set('linkName', $relatedModuleName);
+
+                if (!$isDynamicListWidget
+                    && $relatedModuleName !== 'ModComments'
+                    && $userPrivilegesModel->hasModuleActionPermission($relatedModuleModel->getId(), 'CreateView')) {
+                    $widgetLink->set('action', ['Add']);
+                    $widgetLink->set('actionURL', $relatedModuleModel->getQuickCreateUrl());
+                }
+            }
+
+            if (!empty($urlParameters['relatedField'])) {
+                $widgetLink->set('relatedField', $urlParameters['relatedField']);
+            }
+
+            $widgetLink->set('showDetails', !empty($urlParameters['showDetails']));
+            $availableWidgets[] = $widgetLink;
         }
 
-        return $widgetLinks;
+        $uniqueWidgets = [];
+
+        foreach ($availableWidgets as $availableWidget) {
+            $label = $availableWidget->getLabel();
+
+            if (!isset($uniqueWidgets[$label])
+                || (int)$availableWidget->getId() < (int)$uniqueWidgets[$label]->getId()) {
+                $uniqueWidgets[$label] = $availableWidget;
+            }
+        }
+
+        $availableWidgets = array_values($uniqueWidgets);
+        usort($availableWidgets, static function (Vtiger_Link_Model $first, Vtiger_Link_Model $second): int {
+            $sequenceComparison = (int)$first->get('sequence') <=> (int)$second->get('sequence');
+
+            return $sequenceComparison ?: (int)$first->getId() <=> (int)$second->getId();
+        });
+
+        return $availableWidgets;
     }
 
     /**

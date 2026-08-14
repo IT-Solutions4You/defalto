@@ -36,6 +36,7 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             1 => ['VTLIB_LBL_MODULE_MANAGER', 'index.php?module=ModuleManager&parent=Settings&view=List', '', 1],
             ['LBL_EDIT_FIELDS', 'index.php?module=LayoutEditor&parent=Settings&view=Index', 'LBL_LAYOUT_EDITOR_DESCRIPTION'],
             ['LBL_CUSTOMIZE_MODENT_NUMBER', 'index.php?module=Vtiger&parent=Settings&view=CustomRecordNumbering', 'LBL_CUSTOMIZE_MODENT_NUMBER_DESCRIPTION'],
+            ['LBL_SUMMARY_WIDGET_EDITOR', 'index.php?parent=Settings&module=Vtiger&view=SummaryWidgets', 'LBL_SUMMARY_WIDGET_EDITOR_DESCRIPTION'],
         ],
         'LBL_AUTOMATION' => [
             1 => ['Webforms', 'index.php?module=Webforms&parent=Settings&view=List', 'LBL_WEBFORMS_DESCRIPTION'],
@@ -512,22 +513,26 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             $this->set('sequence', self::getNewSequence($this->get('blockid')));
         }
 
+        $saveData = [
+            'blockid' => $this->get('blockid'),
+            'name' => $this->get('name'),
+            'linkto' => $this->get('linkto'),
+            'sequence' => $this->get('sequence'),
+        ];
+
+        foreach (['iconpath', 'description', 'active', 'pinned'] as $column) {
+            if ($this->has($column)) {
+                $saveData[$column] = $this->get($column);
+            }
+        }
+
         if (empty($data)) {
             $db = PearDatabase::getInstance();
-            $table->insertData([
+            $table->insertData(array_merge([
                 self::$itemId => $db->getUniqueID(self::$itemsTable),
-                'blockid' => $this->get('blockid'),
-                'name' => $this->get('name'),
-                'linkto' => $this->get('linkto'),
-                'sequence' => $this->get('sequence'),
-            ]);
+            ], $saveData));
         } else {
-            $table->updateData([
-                'blockid' => $this->get('blockid'),
-                'name' => $this->get('name'),
-                'linkto' => $this->get('linkto'),
-                'sequence' => $this->get('sequence'),
-            ], [
+            $table->updateData($saveData, [
                 self::$itemId => $data[self::$itemId],
             ]);
         }

@@ -8,10 +8,21 @@
  *}
 {strip}
 <div class="summaryWidgetContainer bg-body rounded mb-3">
-    <div class="widgetContainer_{$smarty.foreach.count.index}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}">
+    <div class="widgetContainer_{$DETAIL_VIEW_WIDGET->getId()}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}" data-sequence="{$DETAIL_VIEW_WIDGET->get('sequence')}">
         <div class="widget_header border-1 border-bottom p-3 clearfix">
             <input type="hidden" name="relatedModule" value="{$DETAIL_VIEW_WIDGET->get('linkName')}"/>
+            {if $DETAIL_VIEW_WIDGET->get('relatedField')}
+                <input type="hidden" name="relatedField" value="{$DETAIL_VIEW_WIDGET->get('relatedField')}"/>
+            {/if}
             <h4 class="display-inline-block pull-left">{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</h4>
+            {if $DETAIL_VIEW_WIDGET->get('showDetails')}
+                <div class="pull-right">
+                    <button type="button" class="btn btn-sm text-secondary fw-bold" onclick="Vtiger_Detail_Js.openDetail(this);" data-detail-url="{$RECORD->getFullDetailViewUrl()}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span class="ms-2">{vtranslate('LBL_DETAILS', $QUALIFIED_MODULE)}</span>
+                    </button>
+                </div>
+            {/if}
             {if $DETAIL_VIEW_WIDGET->get('action')}
                 {if 'Documents' eq $DETAIL_VIEW_WIDGET->getLabel()}
                     {assign var=PARENT_ID value=$RECORD->getId()}

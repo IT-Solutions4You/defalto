@@ -14,8 +14,9 @@
 		{assign var=FILENAME value=$RELATED_MODULE|cat:"SummaryWidgetContents.tpl"}
 		{include file=$FILENAME|vtemplate_path:$MODULE RELATED_RECORDS=$RELATED_RECORDS}
     {else}
-		<div class="summaryWidgetContainer noContent border border-1 rounded">
-			<p class="textAlignCenter">{vtranslate('LBL_NO_RELATED',$MODULE)} {$RELATED_MODULE}</p>
-		</div>
+		{include file='SummaryWidgetEmpty.tpl'|vtemplate_path:'Vtiger'
+			EMPTY_STATE_LABEL='LBL_NO_RELATED'
+			EMPTY_STATE_MODULE=$MODULE
+			EMPTY_STATE_SUFFIX=$RELATED_MODULE}
 	{/if}
 {/strip}

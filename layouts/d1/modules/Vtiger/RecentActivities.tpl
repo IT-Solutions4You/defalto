@@ -192,9 +192,10 @@
                         {/if}
                     </ul>
                 {else}
-                    <div class="summaryWidgetContainer">
-                        <p class="textAlignCenter">{vtranslate('LBL_NO_RECENT_UPDATES')}</p>
-                    </div>
+                    {include file='SummaryWidgetEmpty.tpl'|vtemplate_path:'Vtiger'
+                        EMPTY_STATE_LABEL='LBL_NO_RECENT_UPDATES'
+                        EMPTY_STATE_MODULE=$MODULE_NAME
+                        EMPTY_STATE_SUFFIX=''}
                 {/if}
             </div>
         </div>

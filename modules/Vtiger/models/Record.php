@@ -292,6 +292,23 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Format a record field already stored in the intended record currency.
+     *
+     * No exchange-rate conversion is performed. The supplied user's grouping,
+     * decimal separator and decimal precision are applied to the field value.
+     */
+    public function getCurrencyDisplayValue(string $fieldName, $user = null, bool $formatZero = false): string
+    {
+        return (string)CurrencyField::convertToUserFormat(
+            $this->get($fieldName),
+            $user,
+            true,
+            false,
+            $formatZero
+        );
+    }
+
+    /**
      * @param string    $fieldName
      * @param false|int $recordId
      *

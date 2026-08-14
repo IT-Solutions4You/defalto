@@ -218,6 +218,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     detailViewRecentActivitiesTabLabel: 'Appointments',
     detailViewRecentDocumentsLabel: 'Documents',
     widgetPostLoad: 'Vtiger.Widget.PostLoad',
+    summaryWidgetObserver: false,
     _moduleName: false,
     targetPicklistChange: false,
     targetPicklist: false,
@@ -1656,6 +1657,8 @@ Vtiger.Class("Vtiger_Detail_Js", {
             if (selects.length) {
                 vtUtils.showSelect2ElementView($(this).find('.select2'))
             }
+
+            self.registerEventForPicklistDependencySetup($(this));
         })
     },
     getWidgetRelatedModule() {
@@ -1673,6 +1676,27 @@ Vtiger.Class("Vtiger_Detail_Js", {
             eventNamespace = '.summaryViewContainerEvents';
 
         self.loadWidgets();
+
+        container.off('click' + eventNamespace, '.summaryListWidgetPage').on('click' + eventNamespace, '.summaryListWidgetPage', function (event) {
+            const button = jQuery(event.currentTarget),
+                widgetContainer = button.closest('[class^="widgetContainer_"]'),
+                urlParams = self.getWidgetRequestData(widgetContainer);
+
+            event.preventDefault();
+            urlParams.page = button.data('page');
+            widgetContainer.data('url', urlParams);
+            self.loadWidget(widgetContainer).then(function () {
+                app.event.trigger('post.summarywidget.load', widgetContainer);
+            });
+        });
+        container.off('click' + eventNamespace, '.summaryWidgetRetry').on('click' + eventNamespace, '.summaryWidgetRetry', function (event) {
+            const widgetContainer = jQuery(event.currentTarget).closest('[class^="widgetContainer_"]');
+
+            event.preventDefault();
+            self.loadWidget(widgetContainer).then(function () {
+                app.event.trigger('post.summarywidget.load', widgetContainer);
+            });
+        });
         /**
          * Function to handle the ajax edit for summary view fields
          */
@@ -1826,39 +1850,198 @@ Vtiger.Class("Vtiger_Detail_Js", {
         return aDeferred.promise();
     },
 
-    loadWidgets: function () {
-        let self = this,
-            widgetList = self.getContainer().find('[class^="widgetContainer_"]');
+    convertWidgetUrlToDataParams: function (url) {
+        const queryStart = url.indexOf('?'),
+            query = queryStart === -1 ? url : url.substring(queryStart + 1),
+            params = {};
 
-        widgetList.each(function (index, widgetContainerELement) {
-            let widgetContainer = jQuery(widgetContainerELement);
+        jQuery.each(query.split('&'), function (index, queryPart) {
+            const separatorPosition = queryPart.indexOf('='),
+                encodedName = separatorPosition === -1 ? queryPart : queryPart.substring(0, separatorPosition),
+                encodedValue = separatorPosition === -1 ? '' : queryPart.substring(separatorPosition + 1),
+                name = this.convertWidgetUrlComponent(encodedName),
+                value = this.convertWidgetUrlComponent(encodedValue);
 
-            self.loadWidget(widgetContainer).then(function () {
-                app.event.trigger('post.summarywidget.load', widgetContainer);
+            if (name) {
+                params[name] = value;
+            }
+        }.bind(this));
+
+        return params;
+    },
+
+    convertWidgetUrlComponent: function (value) {
+        const normalizedValue = value.replace(/\+/g, ' ');
+
+        try {
+            return decodeURIComponent(normalizedValue);
+        } catch (error) {
+            return normalizedValue;
+        }
+    },
+
+    getWidgetRequestData: function (widgetContainer) {
+        const storedUrl = widgetContainer.data('url'),
+            urlParams = typeof storedUrl === 'string'
+                ? this.convertWidgetUrlToDataParams(storedUrl)
+                : storedUrl;
+
+        if (typeof storedUrl === 'string') {
+            widgetContainer.data('url', urlParams);
+        }
+
+        return jQuery.extend({}, urlParams || {});
+    },
+
+    showWidgetLoading: function (widgetContainer) {
+        const contentContainer = jQuery('.widget_contents', widgetContainer),
+            loadingState = jQuery('<div>', {
+                class: 'summaryWidgetLoadingState d-flex align-items-center justify-content-center text-secondary py-4',
+                role: 'status'
+            }),
+            spinner = jQuery('<span>', {
+                class: 'spinner-border spinner-border-sm',
+                'aria-hidden': 'true'
+            }),
+            label = jQuery('<span>', {
+                class: 'ms-2',
+                text: app.vtranslate('JS_LOADING')
             });
+
+        contentContainer.empty().append(loadingState.append(spinner, label));
+    },
+
+    showWidgetLoadError: function (widgetContainer) {
+        const contentContainer = jQuery('.widget_contents', widgetContainer),
+            errorState = jQuery('<div>', {
+                class: 'summaryWidgetErrorState alert alert-danger d-flex align-items-center justify-content-between mb-0',
+                role: 'alert'
+            }),
+            message = jQuery('<span>', {
+                text: app.vtranslate('JS_SUMMARY_WIDGET_LOAD_FAILED')
+            }),
+            retryButton = jQuery('<button>', {
+                type: 'button',
+                class: 'btn btn-sm btn-outline-danger ms-3 summaryWidgetRetry',
+                text: app.vtranslate('JS_RETRY')
+            });
+
+        contentContainer.empty().append(errorState.append(message, retryButton));
+    },
+
+    loadWidgetsSequentially: function (widgetList, index) {
+        const self = this;
+
+        if (index >= widgetList.length) {
+            return;
+        }
+
+        const widgetContainer = jQuery(widgetList.get(index)),
+            loadNext = function () {
+                window.setTimeout(function () {
+                    self.loadWidgetsSequentially(widgetList, index + 1);
+                }, 0);
+            };
+
+        self.loadWidget(widgetContainer).then(function () {
+            app.event.trigger('post.summarywidget.load', widgetContainer);
+            loadNext();
+        }, loadNext);
+    },
+
+    loadWidgets: function () {
+        const self = this,
+            widgetList = self.getContainer().find('[class^="widgetContainer_"]').filter(function () {
+                const widgetContainer = jQuery(this);
+
+                return !widgetContainer.data('summaryWidgetLoaded')
+                    && !widgetContainer.data('summaryWidgetLoading');
+            });
+
+        if (self.summaryWidgetObserver) {
+            self.summaryWidgetObserver.disconnect();
+            self.summaryWidgetObserver = false;
+        }
+
+        widgetList.each(function () {
+            self.showWidgetLoading(jQuery(this));
+        });
+
+        if (!widgetList.length) {
+            return;
+        }
+
+        if (!('IntersectionObserver' in window)) {
+            self.loadWidgetsSequentially(widgetList, 0);
+            return;
+        }
+
+        const observer = new IntersectionObserver(function (entries) {
+            jQuery.each(entries, function (index, entry) {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                const widgetContainer = jQuery(entry.target);
+
+                observer.unobserve(entry.target);
+                self.loadWidget(widgetContainer).then(function () {
+                    app.event.trigger('post.summarywidget.load', widgetContainer);
+                });
+            });
+        }, {
+            rootMargin: '250px 0px'
+        });
+
+        self.summaryWidgetObserver = observer;
+
+        widgetList.each(function () {
+            self.summaryWidgetObserver.observe(this);
         });
     },
 
     loadWidget: function (widgetContainer) {
-        let aDeferred = jQuery.Deferred(),
+        const aDeferred = jQuery.Deferred(),
             thisInstance = this,
             contentContainer = jQuery('.widget_contents', widgetContainer),
-            urlParams = widgetContainer.data('url'),
+            requestId = (widgetContainer.data('summaryWidgetRequestId') || 0) + 1,
             params = {
                 'type': 'GET',
                 'dataType': 'html',
-                'data': urlParams
+                'data': thisInstance.getWidgetRequestData(widgetContainer)
             };
 
-        app.helper.showProgress();
-        app.request.post(params).then(function (error, data) {
-            app.helper.hideProgress();
+        widgetContainer.data('summaryWidgetRequestId', requestId);
+        widgetContainer.data('summaryWidgetLoaded', false);
+        widgetContainer.data('summaryWidgetLoading', true);
+        thisInstance.showWidgetLoading(widgetContainer);
+
+        app.request.get(params).then(function (error, data) {
+            if (widgetContainer.data('summaryWidgetRequestId') !== requestId) {
+                aDeferred.reject();
+                return;
+            }
+
+            if (error !== null) {
+                widgetContainer.data('summaryWidgetLoading', false);
+                thisInstance.showWidgetLoadError(widgetContainer);
+                aDeferred.reject(error);
+                return;
+            }
+
             contentContainer.html(data);
+            widgetContainer.data('summaryWidgetLoaded', true);
+            widgetContainer.data('summaryWidgetLoading', false);
             contentContainer.trigger(thisInstance.widgetPostLoad);
 
             aDeferred.resolve(params);
-        }, function () {
-            aDeferred.reject();
+        }, function (error) {
+            if (widgetContainer.data('summaryWidgetRequestId') === requestId) {
+                widgetContainer.data('summaryWidgetLoading', false);
+                thisInstance.showWidgetLoadError(widgetContainer);
+            }
+
+            aDeferred.reject(error);
         });
 
         return aDeferred.promise();

@@ -1,0 +1,66 @@
+#page {
+    margin: 0;
+    padding: 0;
+}
+.min-w-0 {
+    min-width: 0;
+}
+
+.install-manager-page,
+.install-view-page {
+    --install-icon-size: 3rem;
+}
+
+.install-manager-heading-icon,
+.install-view-heading-icon {
+    width: var(--install-icon-size);
+    height: var(--install-icon-size);
+    font-size: 1.25rem;
+}
+
+.install-manager-module-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.1rem;
+}
+
+.install-manager-preview {
+    min-height: 24rem;
+}
+
+.install-manager-output {
+    font-family: var(--bs-font-monospace);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.install-manager-empty-icon {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.5rem;
+}
+
+.install-view-page {
+    min-height: 100vh;
+}
+
+.install-view-output {
+    min-height: 12rem;
+    max-height: 60vh;
+    overflow: auto;
+    font-family: var(--bs-font-monospace);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+}
+
+.install-view-output pre,
+.install-manager-output pre {
+    margin-bottom: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-tertiary-bg);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
