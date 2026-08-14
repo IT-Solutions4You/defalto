@@ -8,14 +8,20 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class InventoryItem_ItemsWidget_View extends Vtiger_Index_View
+class InventoryItem_Widget_View extends Core_Widget_View
 {
-    public function process(Vtiger_Request $request)
+    public function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('showItems');
+    }
+
+    public function showItems(Vtiger_Request $request): string
     {
         global $current_user;
-        $recordId = (int)$request->get('for_record');
-        $forModule = $request->get('for_module');
-        $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId, $forModule);
+        $recordId = (int)$request->get('sourceRecord');
+        $sourceModule = $request->get('sourceModule');
+        $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId, $sourceModule);
         $items = InventoryItem_Utils_Helper::fetchItems($recordId);
         $adjustment = $entityRecordModel->get('adjustment');
 
@@ -27,7 +33,7 @@ class InventoryItem_ItemsWidget_View extends Vtiger_Index_View
         $viewer->assign('ITEMS', $items);
         $viewer->assign('MODULE', 'InventoryItem');
         $viewer->assign('FOR_RECORD', $recordId);
-        $viewer->assign('FOR_MODULE', $forModule);
+        $viewer->assign('FOR_MODULE', $sourceModule);
         $viewer->assign('ENTITY_MODEL', $entityRecordModel);
         $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_after_overall_discount', $current_user));
         $viewer->assign('VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('tax_amount', $current_user));
@@ -37,8 +43,8 @@ class InventoryItem_ItemsWidget_View extends Vtiger_Index_View
         $viewer->assign('GRAND_TOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('grand_total', $current_user));
         $viewer->assign('MARGIN_COMBINED', $entityRecordModel->get('margin_combined'));
 
-        Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showItems', $sourceModule, $viewer, $request);
 
-        $viewer->view('ItemsWidget.tpl', 'InventoryItem');
+        return $viewer->view('ItemsWidget.tpl', 'InventoryItem', true);
     }
 }
