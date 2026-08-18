@@ -28,6 +28,11 @@ class SMSNotifier_Module_Model extends Vtiger_Module_Model
         return false;
     }
 
+    public function isQuickSearchEnabled()
+    {
+        return false;
+    }
+
     /**
      * Function to get the module is permitted to specific action
      *
