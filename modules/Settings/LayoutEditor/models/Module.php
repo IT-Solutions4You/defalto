@@ -24,6 +24,11 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
     const MANY_TO_ONE = 'N:1';
     const MANY_TO_MANY = 'N:N';
 
+    public function isQuickSearchEnabled()
+    {
+        return false;
+    }
+
     /**
      * Function that returns all the fields for the module
      * @return <Array of Vtiger_Field_Model> - list of field models
