@@ -212,8 +212,7 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
 
             const conditionRow = anyConditionContainer.find('.conditionList .conditionRow:last'),
                 fieldSelectElement = conditionRow.find('select[name="columnname"]'),
-                comparatorSelectElement = conditionRow.find('select[name="comparator"]'),
-                valueElement = conditionRow.find('[name="' + fieldName + '"]');
+                comparatorSelectElement = conditionRow.find('select[name="comparator"]');
 
             fieldSelectElement.find('option[data-field-name="' + fieldName + '"]').prop('selected', true);
             fieldSelectElement.trigger('change').trigger('liszt:updated');
@@ -221,7 +220,7 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
             comparatorSelectElement.find('option[value="c"]').prop('selected', true);
             comparatorSelectElement.trigger('change').trigger('liszt:updated');
 
-            valueElement.val(value);
+            conditionRow.find('.fieldUiHolder [data-value="value"]').first().val(value).trigger('change');
         });
     },
 
