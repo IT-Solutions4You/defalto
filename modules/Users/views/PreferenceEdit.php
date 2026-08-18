@@ -88,7 +88,9 @@ class Users_PreferenceEdit_View extends Vtiger_Edit_View
             $viewer->assign('MENU_TOPITEMS_LIMIT', $menuStructure->getLimit());
             $viewer->assign('COMPANY_LOGO', $companyLogo);
             $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-            $viewer->assign('SEARCHABLE_MODULES', Vtiger_Module_Model::getSearchableModules());
+            $globalSearchModules = GlobalSearch_Search_Model::getInstance()->getModuleModels();
+            $viewer->assign('SEARCHABLE_MODULES', $globalSearchModules);
+            $viewer->assign('GLOBAL_SEARCH_MODULES', $globalSearchModules);
 
             $homeModuleModel = Vtiger_Module_Model::getInstance('Home');
             $viewer->assign('HOME_MODULE_MODEL', $homeModuleModel);

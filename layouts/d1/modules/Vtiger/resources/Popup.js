@@ -564,8 +564,8 @@ jQuery.Class("Vtiger_Popup_Js", {
 
         if (totalPageNumber === "") {
             var totalCountElem = popupContainer.find('#totalCount');
-            var totalRecordCount = totalCountElem.val();
-            if (totalRecordCount !== '') {
+            var totalRecordCount = parseInt(totalCountElem.val(), 10);
+            if (!isNaN(totalRecordCount) && totalRecordCount > 0) {
                 var recordPerPage = popupContainer.find('#pageLimit').val();
                 if (recordPerPage === '0') recordPerPage = 1;
                 pageCount = Math.ceil(totalRecordCount / recordPerPage);
@@ -666,7 +666,7 @@ jQuery.Class("Vtiger_Popup_Js", {
             thisInstance.getPageCount().then(function (data) {
                 totalNumberOfRecords = data.numberOfRecords;
                 totalRecordsElement.val(totalNumberOfRecords);
-                popupContainer.find('ul#listViewPageJumpDropDown #totalPageCount').text(data.page);
+                popupContainer.find('ul#PageJumpDropDown #totalPageCount').text(data.page);
                 thisInstance.showPagingInfo();
             });
         } else {

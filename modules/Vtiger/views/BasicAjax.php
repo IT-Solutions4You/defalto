@@ -32,6 +32,11 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
     {
         $permissions = parent::requiresPermission($request);
         $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
+        $sourceModule = (string)$request->get('source_module');
+
+        if ($sourceModule !== '' && $sourceModule !== 'Home') {
+            $permissions[] = ['module_parameter' => 'source_module', 'action' => 'DetailView'];
+        }
 
         return $permissions;
     }
@@ -67,14 +72,23 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
      */
     function showAdvancedSearch(Vtiger_Request $request)
     {
-        //Modules for which search is excluded
-        $excludedModuleForSearch = ['Vtiger'];
-
         $viewer = $this->getViewer($request);
-        $moduleName = $request->getModule();
+        $module = $request->getModule();
+        $sourceModule = (string)$request->get('source_module');
+        $searchModel = GlobalSearch_Search_Model::getInstance();
+        $searchableModules = $searchModel->getModuleModels();
+        $moduleSelectionRequired = (bool)$request->get('module_selection_required');
 
-        if ($request->get('source_module')) {
-            $moduleName = $request->get('source_module');
+        if ($moduleSelectionRequired) {
+            $moduleName = 'Home';
+        } elseif ($sourceModule !== '' && isset($searchableModules[$sourceModule])) {
+            $moduleName = $sourceModule;
+        } elseif ($sourceModule !== '') {
+            $moduleName = 'Home';
+        } elseif (isset($searchableModules[$module])) {
+            $moduleName = $module;
+        } else {
+            $moduleName = 'Home';
         }
 
         $saveFilterPermitted = true;
@@ -83,20 +97,21 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
             $saveFilterPermitted = false;
         }
 
-        //See if it is an excluded module, If so search in home module
-        if (in_array($moduleName, $excludedModuleForSearch)) {
-            $moduleName = 'Home';
-        }
-        $module = $request->getModule();
-
         $customViewModel = new CustomView_Record_Model();
         $customViewModel->setModule($moduleName);
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        if (!empty($moduleModel)) {
+        $moduleModel = null;
+
+        if ($moduleName !== 'Home') {
+            $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        }
+
+        if ($moduleModel) {
             $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_FILTER);
             $viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
         }
-        $viewer->assign('SEARCHABLE_MODULES', Vtiger_Module_Model::getSearchableModules());
+
+        $viewer->assign('SEARCHABLE_MODULES', $searchableModules);
+        $viewer->assign('SEARCH_FIELD_NAMES', $moduleModel ? $searchModel->getSearchFieldNames($moduleModel) : []);
         $viewer->assign('CUSTOMVIEW_MODEL', $customViewModel);
 
         $advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();

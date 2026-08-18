@@ -152,7 +152,9 @@ Vtiger_List_Js('Vtiger_AdvanceSearchList_Js', {}, {
     },
 
     getListSearchParams: function (includeStarFilters) {
-        var searchParams = JSON.parse(jQuery('#searchResults-container').find('[name="currentSearchParams"]').val());
+        let serializedSearchParams = this.getListViewContainer().find('[name="currentSearchParams"]').val(),
+            searchParams = serializedSearchParams ? JSON.parse(serializedSearchParams) : [];
+
         for (var index in searchParams) {
             if (isNaN(index)) {
                 delete searchParams[index];

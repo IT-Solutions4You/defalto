@@ -129,24 +129,116 @@ Vtiger.Class('Vtiger_BasicSearch_Js', {}, {
 
     addSearchListener: function () {
         jQuery('.search-link .keyword-input').on('VT_SEARCH_INTIATED', function (e, args) {
-            let val = args.searchValue,
-                url = '?module=Vtiger&view=ListAjax&mode=searchAll&value=' + encodeURIComponent(val);
+            const element = jQuery(this),
+                val = args.searchValue.trim(),
+                minimumLength = Number(element.data('minLength')) || 2,
+                searchModule = jQuery('#global-search-module').val(),
+                params = {
+                    module: 'Vtiger',
+                    view: 'ListAjax',
+                    mode: 'searchAll',
+                    value: val,
+                };
+
+            if (val.length < minimumLength) {
+                app.helper.showErrorNotification({message: element.data('minLengthMessage')});
+                return;
+            }
+
+            if (searchModule) {
+                params.searchModule = searchModule;
+            }
 
             app.helper.showProgress();
-            app.request.get({'url': url}).then(function (error, data) {
-                if (error == null) {
-                    app.helper.hideProgress();
-                    app.helper.loadPageOverlay(data).then(function (modal) {
-                        modal.find('.keyword-input').val(jQuery('.keyword-input').val());
-                        Vtiger_SearchList_Js.intializeListInstances(modal);
-                    });
+            app.request.get({'url': '?' + jQuery.param(params)}).then(function (error, data) {
+                app.helper.hideProgress();
+
+                if (error != null) {
+                    app.helper.showErrorNotification({message: error.message || error});
+                    return;
                 }
+
+                app.helper.loadPageOverlay(data).then(function (modal) {
+                    Vtiger_SearchList_Js.intializeListInstances(modal);
+                });
             });
+        });
+    },
+
+    registerModuleSelector: function () {
+        const picker = jQuery('.global-search-module-picker'),
+            moduleInput = jQuery('#global-search-module');
+
+        if (!picker.length) {
+            return;
+        }
+
+        picker.on('show.bs.dropdown', function () {
+            const searchContainer = picker.closest('.search-link');
+
+            picker.find('.dropdown-menu').css('width', searchContainer.outerWidth());
+        });
+
+        picker.on('click', '.global-search-module-option', function () {
+            const option = jQuery(this),
+                moduleName = option.attr('data-module') || '',
+                moduleLabel = option.attr('data-label') || '',
+                button = picker.find('.global-search-module-button'),
+                options = picker.find('.global-search-module-option'),
+                selectedIcon = picker.find('.global-search-selected-icon'),
+                optionIcon = moduleName
+                    ? option.find('.global-search-module-option-icon').contents().clone()
+                    : jQuery('<i>', {class: 'fa fa-chevron-down'});
+
+            moduleInput.val(moduleName).trigger('change');
+            selectedIcon.empty().append(optionIcon);
+            button.attr('title', moduleLabel);
+            button.attr('aria-label', picker.attr('data-module-label') + ': ' + moduleLabel);
+            options.removeClass('active').removeAttr('aria-current');
+            option.addClass('active').attr('aria-current', 'true');
+        });
+
+        picker.on('click', '.global-search-filter-open', function () {
+            const advanceSearchInstance = new Vtiger_AdvanceSearch_Js(),
+                moduleName = jQuery('#global-search-module').val();
+
+            advanceSearchInstance
+                .setSearchModule(moduleName)
+                .setModuleSelectionRequired(!moduleName)
+                .initiateSearch().then(function () {
+                    if (moduleName) {
+                        jQuery('#searchModuleList').val(moduleName).trigger('change.select2');
+                    }
+
+                    advanceSearchInstance.selectBasicSearchValue();
+                });
+        });
+
+        picker.on('click', '.global-search-module-search', function (event) {
+            event.stopPropagation();
+        });
+
+        picker.on('input', '.global-search-module-search', function () {
+            const searchValue = jQuery(this).val().toLocaleLowerCase().trim();
+
+            picker.find('.global-search-module-option[data-module!=""]').each(function () {
+                const option = jQuery(this),
+                    searchableValues = (option.attr('data-search-values') || option.attr('data-label') || '')
+                        .toLocaleLowerCase();
+
+                option.closest('li').toggleClass('d-none', searchableValues.indexOf(searchValue) === -1);
+            });
+        });
+
+        picker.on('hidden.bs.dropdown', function () {
+            picker.find('.global-search-module-search').val('');
+            picker.find('.global-search-module-option[data-module!=""]').closest('li').removeClass('d-none');
         });
     },
 
     registerEvents: function () {
         this._super();
+        this.registerModuleSelector();
         this.addSearchListener();
     }
 

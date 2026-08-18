@@ -212,13 +212,20 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
     {
         return $value !== '' && preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $value) === 1;
     }
-
     public function getBaseTableIndex()
     {
         $baseTable = $this->meta->getEntityBaseTable();
         $moduleTableIndexList = $this->meta->getEntityTableIndexList();
 
         return $moduleTableIndexList[$baseTable];
+    }
+
+    public function getBaseTableIndexColumn(): string
+    {
+        return $this->getQualifiedColumn(
+            $this->meta->getEntityBaseTable(),
+            $this->getBaseTableIndex()
+        );
     }
 
     /**

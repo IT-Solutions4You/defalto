@@ -18,6 +18,15 @@
 - If the change affects rendered or cache-busted browser assets, also bump the application/display patch version in `version.php` so `vresource_url()` invalidates cached resources.
 - Do not bump `version.php` for documentation-only changes, comments-only changes, tests-only changes, generated-map-only changes, or analysis notes that do not alter runtime behavior.
 
+### Module Versions
+
+- Treat `public string $moduleVersion` in `modules/<Module>/<Module>.php` as the install and update version of that installable module; the install flow persists it to `vtiger_tab.version`.
+- For every functional change owned by an installable module, increment the final numeric component of that module's `$moduleVersion` in the same commit. This includes module PHP, module-specific layout assets, language strings, install or schema behavior, and Settings code owned by that module.
+- When one commit functionally changes multiple installable modules, bump every affected module independently and exactly once, regardless of how many files changed in each module.
+- If a changed path has no root module version, trace its runtime and installer owner and bump the owning installable module. Do not introduce a new `$moduleVersion` only to satisfy this rule.
+- A shared Core or Vtiger change does not require version bumps for every downstream module. Bump only installable modules whose owned runtime code or assets changed, in addition to the applicable `version.php` bump.
+- Do not bump module versions for documentation-only, comments-only, tests-only, or generated-map-only changes.
+
 ## Function Naming
 
 - When creating new reusable PHP or JavaScript methods, choose a clear action prefix from the existing intent families before inventing another verb.
