@@ -33,8 +33,8 @@
                                 {if $SOURCE_MODULE eq 'Home'}
                                     <div class="textAlignCenter well contentsBackground">{vtranslate('LBL_PLEASE_SELECT_MODULE',$MODULE)}</div>
                                 {else}
-                                    <input type="hidden" name="labelFields" {if !empty($SOURCE_MODULE_MODEL)}  data-value='{ZEND_JSON::encode($SOURCE_MODULE_MODEL->getNameFields())}' {/if} />
-                                    {include file='AdvanceFilter.tpl'|@vtemplate_path}
+                                    <input type="hidden" name="searchFields" data-value='{ZEND_JSON::encode($SEARCH_FIELD_NAMES)}' />
+                                    {include file='AdvanceFilter.tpl'|@vtemplate_path SHOW_DEFAULT_CONDITIONS=false}
                                 {/if}
                             </form>
                         </div>

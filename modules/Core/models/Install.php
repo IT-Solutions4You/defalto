@@ -1869,12 +1869,12 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public function updateSettingsLinks(bool $register = true): void
     {
         foreach ($this->registerSettingsLinks as $settingsLink) {
-            [$name, $link, $block] = $settingsLink;
+            [$name, $link, $block, $description] = array_pad($settingsLink, 4, '');
 
             if ($register) {
                 $menu = Settings_Vtiger_Menu_Model::createMenu($block);
 
-                Settings_Vtiger_MenuItem_Model::createItem($name, $link, $menu);
+                Settings_Vtiger_MenuItem_Model::createItem($name, $link, $menu, (string)$description);
             } else {
                 Settings_Vtiger_MenuItem_Model::deleteItem($name);
             }

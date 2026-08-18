@@ -29,38 +29,39 @@ Vtiger_List_Js("Vtiger_ModuleList_Js", {}, {
         return jQuery('#searchValue').val();
     },
     getDefaultParams: function () {
-        var container = this.getListViewContainer();
-        var searchParams = {
+        const container = this.getListViewContainer(),
+            searchParams = {
             'module': this.getModuleName(),
             'view': 'ListAjax',
             'mode': 'showSearchResultsWithValue',
-            'value': this.getSearchValue,
+            'value': this.getSearchValue(),
             'recordsCount': container.find('[name="recordsCount"]').val()
-        };
-        var parentDefaultParams = this._super();
-        var defaultParams = jQuery.extend(parentDefaultParams, searchParams);
+            },
+            parentDefaultParams = this._super(),
+            defaultParams = jQuery.extend(parentDefaultParams, searchParams);
+
         defaultParams.parent = '';
         return defaultParams;
     },
     registerPageNavigationEvents: function () {
-        var self = this;
-        var container = this.getListViewContainer();
-        container.on('click', '.nextPageButton', function (e) {
-            var pageNumber = container.find('[name="pageNumber"]').val();
-            var nextPageNumber = parseInt(parseFloat(pageNumber)) + 1;
-            var params = {};
-            params.page = nextPageNumber;
-            self.loadListViewRecords(params);
-        });
-        container.on('click', '.previousPageButton', function (e) {
-            var pageNumber = container.find('[name="pageNumber"]').val();
-            var previousPageNumber = parseInt(parseFloat(pageNumber)) - 1;
-            if (pageNumber > 1) {
-                var params = {};
-                params.page = previousPageNumber;
-                self.loadListViewRecords(params);
-            }
+        const self = this,
+            container = this.getListViewContainer(),
+            pagination = new Vtiger_Pagination_Js();
 
+        pagination.initialize(container);
+
+        app.event.on(pagination.nextPageButtonClickEventName, function () {
+            const pageNumber = parseInt(container.find('[name="pageNumber"]').val(), 10);
+
+            self.loadListViewRecords({page: pageNumber + 1});
+        });
+
+        app.event.on(pagination.previousPageButtonClickEventName, function () {
+            const pageNumber = parseInt(container.find('[name="pageNumber"]').val(), 10);
+
+            if (pageNumber > 1) {
+                self.loadListViewRecords({page: pageNumber - 1});
+            }
         });
     },
     registerRemoveListViewSort: function () {

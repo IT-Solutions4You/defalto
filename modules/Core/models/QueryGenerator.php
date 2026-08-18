@@ -114,6 +114,41 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
         );
     }
 
+    /**
+     * Adds one parameterized contains condition across several module fields.
+     * Percent and underscore in the user value are treated as literal characters.
+     *
+     * @param array<string> $fieldNames
+     */
+    public function addAnyFieldContainsCondition(array $fieldNames, string $value): self
+    {
+        $expressions = $parameters = [];
+        $escapedValue = str_replace(['=', '%', '_'], ['==', '=%', '=_'], $value);
+        $moduleFields = $this->getModuleFields();
+
+        foreach (array_unique($fieldNames) as $fieldName) {
+            $field = $moduleFields[$fieldName] ?? null;
+
+            if (!$field) {
+                continue;
+            }
+
+            $this->addWhereField($fieldName);
+            $expressions[] = $this->getQualifiedColumn($field->getTableName(), $field->getColumnName())
+                . " LIKE ? ESCAPE '='";
+            $parameters[] = '%' . $escapedValue . '%';
+        }
+
+        if (!$expressions) {
+            return $this->addStructuredWhereCondition('1=0');
+        }
+
+        return $this->addStructuredWhereCondition(
+            '(' . implode(' OR ', $expressions) . ')',
+            $parameters
+        );
+    }
+
     public function addColumnValuesCondition(
         string $tableName,
         string $columnName,
@@ -219,6 +254,14 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
         $moduleTableIndexList = $this->meta->getEntityTableIndexList();
 
         return $moduleTableIndexList[$baseTable];
+    }
+
+    public function getBaseTableIndexColumn(): string
+    {
+        return $this->getQualifiedColumn(
+            $this->meta->getEntityBaseTable(),
+            $this->getBaseTableIndex()
+        );
     }
 
     /**

@@ -18,6 +18,10 @@
 		{assign var=ANY_CONDITION_CRITERIA value=array()}
 	{/if}
 
+	{if !isset($SHOW_DEFAULT_CONDITIONS)}
+		{assign var=SHOW_DEFAULT_CONDITIONS value=true}
+	{/if}
+
 
 <div class="filterContainer filterElements well filterConditionContainer filterConditionsDiv">
 	<input type="hidden" name="date_filters" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATE_FILTERS))}' />
@@ -37,7 +41,7 @@
 			 {foreach item=CONDITION_INFO from=$ALL_CONDITION_CRITERIA['columns']}
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE CONDITION_INFO=$CONDITION_INFO MODULE=$MODULE}
 			{/foreach}
-			{if php7_count($ALL_CONDITION_CRITERIA) eq 0}
+			{if $SHOW_DEFAULT_CONDITIONS && php7_count($ALL_CONDITION_CRITERIA) eq 0}
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION_INFO=array()}
 			{/if}
 			</div>
@@ -70,7 +74,7 @@
 			{foreach item=CONDITION_INFO from=$ANY_CONDITION_CRITERIA['columns']}
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE CONDITION_INFO=$CONDITION_INFO MODULE=$MODULE CONDITION="or"}
 			{/foreach}
-			{if php7_count($ANY_CONDITION_CRITERIA) eq 0}
+			{if $SHOW_DEFAULT_CONDITIONS && php7_count($ANY_CONDITION_CRITERIA) eq 0}
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION_INFO=array() CONDITION="or"}
 			{/if}
 			</div>

@@ -85,19 +85,7 @@
                     </button>
                 </div>
             </div>
-            <div id="search-links-container" class="search-links-container collapse navbar navbar-expand col-lg-auto d-lg-block bg-body-secondary px-3 p-lg-0 h-sub-header">
-                <div class="d-flex align-items-center h-100 w-100">
-                    <div class="search-link input-group input-group border border-secondary rounded">
-                        <label for="search-keyword-input" class="d-inline-block input-group-text bg-body-secondary text-secondary border-0">
-                            <i class="fa fa-search"></i>
-                        </label>
-                        <input id="search-keyword-input" class="keyword-input bg-body-secondary form-control border-0" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
-                        <div id="adv-search" class="adv-search input-group-text bg-body-secondary text-secondary border-0">
-                            <i  class="fa fa-chevron-down"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {include file="partials/TopbarSearch.tpl"|vtemplate_path:$MODULE}
             <div id="navbar" class="global-actions collapse navbar navbar-expand col-lg-auto d-lg-block bg-body-secondary px-3 ps-lg-0 pe-lg-4 h-sub-header">
                 <ul class="nav navbar-nav ms-auto h-100 align-items-center">
                     {include file="partials/TopbarQuickCreate.tpl"|vtemplate_path:$MODULE}

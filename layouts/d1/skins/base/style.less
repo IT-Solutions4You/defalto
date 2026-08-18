@@ -13,6 +13,42 @@
   opacity: 1;
 }
 
+.search-link .global-search-module-picker {
+  flex: 0 0 2.5rem;
+  width: 2.5rem;
+  min-width: 2.5rem;
+}
+
+.search-link .global-search-module-button {
+  position: relative;
+  width: 100%;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.search-link .global-search-selected-icon,
+.search-link .global-search-hover-icon {
+  width: 1.25rem;
+  min-width: 1.25rem;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.search-link .global-search-hover-icon {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.search-link .global-search-module-button:hover .global-search-selected-icon,
+.search-link .global-search-module-button:focus-visible .global-search-selected-icon {
+  opacity: 0;
+}
+
+.search-link .global-search-module-button:hover .global-search-hover-icon,
+.search-link .global-search-module-button:focus-visible .global-search-hover-icon {
+  opacity: 1;
+}
+
 #vt-mask {
   position: relative;
   display: inline-flex;

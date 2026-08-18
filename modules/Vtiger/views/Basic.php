@@ -96,7 +96,9 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
         $viewer->assign('HOME_MODULE_MODEL', $homeModuleModel);
         $viewer->assign('HEADER_LINKS', $this->getHeaderLinks());
         $viewer->assign('ANNOUNCEMENT', $this->getAnnouncement());
-        $viewer->assign('SEARCHABLE_MODULES', Vtiger_Module_Model::getSearchableModules());
+        $globalSearchModules = GlobalSearch_Search_Model::getInstance()->getModuleModels();
+        $viewer->assign('SEARCHABLE_MODULES', $globalSearchModules);
+        $viewer->assign('GLOBAL_SEARCH_MODULES', $globalSearchModules);
 
         $inventoryModules = InventoryItem_Utils_Helper::getInventoryItemModules();
         $viewer->assign('INVENTORY_MODULES', $inventoryModules);

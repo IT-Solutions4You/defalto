@@ -18,6 +18,9 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
     //instance which represents advance filter
     advanceFilter: false,
 
+    //states whether the user must select a module before building filter conditions
+    moduleSelectionRequired: false,
+
     //states whether the validation is registred for filter elements
     filterValidationRegistered: false,
 
@@ -39,6 +42,15 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
     setContainer: function (container) {
         this.elementContainer = container;
         return this;
+    },
+
+    setModuleSelectionRequired: function (required) {
+        this.moduleSelectionRequired = required;
+        return this;
+    },
+
+    isModuleSelectionRequired: function () {
+        return this.moduleSelectionRequired;
     },
 
     getFilterForm: function () {
@@ -71,11 +83,13 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
     getAdvanceSearch: function () {
         let aDeferred = jQuery.Deferred(),
             moduleName = app.getModuleName(),
-            searchModule = this.getSearchModule();
+            searchModule = this.getSearchModule(),
+            moduleSelectionRequired = this.isModuleSelectionRequired() && !searchModule,
+            cacheKey = moduleSelectionRequired ? '__module_selection__' : searchModule;
 
         //Exists in the cache
-        if (searchModule in Vtiger_AdvanceSearch_Js.cache) {
-            aDeferred.resolve(Vtiger_AdvanceSearch_Js.cache[searchModule]);
+        if (cacheKey in Vtiger_AdvanceSearch_Js.cache) {
+            aDeferred.resolve(Vtiger_AdvanceSearch_Js.cache[cacheKey]);
 
             return aDeferred.promise();
         }
@@ -85,20 +99,28 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
             moduleName = 'Vtiger';
         }
 
-        let searchableModulesParams = {
+        const searchableModulesParams = {
             "module": moduleName,
             "view": "BasicAjax",
             "mode": "showAdvancedSearch",
-            "source_module": searchModule
+            "source_module": searchModule,
+            "module_selection_required": moduleSelectionRequired ? 1 : 0
         };
 
         app.helper.showProgress();
         app.request.post({data: searchableModulesParams}).then(function (err, data) {
             app.helper.hideProgress();
+
+            if (err) {
+                aDeferred.reject(err);
+                return;
+            }
+
             //add to cache
-            Vtiger_AdvanceSearch_Js.cache[searchModule] = data;
+            Vtiger_AdvanceSearch_Js.cache[cacheKey] = data;
             aDeferred.resolve(data);
         }, function (error, err) {
+            app.helper.hideProgress();
             aDeferred.reject(error);
         });
 
@@ -111,14 +133,26 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
 
         if (advanceSearchHolder.length > 0) {
             advanceSearchHolder.removeClass('slideDown');
-            data = jQuery(data).find('#advanceSearchHolder').html();
-            advanceSearchHolder.html(data).addClass('slideDown');
+
+            if (typeof data !== 'undefined') {
+                data = jQuery(data).find('#advanceSearchHolder').html();
+                advanceSearchHolder.html(data);
+            }
+
+            advanceSearchHolder.addClass('slideDown');
+            aDeferred.resolve(advanceSearchHolder.find('#advanceSearchContainer'));
         } else {
             app.helper.loadPageOverlay(data, {ignoreScroll: true}).then(function (container) {
-                jQuery('#advanceSearchHolder').addClass('slideDown');
+                const overlay = jQuery(container),
+                    loadedAdvanceSearchHolder = overlay.find('#advanceSearchHolder');
+
+                loadedAdvanceSearchHolder.addClass('slideDown');
+                aDeferred.resolve(loadedAdvanceSearchHolder.find('#advanceSearchContainer'));
+            }, function (error) {
+                aDeferred.reject(error);
             });
         }
-        aDeferred.resolve();
+
         return aDeferred.promise();
     },
 
@@ -126,66 +160,69 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
      * Function which intializes search
      */
     initiateSearch: function () {
-        let aDeferred = jQuery.Deferred(),
+        const aDeferred = jQuery.Deferred(),
             self = this;
 
         this.getAdvanceSearch().then(function (data) {
-            self.showAdvanceSearch(data).then(function () {
-                self.setContainer(jQuery('#advanceSearchContainer'));
+            self.showAdvanceSearch(data).then(function (container) {
+                const filterContainer = container.find('.filterContainer');
+
+                self.setContainer(container);
                 vtUtils.showSelect2ElementView(self.getContainer().find('select.select2'));
                 self.registerEvents();
-                self.advanceFilter = new Vtiger_SearchAdvanceFilter_Js(jQuery('.filterContainer'));
+                self.advanceFilter = filterContainer.length
+                    ? new Vtiger_SearchAdvanceFilter_Js(filterContainer)
+                    : false;
                 aDeferred.resolve();
-            })
+            }, function (error) {
+                aDeferred.reject(error);
+            });
 
         }, function (error) {
-            aDeferred.reject();
+            aDeferred.reject(error);
         });
 
         return aDeferred.promise();
     },
 
-    getNameFields: function () {
-        var form = this.getFilterForm();
-        return form.find('[name="labelFields"]').data('value');
+    getSearchFieldNames: function () {
+        const form = this.getFilterForm();
+
+        return form.find('[name="searchFields"]').data('value') || [];
     },
 
     selectBasicSearchValue: function () {
-        let value = jQuery('.keyword-input').val();
-        if (value.length > 0) {
-            let form = this.getFilterForm(),
-                labelFieldList = this.getNameFields();
+        const value = jQuery('#search-keyword-input').val() || '';
 
-            if (typeof labelFieldList == 'undefined' || labelFieldList.length == 0) {
+        if (!value.length) {
+            return;
+        }
+
+        const form = this.getFilterForm(),
+            searchFieldNames = this.getSearchFieldNames(),
+            anyConditionContainer = form.find('.anyConditionContainer'),
+            basicFieldSelect = anyConditionContainer.find('.basic select[name="columnname"]');
+
+        searchFieldNames.forEach(function (fieldName) {
+            if (!basicFieldSelect.find('option[data-field-name="' + fieldName + '"]').length) {
                 return;
             }
 
-            let anyConditionContainer = form.find('.anyConditionContainer');
+            anyConditionContainer.find('.addCondition button').trigger('click');
 
-            for (let index in labelFieldList) {
-                let labelFieldName = labelFieldList[index];
+            const conditionRow = anyConditionContainer.find('.conditionList .conditionRow:last'),
+                fieldSelectElement = conditionRow.find('select[name="columnname"]'),
+                comparatorSelectElement = conditionRow.find('select[name="comparator"]'),
+                valueElement = conditionRow.find('[name="' + fieldName + '"]');
 
-                if (0 !== index) {
-                    //By default one condition exits , only if you have multiple label fields you have add one more condition
-                    anyConditionContainer.find('.addCondition').find('button').trigger('click');
-                }
+            fieldSelectElement.find('option[data-field-name="' + fieldName + '"]').prop('selected', true);
+            fieldSelectElement.trigger('change').trigger('liszt:updated');
 
-                let conditionRow = anyConditionContainer.find('.conditionList').find('.conditionRow:last'),
-                    fieldSelectElemnt = conditionRow.find('select[name="columnname"]');
+            comparatorSelectElement.find('option[value="c"]').prop('selected', true);
+            comparatorSelectElement.trigger('change').trigger('liszt:updated');
 
-                fieldSelectElemnt.find('option[data-field-name="' + labelFieldName + '"]').attr('selected', 'selected');
-                fieldSelectElemnt.trigger('change').trigger('liszt:updated');
-
-                let comparatorSelectElemnt = conditionRow.find('select[name="comparator"]');
-                //select the contains value
-                comparatorSelectElemnt.find('option[value="c"]').attr('selected', 'selected');
-                comparatorSelectElemnt.trigger('liszt:updated');
-
-                let valueElement = conditionRow.find('[name="' + labelFieldName + '"]');
-                valueElement.val(value);
-            }
-
-        }
+            valueElement.val(value);
+        });
     },
 
     /**
@@ -375,8 +412,11 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
      * Function which will register the show filer invocation
      */
     registerShowFiler: function () {
-        var thisInstance = this;
-        jQuery('#showFilter').on('click', function (e) {
+        const thisInstance = this,
+            searchResultsContainer = this.getContainer().closest('#searchResults-container');
+
+        searchResultsContainer.off('click.advanceSearch', '#showFilter');
+        searchResultsContainer.on('click.advanceSearch', '#showFilter', function (e) {
             thisInstance.showAdvanceSearch();
         });
     },
@@ -385,11 +425,12 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
      * Function which will register events
      */
     registerEvents: function () {
-        let self = this,
-            container = this.getContainer();
+        const self = this,
+            container = this.getContainer(),
+            searchResultsContainer = container.closest('#searchResults-container');
 
         container.on('change', '#searchModuleList', function (e) {
-            let selectElement = jQuery(e.currentTarget),
+            const selectElement = jQuery(e.currentTarget),
                 selectedModuleName = selectElement.val();
 
             self.setSearchModule(selectedModuleName);
@@ -399,7 +440,7 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
             });
         });
 
-        jQuery('#advanceSearchButton').on('click', function (e) {
+        searchResultsContainer.find('#advanceSearchButton').on('click', function (e) {
             //If no module is selected
             if (!self.getSearchModule().length) {
                 app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_MODULE')});
@@ -413,23 +454,23 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
             });
         });
 
-        jQuery('#advanceIntiateSave').on('click', function (e) {
+        searchResultsContainer.find('#advanceIntiateSave').on('click', function (e) {
             //If no module is selected
             if (!self.getSearchModule().length) {
                 app.helper.showErrorNotification({message: app.vtranslate('JS_SELECT_MODULE')});
                 return;
             }
 
-            let currentElement = jQuery(e.currentTarget);
+            const currentElement = jQuery(e.currentTarget);
             currentElement.addClass('hide');
-            let actionsContainer = currentElement.closest('.actions');
+            const actionsContainer = currentElement.closest('.actions');
 
             jQuery('input[name="viewname"]', actionsContainer).removeClass('hide').addClass('slideRight');
-            jQuery('#advanceSave').removeClass('hide');
+            searchResultsContainer.find('#advanceSave').removeClass('hide');
         });
 
-        jQuery('#advanceSave').on('click', function (e) {
-            let actionsContainer = jQuery(e.currentTarget).closest('.actions'),
+        searchResultsContainer.find('#advanceSave').on('click', function (e) {
+            const actionsContainer = jQuery(e.currentTarget).closest('.actions'),
                 filterNameField = jQuery('input[name="viewname"]', actionsContainer),
                 value = filterNameField.val();
 
@@ -451,7 +492,7 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
             }
 
             self.performValidation().then(function () {
-                let params = {};
+                const params = {};
                 params.viewname = value;
                 self.saveAndViewFilter(params);
             });
@@ -463,6 +504,6 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
         })
 
         //To set the search module with the currently selected values.
-        self.setSearchModule(jQuery('#searchModuleList').val());
+        self.setSearchModule(container.find('#searchModuleList').val() || '');
     }
 })
