@@ -10,6 +10,11 @@
 
 class InventoryItem_Module_Model extends Vtiger_Module_Model
 {
+    public function getFontIcon()
+    {
+        return 'fa fa-cubes';
+    }
+
     /**
      * @param int $moduleId
      *
