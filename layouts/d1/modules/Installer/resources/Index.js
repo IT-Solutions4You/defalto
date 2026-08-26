@@ -15,16 +15,66 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         this.registerDownloadExtension();
         this.registerEditLicense();
         this.registerDeleteLicense();
+        this.registerLicenseCheck();
         this.registerUpdateInformation();
     },
     getMainContainer() {
         return $('main');
     },
+    registerLicenseCheck() {
+        const self = this;
+
+        self.getMainContainer().on('click', '[data-license-check]', function (e) {
+            const params = {
+                module: 'Installer',
+                view: 'IndexAjax',
+                mode: 'licenseCheckModal',
+            };
+
+            e.preventDefault();
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error) {
+                    app.helper.showModal(data, {
+                        cb: function (container) {
+                            self.registerLicenseCheckContinue(container);
+                        }
+                    });
+                }
+            });
+        });
+    },
+    registerLicenseCheckContinue(container) {
+        container.on('click', '.licenseCheckContinue', function (e) {
+            const button = $(this),
+                logElement = container.find('.licenseCheckLog'),
+                params = {
+                    module: 'Installer',
+                    view: 'IndexAjax',
+                    mode: 'licenseCheckProgress',
+                };
+
+            e.preventDefault();
+            button.prop('disabled', true);
+            logElement.html('<div class="text-center py-4"><span class="spinner-border" role="status"></span></div>');
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error) {
+                    logElement.html(data);
+                    container.find('.licenseCheckContinue, .licenseCheckClose').addClass('hide');
+                    container.find('.licenseCheckFinish').removeClass('hide');
+                    container.find('.modal-body').animate({scrollTop: logElement.height()});
+                } else {
+                    button.prop('disabled', false);
+                }
+            });
+        });
+    },
     registerUpdateInformation() {
-       let self = this;
+       const self = this;
 
        self.getMainContainer().on('click', '[data-update-information]', function (e) {
-           let params = {
+           const params = {
                module: 'Installer',
                view: 'IndexAjax',
                mode: 'updateInformation',
@@ -38,10 +88,10 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
        })
     },
     registerDeleteLicense() {
-        let self = this;
+        const self = this;
 
         self.getMainContainer().on('click', '[data-delete-license]', function (e) {
-            let element = $(this),
+            const element = $(this),
                 license = element.attr('data-delete-license'),
                 params = {
                     module: 'Installer',
@@ -56,18 +106,23 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                     app.helper.hideProgress();
 
                     if (!error) {
-                        app.helper.showSuccessNotification({message: data['message']});
-                        element.parents('.licenseContainer').remove();
+                        if ('deleted' === data['status']) {
+                            app.helper.showSuccessNotification({message: data['message']});
+                            // License status controls system and extension sections, so the complete view must be rebuilt.
+                            window.location.reload();
+                        } else {
+                            app.helper.showErrorNotification({message: data['message']});
+                        }
                     }
                 });
             });
         });
     },
     registerEditLicense() {
-        let self = this;
+        const self = this;
 
         self.getMainContainer().on('click', '[data-edit-license]', function (e) {
-            let license = $(this).attr('data-edit-license'),
+            const license = $(this).attr('data-edit-license'),
                 params = {
                     module: 'Installer',
                     view: 'IndexAjax',
@@ -96,10 +151,8 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                     if('activated' === data['status']) {
                         app.helper.hideModal();
                         app.helper.showSuccessNotification({message: data['message']});
-
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 1000);
+                        // License status controls system and extension sections, so the complete view must be rebuilt.
+                        window.location.reload();
                     } else {
                         app.helper.showErrorNotification({message: data['message']});
                     }
@@ -108,11 +161,11 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         });
     },
     registerDownloadSystem() {
-        let self = this;
+        const self = this;
 
         self.getMainContainer().on('click', '[data-download-system]', function (e) {
-            let version = $(this).attr('data-download-system');
-            let params = {
+            const version = $(this).attr('data-download-system'),
+                params = {
                 module: 'Installer',
                 view: 'IndexAjax',
                 mode: 'systemModal',
@@ -137,7 +190,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
 
             $('.downloadInfoContainer, .downloadLogContainer, .downloadSystem').toggleClass('hide');
 
-            let downloadLogElement = container.find('[data-download-log]'),
+            const downloadLogElement = container.find('[data-download-log]'),
                 params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
 
             app.request.post({data: params}).then(function (error, data) {
@@ -152,13 +205,13 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         })
     },
     registerDownloadExtension() {
-        let self = this;
+        this.getMainContainer().on('click', '[data-download-extension]', function (e) {
+            const version = $(this).attr('data-download-extension');
 
-        self.getMainContainer().on('click', '[data-download-extension]', function (e) {
-            let version = $(this).attr('data-download-extension');
+            e.preventDefault();
 
             app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
-                let params = {
+                const params = {
                     module: 'Installer',
                     view: 'IndexAjax',
                     mode: 'extensionModal',
@@ -168,11 +221,45 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 app.request.post({data: params}).then(function (error, data) {
                     app.helper.showModal(data, {
                         cb: function (container) {
-                            let downloadLogElement = container.find('[data-download-log]'),
+                            const downloadLogElement = container.find('[data-download-log]'),
                                 params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
 
                             app.request.post({data: params}).then(function (error, data) {
+                                if (error) {
+                                    const errorMessage = error.message || app.vtranslate('JS_INSTALLATION_FAILED');
+
+                                    downloadLogElement.empty().append(
+                                        $('<div class="alert alert-danger"></div>').text(errorMessage)
+                                    );
+                                    container.find('.extensionInstallClose').removeClass('hide');
+
+                                    return;
+                                }
+
                                 downloadLogElement.html(data);
+
+                                const result = downloadLogElement.find('.installerExtensionResult');
+
+                                if ('success' === result.data('status')) {
+                                    container.data('installComplete', true);
+                                    container.find('.extensionInstallFinish')
+                                        .attr('href', result.data('redirect'))
+                                        .removeClass('hide');
+                                    container.find('.extensionInstallClose').addClass('hide');
+                                }
+
+                                container.find('.modal-body').animate({scrollTop: downloadLogElement.height()});
+                            });
+
+                            container.on('click', '.extensionInstallFinish', function () {
+                                container.data('openInstalledModule', true);
+                            });
+
+                            container.on('hidden.bs.modal', function () {
+                                if (container.data('installComplete') && !container.data('openInstalledModule')) {
+                                    // The module/menu/resource state changed and cannot be synchronized safely in place.
+                                    window.location.reload();
+                                }
                             });
                         }
                     });

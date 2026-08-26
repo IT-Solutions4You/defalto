@@ -32,7 +32,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         $info = [];
 
         foreach ($this->cron as $cron) {
-            [$name, $handler, $frequency, $module, $sequence, $description] = $cron;
+            [$name, $handler, $frequency, $module, $sequence, $description] = array_pad($cron, 6, null);
 
             $data = [
                 'name'      => $name,
@@ -54,7 +54,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         $info = [];
 
         foreach ($this->customLinks as $customLink) {
-            [$moduleName, $type, $label, $url, $icon, $sequence, $handlerInfo] = $customLink;
+            [$moduleName, $type, $label, $url, $icon, $sequence, $handlerInfo] = array_pad($customLink, 7, null);
 
             $data = [
                 'module' => $moduleName,
@@ -79,7 +79,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
 
         $install = $this->getInstallModel();
 
-        if (method_exists($install, $value)) {
+        if ($install && method_exists($install, $value)) {
             return $install->$value();
         }
 
@@ -99,7 +99,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         $info = [];
 
         foreach ($this->eventHandler as $handler) {
-            [$events, $fileName, $className, $condition, $dependOn, $modules] = $handler;
+            [$events, $fileName, $className, $condition, $dependOn, $modules] = array_pad($handler, 6, null);
 
             foreach ((array)$events as $eventName) {
                 $modules = !empty($modules) ? $modules : [''];
@@ -220,7 +220,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         $info = [];
 
         foreach ($this->relatedList as $value) {
-            [$moduleName, $relationModule, $relationLabel, $actions, $function] = $value;
+            [$moduleName, $relationModule, $relationLabel, $actions, $function] = array_pad($value, 5, null);
 
             if(empty($moduleName)) {
                 $moduleName = $this->getModuleName();
@@ -303,7 +303,7 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
             $install->retrieveCron();
         }
 
-        if (isset($install->registerCron)) {
+        if ($install && isset($install->registerCron)) {
             $this->cron = $install->registerCron;
         }
     }
@@ -312,11 +312,11 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
     {
         $install = $this->getInstallModel();
 
-        if (method_exists($install, 'retrieveCustomLinks')) {
+        if ($install && method_exists($install, 'retrieveCustomLinks')) {
             $install->retrieveCustomLinks();
         }
 
-        if (isset($install->registerCustomLinks)) {
+        if ($install && isset($install->registerCustomLinks)) {
             $this->customLinks = $install->registerCustomLinks;
         }
     }
@@ -333,11 +333,11 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
     {
         $install = $this->getInstallModel();
 
-        if (method_exists($install, 'retrieveEventHandler')) {
+        if ($install && method_exists($install, 'retrieveEventHandler')) {
             $install->retrieveEventHandler();
         }
 
-        if (isset($install->registerEventHandler)) {
+        if ($install && isset($install->registerEventHandler)) {
             $this->eventHandler = $install->registerEventHandler;
         }
     }
@@ -346,11 +346,11 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
     {
         $install = $this->getInstallModel();
 
-        if (method_exists($install, 'retrieveRelatedList')) {
+        if ($install && method_exists($install, 'retrieveRelatedList')) {
             $install->retrieveRelatedList();
         }
 
-        if (isset($install->registerRelatedLists)) {
+        if ($install && isset($install->registerRelatedLists)) {
             $this->relatedList = $install->registerRelatedLists;
         }
     }
@@ -365,18 +365,19 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
             [$data['name'], $data['handler'], $data['module']],
         );
         $number = $this->db->num_rows($result);
-        $row = $this->db->query_result_rowdata($result);
+        $row = $number > 0 ? $this->db->query_result_rowdata($result) : [];
 
         $validate = 1 === $number;
         $message = 1 < $number ? 'LBL_DUPLICATE_LINKS' : '';
 
-        if (empty($row['status'])) {
+        if (1 === $number && empty($row['status'])) {
             $message = 'LBL_CRON_DISABLED';
             $validate = false;
         }
 
-        if (intval($data['frequency']) !== intval($row['frequency'])) {
+        if (1 === $number && intval($data['frequency']) !== intval($row['frequency'] ?? null)) {
             $message = 'LBL_DIFFERENT_FREQUENCY';
+            $validate = false;
         }
 
         $data['validate'] = $validate;
@@ -426,16 +427,18 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         $params = [getTabid($data['module']), getTabid($data['related_module']), $data['related_label'], $data['function']];
 
         $result = $this->db->pquery($sql, $params);
-        $row = $this->db->query_result_rowdata($result);
         $number = $this->db->num_rows($result);
+        $row = $number > 0 ? $this->db->query_result_rowdata($result) : [];
         $message = 1 < $number ? 'LBL_DUPLICATE_RELATED_LISTS' : '';
         $actions = is_array($data['actions']) ? implode(',', $data['actions']) : $data['actions'];
+        $validate = 1 === $number;
 
-        if (strtolower($actions) !== strtolower($row['actions'])) {
+        if (1 === $number && strtolower((string)$actions) !== strtolower((string)($row['actions'] ?? ''))) {
             $message = 'LBL_DIFFERENT_ACTIONS';
+            $validate = false;
         }
 
-        $data['validate'] = 1 === $number;
+        $data['validate'] = $validate;
         $data['validate_message'] = $message;
     }
 }

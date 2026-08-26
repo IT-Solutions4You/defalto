@@ -49,7 +49,7 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
      */
     public static function getApiInfo()
     {
-        if (empty($_SESSION['Installer_SystemInstall'])) {
+        if (!array_key_exists('Installer_SystemInstall', $_SESSION)) {
             $_SESSION['Installer_SystemInstall'] = Installer_Api_Model::getInstance()->getSystemInstall();
             $_SESSION['Installer_SystemInstallDate'] = time();
         }
@@ -71,18 +71,23 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
      */
     public static function getCacheDate(): string
     {
-        $time = $_SESSION['Installer_SystemInstallDate'];
+        $time = (int)($_SESSION['Installer_SystemInstallDate'] ?? 0);
+
+        if (!$time) {
+            return '';
+        }
+
         $userDate = Vtiger_Util_Helper::formatDateIntoStrings(date('Y-m-d', $time), date('H:i:s', $time));
 
-        return $time ? $userDate : '';
+        return $userDate;
     }
 
     /**
      * @return bool
      */
-    public static function isCacheDateValid(): bool
+    public static function isCacheRefreshAllowed(): bool
     {
-        return time() - $_SESSION['Installer_SystemInstallDate'] > 60;
+        return time() - (int)($_SESSION['Installer_SystemInstallDate'] ?? 0) > 60;
     }
 
     /**
@@ -114,7 +119,7 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
 
     public function hasDownloadUrl(): bool
     {
-        return $this->get('download-url');
+        return !$this->isEmpty('download-url') && !$this->isEmpty('download-folder');
     }
 
     /**
@@ -144,15 +149,27 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
         return Vtiger_Version::current();
     }
 
-    /**
-     *
-     */
-    public function getBranding()
+    public static function getMembershipBranding(): string
     {
-        $translate = vtranslate('LBL_MEMBERSHIP_BRANDING', 'Installer');
-        $translate = str_replace('-redirect-membership', ' class="fw-bold text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=Membership"', $translate);
-        $translate = str_replace('-redirect-order', ' class="fw-bold text-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=MembershipOrder"', $translate);
+        $branding = vtranslate('LBL_MEMBERSHIP_BRANDING', 'Installer');
+        $branding = str_replace(
+            '-redirect-membership',
+            ' class="fw-bold text-primary" target="_blank" rel="noopener noreferrer"'
+                . ' href="index.php?module=Installer&view=Redirect&mode=Membership"',
+            $branding
+        );
 
-        return $translate;
+        return str_replace(
+            '-redirect-order',
+            ' class="fw-bold text-primary" target="_blank" rel="noopener noreferrer"'
+                . ' href="index.php?module=Installer&view=Redirect&mode=MembershipOrder"',
+            $branding
+        );
     }
+
+    public function getBranding(): string
+    {
+        return self::getMembershipBranding();
+    }
+
 }

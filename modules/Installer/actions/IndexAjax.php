@@ -43,24 +43,22 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
      */
     public function licenseSave(Vtiger_Request $request): void
     {
-        $id = (int)$request->get('license_id');
-        $name = $request->get('license_name');
+        $name = trim((string)$request->get('license_name'));
         $message = vtranslate('LBL_LICENSE_NOT_ACTIVATED', 'Installer');
         $status = 'not_activated';
 
-        $license = Installer_License_Model::getInstance($name);
+        if ('' === $name) {
+            throw new Exception(vtranslate('LBL_SET_LICENSE_ERROR', 'Installer'));
+        }
+
+        $license = Installer_License_Model::getInstanceForActivation($name);
         $license->activate();
 
-        if ($license->hasDeleteLicenseError()) {
-            $message = vtranslate($license->getInfo('error'), 'Installer');
-        } elseif ($license->hasExpireDate()) {
-            $license->save();
-
+        if ($license->isValidLicense()) {
             $message = vtranslate('LBL_LICENSE_ACTIVATED', 'Installer');
             $status = 'activated';
-
-            Installer_ExtensionInstall_Model::clearCache();
-            Installer_SystemInstall_Model::clearCache();
+        } elseif ($license->getErrorMessage()) {
+            $message = $license->getErrorMessage();
         }
 
         $response = new Vtiger_Response();
@@ -78,20 +76,26 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
     {
         $id = (int)$request->get('license_id');
         $message = vtranslate('LBL_LICENSE_ALREADY_DELETED', 'Installer');
+        $status = 'not_deleted';
 
         if (!empty($id)) {
             $license = Installer_License_Model::getInstanceById($id);
 
             if ($license) {
                 $license->deactivate();
-                $license->delete();
 
-                $message = vtranslate('LBL_LICENSE_DELETED', 'Installer');
+                if ($license->isLastDeactivationSuccessful()) {
+                    $license->delete();
+                    $message = vtranslate('LBL_LICENSE_DELETED', 'Installer');
+                    $status = 'deleted';
+                } else {
+                    $message = $license->getErrorMessage() ?: vtranslate('LBL_DEACTIVATE_ERROR', 'Installer');
+                }
             }
         }
 
         $response = new Vtiger_Response();
-        $response->setResult(['success' => true, 'message' => $message]);
+        $response->setResult(['success' => true, 'status' => $status, 'message' => $message]);
         $response->emit();
     }
 }

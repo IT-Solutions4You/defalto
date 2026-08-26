@@ -315,67 +315,51 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
         return $this->phpRequirements;
     }
 
-    public function getPHPVersion(): float
+    public function getPHPVersion(): string
     {
-        return floatval(phpversion());
+        return PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
     }
 
     /**
-     * @param mixed $vtVersion
+     * @param mixed $defaltoVersion
      *
      * @return array
      */
-    public function getPHPVersionMap(mixed $vtVersion = false): array
+    public function getPHPVersionMap(mixed $defaltoVersion = false): array
     {
+        $php81Requirements = [
+            'minimum' => '8.1',
+            'maximum' => '8.4',
+            'error' => ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.5'],
+            'warning' => ['8.1', '8.2', '8.3'],
+            'recommended' => ['8.4'],
+        ];
+        $php82Requirements = [
+            'minimum' => '8.2',
+            'maximum' => '8.4',
+            'error' => ['5.0', '5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.5'],
+            'warning' => ['8.2', '8.3'],
+            'recommended' => ['8.4'],
+        ];
         $versions = [
-            '8.2' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0,],
-                'warning' => [],
-                'recommended' => [8.1, 8.2],
-            ],
-            '8.1' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0,],
-                'warning' => [],
-                'recommended' => [8.1, 8.2],
-            ],
-            8 => [
-                'error' => [5.6, 5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 7, 7.0, 7.1],
-                'warning' => [7.2, 7.3],
-                'recommended' => [7.4, 8, 8.0, 8.1, 8.2],
-            ],
-            '7.5' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
-                'warning' => [7.1],
-                'recommended' => [7.2, 7.3, 7.4, 8, 8.0, 8.1],
-            ],
-            '7.4' => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
-                'warning' => [7.1],
-                'recommended' => [7.2, 7.3, 7.4],
-            ],
-            7 => [
-                'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0,],
-                'warning' => [7.1],
-                'recommended' => [7.2, 7.3],
-            ],
-            6 => [
-                'recommended' => [5.6],
-            ],
+            '1.0' => $php81Requirements,
+            '1.1' => $php81Requirements,
+            '1.2' => $php81Requirements,
+            '1.3' => $php82Requirements,
+            '1.4' => $php82Requirements,
+            '1.5' => $php82Requirements,
+            '1.6' => $php82Requirements,
+            '1.7' => $php82Requirements,
+            '1.8' => $php82Requirements,
         ];
+        $versionParts = explode('.', trim((string)$defaltoVersion));
+        $majorMinorVersion = implode('.', array_slice($versionParts, 0, 2));
 
-        if (!empty($versions[(string)(float)$vtVersion])) {
-            return $versions[(string)(float)$vtVersion];
+        if (isset($versions[$majorMinorVersion])) {
+            return $versions[$majorMinorVersion];
         }
 
-        if (!empty($versions[(int)$vtVersion])) {
-            return $versions[(int)$vtVersion];
-        }
-
-        return [
-            'error' => [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 7, 7.0, 7.1, 7.2, 7.3, 7.4, 8, 8.0],
-            'warning' => [8.1, 8.2],
-            'recommended' => [8.3, 8.4],
-        ];
+        return $php82Requirements;
     }
 
     /**
@@ -533,14 +517,10 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
         return in_array('STRICT_TRANS_TABLES', $this->getSQLMode()) ? 'yes' : 'no';
     }
 
-    public function getValuePHPVersion(array &$data): float
+    public function getValuePHPVersion(array &$data): string
     {
         $versions = $this->getPHPVersionMap(Vtiger_Version::current());
-        $minimum = array_merge((array)$versions['recommended'], (array)$versions['warning']);
-
-        sort($minimum);
-
-        $data['minimum'] = implode(', ', $minimum);
+        $data['minimum'] = $versions['minimum'];
         $data['recommended'] = implode(', ', $versions['recommended']);
 
         return $this->getPHPVersion();
@@ -637,7 +617,8 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
         $phpVersion = $this->getPHPVersion();
         $versions = $this->getPHPVersionMap(Vtiger_Version::current());
 
-        if (in_array($phpVersion, $versions['error'])) {
+        if (version_compare($phpVersion, $versions['minimum'], '<')
+            || version_compare($phpVersion, $versions['maximum'], '>')) {
             return 'yes';
         }
 
@@ -779,11 +760,11 @@ class Installer_Requirements_Model extends Vtiger_Base_Model
         $phpVersion = $this->getPHPVersion();
         $versions = $this->getPHPVersionMap(Vtiger_Version::current());
 
-        if (in_array($phpVersion, $versions['warning'])) {
+        if (in_array($phpVersion, $versions['warning'], true)) {
             return 'yes';
         }
 
-        if (!in_array($phpVersion, $versions['recommended'])) {
+        if (!in_array($phpVersion, $versions['recommended'], true)) {
             return 'yes';
         }
 

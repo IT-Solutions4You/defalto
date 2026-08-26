@@ -13,7 +13,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     public const SOURCE_CORE = 'core';
     public const SOURCE_CUSTOM = 'custom';
 
-    public static array $ignoredModules = ['Dashboard', 'Home', 'Import', 'SMSNotifier', 'WSAPP', 'PBXManager', 'RecycleBin', 'Webforms', 'Google', 'ModTracker', 'ModComments', 'MailManager', 'Users', 'CustomerPortal'];
+    public static array $ignoredModules = ['Dashboard', 'Home', 'Import', 'SMSNotifier', 'WSAPP', 'PBXManager', 'RecycleBin', 'Webforms', 'Google', 'ModTracker', 'ModComments', 'MailManager', 'Users', 'CustomerPortal', 'GlobalSearch', 'DragAndDrop', 'TwoFactorAuthentication'];
     public Vtiger_Module_Model|bool|null $module = null;
 
     public static function clearCache(): void
@@ -87,7 +87,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
      */
     public static function getApiInfo()
     {
-        if (empty($_SESSION['Installer_ExtensionInstall'])) {
+        if (!array_key_exists('Installer_ExtensionInstall', $_SESSION)) {
             $_SESSION['Installer_ExtensionInstall'] = Installer_Api_Model::getInstance()->getExtensionInstall();
         }
 
@@ -147,6 +147,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             $instance->setName($module->getName());
             $instance->module = $module;
         } else {
+            self::validateModuleName($module);
             $instance->setName($module);
             $instance->module = Vtiger_Module_Model::getInstance($module);
         }
@@ -281,12 +282,30 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $module = $this->getModule();
         $fontIcon = $module?->getFontIcon();
 
-        return (string)$fontIcon ?? 'fa fa-puzzle-piece';
+        return (string)($fontIcon ?: 'fa fa-puzzle-piece');
     }
 
     public function hasDownloadUrl(): bool
     {
-        return !$this->isEmpty('download-url');
+        if ($this->isEmpty('download-url') || $this->isEmpty('download-folder')) {
+            return false;
+        }
+
+        $license = $this->getLicense();
+
+        return $license
+            && $license->isValidLicense()
+            && $license->hasExtensionEntitlement($this->getName());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getLicense(): Installer_License_Model|false
+    {
+        $licenseId = (int)$this->get('installer_license_id');
+
+        return $licenseId > 0 ? Installer_License_Model::getInstanceById($licenseId) : false;
     }
 
     public function isCoreModule(): bool
@@ -314,10 +333,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             return true;
         }
 
-        $version = $this->getVersion();
-        $updateVersion = $this->getUpdateVersion();
-
-        return $updateVersion !== '' && $version !== $updateVersion;
+        return null !== $this->getModule() && !$this->isCoreModule();
     }
 
     public function getDownloadLabel(): string
@@ -327,6 +343,213 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         }
 
         return 'LBL_UPDATE';
+    }
+
+    /**
+     * Downloads the extension into an isolated workspace, applies its files and
+     * runs the existing Core module installer with the correct lifecycle event.
+     *
+     * @throws Throwable
+     */
+    public function installPackage(): Vtiger_Module_Model
+    {
+        $moduleName = $this->getName();
+        self::validateModuleName($moduleName);
+
+        if (!$this->hasDownloadUrl()) {
+            throw new RuntimeException(vtranslate('LBL_LICENSE_DOWNLOAD_UNAVAILABLE', 'Installer'));
+        }
+
+        $isNewModule = !$this->getModule();
+        $download = Installer_Download_Model::getInstance(
+            (string)$this->get('download-url'),
+            (string)$this->get('download-folder'),
+            'index.php',
+            'extension-' . $moduleName
+        );
+        $download->setAllowedRoots(['modules', 'layouts', 'languages', 'cron']);
+        $requiredWritablePaths = [
+            'cache',
+            'modules',
+            'layouts',
+            'languages',
+            'cron',
+            'test/templates_c',
+        ];
+
+        if ($isNewModule) {
+            $requiredWritablePaths = array_merge($requiredWritablePaths, [
+                'user_privileges',
+                'tabdata.php',
+                'parent_tabdata.php',
+            ]);
+        }
+
+        $download->setRequiredWritablePaths($requiredWritablePaths);
+
+        $checksum = $this->getPackageChecksum();
+
+        if ($checksum !== '') {
+            $download->setExpectedChecksum($checksum);
+        }
+
+        $database = PearDatabase::getInstance();
+        $previousDieOnError = $database->dieOnError;
+        $sharingPermission = $isNewModule ? null : $this->getCurrentSharingPermission();
+        $database->setDieOnError(true);
+
+        try {
+            $download->downloadAndExport();
+            $installClass = $moduleName . '_Install_Model';
+
+            if (!class_exists($installClass)) {
+                throw new RuntimeException('Missing extension install model: ' . $installClass);
+            }
+
+            $this->validateModuleInstallRequirements();
+
+            $eventType = self::getInstallEventType($isNewModule);
+
+            if (!$isNewModule && !defined('VTIGER_UPGRADE')) {
+                define('VTIGER_UPGRADE', true);
+            }
+
+            Core_Install_Model::logInfo('Module lifecycle event: ' . $eventType);
+            Core_Install_Model::getInstance($eventType, $moduleName)->installModule();
+            $this->restoreSharingPermission($sharingPermission);
+            Core_Install_Model::updateModuleMetaFiles();
+            $module = $this->finalizeInstalledModule();
+            $download->commit();
+            $this->module = $module;
+            $this->set('version', $module->get('version'));
+
+            return $module;
+        } catch (Throwable $throwable) {
+            $download->rollback();
+
+            try {
+                $this->restoreSharingPermission($sharingPermission);
+            } catch (Throwable $sharingThrowable) {
+                Core_Install_Model::logError('Unable to restore module sharing settings: ' . htmlspecialchars(
+                    $sharingThrowable->getMessage(),
+                    ENT_QUOTES | ENT_SUBSTITUTE,
+                    'UTF-8'
+                ));
+            }
+
+            Core_Install_Model::logError('Module installation failed: ' . htmlspecialchars(
+                $throwable->getMessage(),
+                ENT_QUOTES | ENT_SUBSTITUTE,
+                'UTF-8'
+            ));
+
+            throw $throwable;
+        } finally {
+            $database->setDieOnError($previousDieOnError);
+        }
+    }
+
+    public static function getInstallEventType(bool $isNewModule): string
+    {
+        return $isNewModule ? 'module.postinstall' : 'module.postupdate';
+    }
+
+    public static function validateModuleName(string $moduleName): void
+    {
+        if (!preg_match('/^[A-Za-z][A-Za-z0-9_]*$/', $moduleName)) {
+            throw new InvalidArgumentException('Invalid extension module name');
+        }
+    }
+
+    protected function getPackageChecksum(): string
+    {
+        $checksum = trim((string)($this->get('sha256') ?: $this->get('checksum')));
+
+        if (str_starts_with(strtolower($checksum), 'sha256:')) {
+            $checksum = trim(substr($checksum, 7));
+        }
+
+        return $checksum;
+    }
+
+    protected function getCurrentSharingPermission(): ?int
+    {
+        $sharingModule = Settings_SharingAccess_Module_Model::getInstance($this->getName());
+
+        return $sharingModule ? (int)$sharingModule->getPermissionValue() : null;
+    }
+
+    protected function restoreSharingPermission(?int $permission): void
+    {
+        if (null === $permission) {
+            return;
+        }
+
+        $sharingModule = Settings_SharingAccess_Module_Model::getInstance($this->getName());
+
+        if (!$sharingModule || (int)$sharingModule->getPermissionValue() === $permission) {
+            return;
+        }
+
+        $sharingModule->set('permission', $permission);
+        $sharingModule->save();
+        Settings_SharingAccess_Module_Model::recalculateSharingRules();
+        Core_Install_Model::logInfo('Existing module sharing settings restored');
+    }
+
+    protected function validateModuleInstallRequirements(): void
+    {
+        $moduleFocus = CRMEntity::getInstance($this->getName());
+
+        if (!empty($moduleFocus->isEntity) && empty($moduleFocus->table_index)) {
+            throw new RuntimeException('Extension entity module has no base table ID');
+        }
+
+        if (!empty($moduleFocus->isEntity) && empty($moduleFocus->table_name)) {
+            throw new RuntimeException('Extension entity module has no base table');
+        }
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    protected function finalizeInstalledModule(): Vtiger_Module_Model
+    {
+        $moduleName = $this->getName();
+        Vtiger_Cache::flushModuleCache($moduleName);
+        Vtiger_Cache::delete('module', $moduleName);
+        Vtiger_Cache::flush();
+        unset($_SESSION[$moduleName . '_listquery'], $_SESSION['lvs'][$moduleName]);
+        self::clearCache();
+
+        if (function_exists('clear_smarty_cache')) {
+            clear_smarty_cache();
+        }
+
+        Core_Install_Model::logInfo('Runtime, module and template caches cleared');
+
+        $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module || !$module->isActive()) {
+            throw new RuntimeException('Installed module is missing or inactive: ' . $moduleName);
+        }
+
+        $expectedVersion = $this->getUpdateVersion();
+        $installedVersion = (string)$module->get('version');
+
+        if ($expectedVersion !== '' && version_compare($installedVersion, $expectedVersion, '!=')) {
+            throw new RuntimeException(
+                'Installed module version does not match package version: ' . $installedVersion . ' != ' . $expectedVersion
+            );
+        }
+
+        if ($module->getDefaultUrl() === '#') {
+            throw new RuntimeException('Installed module has no usable default URL: ' . $moduleName);
+        }
+
+        Core_Install_Model::logSuccess('Post-install validation passed: ' . $moduleName . ' ' . $installedVersion);
+
+        return $module;
     }
 
     /**

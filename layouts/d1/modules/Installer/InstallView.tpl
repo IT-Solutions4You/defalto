@@ -19,48 +19,79 @@
                         <i class="fa-solid fa-plus"></i>
                         <span class="ms-2">{vtranslate('LBL_ADD_LICENSE', $QUALIFIED_MODULE)}</span>
                     </button>
-                    <a class="btn btn-outline-primary ms-2" data-update-information="all" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
-                        {vtranslate('LBL_UPDATE_LICENSES', $QUALIFIED_MODULE)}
+                    <a class="btn btn-outline-primary ms-2" data-license-check href="#">
+                        {vtranslate('LBL_CHECK_LICENSE', $QUALIFIED_MODULE)}
                     </a>
                 </div>
             </div>
         </div>
         <div class="container-fluid border rounded">
             <div class="row py-2 text-secondary">
-                <div class="col-lg-4"></div>
-                <div class="col-lg fw-bold">{vtranslate('LBL_TYPE', $QUALIFIED_MODULE)}</div>
-                <div class="col-lg fw-bold">{vtranslate('LBL_USER_LIMIT', $QUALIFIED_MODULE)}</div>
-                <div class="col-lg fw-bold">{vtranslate('Due Date', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg-4 fw-bold">{vtranslate('LBL_LICENSE_KEY', $QUALIFIED_MODULE)}</div>
+                <div class="col-lg-4 fw-bold">{vtranslate('LBL_PRODUCT', $QUALIFIED_MODULE)}</div>
                 <div class="col-lg-4 fw-bold">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</div>
             </div>
-            {foreach from=Installer_License_Model::getAll() item=LICENSE_MODEL}
-                <div class="row border-top py-2 licenseContainer align-items-center">
-                    <div class="col-lg-4 fw-bold">
-                        {if $LICENSE_MODEL->isValidLicense()}
-                            <span class="me-2 text-success cursorDefault" title="{vtranslate('LBL_VALID_LICENSE', $QUALIFIED_MODULE)}">
-                                <i class="fa-solid fa-check me-2"></i>
-                                <span>{$LICENSE_MODEL->getName()}</span>
-                            </span>
-                        {else}
-                            <span class="me-2 text-danger cursorDefault" title="{vtranslate('LBL_INVALID_LICENSE', $QUALIFIED_MODULE)}">
-                                <i class="fa-solid fa-xmark me-2"></i>
-                                <span>{$LICENSE_MODEL->getName()}</span>
-                            </span>
-                        {/if}
-                    </div>
-                    <div class="col-lg">{$LICENSE_MODEL->getItemName()}</div>
-                    <div class="col-lg {if $LICENSE_MODEL->isUserLimitReached()}fw-bold text-danger{/if}">{$LICENSE_MODEL->getUsersCount()} / {$LICENSE_MODEL->getDisplayUsersLimit()}</div>
-                    <div class="col-lg">{$LICENSE_MODEL->getDisplayExpireDate()}</div>
+            {foreach from=$LICENSE_MODELS item=STORED_LICENSE_MODEL}
+                <div class="row py-2 border-top licenseContainer align-items-center">
                     <div class="col-lg-4">
-                        <button type="button" class="btn btn-primary me-2" data-edit-license="{$LICENSE_MODEL->getId()}">
-                            <i class="fa-solid fa-pencil"></i>
-                            <span class="ms-2">{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}</span>
-                        </button>
-                        <button type="button" class="btn btn-danger" data-delete-license="{$LICENSE_MODEL->getId()}">
-                            <i class="fa-solid fa-trash"></i>
-                            <span class="ms-2">{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}</span>
-                        </button>
+                        {if $STORED_LICENSE_MODEL->isValidLicense()}
+                            <i class="fa-solid fa-check me-2 text-success" title="{vtranslate('LBL_VALID_LICENSE', $QUALIFIED_MODULE)}"></i>
+                        {else}
+                            <i class="fa-solid fa-xmark me-2 text-danger" title="{vtranslate('LBL_INVALID_LICENSE', $QUALIFIED_MODULE)}"></i>
+                        {/if}
+                        <span>{$STORED_LICENSE_MODEL->getName()}</span>
                     </div>
+                    <div class="col-lg-4">{$STORED_LICENSE_MODEL->getItemName()}</div>
+                    <div class="col-lg-4 d-flex gap-2">
+                        {assign var=LICENSE_ERROR_MESSAGE value=$STORED_LICENSE_MODEL->getErrorMessage()}
+                        {assign var=LICENSE_EXTENSIONS value=$STORED_LICENSE_MODEL->getExtensionEntitlements()}
+                        <button type="button" class="btn btn-primary" data-edit-license="{$STORED_LICENSE_MODEL->getId()}">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span class="ms-2">{vtranslate('LBL_REACTIVATE', $QUALIFIED_MODULE)}</span>
+                        </button>
+                        <button type="button" class="btn btn-danger" data-delete-license="{$STORED_LICENSE_MODEL->getId()}">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <div class="dropdown ms-auto align-self-center">
+                            <button type="button" class="border-0 bg-transparent p-0 fs-5 {if $LICENSE_ERROR_MESSAGE}text-danger{else}text-success{/if}" data-bs-toggle="dropdown" aria-expanded="false" title="{vtranslate('LBL_LICENSE_DETAILS', $QUALIFIED_MODULE)}">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span class="visually-hidden">{vtranslate('LBL_LICENSE_DETAILS', $QUALIFIED_MODULE)}</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3 text-wrap licenseDetailsDropdown">
+                                <div class="mb-3">
+                                    <div class="fw-bold">{vtranslate('LBL_LAST_SUCCESSFUL_LICENSE_CHECK', $QUALIFIED_MODULE)}</div>
+                                    <div>{$STORED_LICENSE_MODEL->getDisplayLastSuccessfulCheck()}</div>
+                                </div>
+                                {if $LICENSE_ERROR_MESSAGE}
+                                    <div class="mb-3">
+                                        <div class="fw-bold">{vtranslate('LBL_LICENSE_ERROR', $QUALIFIED_MODULE)}</div>
+                                        <div class="text-danger">{$LICENSE_ERROR_MESSAGE}</div>
+                                    </div>
+                                {else}
+                                    <div class="mb-3 text-success">
+                                        <i class="fa-solid fa-check me-2" aria-hidden="true"></i>
+                                        {vtranslate('LBL_LICENSE_ACTIVATED', $QUALIFIED_MODULE)}
+                                    </div>
+                                {/if}
+                                <div>
+                                    <div class="fw-bold">{vtranslate('LBL_ACTIVATED_MODULES', $QUALIFIED_MODULE)}</div>
+                                    {if $LICENSE_EXTENSIONS}
+                                        <ul class="mb-0 ps-3">
+                                            {foreach from=$LICENSE_EXTENSIONS item=LICENSE_EXTENSION}
+                                                <li>{vtranslate($LICENSE_EXTENSION, $LICENSE_EXTENSION)}</li>
+                                            {/foreach}
+                                        </ul>
+                                    {else}
+                                        <div class="text-secondary">{vtranslate('LBL_NO_ACTIVATED_MODULES', $QUALIFIED_MODULE)}</div>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {foreachelse}
+                <div class="row py-3 border-top">
+                    <div class="col text-secondary">{vtranslate('LBL_NO_LICENSE_KEY', $QUALIFIED_MODULE)}</div>
                 </div>
             {/foreach}
         </div>
@@ -120,7 +151,7 @@
                     </div>
                     <div class="col-lg-4">
                         {if $SYSTEM_MODEL->isNewestVersion()}
-                            {if $SYSTEM_MODEL->isCacheDateValid()}
+                            {if $SYSTEM_MODEL->isCacheRefreshAllowed()}
                                 <a class="btn btn-primary" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                     <span class="ms-2">{vtranslate('LBL_CHECK_UPDATE', $MODULE)}</span>
@@ -132,7 +163,7 @@
                                 <span class="ms-2 fw-bold">{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</span>
                             </button>
                         {else}
-                            <a class="btn btn-primary" target="_blank" href="index.php?module=Installer&view=Redirect&mode=SourceForge">
+                            <a class="btn btn-primary" target="_blank" rel="noopener noreferrer" href="index.php?module=Installer&view=Redirect&mode=SourceForge">
                                 <i class="fa-solid fa-download"></i>
                                 <span class="ms-2 fw-bold">{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</span>
                             </a>
