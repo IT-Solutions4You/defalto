@@ -13,8 +13,7 @@
             <div class="modal-body px-4 py-3">
                 <div class="text-secondary">
                     <h3 class="mb-4 fw-bold">{vtranslate('LBL_TEAM_GROWING', $MODULE)}</h3>
-                    <h5>{vtranslate('LBL_TEAM_ACTIVE_USER', $MODULE, $REACHED_USER_LIMIT_LICENSE->getUsersCount())}</h5>
-                    <h5>{vtranslate('LBL_TEAM_LIMIT_USER', $MODULE, $REACHED_USER_LIMIT_LICENSE->getUsersLimit())}</h5>
+                    <h5>{vtranslate('LBL_LICENSE_ERROR_USER_LIMIT_EXCEEDED', $MODULE)}</h5>
                     <h5 class="mt-3">{vtranslate('LBL_TEAM_CONTINUE_ADDING_USER', $MODULE)}</h5>
                 </div>
             </div>

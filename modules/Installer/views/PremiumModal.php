@@ -40,7 +40,7 @@ class Installer_PremiumModal_View extends Vtiger_Footer_View
             }
         }
 
-        $reachedUserLimitLicense = Installer_License_Model::getReachedUserLimitLicense($forModule);
+        $reachedUserLimitLicense = Installer_License_Model::getUserLimitExceededLicense($forModule);
         $buyUrl = 'index.php?module=' . $forModule . '&view=Redirect&mode=Buy';
         $template = 'PremiumModal.tpl';
 

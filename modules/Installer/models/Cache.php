@@ -8,23 +8,22 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class Installer_Cache_Model {
+class Installer_Cache_Model
+{
     public string $cacheKey = '';
     public static array $cacheData = [];
 
-    public static function getInstance($key): self
+    public static function getInstance(string|int|float|bool|null ...$keyParts): self
     {
         $instance = new self();
-        $instance->cacheKey = implode('-', array_map(function ($value) {
-            return $value ?: 'empty';
-        }, func_get_args()));
+        $instance->cacheKey = hash('sha256', serialize($keyParts));
 
         return $instance;
     }
 
     public function has(): bool
     {
-        return isset(self::$cacheData[$this->cacheKey]);
+        return array_key_exists($this->cacheKey, self::$cacheData);
     }
 
     public function set(mixed $value): self
@@ -34,9 +33,19 @@ class Installer_Cache_Model {
         return $this;
     }
 
-    public function get()
+    public function get(): mixed
     {
         return self::$cacheData[$this->cacheKey];
+    }
+
+    public function delete(): void
+    {
+        unset(self::$cacheData[$this->cacheKey]);
+    }
+
+    public static function clear(): void
+    {
+        self::$cacheData = [];
     }
 }
 

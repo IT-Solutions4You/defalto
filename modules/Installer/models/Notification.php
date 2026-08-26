@@ -91,11 +91,9 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
         return $this->get('type');
     }
 
-    public function retrieveLicenses(): void
+    public function retrieveLicense(): void
     {
-        $licenses = Installer_License_Model::getAll();
-        /** @var Installer_License_Model $license */
-        foreach ($licenses as $license) {
+        foreach (Installer_License_Model::getAll() as $license) {
             $name = $license->getName();
             $label = 'License ' . substr($name, 0, 5) . '...' . substr($name, -5);
 
@@ -138,26 +136,28 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
     public function retrieveSystems(): void
     {
         $systems = Installer_SystemInstall_Model::getAll();
-        /** @var Installer_SystemInstall_Model $system */
-        foreach ($systems as $system) {
-            if (version_compare($system->getVersion(), $system->getCurrentVersion(), '<')) {
-                $this->notifications[] = [
-                    'name' => 'Update Defalto',
-                    'description' => 'System up to date',
-                    'type' => 'success',
-                    'icon' => 'fa fa-download',
-                    'link' => 'index.php?module=Installer#UpdateDefalto'
-                ];
-            } else {
-                $this->notifications[] = [
-                    'name' => 'Update Defalto',
-                    'description' => vtranslate('System update available', 'Installer', $system->getVersion()),
-                    'type' => 'warning',
-                    'icon' => 'fa-solid fa-rotate',
-                    'link' => 'index.php?module=Installer#UpdateDefalto'
-                ];
-            }
+
+        if (!$systems) {
+            return;
         }
+
+        usort($systems, static fn(
+            Installer_SystemInstall_Model $first,
+            Installer_SystemInstall_Model $second
+        ): int => version_compare($second->getVersion(), $first->getVersion()));
+
+        /** @var Installer_SystemInstall_Model $system */
+        $system = reset($systems);
+        $isUpToDate = $system->isNewestVersion();
+        $this->notifications[] = [
+            'name' => 'Update Defalto',
+            'description' => $isUpToDate
+                ? 'System up to date'
+                : vtranslate('System update available', 'Installer', $system->getVersion()),
+            'type' => $isUpToDate ? 'success' : 'warning',
+            'icon' => $isUpToDate ? 'fa fa-download' : 'fa-solid fa-rotate',
+            'link' => 'index.php?module=Installer#UpdateDefalto'
+        ];
     }
 
     /**
@@ -169,11 +169,17 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
         $packages = Installer_ExtensionInstall_Model::getInstallerModules();
         /** @var Installer_ExtensionInstall_Model $package */
         foreach ($packages as $package) {
-            if ($package->getVersion() === $package->getUpdateVersion()) {
+            $installedVersion = $package->getVersion();
+            $availableVersion = $package->getUpdateVersion();
+
+            if ($installedVersion !== ''
+                && $availableVersion !== ''
+                && version_compare($installedVersion, $availableVersion, '>=')
+            ) {
                 continue;
             }
 
-            if ($package->getVersion() && $package->getUpdateVersion()) {
+            if ($installedVersion !== '' && $availableVersion !== '') {
                 $this->notifications[] = [
                     'name' => 'Extension ' . $package->getName(),
                     'description' => 'Update available',
@@ -183,7 +189,7 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
                 ];
             }
 
-            if (!$package->getVersion() && $package->getUpdateVersion()) {
+            if ($installedVersion === '' && $availableVersion !== '') {
                 $installInfo[] = [
                     'name' => 'Extension ' . $package->getName(),
                     'description' => 'New extension available',
@@ -208,14 +214,39 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
     public static function updateAll(): void
     {
         $notification = new self();
-        $notification->retrieveLicenses();
+        $notification->retrieveLicense();
         $notification->retrieveSystems();
         $notification->retrieveExtensions();
+        $activeNames = [];
 
         foreach ($notification->getNotifications() as $info) {
-            $notification = self::getInstance($info['name']);
-            $notification->setData(array_merge($notification->getData(), $info));
-            $notification->save();
+            $activeNames[$info['name']] = true;
+            $storedNotification = self::getInstance($info['name']);
+            $storedNotification->setData(array_merge($storedNotification->getData(), $info));
+            $storedNotification->save();
         }
+
+        $seenNames = [];
+
+        foreach (self::getAll() as $storedNotification) {
+            $name = $storedNotification->getName();
+
+            if (!self::isManagedNotificationName($name)) {
+                continue;
+            }
+
+            if (!isset($activeNames[$name]) || isset($seenNames[$name])) {
+                $storedNotification->delete();
+            } else {
+                $seenNames[$name] = true;
+            }
+        }
+    }
+
+    protected static function isManagedNotificationName(string $name): bool
+    {
+        return 'Update Defalto' === $name
+            || str_starts_with($name, 'License ')
+            || str_starts_with($name, 'Extension ');
     }
 }

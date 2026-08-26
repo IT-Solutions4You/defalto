@@ -3,6 +3,9 @@
 ## Repository Rules
 
 - Trace the runtime owner before changing code. Prefer the existing module, Core, Vtiger, or Installer mechanism over a local one-off fix.
+- Before changing an installable extension, read the nearest `modules/<Module>/AGENTS.md` and analyze the module's runtime owner, entry points, persistent data, external contracts, UI assets, and install lifecycle.
+- Treat `modules/<Module>/AGENTS.md` as durable extension memory. Create or update it in the same task whenever verified, reusable module knowledge is learned, and update every affected module file for cross-module work. Keep it concise and in English; record ownership boundaries, invariants, data flows, integration points, and validation commands, but never task history, guesses, generated inventories, environment-specific state, credentials, license keys, or other secrets. Remove or correct stale guidance when the implementation changes.
+- Keep Installer license checks inside the Installer-owned manual update and scheduled license-check flows. Do not add license hooks to global WebUI startup/login processing or to Users save, deactivate, or delete events; preserve the existing system and Users lifecycle behavior.
 - Keep module PHP code under `modules/<Module>/{actions,models,views,helpers,handlers,dashboards,uitypes}`.
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
@@ -11,6 +14,23 @@
 - Keep all instructions and example text in `AGENTS.md` in English. Translate user-facing confirmations at response time to the language used by the user in the current request.
 - Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
 - Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
+
+## Installer Licensing Ownership
+
+- Keep the complete membership license implementation owned by `modules/Installer`. Do not duplicate license state, API requests, user counting, activation rules, or entitlement checks in Core, Vtiger, Users, or another module.
+- Preserve support for multiple independently validated Installer licenses. A valid membership license may coexist with product-specific extension licenses such as AI or Google synchronization; do not collapse the `df_licenses` store or Installer UI back to one license.
+- Persist a newly entered license only after the Installer-owned API returns the complete valid contract (`success === true`, `license === "valid"`, and `users_valid === true`). Keep existing stored keys on later validation failures so their errors can be displayed and retried.
+- Preserve multi-license activation during initial installation in `Install_Utils_Model::saveInstallerLicenses()`. Read the `licenses` array and the legacy singular `license` value, normalize and deduplicate keys, and delegate every activation to `Installer_License_Model::activate()`; do not write `df_licenses` directly from the Install module.
+- Keep the license contract and local license state in `modules/Installer/models/License.php`, HTTP communication in `modules/Installer/models/Api.php`, and the current licensed-user count in `modules/Installer/models/UserCount.php`.
+- License activation is allowed only through `modules/Installer/actions/IndexAjax.php::licenseSave()`, which delegates to `Installer_License_Model::activate()`.
+- Explicit license deactivation is allowed only through `modules/Installer/actions/IndexAjax.php::licenseDelete()`, which delegates to `Installer_License_Model::deactivate()` before deleting local state when appropriate.
+- Forced manual checks are allowed in the Installer-owned `modules/Installer/views/IndexAjax.php::licenseCheckProgress()` and `updateInformation()` flows through `Installer_License_Model::updateAll()`.
+- A forced license check is allowed immediately before a protected system update or extension installation in `modules/Installer/views/IndexAjax.php::systemProgress()` and `extensionProgress()`. These checks must remain part of the requested Installer operation and must not become global lifecycle hooks.
+- The Installer page may perform only the existing debounced non-forced check in `modules/Installer/views/Index.php::installer()` by calling `check(false)`. Do not change this page load to an unconditional or forced request.
+- The scheduled license check is owned only by `modules/Installer/cron/UpdateLicenses.php`, registered as `InstallerLicenses` by `modules/Installer/models/Install.php`. Keep its daily interval unless a user explicitly requests a different schedule.
+- `Installer_Api_Model` may retrieve public system version status through the existing `/system/v1` flow when no active Membership license exists. In that state retain only the version and label, and strip download URLs, download folders, checksums, and all other protected package metadata. Full system package metadata and extension metadata remain protected and may reuse the debounced license check; do not add additional API requests around the same retrieval flow.
+- Never add membership license checks to `includes/main/WebUI.php`, global application startup or login, Users save/deactivate/delete events, event handlers, or unrelated cron tasks. Do not recreate `Installer_UserLicense_Handler` or another Users lifecycle handler.
+- Preserve the membership purchase routes `Membership` and `MembershipOrder` in `modules/Core/views/Redirect.php`. In every Defalto system-update row, when no active Membership license exists, render the purchase prompt through `Installer_SystemInstall_Model::getBranding()` in the Actions column directly below the download action. Preserve the original System block layout and do not move the prompt into a separate callout row.
 
 ## Versioning
 
@@ -102,7 +122,7 @@
 
 ## PHP / Install Structure Checks
 
-- Let `Vtiger_Loader` autoload framework component classes whose names and paths follow the `Module_Component_Type` convention, such as `Core_DateFilter_Helper` in `modules/Core/helpers/DateFilter.php`. Do not add manual `require`, `require_once`, `include`, or `include_once` statements for these components; verify the class-to-path mapping before removing a legacy include. Standalone scripts and tests may explicitly bootstrap files when the application autoloader is not initialized.
+- Let `Vtiger_Loader` autoload framework component classes whose names and paths follow the `Module_Component_Type` convention, such as `Core_DateFilter_Helper` in `modules/Core/helpers/DateFilter.php`. Do not add manual `require`, `require_once`, `include`, or `include_once` statements for these components; verify the class-to-path mapping before removing a legacy include. Standalone scripts may explicitly bootstrap files when the application autoloader is not initialized.
 - Before completing a new, copied, or renamed module, compare every overridden method with the actual parent class or interface declaration. Match visibility, staticness, parameter types and defaults, reference/variadic markers, and return types; do not rely on the legacy source module's signature.
 - Audit controller lifecycle overrides especially carefully, including `validateRequest()`, `checkPermission()`, `preProcess()`, `postProcess()`, `process()`, `getHeaderScripts()`, and `getHeaderCss()`. An isolated `php -l` does not detect inheritance incompatibilities when the parent class is not loaded, so also load the child with its real parent or an equivalent compatibility harness.
 - Do not add a local `try/catch` in an action or view only to convert an `Exception` into `Vtiger_Response::setError()`. Let the central WebUI exception handler produce the standard action error response. Catch locally only when the code can recover, try a defined fallback, perform required cleanup, or add context before rethrowing; never swallow an exception that the framework should handle.

@@ -56,8 +56,15 @@ class Installer_Index_View extends Vtiger_Index_View
     public function installer(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
+        $licenses = Installer_License_Model::getAll();
+
+        foreach ($licenses as $license) {
+            $license->check(false);
+        }
 
         $viewer = $this->getViewer($request);
+        $viewer->assign('LICENSE_MODELS', $licenses);
+        $viewer->assign('LICENSE_MODEL', Installer_License_Model::getMembershipLicense());
         $viewer->view('Index.tpl', $moduleName);
     }
 
@@ -89,6 +96,20 @@ class Installer_Index_View extends Vtiger_Index_View
         $viewer->assign('MODULE_MODEL', $extensionModel->getModule());
 
         $this->installer($request);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHeaderCss(Vtiger_Request $request): array
+    {
+        $layout = Vtiger_Viewer::getDefaultLayoutName();
+        $moduleName = $request->getModule();
+        $cssFileNames = [
+            "~layouts/$layout/modules/$moduleName/resources/Index.css",
+        ];
+
+        return array_merge(parent::getHeaderCss($request), $this->checkAndConvertCssStyles($cssFileNames));
     }
 
     /**
