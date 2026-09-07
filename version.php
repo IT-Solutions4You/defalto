@@ -19,5 +19,5 @@
 
 $patch_version = '2608260024';
 $modified_database = '';
-$defalto_display_version = $defalto_current_version = '1.8.127';
+$defalto_display_version = $defalto_current_version = '1.9.0';
 $_SESSION['defalto_version'] = $defalto_current_version;
