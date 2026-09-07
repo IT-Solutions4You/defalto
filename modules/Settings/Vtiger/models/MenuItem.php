@@ -122,6 +122,33 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
     /**
      * @throws Exception
      */
+    public static function installLink(string $label): Settings_Vtiger_MenuItem_Model|bool
+    {
+        $existingLink = self::getInstance($label);
+
+        if ($existingLink) {
+            return $existingLink;
+        }
+
+        foreach (self::$defaultMenuItemLinks as $blockName => $fields) {
+            foreach ($fields as $sequence => $field) {
+                if ($field[0] !== $label) {
+                    continue;
+                }
+
+                [$label, $link, $description, $pinned] = array_pad($field, 4, null);
+                $menu = Settings_Vtiger_Menu_Model::createMenu($blockName);
+
+                return self::createItem($label, $link, $menu, (string)$description, (int)$sequence, (int)$pinned);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @throws Exception
+     */
     public function createLinks(): void
     {
         self::deleteItem('Configuration Editor');
