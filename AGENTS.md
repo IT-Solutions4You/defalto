@@ -156,6 +156,7 @@
 
 ## Validation
 
+- Do not create unit tests unless the user explicitly requests them. Use existing checks and manual verification for routine changes.
 - Run `php -l` on touched PHP files.
 - Run the scripts validator when module resource JavaScript changes.
 - Check that `version.php` was bumped when rendered application styles changed.
