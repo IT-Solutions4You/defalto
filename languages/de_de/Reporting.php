@@ -26,6 +26,7 @@ $languageStrings = [
     'LBL_CHART_X_AXIS' => 'X-Achse',
     'LBL_CHART_Y_AXIS' => 'Y-Achse',
     'LBL_CHART_Y_FROM_CALCULATIONS' => 'Die Y-Achse wird durch die ausgewählten Berechnungen festgelegt.',
+    'LBL_CHART_SELECT_CALCULATION_FIRST' => 'Um die Y-Achse zu aktivieren, wählen Sie zuerst mindestens eine Berechnung auf der Registerkarte Berechnungen aus (zum Beispiel Summe oder Anzahl der Datensätze).',
     'LBL_CHART_SELECT_CALCULATION' => 'Berechnung für die Y-Achse auswählen',
     'LBL_CHART_SELECT_X_AXIS' => 'Feld für X-Achse auswählen',
     'LBL_CHART_DATE_INTERVAL' => 'Datumsgruppierung',

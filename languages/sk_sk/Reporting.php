@@ -26,6 +26,7 @@ $languageStrings = [
     'LBL_CHART_X_AXIS' => 'Os X',
     'LBL_CHART_Y_AXIS' => 'Os Y',
     'LBL_CHART_Y_FROM_CALCULATIONS' => 'Os Y sa nastavuje podľa vybraných výpočtov.',
+    'LBL_CHART_SELECT_CALCULATION_FIRST' => 'Ak chcete sprístupniť os Y, najprv na karte Výpočty vyberte aspoň jeden výpočet (napríklad Súčet alebo Počet záznamov).',
     'LBL_CHART_SELECT_CALCULATION' => 'Vyberte výpočet pre os Y',
     'LBL_CHART_SELECT_X_AXIS' => 'Vyberte pole osi X',
     'LBL_CHART_DATE_INTERVAL' => 'Zoskupenie dátumu',

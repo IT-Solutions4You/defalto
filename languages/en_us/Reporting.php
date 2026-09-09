@@ -26,6 +26,7 @@ $languageStrings = [
     'LBL_CHART_X_AXIS' => 'X axis',
     'LBL_CHART_Y_AXIS' => 'Y axis',
     'LBL_CHART_Y_FROM_CALCULATIONS' => 'The Y axis is set by the selected calculations.',
+    'LBL_CHART_SELECT_CALCULATION_FIRST' => 'To enable the Y axis, first select at least one calculation on the Calculations tab (for example, Sum or Count records).',
     'LBL_CHART_SELECT_CALCULATION' => 'Select calculation for the Y axis',
     'LBL_CHART_SELECT_X_AXIS' => 'Select X-axis field',
     'LBL_CHART_DATE_INTERVAL' => 'Date grouping',

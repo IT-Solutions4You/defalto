@@ -37,6 +37,7 @@ class Reporting_Field_Model extends Vtiger_Field_Model
     public function getPicklistValues()
     {
         return match ($this->get('name')) {
+            'report_type' => $this->getReportTypeOptions(),
             'primary_module' => $this->getPrimaryModuleOptions(),
             'folder' => $this->getDocumentFolders(),
             'sharing' => $this->getSharingOptions(),
@@ -93,11 +94,20 @@ class Reporting_Field_Model extends Vtiger_Field_Model
     public function getEditablePicklistValues()
     {
         return match ($this->get('name')) {
+            'report_type' => $this->getReportTypeOptions(),
             'primary_module' => $this->getPrimaryModuleOptions(),
             'folder' => $this->getDocumentFolders(),
             'sharing' => $this->getSharingOptions(),
             default => parent::getEditablePicklistValues(),
         };
+    }
+
+    public function getReportTypeOptions(): array
+    {
+        return [
+            'tabular' => vtranslate('tabular', 'Reporting'),
+            'summary' => vtranslate('summary', 'Reporting'),
+        ];
     }
 
     public function getPrimaryModuleOptions(): array

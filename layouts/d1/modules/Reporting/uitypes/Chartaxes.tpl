@@ -43,6 +43,9 @@
             </div>
             <div class="chartYAxisValue fieldValue col-sm-10">
                 <div class="small text-secondary mb-2">{vtranslate('LBL_CHART_Y_FROM_CALCULATIONS', $QUALIFIED_MODULE)}</div>
+                <div class="chartCalculationWarning alert alert-warning mb-2 d-none" role="status">
+                    {vtranslate('LBL_CHART_SELECT_CALCULATION_FIRST', $QUALIFIED_MODULE)}
+                </div>
                 <select
                     class="chartYAxisCalculation select2 form-select"
                     data-count-label="{vtranslate('LBL_COUNT_RECORDS', $QUALIFIED_MODULE)}"
