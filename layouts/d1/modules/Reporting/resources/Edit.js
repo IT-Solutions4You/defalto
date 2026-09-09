@@ -1064,6 +1064,7 @@ Vtiger_Edit_Js('Reporting_Edit_Js', {
 
         select.val(retainedValues.length ? retainedValues : (options[0] ? [options[0].value] : []));
         select.prop('disabled', !options.length).trigger('change.select2');
+        this.getContainer().find('.chartCalculationWarning').toggleClass('d-none', 0 < options.length);
         this.updateChartConfigurationValue();
     },
     registerChartAxes() {
