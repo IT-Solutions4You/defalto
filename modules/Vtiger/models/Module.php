@@ -24,6 +24,15 @@ vimport('~~/vtlib/Vtiger/Module.php');
 #[AllowDynamicProperties]
 class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Interface
 {
+    /**
+     * Modules centrally excluded from quick and global search.
+     */
+    protected const QUICK_SEARCH_DISABLED_MODULES = [
+        'EmailTemplates',
+        'LayoutEditor',
+        'Reminder',
+    ];
+
     protected string $fontIcon = '';
     protected $blocks = false;
     protected $nameFields = false;
@@ -997,7 +1006,7 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         foreach ($entityModules as $tabid => $moduleModel) {
             $moduleName = $moduleModel->getName();
 
-            if ($moduleName == 'Users') {
+            if ($moduleName === 'Users') {
                 continue;
             }
             if ($userPrivModel->hasModuleActionPermission($moduleModel->getId(), 'DetailView')) {
@@ -1533,6 +1542,15 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                 'linkicon'  => '',
             ];
 
+            if ($this->isEntityModule() && $this->isSummaryViewSupported()) {
+                $settingsLinks[] = [
+                    'linktype'  => 'LISTVIEWSETTING',
+                    'linklabel' => 'LBL_SUMMARY_WIDGETS',
+                    'linkurl'   => 'index.php?parent=Settings&module=Vtiger&view=SummaryWidgets&sourceModule=' . $this->getName(),
+                    'linkicon'  => '',
+                ];
+            }
+
             if ($this->hasSequenceNumberField()) {
                 $settingsLinks[] = [
                     'linktype'  => 'LISTVIEWSETTING',
@@ -1969,11 +1987,11 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     }
 
     /**
-     * Funxtion to identify if the module supports quick search or not
+     * Modules can override this method to opt out of quick and global search.
      */
     public function isQuickSearchEnabled()
     {
-        return true;
+        return !in_array($this->getName(), self::QUICK_SEARCH_DISABLED_MODULES, true);
     }
 
     /**

@@ -580,6 +580,7 @@ class CustomView extends CRMEntity
     {
         return [
             "custom",
+            "lastperiod",
             "prevfy",
             "thisfy",
             "nextfy",
@@ -992,7 +993,15 @@ class CustomView extends CRMEntity
             }
         } else { //if it is not custom get the date according to the selected duration
             $specialDateFilters = ['yesterday', 'today', 'tomorrow'];
-            $datefilter = $this->getDateforStdFilterBytype($dateFilterRow["stdfilter"]);
+            if ('lastperiod' === $dateFilterRow['stdfilter']) {
+                $currentUserModel = Users_Record_Model::getCurrentUserModel();
+                $datefilter = Vtiger_Field_Model::getRelativeDatePeriod(
+                    (string)($dateFilterRow['value'] ?? ''),
+                    $currentUserModel->get('dayoftheweek')
+                );
+            } else {
+                $datefilter = $this->getDateforStdFilterBytype($dateFilterRow["stdfilter"]);
+            }
 
             if (in_array($dateFilterRow["stdfilter"], $specialDateFilters)) {
                 $currentDate = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i:s'));

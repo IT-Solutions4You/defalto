@@ -109,16 +109,16 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
         }
 
         $viewer->assign('RECORD', $entityRecordModel);
-        $viewer->assign('SUBTOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_discount'), $currentUser, true));
+        $viewer->assign('SUBTOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_after_discount', $currentUser));
         $viewer->assign('OVERALL_DISCOUNT', number_format($overallDiscount, 2));
         $viewer->assign('OVERALL_DISCOUNT_AMOUNT', number_format($overallDiscountAmount, 2));
-        $viewer->assign('OVERALL_DISCOUNT_AMOUNT_DISPLAY', CurrencyField::convertToUserFormat($overallDiscountAmount, $currentUser, true, false, true));
-        $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_overall_discount'), $currentUser, true));
-        $viewer->assign('VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('tax_amount'), $currentUser, true));
-        $viewer->assign('PRICE_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_total'), $currentUser, true));
+        $viewer->assign('OVERALL_DISCOUNT_AMOUNT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('overall_discount_amount', $currentUser, true));
+        $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_after_overall_discount', $currentUser));
+        $viewer->assign('VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('tax_amount', $currentUser));
+        $viewer->assign('PRICE_TOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_total', $currentUser));
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
-        $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $currentUser, true, false, true));
-        $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $currentUser, true));
+        $viewer->assign('ADJUSTMENT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('adjustment', $currentUser, true));
+        $viewer->assign('GRAND_TOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('grand_total', $currentUser));
         $viewer->assign('TOTAL_MARGIN_DISPLAY', number_format($margin, $marginDecimals, '.', ''));
         $viewer->assign('TOTAL_MARGIN_COMBINED_DISPLAY', $marginCombined);
         $viewer->assign('PRICEBOOKS', InventoryItem_Detail_Helper::fetchPriceBooks($request));

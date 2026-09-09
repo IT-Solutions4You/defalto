@@ -10,6 +10,12 @@
 
 class ITS4YouEmails_Install_Model extends Core_Install_Model
 {
+    public bool $registerDefaultSummaryWidgets = false;
+    public array $registerSummaryWidgets = [
+        ['ITS4YouEmails', 'LBL_KEY_FIELDS', 'module=ITS4YouEmails&view=Widget&record=$RECORD$&mode=showKeyFields&showDetails=1', '', 0],
+        ['ITS4YouEmails', 'LBL_MESSAGE', 'module=ITS4YouEmails&view=Widget&record=$RECORD$&mode=showBody', '', 1],
+        ['ITS4YouEmails', 'LBL_ATTACHMENTS', 'module=ITS4YouEmails&view=Widget&record=$RECORD$&mode=showAttachments', '', 2],
+    ];
 
     protected string $moduleName = 'ITS4YouEmails';
     protected string $moduleNumbering = 'MAIL';

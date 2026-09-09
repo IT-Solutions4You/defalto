@@ -22,7 +22,7 @@
                 ADVANCE_CRITERIA=$UITYPE_BLOCK->getAdvanceCriteria($FIELD_VALUE)
                 ADVANCED_FILTER_OPTIONS=Vtiger_Field_Model::getAdvancedFilterOptions()
                 ADVANCED_FILTER_OPTIONS_BY_TYPE=Vtiger_Field_Model::getAdvancedFilterOpsByFieldType()
-                DATE_FILTERS=Vtiger_Field_Model::getDateFilterTypes()}
+                DATE_FILTERS=Vtiger_Field_Model::getDisplayDateFilterTypes($QUALIFIED_MODULE)}
             {/if}
         </div>
     </div>

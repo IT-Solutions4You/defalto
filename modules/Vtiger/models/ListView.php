@@ -324,7 +324,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
 
     public function getFocus()
     {
-        if (!empty($this->focus)) {
+        if (empty($this->focus)) {
             $this->focus = CRMEntity::getInstance($this->getModuleName());
         }
 
@@ -446,7 +446,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
         $folderKey = $this->get('folder_id');
         $folderValue = $this->get('folder_value');
         if (!empty($folderValue)) {
-            $queryGenerator->addCondition($folderKey, $folderValue, 'e');
+            $queryGenerator->addCondition($folderKey, $folderValue, 'e', QueryGenerator::$AND);
         }
 
         $glue = "";

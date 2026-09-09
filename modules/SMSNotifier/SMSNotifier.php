@@ -23,6 +23,7 @@ include_once 'include/Zend/Json.php';
 
 class SMSNotifier extends SMSNotifierBase
 {
+    public string $moduleVersion = '1.1';
     public string $moduleName = 'SMSNotifier';
     public string $parentName = '';
 

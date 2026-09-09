@@ -740,7 +740,7 @@ class Vtiger_Util_Helper
         $groupIterator = 0;
         foreach ($listSearchParams as $groupInfo) {
             if (empty($groupInfo)) {
-                $advFilterConditionFormat[] = [];
+                // Preserve the source group's AND/OR position without emitting an empty SQL group.
                 $groupIterator++;
                 continue;
             }

@@ -20,6 +20,11 @@ class Reporting_Calculations_UIType extends Core_Data_UIType
 
         $fieldTypes = ['double', 'currency', 'percentage', 'integer'];
         $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return $options;
+        }
+
         $fields = $module->getFieldsByType($fieldTypes);
 
         /**
@@ -34,6 +39,11 @@ class Reporting_Calculations_UIType extends Core_Data_UIType
         foreach ($fields as $field) {
             foreach ($field->getReferenceList() as $referenceModule) {
                 $referenceModule = Vtiger_Module_Model::getInstance($referenceModule);
+
+                if (!$referenceModule) {
+                    continue;
+                }
+
                 $referenceFields = $referenceModule->getFieldsByType($fieldTypes);
 
                 foreach ($referenceFields as $referenceField) {

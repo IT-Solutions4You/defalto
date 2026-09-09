@@ -10,11 +10,14 @@
 
 class Reporting_Install_Model extends Core_Install_Model
 {
+    public array $popupFields = ['report_name', 'primary_module', 'folder', 'description', 'max_entries',];
+    public bool $registerDefaultSummaryWidgets = false;
+    public array $registerSummaryWidgets = [
+        ['Reporting', 'Reporting', 'module=Reporting&view=Widget&record=$RECORD$&mode=showReport', '', 0],
+    ];
+    public array $relatedListFields = [['report_name', 'primary_module', 'folder', 'description', 'max_entries',]];
     protected string $moduleName = 'Reporting';
     protected string $parentName = 'Tools';
-
-    public array $relatedListFields = [['report_name', 'primary_module', 'folder', 'description', 'max_entries',]];
-    public array $popupFields = ['report_name', 'primary_module', 'folder', 'description', 'max_entries',];
 
     public function addCustomLinks(): void
     {
@@ -51,7 +54,7 @@ class Reporting_Install_Model extends Core_Install_Model
     {
         $fieldInstance = parent::createField($fieldName, $fieldParams);
 
-        if ('chart_type' === $fieldName && $fieldInstance && !empty($fieldParams['block'])) {
+        if (in_array($fieldName, ['chart_type', 'chart_position', 'chart_config'], true) && $fieldInstance && !empty($fieldParams['block'])) {
             $blockInstance = $fieldParams['block'];
             $fieldInstance->block = $blockInstance;
             $fieldInstance->getFieldTable()->updateData(
@@ -65,31 +68,6 @@ class Reporting_Install_Model extends Core_Install_Model
         }
 
         return $fieldInstance;
-    }
-
-    protected function setSharingTypeFieldSequence(Vtiger_Field_Model $sharingTypeField): void
-    {
-        $sharingField = $this->getFieldInstance('sharing');
-
-        if (!$sharingField->getId()) {
-            return;
-        }
-
-        $sharingSequence = (int)$sharingField->get('sequence');
-        $sharingTypeSequence = (int)$sharingTypeField->get('sequence');
-
-        if ($sharingTypeSequence < $sharingSequence) {
-            return;
-        }
-
-        $sharingTypeField->getFieldTable()->updateData(
-            ['sequence' => $sharingSequence],
-            ['fieldid' => $sharingTypeField->getId()],
-        );
-        $sharingField->getFieldTable()->updateData(
-            ['sequence' => $sharingSequence + 1],
-            ['fieldid' => $sharingField->getId()],
-        );
     }
 
     public function getBlocks(): array
@@ -109,6 +87,7 @@ class Reporting_Install_Model extends Core_Install_Model
                     'filter_sequence' => 2,
                     'typeofdata' => 'V~M',
                     'ajaxeditable' => 0,
+                    'picklist_overwrite' => true
                 ],
                 'primary_module' => [
                     'column' => 'primary_module',
@@ -245,7 +224,28 @@ class Reporting_Install_Model extends Core_Install_Model
                         'pie',
                         'doughnut',
                     ],
+                    'picklist_overwrite' => true,
                     'defaultvalue' => 'bar',
+                    'ajaxeditable' => 0,
+                ],
+                'chart_position' => [
+                    'column' => 'chart_position',
+                    'label' => 'Chart Position',
+                    'table' => 'df_reporting',
+                    'uitype' => 15,
+                    'picklist_values' => [
+                        'above',
+                        'below',
+                    ],
+                    'picklist_overwrite' => true,
+                    'defaultvalue' => 'above',
+                    'ajaxeditable' => 0,
+                ],
+                'chart_config' => [
+                    'columntype' => 'TEXT',
+                    'column' => 'chart_config',
+                    'label' => 'Chart Axes',
+                    'table' => 'df_reporting',
                     'ajaxeditable' => 0,
                 ],
             ],
@@ -280,6 +280,7 @@ class Reporting_Install_Model extends Core_Install_Model
                         'all',
                         'selected',
                     ],
+                    'picklist_overwrite' => true,
                     'defaultvalue' => 'private',
                     'typeofdata' => 'V~M',
                     'ajaxeditable' => 0,
@@ -319,16 +320,42 @@ class Reporting_Install_Model extends Core_Install_Model
         if (Vtiger_Utils::CheckTable('df_reporting')) {
             $this->getTable('df_reporting', 'reportingid')
                 ->createColumn('group_by', 'TEXT')
+                ->createColumn('chart_config', 'TEXT')
+                ->createColumn('chart_position', 'VARCHAR(20) NOT NULL DEFAULT \'above\'')
                 ->createColumn('currency_id', 'INT(19) DEFAULT NULL')
                 ->createColumn('group_by_currency', 'TINYINT(1) NOT NULL DEFAULT 0')
                 ->createColumn('conversion_rate', 'DECIMAL(25,8) DEFAULT NULL')
-                ->createColumn('sharing_type', 'VARCHAR(20) NOT NULL DEFAULT \'selected\'')
-            ;
+                ->createColumn('sharing_type', 'VARCHAR(20) NOT NULL DEFAULT \'selected\'');
         }
 
         $this->createPicklistTable('vtiger_primary_module', 'primary_moduleid', 'primary_module');
         $this->createPicklistTable('vtiger_folder', 'folderid', 'folder');
         $this->createPicklistTable('vtiger_sharing_type', 'sharing_typeid', 'sharing_type');
         $this->createPicklistTable('vtiger_sharing', 'sharingid', 'sharing');
+    }
+
+    protected function setSharingTypeFieldSequence(Vtiger_Field_Model $sharingTypeField): void
+    {
+        $sharingField = $this->getFieldInstance('sharing');
+
+        if (!$sharingField->getId()) {
+            return;
+        }
+
+        $sharingSequence = (int)$sharingField->get('sequence');
+        $sharingTypeSequence = (int)$sharingTypeField->get('sequence');
+
+        if ($sharingTypeSequence < $sharingSequence) {
+            return;
+        }
+
+        $sharingTypeField->getFieldTable()->updateData(
+            ['sequence' => $sharingSequence],
+            ['fieldid' => $sharingTypeField->getId()],
+        );
+        $sharingField->getFieldTable()->updateData(
+            ['sequence' => $sharingSequence + 1],
+            ['fieldid' => $sharingField->getId()],
+        );
     }
 }

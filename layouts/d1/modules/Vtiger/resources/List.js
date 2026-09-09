@@ -665,8 +665,8 @@ Vtiger.Class("Vtiger_List_Js", {
 
         if (totalPageNumber === "") {
             var totalCountElem = listViewContainer.find('#totalCount');
-            var totalRecordCount = totalCountElem.val();
-            if (totalRecordCount !== '') {
+            var totalRecordCount = parseInt(totalCountElem.val(), 10);
+            if (!isNaN(totalRecordCount) && totalRecordCount > 0) {
                 var recordPerPage = listViewContainer.find('#pageLimit').val();
                 if (recordPerPage === '0')
                     recordPerPage = 1;
@@ -1981,7 +1981,7 @@ Vtiger.Class("Vtiger_List_Js", {
                 currentEle.addClass('hide');
                 totalNumberOfRecords = data.numberOfRecords;
                 totalRecordsElement.val(totalNumberOfRecords);
-                listViewContainer.find('ul#listViewPageJumpDropDown #totalPageCount').text(data.page);
+                listViewContainer.find('ul#PageJumpDropDown #totalPageCount').text(data.page);
                 thisInstance.showPagingInfo();
                 thisInstance.totalNumOfRecords_performingAsyncAction = false;
             });

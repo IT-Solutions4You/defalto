@@ -1,0 +1,5 @@
+.licenseDetailsDropdown {
+    width: 32rem;
+    min-width: 30vw;
+    max-width: calc(100vw - 2rem);
+}

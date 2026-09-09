@@ -21,9 +21,11 @@
                         {$PAGING_MODEL->getRecordStartRange()}&nbsp;{vtranslate('LBL_to', $MODULE)}&nbsp;{$PAGING_MODEL->getRecordEndRange()}
                     {/if}
                 </span>
-                <span class="totalNumberOfRecords cursorPointer {if !$RECORD_COUNT}hide{/if}" title="{vtranslate('LBL_SHOW_TOTAL_NUMBER_OF_RECORDS', $MODULE)}">
-                    &nbsp;{vtranslate('LBL_OF', $MODULE)}&nbsp;?
-                </span>
+                {if !isset($SHOWTOTALCOUNT) || $SHOWTOTALCOUNT}
+                    <span class="totalNumberOfRecords cursorPointer {if !$RECORD_COUNT}hide{/if}" title="{vtranslate('LBL_SHOW_TOTAL_NUMBER_OF_RECORDS', $MODULE)}">
+                        &nbsp;{vtranslate('LBL_OF', $MODULE)}&nbsp;?
+                    </span>
+                {/if}
             </button>
             <button type="button" id="PreviousPageButton" class="btn btn-outline-secondary me-1" {if !$PAGING_MODEL->isPrevPageExists()} disabled {/if}>
                 <i class="fa-solid fa-angle-left"></i>
@@ -42,7 +44,7 @@
                             </strong>
                             <span class="me-2">{vtranslate('LBL_OF',$moduleName)}</span>
                             <strong>
-                                <span id="totalPageCount"></span>
+                                <span id="totalPageCount">{if isset($PAGE_COUNT)}{$PAGE_COUNT}{/if}</span>
                             </strong>
                         </div>
                         <div class="listview-pagejump input-group p-0 px-2">

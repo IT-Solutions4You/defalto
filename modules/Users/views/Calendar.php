@@ -89,7 +89,9 @@ class Users_Calendar_View extends Vtiger_Detail_View
             $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
             $viewer->assign('STYLES', $this->getHeaderCss($request));
             $viewer->assign('LANGUAGE_STRINGS', $this->getJSLanguageStrings($request));
-            $viewer->assign('SEARCHABLE_MODULES', Vtiger_Module_Model::getSearchableModules());
+            $globalSearchModules = GlobalSearch_Search_Model::getInstance()->getModuleModels();
+            $viewer->assign('SEARCHABLE_MODULES', $globalSearchModules);
+            $viewer->assign('GLOBAL_SEARCH_MODULES', $globalSearchModules);
 
             $menuModelsList = Vtiger_Menu_Model::getAll(true);
             $selectedModule = $request->getModule();

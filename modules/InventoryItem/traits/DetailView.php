@@ -10,32 +10,4 @@
 
 trait InventoryItem_DetailView_Trait
 {
-    /**
-     * @inheritDoc
-     */
-    public function getWidgets()
-    {
-        $inventoryItemWidget = [
-            'linktype'  => 'DETAILVIEWWIDGET',
-            'linklabel' => 'InventoryItems',
-            'linkurl'   => 'module=InventoryItem&view=ItemsWidget&for_module=' . $this->getModuleName() . '&for_record=' . $this->getRecord()->getId(),
-            'link_template' => 'SummaryInventoryItem.tpl'
-        ];
-        $counter = 0;
-        $widgets = [];
-
-        foreach (parent::getWidgets() as $widget) {
-            $widgets[] = $widget;
-
-            if (!$counter) {
-                $widgets[] = Vtiger_Link_Model::getInstanceFromValues($inventoryItemWidget);
-                $widgets[] = $this->getPlaceholderWidgetInfo();
-            }
-
-            $counter++;
-        }
-
-        return $widgets;
-    }
-
 }

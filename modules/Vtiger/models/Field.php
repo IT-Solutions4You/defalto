@@ -1128,6 +1128,16 @@ class Vtiger_Field_Model extends Vtiger_Field
             'inmorethan'      => ['label' => 'LBL_IN_MORE_THAN'],
             'daysago'         => ['label' => 'LBL_DAYS_AGO'],
             'dayslater'       => ['label' => 'LBL_DAYS_LATER'],
+            'lastperiod'      => [
+                'label' => 'LBL_LAST_X_PERIODS',
+                'units' => [
+                    'day'     => 'LBL_DATE_UNIT_DAY',
+                    'week'    => 'LBL_DATE_UNIT_WEEK',
+                    'month'   => 'LBL_DATE_UNIT_MONTH',
+                    'quarter' => 'LBL_DATE_UNIT_QUARTER',
+                    'year'    => 'LBL_DATE_UNIT_YEAR',
+                ],
+            ],
             'custom'          => ['label' => 'LBL_CUSTOM'],
             'prevfy'          => ['label' => 'LBL_PREVIOUS_FY'],
             'thisfy'          => ['label' => 'LBL_CURRENT_FY'],
@@ -1166,6 +1176,46 @@ class Vtiger_Field_Model extends Vtiger_Field
         }
 
         return $dateFilters;
+    }
+
+    /**
+     * Return date filter definitions ready for display in the current user's language and date format.
+     */
+    public static function getDisplayDateFilterTypes(string $moduleName = 'Core'): array
+    {
+        $dateFilters = self::getDateFilterTypes();
+
+        foreach ($dateFilters as $filterType => $filterDetails) {
+            if ('' !== $filterDetails['startdate']) {
+                $filterDetails['startdate'] = DateTimeField::convertToUserFormat($filterDetails['startdate']);
+            }
+
+            if ('' !== $filterDetails['enddate']) {
+                $filterDetails['enddate'] = DateTimeField::convertToUserFormat($filterDetails['enddate']);
+            }
+
+            $filterDetails['label'] = vtranslate($filterDetails['label'], $moduleName);
+
+            foreach (($filterDetails['units'] ?? []) as $unit => $label) {
+                $filterDetails['units'][$unit] = vtranslate($label, $moduleName);
+            }
+
+            $dateFilters[$filterType] = $filterDetails;
+        }
+
+        return $dateFilters;
+    }
+
+    /**
+     * Resolve an inclusive relative period ending today in the current user's timezone.
+     *
+     * The stored value uses the format "quantity|unit", for example "3|month".
+     */
+    public static function getRelativeDatePeriod(string $value, string|false|null $userPreferredDayOfTheWeek = false): array
+    {
+        $today = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i:s'));
+
+        return Core_DateFilter_Helper::getRelativePeriod($value, $today, $userPreferredDayOfTheWeek);
     }
 
     /**

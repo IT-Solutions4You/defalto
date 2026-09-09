@@ -8,7 +8,7 @@
  *}
 {strip}
 <div class="summaryWidgetContainer bg-body rounded mb-3">
-    <div class="widgetContainer_{$smarty.foreach.count.index}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}">
+    <div class="widgetContainer_{$DETAIL_VIEW_WIDGET->getId()}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}" data-sequence="{$DETAIL_VIEW_WIDGET->get('sequence')}">
         <div class="widget_contents p-3">
         </div>
     </div>

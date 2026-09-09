@@ -29,12 +29,12 @@ class InventoryItem_ItemsWidget_View extends Vtiger_Index_View
         $viewer->assign('FOR_RECORD', $recordId);
         $viewer->assign('FOR_MODULE', $forModule);
         $viewer->assign('ENTITY_MODEL', $entityRecordModel);
-        $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_after_overall_discount'), $current_user, true));
-        $viewer->assign('VAT_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('tax_amount'), $current_user, true));
-        $viewer->assign('PRICE_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('price_total'), $current_user, true));
+        $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_after_overall_discount', $current_user));
+        $viewer->assign('VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('tax_amount', $current_user));
+        $viewer->assign('PRICE_TOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_total', $current_user));
         $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
-        $viewer->assign('ADJUSTMENT_DISPLAY', CurrencyField::convertToUserFormat($adjustment, $current_user, true, false, true));
-        $viewer->assign('GRAND_TOTAL_DISPLAY', CurrencyField::convertToUserFormat($entityRecordModel->get('grand_total'), $current_user, true));
+        $viewer->assign('ADJUSTMENT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('adjustment', $current_user, true));
+        $viewer->assign('GRAND_TOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('grand_total', $current_user));
         $viewer->assign('MARGIN_COMBINED', $entityRecordModel->get('margin_combined'));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);

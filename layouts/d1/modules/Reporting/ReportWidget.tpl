@@ -24,7 +24,17 @@
             </div>
         </div>
         {if $RECORD->isSummaryReport()}
+            {if 'above' eq $RECORD->getChartPosition()}
+                <div class="reportingChartDetail border-bottom p-3 mb-3">
+                    {include file='ReportChart.tpl'|vtemplate_path:$MODULE_NAME}
+                </div>
+            {/if}
             {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getGroupedTableData() TABLE_ROW_TYPES=$RECORD->getGroupedTableRowTypes() TABLE_STYLE=$RECORD->getTableStyle() TABLE_GROUPS_COLLAPSIBLE=true TABLE_SCROLLABLE=true}
+            {if 'below' eq $RECORD->getChartPosition()}
+                <div class="reportingChartDetail border-top p-3 mt-3">
+                    {include file='ReportChart.tpl'|vtemplate_path:$MODULE_NAME}
+                </div>
+            {/if}
         {else}
             {include file='ReportTable.tpl'|vtemplate_path:$MODULE_NAME TABLE_DATA=$RECORD->getTableData() TABLE_ROW_TYPES=$RECORD->getTableRowTypes() TABLE_STYLE=$RECORD->getTableStyle() TABLE_SCROLLABLE=true}
         {/if}

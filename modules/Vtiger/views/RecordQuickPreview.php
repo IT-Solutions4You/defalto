@@ -89,7 +89,6 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View
         $detailViewLinkParams = ['MODULE' => $moduleName, 'RECORD' => $recordId];
         $detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
 
-        $viewer->assign('MODULE_SUMMARY', $this->showModuleSummaryView($request));
         $viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
         $viewer->assign('SCRIPTS', $this->getQuickPreviewHeaderScripts($request));
 

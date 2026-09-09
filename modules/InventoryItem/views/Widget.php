@@ -1,0 +1,50 @@
+<?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+class InventoryItem_Widget_View extends Core_Widget_View
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('showItems');
+    }
+
+    public function showItems(Vtiger_Request $request): string
+    {
+        global $current_user;
+        $recordId = (int)$request->get('sourceRecord');
+        $sourceModule = $request->get('sourceModule');
+        $entityRecordModel = Vtiger_Record_Model::getInstanceById($recordId, $sourceModule);
+        $items = InventoryItem_Utils_Helper::fetchItems($recordId);
+        $adjustment = $entityRecordModel->get('adjustment');
+
+        if (empty($adjustment)) {
+            $adjustment = 0.0;
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('ITEMS', $items);
+        $viewer->assign('MODULE', 'InventoryItem');
+        $viewer->assign('FOR_RECORD', $recordId);
+        $viewer->assign('FOR_MODULE', $sourceModule);
+        $viewer->assign('ENTITY_MODEL', $entityRecordModel);
+        $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_after_overall_discount', $current_user));
+        $viewer->assign('VAT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('tax_amount', $current_user));
+        $viewer->assign('PRICE_TOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_total', $current_user));
+        $viewer->assign('ADJUSTMENT', number_format($adjustment, 2));
+        $viewer->assign('ADJUSTMENT_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('adjustment', $current_user, true));
+        $viewer->assign('GRAND_TOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('grand_total', $current_user));
+        $viewer->assign('MARGIN_COMBINED', $entityRecordModel->get('margin_combined'));
+
+        Core_Modifiers_Model::modifyForClass(get_class($this), 'showItems', $sourceModule, $viewer, $request);
+
+        return $viewer->view('ItemsWidget.tpl', 'InventoryItem', true);
+    }
+}

@@ -10,6 +10,11 @@
 
 class Potentials_Install_Model extends Core_Install_Model
 {
+    public array $registerSummaryWidgets = [
+        ['Potentials', 'LBL_RELATED_CONTACTS', 'module=Potentials&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=Contacts&page=1&limit=5', '', 4],
+        ['Potentials', 'LBL_RELATED_PRODUCTS', 'module=Potentials&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=Products&page=1&limit=5', '', 5],
+    ];
+
     public array $registerRelatedLists = [
         ['Potentials', null, 'Sales Stage History', '', 'get_stage_history', '',],
         ['Potentials', 'Contacts', 'Contacts', 'select', 'get_related_list', '',],

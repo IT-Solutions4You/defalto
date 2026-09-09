@@ -48,6 +48,7 @@ class Install_Utils_Model
     public static array $registerModules = [
         'Vtiger',
         'Users',
+        'GlobalSearch',
         'ModTracker',
         'ModComments',
         'Import',
@@ -89,6 +90,7 @@ class Install_Utils_Model
         'SalesOrder',
         'Invoice',
         'InventoryItem',
+        'DragAndDrop',
         'TwoFactorAuthentication',
     ];
 

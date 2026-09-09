@@ -42,9 +42,9 @@ class Installer_Requirements_View extends Installer_Index_View
 
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
         $viewer->assign('SOURCE_MODULES', Installer_ModuleRequirements_Model::getSourceModules());
-        $viewer->assign('SOURCE_MODULE_NAME', $request->get('sourceModule'));
+        $viewer->assign('SOURCE_MODULE_NAME', $sourceModule);
         $viewer->assign('REQUIREMENTS', $requirements);
-        $viewer->assign('REQUIREMENT_VALIDATIONS', $requirements->getValidations());
+        $viewer->assign('REQUIREMENT_VALIDATIONS', $requirements ? $requirements->getValidations() : []);
         $viewer->assign('TEMPLATE', 'RequirementsModule.tpl');
 
         $viewer->view('Index.tpl', $qualifiedModule);

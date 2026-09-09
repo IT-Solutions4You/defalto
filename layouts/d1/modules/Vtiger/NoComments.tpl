@@ -7,8 +7,9 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-	<div class="noCommentsMsgContainer noContent mt-3">
-		<p class="textAlignCenter"> {vtranslate('LBL_NO_COMMENTS',$MODULE_NAME)}
-		</p>
-	</div>
+	{include file='SummaryWidgetEmpty.tpl'|vtemplate_path:'Vtiger'
+		EMPTY_STATE_LABEL='LBL_NO_COMMENTS'
+		EMPTY_STATE_MODULE=$MODULE_NAME
+		EMPTY_STATE_SUFFIX=''
+		EMPTY_STATE_CLASS='mt-3'}
 {/strip}

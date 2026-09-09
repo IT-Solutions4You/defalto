@@ -180,7 +180,7 @@ Vtiger.Class("Vtiger_ExtensionCommon_Js", {}, {
             thisInstance.getPageCount().then(function (data) {
                 totalNumberOfRecords = data.numberOfRecords;
                 totalRecordsElement.val(totalNumberOfRecords);
-                container.find('ul#listViewPageJumpDropDown #totalPageCount').text(data.page);
+                container.find('ul#PageJumpDropDown #totalPageCount').text(data.page);
                 thisInstance.showPagingInfo(container);
             });
         } else {

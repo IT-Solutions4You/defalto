@@ -85,9 +85,10 @@
                 </div>
             {/foreach}
         {else}
-            <div class="summaryWidgetContainer noContent">
-                <p class="textAlignCenter">{vtranslate('LBL_NO_PENDING_ACTIVITIES',$ACTIVITIES_MODULE_NAME)}</p>
-            </div>
+            {include file='SummaryWidgetEmpty.tpl'|vtemplate_path:'Vtiger'
+                EMPTY_STATE_LABEL='LBL_NO_PENDING_ACTIVITIES'
+                EMPTY_STATE_MODULE=$ACTIVITIES_MODULE_NAME
+                EMPTY_STATE_SUFFIX=''}
         {/if}
         {if $PAGING_MODEL->isNextPageExists()}
             <div class="row py-2">

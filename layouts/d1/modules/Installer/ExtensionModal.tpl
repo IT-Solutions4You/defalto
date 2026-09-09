@@ -23,7 +23,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{vtranslate('LBL_CLOSE', $QUALIFIELD_MODULE)}</button>
+            <button type="button" class="btn btn-secondary extensionInstallClose" data-bs-dismiss="modal">{vtranslate('LBL_CLOSE', $QUALIFIED_MODULE)}</button>
+            <a href="#" class="btn btn-primary extensionInstallFinish hide">{vtranslate('LBL_OPEN_MODULE', $QUALIFIED_MODULE)}</a>
         </div>
     </div>
 </div>

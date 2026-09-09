@@ -42,6 +42,11 @@ class ModComments_Module_Model extends Vtiger_Module_Model
         '$lastCommentSummary',
     ];
 
+    public function isQuickSearchEnabled()
+    {
+        return false;
+    }
+
     /**
      * @return array
      */
