@@ -162,12 +162,13 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model
     public function getFields()
     {
         if (!$this->fields) {
-            $blockFields = parent::getFields();
-            $this->fields = [];
+            $this->fields = parent::getFields();
+        }
 
-            foreach ($blockFields as $fieldName => $fieldModel) {
-                $fieldModel = Settings_LayoutEditor_Field_Model::getInstanceFromFieldObject($fieldModel);
-                $this->fields[$fieldName] = $fieldModel;
+        // Copied blocks and setFields() may already contain runtime field models.
+        foreach ($this->fields as $fieldName => $fieldModel) {
+            if (!$fieldModel instanceof Settings_LayoutEditor_Field_Model) {
+                $this->fields[$fieldName] = Settings_LayoutEditor_Field_Model::getInstanceFromFieldObject($fieldModel);
             }
         }
 

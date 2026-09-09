@@ -355,6 +355,10 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
             $selfInstance->$properName = $propertyValue;
         }
 
+        // Runtime field/block caches contain module models, not LayoutEditor models.
+        $selfInstance->fields = false;
+        $selfInstance->blocks = false;
+
         return $selfInstance;
     }
 
