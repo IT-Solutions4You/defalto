@@ -455,6 +455,20 @@ body {
     min-width: 2.5rem;
 }
 
+.search-link .global-search-module-picker > .dropdown-menu {
+    max-height: calc(100vh - var(--header-height) - 0.5rem);
+    max-height: calc(100dvh - var(--header-height) - 0.5rem);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+}
+
+@media (max-width: 991.98px) {
+    .search-link .global-search-module-picker > .dropdown-menu {
+        max-height: calc(100vh - var(--header-height) - var(--sub-header-height) - 0.5rem);
+        max-height: calc(100dvh - var(--header-height) - var(--sub-header-height) - 0.5rem);
+    }
+}
+
 .search-link .global-search-module-button {
     position: relative;
     width: 100%;
