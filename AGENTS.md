@@ -3,15 +3,15 @@
 ## Repository Rules
 
 - Trace the runtime owner before changing code. Prefer the existing module, Core, Vtiger, or Installer mechanism over a local one-off fix.
-- Before changing an installable extension, read the nearest `modules/<Module>/AGENTS.md` and analyze the module's runtime owner, entry points, persistent data, external contracts, UI assets, and install lifecycle.
-- Treat `modules/<Module>/AGENTS.md` as durable extension memory. Create or update it in the same task whenever verified, reusable module knowledge is learned, and update every affected module file for cross-module work. Keep it concise and in English; record ownership boundaries, invariants, data flows, integration points, and validation commands, but never task history, guesses, generated inventories, environment-specific state, credentials, license keys, or other secrets. Remove or correct stale guidance when the implementation changes.
+- Before changing a module or installable extension, read the nearest `MODULE.md` under its module path (for example, `modules/<Module>/MODULE.md` or `modules/Settings/<Module>/MODULE.md`) and analyze the module's runtime owner, entry points, persistent data, external contracts, UI assets, and install lifecycle.
+- Treat the module's `MODULE.md` as durable extension memory. Create or update it in the same task whenever verified, reusable module knowledge is learned, and update every affected module file for cross-module work. Keep it concise and in English; record ownership boundaries, invariants, data flows, integration points, and validation commands, but never task history, guesses, generated inventories, environment-specific state, credentials, license keys, or other secrets. Remove or correct stale guidance when the implementation changes.
 - Keep Installer license checks inside the Installer-owned manual update and scheduled license-check flows. Do not add license hooks to global WebUI startup/login processing or to Users save, deactivate, or delete events; preserve the existing system and Users lifecycle behavior.
 - Keep module PHP code under `modules/<Module>/{actions,models,views,helpers,handlers,dashboards,uitypes}`.
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
 - When adding a new custom framework component that could belong to either Vtiger or Core, create it under `modules/Core` with a `Core_...` class name. Do not add new custom framework components under `modules/Vtiger`.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
-- Keep all instructions and example text in `AGENTS.md` in English. Translate user-facing confirmations at response time to the language used by the user in the current request.
+- Keep all instructions and example text in `AGENTS.md` and `MODULE.md` in English. Translate user-facing confirmations at response time to the language used by the user in the current request.
 - Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
 - Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
 
@@ -156,6 +156,7 @@
 
 ## Validation
 
+- Do not create unit tests unless the user explicitly requests them. Use existing checks and manual verification for routine changes.
 - Run `php -l` on touched PHP files.
 - Run the scripts validator when module resource JavaScript changes.
 - Check that `version.php` was bumped when rendered application styles changed.
