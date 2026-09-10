@@ -336,25 +336,33 @@ class VTUpdateFieldsTask extends VTTask
             //permission or not.
             $focus->isWorkFlowFieldUpdate = true;
             $changedFields = $focus->column_fields->getChanged();
+
             if (php7_count($changedFields) > 0) {
                 // save only if any field is changed
-                $focus->saveentity($moduleName);
+                ModTracker_History_Helper::saveRecord($focus, $moduleName);
             }
+
             if ($entityFields == true) {
                 Vtiger_Functions::updateCRMRecordLabel($moduleName, $focus->id);
             }
+
             $referenceIds = [];
+
             foreach ($referenceModuleUpdated as $module => $info) {
                 foreach ($info as $refFieldName => $referenceRecordId) {
                     $referenceFocus = $this->referenceFieldFocusList[$refFieldName][$referenceRecordId];
+
                     foreach ($referenceFocus->column_fields as $fieldName => $fieldValue) {
                         $referenceFocus->column_fields[$fieldName] = html_entity_decode($fieldValue, ENT_QUOTES, $default_charset);
                     }
+
                     $referenceFocus->isWorkFlowFieldUpdate = true;
-                    $referenceFocus->saveentity($referenceFocus->moduleName);
+                    ModTracker_History_Helper::saveRecord($referenceFocus, $referenceFocus->moduleName);
+
                     if ($referenceEntityFields == true) {
                         Vtiger_Functions::updateCRMRecordLabel($referenceFocus->moduleName, $referenceFocus->id);
                     }
+
                     $referenceIds[] = $referenceFocus->id;
                 }
             }

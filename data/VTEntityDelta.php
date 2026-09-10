@@ -63,8 +63,6 @@ class VTEntityDelta extends VTEventHandler
 
     function computeDelta($moduleName, $recordId)
     {
-        $delta = [];
-
         $oldData = [];
         if (!empty(self::$oldEntity[$moduleName][$recordId])) {
             $oldEntity = self::$oldEntity[$moduleName][$recordId];
@@ -72,6 +70,12 @@ class VTEntityDelta extends VTEventHandler
         }
         $newEntity = self::$newEntity[$moduleName][$recordId];
         $newData = $newEntity->getData();
+        self::$entityDelta[$moduleName][$recordId] = self::getDataDelta($oldData, $newData);
+    }
+
+    public static function getDataDelta($oldData, $newData): array
+    {
+        $delta = [];
         /** Detect field value changes **/
         foreach ($newData as $fieldName => $fieldValue) {
             $isModified = false;
@@ -89,7 +93,7 @@ class VTEntityDelta extends VTEventHandler
                 ];
             }
         }
-        self::$entityDelta[$moduleName][$recordId] = $delta;
+        return $delta;
     }
 
     function getEntityDelta($moduleName, $recordId, $forceFetch = false)

@@ -322,11 +322,26 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
                 thisInstance.registerEditTaskEvent();
                 thisInstance.registerTaskStatusChangeEvent();
                 thisInstance.registerTaskDeleteEvent();
+                thisInstance.showHistoryTask();
 
                 app.helper.registerLeavePageWithoutSubmit(jQuery('#workflow_edit'));
             });
         });
         jQuery('#module_name').trigger('change');
+    },
+
+    showHistoryTask: function () {
+        const taskId = new URLSearchParams(window.location.search).get('history_task_id');
+        if (this.historyTaskOpened || !taskId || !/^\d+$/.test(taskId)) {
+            return;
+        }
+        const taskLink = this.getActionContainer().find('[data-history-task-id]').filter(function () {
+            return jQuery(this).attr('data-history-task-id') === taskId;
+        }).first();
+        if (taskLink.length) {
+            this.historyTaskOpened = true;
+            taskLink.data('url', taskLink.attr('data-history-task-url')).trigger('click');
+        }
     },
 
     //Workflow action related api's
@@ -922,7 +937,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             fieldInfo.workflow_valuetype = 'rawtext';
         }
 
-        if (fieldInfo.type == 'date') {
+        if (fieldInfo.type == 'date' && fieldInfo.workflow_valuetype === 'rawtext') {
             fieldInfo.value = fieldUiHolder.find('input').val();
             fieldInfo['display-value'] = fieldUiHolder.find('input').data('display-value');
         }

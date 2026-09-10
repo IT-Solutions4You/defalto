@@ -591,7 +591,7 @@ class Workflow
                 }
                 if ($task->executeImmediately == true) {
                     try {
-                        $task->doTask($entityData);
+                        ModTracker_History_Helper::processTask($task, $entityData);
                     } catch (Exception $e) {
                         echo " There seems to be some problem with workflow <b>" . $this->description . '</b>';
                         die;

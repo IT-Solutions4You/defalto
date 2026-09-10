@@ -277,6 +277,9 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
     },
 
     getDisplayValue: function () {
+        if (this.get('workflow_valuetype') === 'expression' || this.get('workflow_valuetype') === 'fieldname') {
+            return this.getValue();
+        }
         return this.get('display-value') ?? this.getValue();
     },
 
@@ -314,9 +317,11 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
                 return this._super();
             }
         } else {
-            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getDisplayValue() + '" />' +
+            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '" />' +
                 '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
             element = jQuery(html);
+            // Preserve expression source, including quotes, without parsing it as HTML.
+            element.filter('.getPopupUi').val(this.getDisplayValue());
 
             return this.addValidationToElement(element);
         }

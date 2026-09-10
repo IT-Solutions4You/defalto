@@ -142,7 +142,7 @@ class WorkFlowScheduler
                                 }
 
                                 if ($task->executeImmediately == true) {
-                                    $task->doTask($entityData);
+                                    ModTracker_History_Helper::processTask($task, $entityData);
                                 } else {
                                     $taskQueue->queueTask($task->id, $entityData->getId(), $delay);
                                 }
