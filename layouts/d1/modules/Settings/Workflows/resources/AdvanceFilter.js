@@ -233,10 +233,28 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
 });
 /** @var Workflows_Field_Js */
 Vtiger_Field_Js('Workflows_Field_Js', {}, {
+    addValueTypeInput: function (html) {
+        let element = jQuery(html),
+            valueTypeInputs = element.filter('[name="valuetype"]').add(element.find('[name="valuetype"]'));
+
+        if (!valueTypeInputs.length) {
+            element = element.add(jQuery('<input type="hidden" name="valuetype" />').val(this.get('workflow_valuetype') || 'rawtext'));
+        }
+
+        return element;
+    },
 
     getUiTypeSpecificHtml: function () {
-        var uiTypeModel = this.getUiTypeModel();
-        return uiTypeModel.getUi();
+        let uiTypeModel = this.getUiTypeModel(),
+            html = jQuery(uiTypeModel.getUi()),
+            popupInputs = html.filter('.getPopupUi').add(html.find('.getPopupUi'));
+
+        // Expressions and field references are source text, not formatted field values.
+        if (this.get('workflow_valuetype') === 'fieldname' || this.get('workflow_valuetype') === 'expression') {
+            popupInputs.val(this.getValue());
+        }
+
+        return html;
     },
 
     getModuleName: function () {
@@ -250,11 +268,21 @@ Vtiger_Field_Js('Workflows_Field_Js', {}, {
      * return <String or Jquery> it can return either plain html or jquery object
      */
     getUi: function () {
-        let html = '<input type="text" class="WorkflowField getPopupUi inputElement form-control" name="' + this.getName() + '"  /><input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
-        html = jQuery(html);
+        let html = this.addValueTypeInput(
+            '<input type="text" class="WorkflowField getPopupUi inputElement form-control" name="' + this.getName() + '" />'
+        );
         html.filter('.getPopupUi').val(app.htmlDecode(this.getValue()));
 
         return this.addValidationToElement(html);
+    }
+});
+
+Workflows_Field_Js('Workflows_Email_Field_Js', {}, {
+    getUi: function () {
+        let emailField = new Vtiger_Email_Field_Js(),
+            ui = emailField.setData(this.getData()).getUi();
+
+        return this.addValueTypeInput(ui);
     }
 });
 
