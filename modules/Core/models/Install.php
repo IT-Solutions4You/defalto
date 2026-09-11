@@ -1983,6 +1983,16 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
     }
 
+    public function migrateWorkflowConditions(): void
+    {
+        if (!$this->registerWorkflowTasks) {
+            return;
+        }
+
+        $counts = (new Settings_Workflows_Workflow_Model())->migrateConditions($this->registerWorkflowTasks);
+        self::logSuccess('Workflow condition migration: ' . json_encode($counts));
+    }
+
     /**
      * @param $register
      *
