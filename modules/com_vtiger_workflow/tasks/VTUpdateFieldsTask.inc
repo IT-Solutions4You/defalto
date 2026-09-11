@@ -254,6 +254,13 @@ class VTUpdateFieldsTask extends VTTask
                         $userId = getUserId_Ol($fieldValue);
                         $groupId = getGrpId($fieldValue);
 
+                        // Legacy owner mappings may store HTML-encoded user or group names.
+                        if ($userId == 0 && $groupId == 0 && decode_html($fieldValue) !== $fieldValue) {
+                            $ownerName = decode_html($fieldValue);
+                            $userId = getUserId_Ol($ownerName);
+                            $groupId = getGrpId($ownerName);
+                        }
+
                         if ($userId == 0 && $groupId == 0) {
                             $fieldValue = $moduleFocus->column_fields[$fieldName];
                         } else {

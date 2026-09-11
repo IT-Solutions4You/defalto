@@ -59,6 +59,14 @@
 
 ## Function Naming
 
+### Readable Conditions and Model Ownership
+
+- When a condition is difficult to understand at its call site, extract it into a clearly named boolean method on the model object that logically owns the checked data or domain rule, and call that method instead of keeping the compound condition inline. Apply this to new and touched code, including conditions used only once.
+- Look for mixed logical operators, repeated negations, field metadata checks, or several related checks whose domain meaning is not immediately clear. Judge readability by meaning rather than a fixed number of clauses; keep simple, self-explanatory checks inline.
+- Trace the runtime owner and reuse an existing appropriate module or shared model. Do not place domain predicates in a view, action, unrelated model, or generic utility merely because that is the current call site. Reuse an existing equivalent method before adding another one.
+- Name the method after the decision it expresses, following the boolean naming rules below, and declare a `bool` return type in PHP. For example, a workflow task model can expose `isOwnerNameMapping(...)` or `isParentOwnerField(...)`, allowing the view to use `if (!$taskModel->isOwnerNameMapping(...)) { continue; }`.
+- Preserve the original evaluation order, short-circuit behavior, null handling, defaults, and lookup semantics when extracting a condition. Keep predicates free of writes and other state-changing operations, and pass only the data or model context they need.
+
 - When creating new reusable PHP or JavaScript methods, choose a clear action prefix from the existing intent families before inventing another verb.
 - Use `get` and `set` for simple value access or assignment without persistence.
 - Use `is` and `has` for boolean state checks.

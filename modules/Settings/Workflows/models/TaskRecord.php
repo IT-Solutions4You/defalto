@@ -51,6 +51,42 @@ class Settings_Workflows_TaskRecord_Model extends Settings_Vtiger_Record_Model
         return $this->task_object;
     }
 
+    public function isOwnerNameMapping(array $mappingInfo, array $ownerFieldModels): bool
+    {
+        return array_key_exists($mappingInfo['fieldname'], $ownerFieldModels)
+            && ($mappingInfo['valuetype'] ?? 'rawtext') === 'rawtext'
+            && !empty($mappingInfo['value'])
+            && !is_numeric($mappingInfo['value']);
+    }
+
+    public function isParentOwnerField(string $fieldName, Vtiger_Module_Model $moduleModel): bool
+    {
+        // Parent owner field selections are resolved when the task executes.
+        $field = $moduleModel->getField($fieldName);
+
+        return $field && $field->getFieldDataType() === 'owner';
+    }
+
+    public function retrieveOwnerByName(string $ownerName): Users_Record_Model|Settings_Groups_Record_Model|null
+    {
+        $ownerModel = Users_Record_Model::getInstanceByName($ownerName)
+            ?: Settings_Groups_Record_Model::getInstanceByName($ownerName);
+
+        if ($ownerModel) {
+            return $ownerModel;
+        }
+
+        // Older mappings can contain HTML entities; exact literal names take precedence.
+        $decodedOwnerName = decode_html($ownerName);
+
+        if ($decodedOwnerName !== $ownerName) {
+            return Users_Record_Model::getInstanceByName($decodedOwnerName)
+                ?: Settings_Groups_Record_Model::getInstanceByName($decodedOwnerName);
+        }
+
+        return null;
+    }
+
     public function setTaskObject($task)
     {
         $this->task_object = $task;

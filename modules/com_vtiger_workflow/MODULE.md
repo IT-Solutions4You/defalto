@@ -1,6 +1,7 @@
 # Workflow execution and record persistence
 
 - `VTWorkflowManager.inc` owns workflow definitions and immediate execution through `Workflow::performTasks()`. Settings management lives in `modules/Settings/Workflows`.
+- `VTCreateEntityTask` and `VTUpdateFieldsTask` resolve owner names using exact user/group lookups, then a single HTML-decoded fallback when neither exists. This supports legacy encoded names during execution before an editor resave. Exact literal entity-like names retain precedence; unresolved names retain the existing source-owner fallback. Keep the editor's owner-name resolution in `Settings/Workflows/views/EditV7Task.php` consistent.
 - `WorkFlowScheduler.php::queueScheduledWorkflowTasks()` executes immediate scheduled tasks and queues other tasks. `cron/modules/com_vtiger_workflow/com_vtiger_workflow.php::vtRunTaskJob()` executes queued tasks. All three execution paths delegate task execution to `ModTracker_History_Helper::processTask()` to scope workflow/task attribution.
 - `VTUpdateFieldsTask` executes immediately even for scheduled workflows, so its scheduled history does not depend on the queue runner. The queue runner still needs the attribution wrapper for non-immediate tasks; queue storage retains task IDs but not an active PHP execution context. `VTEmailTask` is a non-immediate task that can save an email record.
 - Definitions, tasks, and pending work use `com_vtiger_workflows`, `com_vtiger_workflowtasks`, and `com_vtiger_workflowtask_queue`. Initial event and cron registration lives in `Install_InitSchema_Model`.

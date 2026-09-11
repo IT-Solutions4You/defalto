@@ -1,6 +1,9 @@
 # Workflow management
 
 - This Settings module manages definitions executed by `modules/com_vtiger_workflow`; it is not the task execution owner.
+- `TaskRecord_Model::isOwnerNameMapping()` identifies nonempty, nonnumeric literal owner mappings for name lookup. Views delegate this reusable mapping check to the task model; `isParentOwnerField()` checks whether a value names an owner field in the source module so the editor can preserve that selection for task execution.
+- `TaskRecord_Model::retrieveOwnerByName()` owns editor owner lookup: exact user/group name first, then one HTML-decoded lookup only when the original name is unresolved and decoding changes it. It returns null for a missing owner and does not modify stored mappings.
+- `EditV7Task` resolves literal create-record owner names to IDs, trying the exact user/group name before a single HTML-decoded fallback for legacy mappings. Numeric IDs, expressions, field references, and parent owner-field selections stay unchanged. Missing owners must not be dereferenced or reuse another mapping's owner. Keep name normalization at the workflow boundary rather than changing global group/user lookup semantics.
 - `models/Record.php::getEditViewUrl()` provides the base workflow edit URL. The current editor requires `mode=V7Edit`, as appended by `ListViewContents.tpl`; without a mode, the controller enters the legacy `step1()` flow. Audit UI links must include this mode and enforce Settings access on the server.
 - Workflow definitions and task persistence use the legacy workflow manager and task manager. Execution entry points and save-event boundaries are documented in `modules/com_vtiger_workflow/MODULE.md`.
 - Modern editor conditions use `groupid=0` for All and `groupid=1` for Any; `joincondition` connects rows and `groupjoin` connects groups. List display uses the same normalized groups as the editor, not `groupjoin`.
