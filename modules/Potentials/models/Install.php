@@ -546,6 +546,8 @@ class Potentials_Install_Model extends Core_Install_Model
      */
     public function migrate(): void
     {
+        $this->migrateWorkflowConditions();
+
         $moduleName = $this->getModuleName();
         $fields = ['potentialtype' => 'opportunity_type'];
 
