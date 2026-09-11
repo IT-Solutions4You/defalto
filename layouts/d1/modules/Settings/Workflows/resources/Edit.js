@@ -52,12 +52,14 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
 
     calculateValues: function () {
         //handled advanced filters saved values.
-        var enableFilterElement = jQuery('#enableAdvanceFilters');
+        const enableFilterElement = jQuery('#enableAdvanceFilters');
+
         if (enableFilterElement.length > 0 && enableFilterElement.is(':checked') == false) {
             jQuery('#advanced_filter').val(jQuery('#olderConditions').val());
+            jQuery('[name="filtersavedinnew"]').val('5');
         } else {
             jQuery('[name="filtersavedinnew"]').val("6");
-            var advfilterlist = this.advanceFilterInstance.getValues();
+            const advfilterlist = this.advanceFilterInstance.getValues();
             jQuery('#advanced_filter').val(JSON.stringify(advfilterlist));
         }
     },
@@ -1365,18 +1367,14 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     },
 
     registerEnableFilterOption: function () {
-        var editViewContainer = this.getEditViewContainer();
+        const editViewContainer = this.getEditViewContainer();
         editViewContainer.on('change', '[name="conditionstype"]', function (e) {
-            var advanceFilterContainer = jQuery('#advanceFilterContainer');
-            var currentRadioButtonElement = jQuery(e.currentTarget);
-            if (currentRadioButtonElement.hasClass('recreate')) {
-                if (currentRadioButtonElement.is(':checked')) {
-                    advanceFilterContainer.removeClass('zeroOpacity');
-                    advanceFilterContainer.find('.conditionList').find('[name="columnname"]').find('optgroup:first option:first').attr('selected', 'selected').trigger('change');
-                }
-            } else {
-                advanceFilterContainer.addClass('zeroOpacity');
-            }
+            const advanceFilterContainer = editViewContainer.find('#advanceFilterContainer'),
+                currentRadioButtonElement = jQuery(e.currentTarget),
+                recreate = currentRadioButtonElement.hasClass('recreate') && currentRadioButtonElement.is(':checked');
+
+            // Recreate starts with blank fields; switching options preserves the user's draft.
+            advanceFilterContainer.toggleClass('zeroOpacity opacity-0', !recreate);
         });
     },
 

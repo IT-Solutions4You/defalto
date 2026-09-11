@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_WORKFLOW_CREATOR' => 'Created by',
+    'LBL_WORKFLOW_CREATED_TIME' => 'Created time',
     //Basic Field Names
     'LBL_NEW' => 'New',
     'LBL_WORKFLOW' => 'Workflow',
@@ -50,6 +52,7 @@ $languageStrings = [
     'LBL_CREATED_IN_OLD_LOOK_CANNOT_BE_EDITED' => 'This workflow was created in older look. Conditions created in older look cannot be edited. You can choose to recreate the conditions, or use the existing conditions without changing them.',
     'LBL_USE_EXISTING_CONDITIONS' => 'Use existing conditions',
     'LBL_RECREATE_CONDITIONS' => 'Recreate Conditions',
+    'LBL_INVALID_WORKFLOW_CONDITIONS' => 'Invalid workflow conditions.',
     'LBL_SAVE_AND_CONTINUE' => 'Save & Continue',
 
     //Step3 edit view

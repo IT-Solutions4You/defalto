@@ -37,6 +37,23 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         return $this->get('summary');
     }
 
+    public function getDisplayValue($key)
+    {
+        if ($key === 'creator') {
+            $creatorId = (int)$this->get($key) ?: (int)Users::getActiveAdminId();
+
+            return getUserFullName($creatorId) ?: '—';
+        }
+
+        if ($key === 'createdtime') {
+            $value = $this->get($key);
+
+            return $value && $value !== '0000-00-00 00:00:00' ? (new Vtiger_Datetime_UIType())->getDisplayValue($value) : '—';
+        }
+
+        return parent::getDisplayValue($key);
+    }
+
     public function get($key)
     {
 //		if($key == 'execution_condition') {
@@ -134,6 +151,8 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         $wm->save($wf);
 
         $this->set('workflow_id', $wf->id);
+        $this->set('createdtime', $wf->createdtime);
+        $this->set('creator', $wf->creator);
     }
 
     public function delete()
@@ -207,7 +226,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
 
     public function getWorkflowTable()
     {
-        return (new Core_DatabaseData_Model())->getTable('com_vtiger_workflows', 'workflow_id');
+        return (new Settings_Workflows_Workflow_Model())->getWorkflowTable();
     }
 
     /**
@@ -232,6 +251,8 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
             ->createColumn('nexttrigger_time', 'datetime DEFAULT NULL')
             ->createColumn('status', 'tinyint(1) DEFAULT 1')
             ->createColumn('workflowname', 'varchar(255) DEFAULT NULL')
+            ->createColumn('createdtime', 'datetime DEFAULT NULL')
+            ->createColumn('creator', 'int(11) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (workflow_id)')
             ->createKey('UNIQUE KEY IF NOT EXISTS com_vtiger_workflows_idx (workflow_id)');
     }
@@ -252,7 +273,9 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         $workflowModel = new self();
 
         $workflowModel->set('summary', $wf->description);
-        $workflowModel->set('conditions', Zend_Json::decode($wf->test));
+        $workflowModel->set('createdtime', $wf->createdtime);
+        $workflowModel->set('creator', $wf->creator);
+        $workflowModel->set('conditions', Zend_Json::decode($wf->test ?: '[]'));
         $workflowModel->set('execution_condition', $wf->executionCondition);
         $workflowModel->set('module_name', $wf->moduleName);
         $workflowModel->set('workflow_id', $wf->id);
@@ -304,12 +327,17 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
 
     function isFilterSavedInNew()
     {
-        $wf = $this->getWorkflowObject();
-        if ($wf->filtersavedinnew == '6') {
-            return true;
+        $conditions = Settings_Workflows_Condition_Model::getEditableConditions($this->get('conditions'));
+
+        if ($conditions === null) {
+            return false;
         }
 
-        return false;
+        // Upgrade only in memory while editing; persist through the normal save flow.
+        $this->set('conditions', $conditions);
+        $this->set('filtersavedinnew', 6);
+
+        return true;
     }
 
     /**
@@ -320,10 +348,9 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
     {
         $conditions = $this->get('conditions');
         $transformedConditions = [];
+        $firstGroup = $secondGroup = [];
 
         if (!empty($conditions)) {
-            $firstGroup = $secondGroup = [];
-
             foreach ($conditions as $index => $info) {
                 $columnName = $info['fieldname'];
                 $value = $info['value'];
@@ -380,8 +407,8 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
                 }
             }
         }
-        $transformedConditions[1] = ['columns' => $firstGroup];
-        $transformedConditions[2] = ['columns' => $secondGroup];
+        $transformedConditions[1] = $firstGroup ? ['columns' => $firstGroup] : [];
+        $transformedConditions[2] = $secondGroup ? ['columns' => $secondGroup] : [];
 
         return $transformedConditions;
     }
@@ -412,34 +439,40 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         $conditions = $this->get('conditions');
         $wfCondition = [];
 
+        if (!is_array($conditions)) {
+            throw new InvalidArgumentException(vtranslate('LBL_INVALID_WORKFLOW_CONDITIONS', 'Settings:Workflows'));
+        }
+
         if (!empty($conditions)) {
             foreach ($conditions as $index => $condition) {
-                $columns = $condition['columns'];
-                if ($index == '1' && empty($columns)) {
-                    $wfCondition[] = [
-                        'fieldname'     => '',
-                        'operation'     => '',
-                        'value'         => '',
-                        'valuetype'     => '',
-                        'joincondition' => '',
-                        'groupid'       => '0'
-                    ];
+                $columns = $condition['columns'] ?? [];
+
+                if (!in_array((string)$index, ['1', '2'], true) || !is_array($columns)) {
+                    throw new InvalidArgumentException(vtranslate('LBL_INVALID_WORKFLOW_CONDITIONS', 'Settings:Workflows'));
                 }
+
                 if (!empty($columns) && is_array($columns)) {
                     foreach ($columns as $column) {
                         $wfCondition[] = [
-                            'fieldname'     => $column['columnname'],
-                            'operation'     => $column['comparator'],
-                            'value'         => $column['value'],
-                            'valuetype'     => $column['valuetype'],
-                            'joincondition' => $column['column_condition'],
-                            'groupjoin'     => $condition['condition'],
-                            'groupid'       => $column['groupid']
+                            'fieldname'     => $column['columnname'] ?? '',
+                            'operation'     => $column['comparator'] ?? '',
+                            'value'         => $column['value'] ?? '',
+                            'valuetype'     => $column['valuetype'] ?? 'rawtext',
+                            'joincondition' => $index == '1' ? 'and' : 'or',
+                            'groupjoin'     => 'and',
+                            'groupid'       => $index == '1' ? '0' : '1'
                         ];
                     }
                 }
             }
         }
+
+        $wfCondition = Settings_Workflows_Condition_Model::getEditableConditions($wfCondition);
+
+        if ($wfCondition === null) {
+            throw new InvalidArgumentException(vtranslate('LBL_INVALID_WORKFLOW_CONDITIONS', 'Settings:Workflows'));
+        }
+
         $this->set('conditions', $wfCondition);
     }
 
@@ -577,6 +610,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
         $moduleName = $this->get('raw_module_name');
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
         $wfCond = json_decode($test, true);
+        $wfCond = Settings_Workflows_Condition_Model::getEditableConditions($wfCond) ?? $wfCond;
         $conditionList = [];
         if (is_array($wfCond)) {
             for ($k = 0; $k < (php7_count($wfCond)); ++$k) {
@@ -607,15 +641,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
                 $value = $wfCond[$k]['value'];
                 $operation = $wfCond[$k]['operation'];
 
-                if (!isset($wfCond[$k]['groupjoin'])) {
-                    $wfCond[$k]['groupjoin'] = 'and';
-                }
-
-                if ($wfCond[$k]['groupjoin'] == 'and') {
-                    $conditionGroup = 'All';
-                } else {
-                    $conditionGroup = 'Any';
-                }
+                $conditionGroup = empty($wfCond[$k]['groupid']) ? 'All' : 'Any';
 
                 $fieldDataType = '';
                 if ($fieldModel) {

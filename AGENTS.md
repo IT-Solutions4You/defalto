@@ -51,8 +51,8 @@
 
 ## Control Flow Spacing
 
-- In PHP and JavaScript, separate `if`, `elseif` (`else if` in JavaScript), `else`, `foreach`, and `while` blocks from adjacent statements with one blank line before and after each block. This means vertical spacing, not additional spaces inside parentheses.
-- Separate conditional branches too: place the preceding closing brace on its own line, then one blank line, then `else {`, `elseif (...) {`, or `else if (...) {`. Do not keep `} else {` or `} elseif (...) {` on one line. Keep the trailing `while` attached to a `do` block.
+- In PHP and JavaScript, separate a complete `if` / `elseif` / `else` chain, `foreach` block, or `while` block from adjacent statements with one blank line before and after the whole construct. This means vertical spacing, not additional spaces inside parentheses.
+- Do not insert blank lines between conditional branches. Keep the closing brace and the next branch on the same line: `} else {`, `} elseif (...) {` in PHP, or `} else if (...) {` in JavaScript. Keep the trailing `while` attached to a `do` block.
 - Do not add a blank line immediately after an enclosing opening brace or immediately before its closing brace solely for this rule. A block at the start or end of a method or another block needs spacing only on the side with an adjacent statement.
 - Keep a comment documenting a block directly attached to it; place the separating blank line before that comment. Preserve existing blank lines without multiplying them.
 - Apply this style to new and touched code. Do not reformat unrelated files or change runtime behavior as part of a spacing cleanup. Whitespace-only changes do not require application or module version bumps.

@@ -37,7 +37,17 @@ class VTWorkflowManager
 
     function save($workflow)
     {
+        $conditions = Settings_Workflows_Condition_Model::getEditableConditions(json_decode($workflow->test ?: '[]', true));
+
+        if ($conditions !== null) {
+            $workflow->test = Zend_Json::encode($conditions);
+            $workflow->filtersavedinnew = 6;
+        } else {
+            $workflow->filtersavedinnew = 5;
+        }
+
         $adb = PearDatabase::getInstance();
+
         if (isset($workflow->id)) {
             $wf = $workflow;
             if ($wf->filtersavedinnew == null) {
@@ -66,62 +76,7 @@ class VTWorkflowManager
                 ]
             );
         } else {
-            $workflowId = $adb->getUniqueID("com_vtiger_workflows");
-            $workflow->id = $workflowId;
-            $wf = $workflow;
-            if (!isset($wf->filtersavedinnew) || $wf->filtersavedinnew == null) {
-                $wf->filtersavedinnew = 5;
-            }
-
-            $result = $adb->getColumnNames("com_vtiger_workflows");
-            if (in_array("type", $result)) {
-                $adb->pquery(
-                    "insert into com_vtiger_workflows
-							(workflow_id, module_name, summary, test, execution_condition, type, defaultworkflow, filtersavedinnew,
-							schtypeid, schtime, schdayofmonth, schdayofweek, schannualdates, nexttrigger_time, status, workflowname) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    [
-                        $workflowId,
-                        $wf->moduleName,
-                        $wf->description,
-                        ($wf->test ? $wf->test : '[]'),
-                        $wf->executionCondition,
-                        $wf->type,
-                        $wf->defaultworkflow,
-                        $wf->filtersavedinnew,
-                        $wf->schtypeid,
-                        $wf->schtime,
-                        $wf->schdayofmonth,
-                        $wf->schdayofweek,
-                        $wf->schannualdates,
-                        $wf->nexttrigger_time,
-                        $wf->status,
-                        $wf->name
-                    ]
-                );
-            } else {
-                $adb->pquery(
-                    "insert into com_vtiger_workflows
-							(workflow_id, module_name, summary, test, execution_condition, defaultworkflow,filtersavedinnew,
-							schtypeid, schtime, schdayofmonth, schdayofweek, schannualdates, nexttrigger_time, status, workflowname) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    [
-                        $workflowId,
-                        $wf->moduleName,
-                        $wf->description,
-                        ($wf->test ? $wf->test : '[]'),
-                        $wf->executionCondition,
-                        $wf->defaultworkflow,
-                        $wf->filtersavedinnew,
-                        $wf->schtypeid,
-                        $wf->schtime,
-                        $wf->schdayofmonth,
-                        $wf->schdayofweek,
-                        $wf->schannualdates,
-                        $wf->nexttrigger_time,
-                        $wf->status,
-                        $wf->name
-                    ]
-                );
-            }
+            (new Settings_Workflows_Workflow_Model())->createWorkflow($workflow);
         }
     }
 
@@ -325,6 +280,7 @@ class VTWorkflowManager
         $exp['moduleName'] = $workflow->moduleName;
         $exp['description'] = $workflow->description;
         $exp['test'] = $workflow->test;
+        $exp['filtersavedinnew'] = $workflow->filtersavedinnew;
         $exp['executionCondition'] = $workflow->executionCondition;
         $exp['schtypeid'] = $workflow->schtypeid;
         $exp['schtime'] = $workflow->schtime;
@@ -354,6 +310,7 @@ class VTWorkflowManager
         $workflow = $this->newWorkflow($data['moduleName']);
         $workflow->description = $data['description'];
         $workflow->test = $data['test'];
+        $workflow->filtersavedinnew = $data['filtersavedinnew'] ?? 5;
         $workflow->executionCondition = $data['executionCondition'];
         $workflow->schtypeid = $data['schtypeid'];
         $workflow->schtime = $data['schtime'];
@@ -480,6 +437,8 @@ class Workflow
     public $nexttrigger_time;
     public $status;
     public $workflowname;
+    public $createdtime;
+    public $creator;
 
     function __construct()
     {
@@ -511,6 +470,8 @@ class Workflow
         $this->nexttrigger_time = $row['nexttrigger_time'];
         $this->status = $row['status'];
         $this->workflowname = $row['workflowname'];
+        $this->createdtime = $row['createdtime'] ?? null;
+        $this->creator = $row['creator'] ?? null;
     }
 
     function evaluate($entityCache, $id)

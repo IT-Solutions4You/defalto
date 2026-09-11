@@ -24,7 +24,7 @@ class Settings_Workflows_Module_Model extends Settings_Vtiger_Module_Model
     var $baseTable = 'com_vtiger_workflows';
     var $baseIndex = 'workflow_id';
 //	var $listFields = array('summary' => 'Summary', 'module_name' => 'Module', 'execution_condition' => 'Execution Condition');
-    var $listFields = ['module_name' => 'Module', 'workflowname' => 'Workflow Name', 'summary' => 'Description', 'execution_condition' => 'Trigger', 'test' => 'Conditions'];
+    var $listFields = ['module_name' => 'Module', 'workflowname' => 'Workflow Name', 'execution_condition' => 'Trigger', 'test' => 'Conditions', 'creator' => 'LBL_WORKFLOW_CREATOR'];
     var $name = 'Workflows';
 
     static $metaVariables = [

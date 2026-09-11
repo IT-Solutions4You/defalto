@@ -59,8 +59,7 @@
                                 <th></th>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     {assign var="HEADER_NAME" value=$LISTVIEW_HEADER->get('name')}
-                                    {*Showing all columns except description column*}
-                                    {if $HEADER_NAME neq 'summary' && $HEADER_NAME neq 'module_name'}
+                                    {if $HEADER_NAME neq 'module_name' && $HEADER_NAME neq 'creator'}
                                         <th nowrap>
                                             <a class="listViewHeaderValues text-secondary">
                                                 <span class="me-2">{vtranslate($LISTVIEW_HEADER->get('label'), $QUALIFIED_MODULE)}</span>
@@ -76,6 +75,7 @@
                                     {/if}
                                 {/foreach}
                                 <th nowrap class="text-secondary">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</th>
+                                <th nowrap class="text-secondary">{vtranslate('LBL_WORKFLOW_CREATOR', $QUALIFIED_MODULE)}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,7 +88,14 @@
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                                     {assign var=LAST_COLUMN value=$LISTVIEW_HEADER@last}
-                                    {if $LISTVIEW_HEADERNAME neq 'summary' && $LISTVIEW_HEADERNAME neq 'module_name'}
+                                    {if $LISTVIEW_HEADERNAME eq 'workflowname'}
+                                        <td class="listViewEntryValue text-break {$WIDTHTYPE}">
+                                            <div>{decode_html($LISTVIEW_ENTRY->getDisplayValue('workflowname'))|escape:'html'}</div>
+                                            {if $LISTVIEW_ENTRY->get('summary') neq ''}
+                                                <div class="small text-secondary">{decode_html($LISTVIEW_ENTRY->get('summary'))|escape:'html'}</div>
+                                            {/if}
+                                        </td>
+                                    {elseif $LISTVIEW_HEADERNAME neq 'module_name' && $LISTVIEW_HEADERNAME neq 'creator'}
                                         <td class="listViewEntryValue {$WIDTHTYPE}" nowrap>
                                             {if $LISTVIEW_HEADERNAME eq 'test'}
                                                 {assign var=WORKFLOW_CONDITION value=$LISTVIEW_ENTRY->getConditonDisplayValue()}
@@ -137,9 +144,13 @@
                                     {assign var=ACTIONS value=$LISTVIEW_ENTRY->getActionsDisplayValue()}
                                     {if is_array($ACTIONS) && !empty($ACTIONS)}
                                         {foreach item=ACTION_COUNT key=ACTION_NAME from=$ACTIONS}
-                                            {vtranslate("LBL_$ACTION_NAME", $QUALIFIED_MODULE)}&nbsp;({$ACTION_COUNT})
+                                            <div>{vtranslate("LBL_$ACTION_NAME", $QUALIFIED_MODULE)}&nbsp;({$ACTION_COUNT})</div>
                                         {/foreach}
                                     {/if}
+                                </td>
+                                <td class="listViewEntryValue {$WIDTHTYPE}" nowrap>
+                                    <div>{decode_html($LISTVIEW_ENTRY->getDisplayValue('creator'))|escape:'html'}</div>
+                                    <div class="small text-secondary">{decode_html($LISTVIEW_ENTRY->getDisplayValue('createdtime'))|escape:'html'}</div>
                                 </td>
                             </tr>
                         {/foreach}

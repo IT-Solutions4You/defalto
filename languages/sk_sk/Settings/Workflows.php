@@ -23,6 +23,8 @@
  */
 
 $languageStrings = [
+    'LBL_WORKFLOW_CREATOR' => 'Vytvoril',
+    'LBL_WORKFLOW_CREATED_TIME' => 'Čas vytvorenia',
     'ADD_CONDITIONS' => 'Podmienky',
     'ADD_TASKS' => 'Úlohy',
     'Calendar' => 'Úloha',
@@ -64,6 +66,7 @@ $languageStrings = [
     'LBL_RAW_TEXT' => 'Text',
     'LBL_RECEPIENTS' => 'Príjemcovia',
     'LBL_RECREATE_CONDITIONS' => 'Definovať nanovo',
+    'LBL_INVALID_WORKFLOW_CONDITIONS' => 'Neplatné podmienky workflowu.',
     'LBL_SAVE_AND_CONTINUE' => 'Uložiť a pokračovať',
     'LBL_SELECT_OPTIONS' => 'Vyberte možnosť',
     'LBL_SEND_NOTIFICATION' => 'Poslať upozornenie',
