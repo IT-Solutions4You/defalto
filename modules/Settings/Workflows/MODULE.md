@@ -1,5 +1,7 @@
 # Workflow management
 
+- `VTTrashTask` uses the standard task selector/editor and `Tasks/VTTrashTask.tpl`. The `deletionMode` select is saved through the task getFieldNames contract and defaults to trash; permanent deletion is explicitly selected and described as non-restorable. Labels and explanations belong to Settings/Workflows language files. Task execution belongs to `modules/com_vtiger_workflow`; trigger selection and task filtering retain their existing behavior. Workflow execution/management have no root installable module version.
+
 - This Settings module manages definitions executed by `modules/com_vtiger_workflow`; it is not the task execution owner.
 - `actions/SaveWorkflow.php` recalculates the next trigger when saving recurring scheduled workflows through `Record_Model::updateNextTriggerTime()` and `VTWorkflowManager::updateNexTriggerTime()`. Editor calls omit the optional scheduling reference, so hourly creation and edits retain current time plus one hour. Cron execution supplies the previous planned trigger to preserve hourly cadence between runs; saving in the editor resets that cadence.
 - `TaskRecord_Model::isOwnerNameMapping()` identifies nonempty, nonnumeric literal owner mappings for name lookup. Views delegate this reusable mapping check to the task model; `isParentOwnerField()` checks whether a value names an owner field in the source module so the editor can preserve that selection for task execution.

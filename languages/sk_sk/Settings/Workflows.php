@@ -23,6 +23,11 @@
  */
 
 $languageStrings = [
+    'LBL_MOVE_TO_RECYCLEBIN' => 'Presunúť do koša',
+    'LBL_TRASH_TASK_MODE' => 'Spôsob mazania',
+    'LBL_TRASH_TASK_PERMANENT' => 'Zmazať natrvalo',
+    'LBL_TRASH_TASK_PERMANENT_DESCRIPTION' => 'Trvalé zmazanie použije odstránenie z koša po dokončení štandardných handlerov mazania. Záznam nebude možné obnoviť.',
+    'LBL_TRASH_TASK_DESCRIPTION' => 'Spracuje zdrojový záznam cez štandardnú frontu workflow úloh podľa zvoleného spôsobu mazania.',
     'LBL_WORKFLOW_CREATOR' => 'Vytvoril',
     'LBL_WORKFLOW_CREATED_TIME' => 'Čas vytvorenia',
     'ADD_CONDITIONS' => 'Podmienky',
@@ -208,6 +213,7 @@ $languageStrings = [
 
 ];
 $jsLanguageStrings = [
+    'VTTrashTask' => 'Presunúť do koša',
     'JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE' => 'Rovnaké pole sú zvolené viac ako raz',
     'JS_STATUS_CHANGED_SUCCESSFULLY' => 'Stav bol úspešne zmenený',
     'JS_TASK_DELETED_SUCCESSFULLY' => 'Úloha bole úspešne odstránená',

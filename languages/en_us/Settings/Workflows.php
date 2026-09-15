@@ -18,6 +18,11 @@
  */
 
 $languageStrings = [
+    'LBL_MOVE_TO_RECYCLEBIN' => 'Move to Recycle Bin',
+    'LBL_TRASH_TASK_MODE' => 'Deletion mode',
+    'LBL_TRASH_TASK_PERMANENT' => 'Delete permanently',
+    'LBL_TRASH_TASK_PERMANENT_DESCRIPTION' => 'Permanent deletion uses Recycle Bin removal after normal deletion handlers finish. The record cannot be restored.',
+    'LBL_TRASH_TASK_DESCRIPTION' => 'Processes the source record through the standard workflow queue using the selected deletion mode.',
     'LBL_WORKFLOW_CREATOR' => 'Created by',
     'LBL_WORKFLOW_CREATED_TIME' => 'Created time',
     //Basic Field Names
@@ -207,6 +212,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTTrashTask' => 'Move to Recycle Bin',
     'JS_STATUS_CHANGED_SUCCESSFULLY' => 'Status changed Successfully',
     'JS_TASK_DELETED_SUCCESSFULLY' => 'Action deleted Successfully',
     'JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE' => 'Same fields selected more than once',
