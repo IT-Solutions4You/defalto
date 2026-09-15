@@ -270,19 +270,17 @@ class VTCreateEntityTask extends VTTask
      * @param object $fieldModel
      * @return array
      */
-    public function getFieldInfo(object $fieldModel): array
+    public function getFieldInfo(object $fieldModel, ?Vtiger_Module_Model $sourceModuleModel = null): array
     {
         $fieldInfo = $fieldModel->getFieldInfo();
 
         if ('assigned_user_id' === $fieldModel->getName()) {
             /** @var Vtiger_Module_Model $moduleModel */
-            $moduleModel = $fieldModel->getModule();
+            $moduleModel = $sourceModuleModel ?? $fieldModel->getModule();
             $picklistValues = [];
 
             foreach ($moduleModel->getFieldsByType('owner') as $ownerField) {
-                $picklistValues = [
-                    $ownerField->getName() => vtranslate($ownerField->getLabel(), $moduleModel->getName()),
-                ];
+                $picklistValues[$ownerField->getName()] = vtranslate($ownerField->getLabel(), $moduleModel->getName());
             }
 
             ksort($picklistValues);

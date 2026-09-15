@@ -1,5 +1,7 @@
 # Workflow management
 
+- `CreateEntity.tpl` passes the source workflow `MODULE_MODEL` to `VTCreateEntityTask::getFieldInfo()` for saved mappings, mandatory fields, and newly added fields. Parent owner options must come from the source module, while ordinary user/group choices remain those of the destination field.
+
 - `VTTrashTask` uses the standard task selector/editor and `Tasks/VTTrashTask.tpl`. The `deletionMode` select is saved through the task getFieldNames contract and defaults to trash; permanent deletion is explicitly selected and described as non-restorable. Labels and explanations belong to Settings/Workflows language files. Task execution belongs to `modules/com_vtiger_workflow`; trigger selection and task filtering retain their existing behavior. Workflow execution/management have no root installable module version.
 
 - This Settings module manages definitions executed by `modules/com_vtiger_workflow`; it is not the task execution owner.
