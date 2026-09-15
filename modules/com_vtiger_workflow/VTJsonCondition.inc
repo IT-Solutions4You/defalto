@@ -20,6 +20,17 @@ require_once("include/Zend/Json.php");
 
 class VTJsonCondition
 {
+    private bool $isNew = false;
+
+    public function setNewRecord(bool $isNew): void
+    {
+        $this->isNew = $isNew;
+    }
+
+    public function isNewRecord(): bool
+    {
+        return $this->isNew;
+    }
 
     function __construct()
     {
@@ -162,6 +173,7 @@ class VTJsonCondition
     function checkCondition($entityData, $cond, $referredEntityData = null)
     {
         $data = $entityData->getData();
+        $isNew = $this->isNewRecord() && $referredEntityData === null;
 
         $condition = $cond['operation'];
         if (empty($condition)) {
@@ -377,7 +389,10 @@ class VTJsonCondition
             case "has changed" :
                 $entityDelta = new VTEntityDelta();
                 $idParts = vtws_getIdComponents($entityData->getId());
-                $hasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $idParts[1], $cond['fieldname']);
+                $hasChanged = $isNew
+                    ? $entityData->hasInitialFieldValue($cond['fieldname'])
+                    : $entityDelta->hasChanged($entityData->getModuleName(), $idParts[1], $cond['fieldname']);
+
                 if (empty($value)) {
                     return $hasChanged;
                 } else {
@@ -547,11 +562,20 @@ class VTJsonCondition
 
                 return false;
             case 'has changed to' :
+                if ($isNew) {
+                    return $entityData->hasInitialFieldValue($cond['fieldname'])
+                        && decode_html($data[$cond['fieldname']]) === $value;
+                }
+
                 $entityDelta = new VTEntityDelta();
                 $idParts = vtws_getIdComponents($entityData->getId());
 
                 return $entityDelta->hasChanged($entityData->getModuleName(), $idParts[1], $cond['fieldname'], $value);
             case 'has changed from' :
+                if ($isNew) {
+                    return false;
+                }
+
                 $entityDelta = new VTEntityDelta();
                 $idParts = vtws_getIdComponents($entityData->getId());
 

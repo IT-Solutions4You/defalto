@@ -123,6 +123,14 @@ class VTWorkflowEntity
         $this->data[$fieldName] = $value;
     }
 
+    public function hasInitialFieldValue(string $fieldName): bool
+    {
+        // Zero and false are initial values; absent or empty fields are not changes.
+        $value = $this->data[$fieldName] ?? null;
+
+        return $value !== null && $value !== '' && $value !== [];
+    }
+
     function save()
     {
         vtws_update($this->data, $this->user);

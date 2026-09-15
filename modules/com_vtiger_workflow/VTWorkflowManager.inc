@@ -474,6 +474,26 @@ class Workflow
         $this->creator = $row['creator'] ?? null;
     }
 
+    public function getEvaluationClone(): self
+    {
+        $workflow = clone $this;
+        $workflow->conditionStrategy = clone $this->conditionStrategy;
+
+        return $workflow;
+    }
+
+    public function setNewRecord(bool $isNew = true): self
+    {
+        $this->conditionStrategy->setNewRecord($isNew);
+
+        return $this;
+    }
+
+    public function isNewRecord(): bool
+    {
+        return $this->conditionStrategy->isNewRecord();
+    }
+
     function evaluate($entityCache, $id)
     {
         if ($this->test == "") {
