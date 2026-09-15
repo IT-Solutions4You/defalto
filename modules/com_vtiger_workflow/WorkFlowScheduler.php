@@ -151,7 +151,8 @@ class WorkFlowScheduler
                     }
                 } while (true);
             }
-            $vtWorflowManager->updateNexTriggerTime($workflow);
+
+            $vtWorflowManager->updateNexTriggerTime($workflow, $workflow->getNextTriggerTimeValue());
         }
         $scheduledWorkflows = null;
     }

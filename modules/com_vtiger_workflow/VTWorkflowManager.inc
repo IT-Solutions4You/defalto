@@ -332,9 +332,9 @@ class VTWorkflowManager
     /**
      * Update the Next trigger timestamp for a workflow
      */
-    public function updateNexTriggerTime($workflow)
+    public function updateNexTriggerTime($workflow, $referenceTime = null)
     {
-        $nextTriggerTime = $workflow->getNextTriggerTime();
+        $nextTriggerTime = $workflow->getNextTriggerTime($referenceTime);
         $workflow->setNextTriggerTime($nextTriggerTime);
     }
 
@@ -623,7 +623,7 @@ class Workflow
      * @return type
      * @global <String> $default_timezone
      */
-    function getNextTriggerTime()
+    function getNextTriggerTime($referenceTime = null)
     {
         global $default_timezone;
         $admin = Users::getActiveAdminUser();
@@ -634,7 +634,7 @@ class Workflow
         $nextTime = null;
 
         if ($scheduleType == Workflow::$SCHEDULED_HOURLY) {
-            $nextTime = date("Y-m-d H:i:s", strtotime("+1 hour"));
+            $nextTime = $this->getNextTriggerTimeForHourly($referenceTime);
         }
 
         if ($scheduleType == Workflow::$SCHEDULED_DAILY) {
@@ -663,6 +663,26 @@ class Workflow
         @date_default_timezone_set($default_timezone);
 
         return $nextTime;
+    }
+
+    /**
+     * Get the next hourly trigger in the time zone selected by getNextTriggerTime().
+     */
+    public function getNextTriggerTimeForHourly($referenceTime = null): string
+    {
+        $currentTime = time();
+        $nextTimestamp = $referenceTime ? strtotime($referenceTime) : false;
+
+        if ($nextTimestamp === false) {
+            $nextTimestamp = $currentTime;
+        }
+
+        // Keep the planned local-hour cadence and skip missed intervals.
+        do {
+            $nextTimestamp = strtotime('+1 hour', $nextTimestamp);
+        } while ($nextTimestamp <= $currentTime);
+
+        return date('Y-m-d H:i:s', $nextTimestamp);
     }
 
     /**
