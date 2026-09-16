@@ -52,12 +52,14 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
 
     calculateValues: function () {
         //handled advanced filters saved values.
-        var enableFilterElement = jQuery('#enableAdvanceFilters');
+        const enableFilterElement = jQuery('#enableAdvanceFilters');
+
         if (enableFilterElement.length > 0 && enableFilterElement.is(':checked') == false) {
             jQuery('#advanced_filter').val(jQuery('#olderConditions').val());
+            jQuery('[name="filtersavedinnew"]').val('5');
         } else {
             jQuery('[name="filtersavedinnew"]').val("6");
-            var advfilterlist = this.advanceFilterInstance.getValues();
+            const advfilterlist = this.advanceFilterInstance.getValues();
             jQuery('#advanced_filter').val(JSON.stringify(advfilterlist));
         }
     },
@@ -96,7 +98,14 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
                         return false;
                     }
                 }
-                var form = jQuery(form);
+                form = jQuery(form);
+                const useLegacyConditions = jQuery('#enableAdvanceFilters').length > 0
+                    && !jQuery('#enableAdvanceFilters').is(':checked');
+
+                if (!useLegacyConditions && self.advanceFilterInstance && !self.advanceFilterInstance.validateCreationConditions()) {
+                    return false;
+                }
+
                 self.calculateValues();
                 window.onbeforeunload = null;
                 jQuery(form).find('button.saveButton').attr('disabled', 'disabled');
@@ -315,6 +324,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
                 var advanceFilterContainer = jQuery('#advanceFilterContainer');
                 vtUtils.applyFieldElementsView(jQuery('#workflow_condition'));
                 thisInstance.advanceFilterInstance = Workflows_AdvanceFilter_Js.getInstance(jQuery('.filterContainer', advanceFilterContainer));
+                thisInstance.advanceFilterInstance.registerCreationConditionEvents();
                 thisInstance.getPopUp(advanceFilterContainer);
 
                 //Workflows actions
@@ -322,11 +332,26 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
                 thisInstance.registerEditTaskEvent();
                 thisInstance.registerTaskStatusChangeEvent();
                 thisInstance.registerTaskDeleteEvent();
+                thisInstance.showHistoryTask();
 
                 app.helper.registerLeavePageWithoutSubmit(jQuery('#workflow_edit'));
             });
         });
         jQuery('#module_name').trigger('change');
+    },
+
+    showHistoryTask: function () {
+        const taskId = new URLSearchParams(window.location.search).get('history_task_id');
+        if (this.historyTaskOpened || !taskId || !/^\d+$/.test(taskId)) {
+            return;
+        }
+        const taskLink = this.getActionContainer().find('[data-history-task-id]').filter(function () {
+            return jQuery(this).attr('data-history-task-id') === taskId;
+        }).first();
+        if (taskLink.length) {
+            this.historyTaskOpened = true;
+            taskLink.data('url', taskLink.attr('data-history-task-url')).trigger('click');
+        }
     },
 
     //Workflow action related api's
@@ -922,7 +947,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             fieldInfo.workflow_valuetype = 'rawtext';
         }
 
-        if (fieldInfo.type == 'date') {
+        if (fieldInfo.type == 'date' && fieldInfo.workflow_valuetype === 'rawtext') {
             fieldInfo.value = fieldUiHolder.find('input').val();
             fieldInfo['display-value'] = fieldUiHolder.find('input').data('display-value');
         }
@@ -1159,7 +1184,11 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     registerEventForScheduledWorkflow: function () {
         let thisInstance = this;
 
-        jQuery('input[name="workflow_trigger"]').on('click', function (e) {
+        jQuery('input[type="radio"][name="workflow_trigger"]').on('change', function (e) {
+            if (thisInstance.advanceFilterInstance) {
+                thisInstance.advanceFilterInstance.updateCreationConditions();
+            }
+
             let element = jQuery(e.currentTarget),
                 scheduleBoxContainer = jQuery('#scheduleBox'),
                 recurrenceBoxContainer = jQuery('.workflowRecurrenceBlock');
@@ -1350,18 +1379,14 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     },
 
     registerEnableFilterOption: function () {
-        var editViewContainer = this.getEditViewContainer();
+        const editViewContainer = this.getEditViewContainer();
         editViewContainer.on('change', '[name="conditionstype"]', function (e) {
-            var advanceFilterContainer = jQuery('#advanceFilterContainer');
-            var currentRadioButtonElement = jQuery(e.currentTarget);
-            if (currentRadioButtonElement.hasClass('recreate')) {
-                if (currentRadioButtonElement.is(':checked')) {
-                    advanceFilterContainer.removeClass('zeroOpacity');
-                    advanceFilterContainer.find('.conditionList').find('[name="columnname"]').find('optgroup:first option:first').attr('selected', 'selected').trigger('change');
-                }
-            } else {
-                advanceFilterContainer.addClass('zeroOpacity');
-            }
+            const advanceFilterContainer = editViewContainer.find('#advanceFilterContainer'),
+                currentRadioButtonElement = jQuery(e.currentTarget),
+                recreate = currentRadioButtonElement.hasClass('recreate') && currentRadioButtonElement.is(':checked');
+
+            // Recreate starts with blank fields; switching options preserves the user's draft.
+            advanceFilterContainer.toggleClass('zeroOpacity opacity-0', !recreate);
         });
     },
 

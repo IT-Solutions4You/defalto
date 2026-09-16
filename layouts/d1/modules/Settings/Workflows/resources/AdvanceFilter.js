@@ -17,7 +17,70 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
     allConditionValidationNeededFieldList: ['double', 'integer'],
 
     // comparators which do not have any field Specific UI.
-    comparatorsWithNoValueBoxMap: ['has changed', 'is empty', 'is not empty', 'is added'],
+    comparatorsWithNoValueBoxMap: ['has changed', 'has been set or changed', 'is empty', 'is not empty', 'is added'],
+
+    isCreationOnly: function () {
+        return jQuery('#workflow_edit input[type="radio"][name="workflow_trigger"]:checked').val() === '1';
+    },
+
+    isUpdateOnlyComparator: function (comparator) {
+        return ['has changed', 'has changed to', 'has changed from', 'has been set or changed from'].includes(comparator);
+    },
+
+    updateCreationConditionOptions: function (select) {
+        const selected = select.val(),
+            creationOnly = this.isCreationOnly(),
+            invalid = creationOnly && this.isUpdateOnlyComparator(selected),
+            row = select.closest('.conditionRow');
+        let options = select.data('workflowComparatorOptions');
+
+        if (!options) {
+            options = select.find('option').clone();
+            select.data('workflowComparatorOptions', options);
+        }
+
+        select.empty();
+        options.each((index, option) => {
+            if (!creationOnly || !this.isUpdateOnlyComparator(option.value) || option.value === selected) {
+                select.append(jQuery(option).clone());
+            }
+        });
+        select.val(selected).trigger('change.select2');
+        row.find('.workflowCreationConditionError').remove();
+        select.attr('aria-invalid', invalid ? 'true' : 'false');
+
+        if (invalid) {
+            jQuery('<div class="workflowCreationConditionError text-danger small" role="alert"></div>')
+                .text(app.vtranslate('JS_WORKFLOW_CREATION_CONDITION_INVALID')).appendTo(row);
+        }
+    },
+
+    updateCreationConditions: function () {
+        this.getFilterContainer().find('.conditionList .conditionRow select[name="comparator"]').each((index, element) => {
+            this.updateCreationConditionOptions(jQuery(element));
+        });
+    },
+
+    registerCreationConditionEvents: function () {
+        this.getFilterContainer().off('change.workflowCreation', 'select[name="comparator"]')
+            .on('change.workflowCreation', 'select[name="comparator"]', (event) => {
+                this.updateCreationConditionOptions(jQuery(event.currentTarget));
+            });
+        this.updateCreationConditions();
+    },
+
+    validateCreationConditions: function () {
+        const invalid = this.isCreationOnly() && this.getFilterContainer()
+            .find('.conditionList .conditionRow select[name="comparator"]').toArray()
+            .some(element => this.isUpdateOnlyComparator(jQuery(element).val()));
+
+        if (invalid) {
+            this.updateCreationConditions();
+            app.helper.showErrorNotification({message: app.vtranslate('JS_WORKFLOW_CREATION_CONDITION_INVALID')});
+        }
+
+        return !invalid;
+    },
 
     getFieldSpecificType: function (fieldSelected) {
         const fieldInfo = fieldSelected.data('fieldinfo');
@@ -75,7 +138,7 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
                 var conditionValue = conditionList[key];
                 var conditionLabel = this.getConditionLabel(conditionValue);
                 if (match != null) {
-                    if (conditionValue != 'has changed') {
+                    if (!['has changed', 'has been set or changed', 'has been set or changed to', 'has been set or changed from'].includes(conditionValue)) {
                         options += '<option value="' + conditionValue + '"';
                         if (conditionValue == conditionSelected) {
                             options += ' selected="selected" ';
@@ -91,7 +154,9 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
                 }
             }
         }
+        conditionSelectElement.removeData('workflowComparatorOptions');
         conditionSelectElement.empty().html(options).trigger('change');
+        this.updateCreationConditionOptions(conditionSelectElement);
         // adding validation to comparator field
         conditionSelectElement.addClass('validate[required]');
         return conditionSelectElement;
@@ -233,10 +298,28 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
 });
 /** @var Workflows_Field_Js */
 Vtiger_Field_Js('Workflows_Field_Js', {}, {
+    addValueTypeInput: function (html) {
+        let element = jQuery(html),
+            valueTypeInputs = element.filter('[name="valuetype"]').add(element.find('[name="valuetype"]'));
+
+        if (!valueTypeInputs.length) {
+            element = element.add(jQuery('<input type="hidden" name="valuetype" />').val(this.get('workflow_valuetype') || 'rawtext'));
+        }
+
+        return element;
+    },
 
     getUiTypeSpecificHtml: function () {
-        var uiTypeModel = this.getUiTypeModel();
-        return uiTypeModel.getUi();
+        let uiTypeModel = this.getUiTypeModel(),
+            html = jQuery(uiTypeModel.getUi()),
+            popupInputs = html.filter('.getPopupUi').add(html.find('.getPopupUi'));
+
+        // Expressions and field references are source text, not formatted field values.
+        if (this.get('workflow_valuetype') === 'fieldname' || this.get('workflow_valuetype') === 'expression') {
+            popupInputs.val(this.getValue());
+        }
+
+        return html;
     },
 
     getModuleName: function () {
@@ -250,11 +333,21 @@ Vtiger_Field_Js('Workflows_Field_Js', {}, {
      * return <String or Jquery> it can return either plain html or jquery object
      */
     getUi: function () {
-        let html = '<input type="text" class="WorkflowField getPopupUi inputElement form-control" name="' + this.getName() + '"  /><input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
-        html = jQuery(html);
+        let html = this.addValueTypeInput(
+            '<input type="text" class="WorkflowField getPopupUi inputElement form-control" name="' + this.getName() + '" />'
+        );
         html.filter('.getPopupUi').val(app.htmlDecode(this.getValue()));
 
         return this.addValidationToElement(html);
+    }
+});
+
+Workflows_Field_Js('Workflows_Email_Field_Js', {}, {
+    getUi: function () {
+        let emailField = new Vtiger_Email_Field_Js(),
+            ui = emailField.setData(this.getData()).getUi();
+
+        return this.addValueTypeInput(ui);
     }
 });
 
@@ -277,6 +370,9 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
     },
 
     getDisplayValue: function () {
+        if (this.get('workflow_valuetype') === 'expression' || this.get('workflow_valuetype') === 'fieldname') {
+            return this.getValue();
+        }
         return this.get('display-value') ?? this.getValue();
     },
 
@@ -314,9 +410,11 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
                 return this._super();
             }
         } else {
-            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getDisplayValue() + '" />' +
+            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '" />' +
                 '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
             element = jQuery(html);
+            // Preserve expression source, including quotes, without parsing it as HTML.
+            element.filter('.getPopupUi').val(this.getDisplayValue());
 
             return this.addValidationToElement(element);
         }

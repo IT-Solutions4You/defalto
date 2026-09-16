@@ -21,7 +21,7 @@
         <input type="hidden" name="date_filters" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATE_FILTERS))}'/>
         <input type=hidden name="advanceFilterOpsByFieldType" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($ADVANCED_FILTER_OPTIONS_BY_TYPE))}'/>
         {foreach key=ADVANCE_FILTER_OPTION_KEY item=ADVANCE_FILTER_OPTION from=$ADVANCED_FILTER_OPTIONS}
-            {$ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION_KEY] = vtranslate($ADVANCE_FILTER_OPTION, $MODULE)}
+            {$ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION_KEY] = vtranslate($ADVANCE_FILTER_OPTION, $QUALIFIED_MODULE)}
         {/foreach}
         <input type=hidden name="advanceFilterOptions" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($ADVANCED_FILTER_OPTIONS))}'/>
         <div class="allConditionContainer conditionGroup contentsBackground pb-3">
@@ -35,9 +35,6 @@
                     {foreach item=CONDITION_INFO from=$ALL_CONDITION_CRITERIA['columns']}
                         {include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE CONDITION_INFO=$CONDITION_INFO MODULE=$MODULE}
                     {/foreach}
-                    {/if}
-                    {if php7_count($ALL_CONDITION_CRITERIA) eq 0}
-                        {include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION_INFO=array()}
                     {/if}
                 </div>
                 <div class="hide basic">
@@ -62,11 +59,10 @@
             </div>
             <div class="contents">
                 <div class="conditionList">
+                    {if isset($ANY_CONDITION_CRITERIA['columns'])}
                     {foreach item=CONDITION_INFO from=$ANY_CONDITION_CRITERIA['columns']}
                         {include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE CONDITION_INFO=$CONDITION_INFO MODULE=$MODULE CONDITION="or"}
                     {/foreach}
-                    {if php7_count($ANY_CONDITION_CRITERIA) eq 0}
-                        {include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION_INFO=array() CONDITION="or"}
                     {/if}
                 </div>
                 <div class="hide basic">

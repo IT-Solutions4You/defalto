@@ -50,7 +50,7 @@ class Settings_Workflows_ListView_Model extends Settings_Vtiger_ListView_Model
             $listQuery .= "$fieldName, ";
         }
 
-        $listQuery .= "status, ";
+        $listQuery .= "status, createdtime, summary, ";
 
         $listQuery .= $module->baseIndex . " FROM " . $module->baseTable .
             ' INNER JOIN vtiger_tab ON vtiger_tab.name=' . $module->baseTable . '.module_name';

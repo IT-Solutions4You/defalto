@@ -41,13 +41,31 @@
 ### Module Versions
 
 - Treat `public string $moduleVersion` in `modules/<Module>/<Module>.php` as the install and update version of that installable module; the install flow persists it to `vtiger_tab.version`.
-- For every functional change owned by an installable module, increment the final numeric component of that module's `$moduleVersion` in the same commit. This includes module PHP, module-specific layout assets, language strings, install or schema behavior, and Settings code owned by that module.
+- For functional changes owned by an installable module, increment the final numeric component of its `$moduleVersion` exactly once relative to the last committed version in `HEAD`. This includes module PHP, module-specific layout assets, language strings, install or schema behavior, and Settings code owned by that module.
+- Before changing a module version, compare the working-tree value with `HEAD`, including any inherited version when the module has no explicit override. Increment only when the current version is already committed. If the working tree or index already contains an uncommitted version increment, keep that version for subsequent changes; staging does not count as committing. Do not increment again for another task, conversation turn, fix, or review before that version is committed.
+- When reviewing accumulated uncommitted module changes, consolidate accidental repeated increments to one increment above the committed baseline. This rule applies to module versions; application/resource versioning in `version.php` follows its separate rules above.
 - When one commit functionally changes multiple installable modules, bump every affected module independently and exactly once, regardless of how many files changed in each module.
 - If a changed path has no root module version, trace its runtime and installer owner and bump the owning installable module. Do not introduce a new `$moduleVersion` only to satisfy this rule.
 - A shared Core or Vtiger change does not require version bumps for every downstream module. Bump only installable modules whose owned runtime code or assets changed, in addition to the applicable `version.php` bump.
 - Do not bump module versions for documentation-only, comments-only, tests-only, or generated-map-only changes.
 
+## Control Flow Spacing
+
+- In PHP and JavaScript, separate a complete `if` / `elseif` / `else` chain, `foreach` block, or `while` block from adjacent statements with one blank line before and after the whole construct. This means vertical spacing, not additional spaces inside parentheses.
+- Do not insert blank lines between conditional branches. Keep the closing brace and the next branch on the same line: `} else {`, `} elseif (...) {` in PHP, or `} else if (...) {` in JavaScript. Keep the trailing `while` attached to a `do` block.
+- Do not add a blank line immediately after an enclosing opening brace or immediately before its closing brace solely for this rule. A block at the start or end of a method or another block needs spacing only on the side with an adjacent statement.
+- Keep a comment documenting a block directly attached to it; place the separating blank line before that comment. Preserve existing blank lines without multiplying them.
+- Apply this style to new and touched code. Do not reformat unrelated files or change runtime behavior as part of a spacing cleanup. Whitespace-only changes do not require application or module version bumps.
+
 ## Function Naming
+
+### Readable Conditions and Model Ownership
+
+- When a condition is difficult to understand at its call site, extract it into a clearly named boolean method on the model object that logically owns the checked data or domain rule, and call that method instead of keeping the compound condition inline. Apply this to new and touched code, including conditions used only once.
+- Look for mixed logical operators, repeated negations, field metadata checks, or several related checks whose domain meaning is not immediately clear. Judge readability by meaning rather than a fixed number of clauses; keep simple, self-explanatory checks inline.
+- Trace the runtime owner and reuse an existing appropriate module or shared model. Do not place domain predicates in a view, action, unrelated model, or generic utility merely because that is the current call site. Reuse an existing equivalent method before adding another one.
+- Name the method after the decision it expresses, following the boolean naming rules below, and declare a `bool` return type in PHP. For example, a workflow task model can expose `isOwnerNameMapping(...)` or `isParentOwnerField(...)`, allowing the view to use `if (!$taskModel->isOwnerNameMapping(...)) { continue; }`.
+- Preserve the original evaluation order, short-circuit behavior, null handling, defaults, and lookup semantics when extracting a condition. Keep predicates free of writes and other state-changing operations, and pass only the data or model context they need.
 
 - When creating new reusable PHP or JavaScript methods, choose a clear action prefix from the existing intent families before inventing another verb.
 - Use `get` and `set` for simple value access or assignment without persistence.
@@ -130,6 +148,10 @@
 - Prefer `Core_QueryGenerator_Model` for new application-level list and record query generation. Extend its structured query API when a required condition, join, grouping, or ordering feature is missing; do not locate SQL clauses or inject conditions by parsing and rewriting completed SQL strings.
 - Create a dedicated model for every module-owned table and name the model after the table's domain suffix, for example `df_two_factor_backup_code` is represented by `TwoFactorAuthentication_BackupCode_Model`. Keep that table's CRUD and atomic updates in its model; for shared system tables, reuse the existing owning Core, Vtiger, Settings, or module model instead of creating a duplicate local data model.
 - Make table-backed runtime models extend `Core_DatabaseData_Model`, declare their protected `$table` and `$tableId`, initialize the shared connection through `retrieveDB()`, and prefer `selectData()`, `insertData()`, `updateData()`, and `deleteData()` for ordinary CRUD. Use `getDB()` with custom SQL only when the shared CRUD API cannot express a required aggregate, join, upsert, or atomic conditional update without changing its semantics.
+- Give each table-backed model a clearly named table accessor such as `getModTrackerBasicTable()` or `getBackupCodeTable()`. Implement it by returning `$this->getTable($this->table, $this->tableId)` and use an appropriate return type. This shared method returns a configured clone and initializes its database connection; it does not configure the original model in place.
+- Use that named accessor for ordinary CRUD inside the owning model, for example `$table = $this->getModTrackerBasicTable();` followed by `$table->selectData(...)`, `$table->insertData(...)`, `$table->updateData(...)`, or `$table->deleteData(...)`. Reuse the returned table object within an operation instead of repeating its configuration.
+- Do not add constructors that manually call `set('table', ...)` or `set('table_id', ...)`, and do not call CRUD on an unconfigured model instance. Keep `$table` and `$tableId` as the single source of table metadata. If custom SQL uses the original model's `getDB()`, initialize that original instance with `retrieveDB()` first; configuring a clone does not initialize the original.
+- Callers outside the owning model should prefer its domain methods, such as `saveHistory()` or `saveFieldChange()`, over accessing its table directly. Apply this table-access pattern to new models and models being refactored without broad unrelated rewrites.
 - Before adding domain methods to a `Core_DatabaseData_Model` subclass, audit inherited method names and signatures such as `save()`, `delete()`, `getId()`, and `getName()`. Use a specific domain name such as `saveTemplate()` when different parameters or behavior would make an override incompatible.
 - Keep install, migration, and schema lifecycle queries in the owning install/database model. A cross-table read belongs to the model representing the primary domain result and should not leak SQL back into a helper.
 - Use `Core_Install_Model` for field creation, field deletion, related lists, filters, popup fields, and layout field defaults.

@@ -22,6 +22,7 @@ include_once 'include/Webservices/GetUpdates.php';
 class ModTracker extends CRMExtension
 {
     public string $moduleName = 'ModTracker';
+    public string $moduleVersion = '1.1';
     public string $parentName = '';
 
     /**

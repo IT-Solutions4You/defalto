@@ -18,6 +18,16 @@
  */
 
 $languageStrings = [
+    'LBL_HAS_BEEN_SET_OR_CHANGED_TO' => 'Has been set or changed to',
+    'LBL_HAS_BEEN_SET_OR_CHANGED_FROM' => 'Has been set or changed from',
+    'LBL_HAS_BEEN_SET_OR_CHANGED' => 'Has been set or changed',
+    'LBL_MOVE_TO_RECYCLEBIN' => 'Move to Recycle Bin',
+    'LBL_TRASH_TASK_MODE' => 'Deletion mode',
+    'LBL_TRASH_TASK_PERMANENT' => 'Delete permanently',
+    'LBL_TRASH_TASK_PERMANENT_DESCRIPTION' => 'Permanent deletion uses Recycle Bin removal after normal deletion handlers finish. The record cannot be restored.',
+    'LBL_TRASH_TASK_DESCRIPTION' => 'Processes the source record through the standard workflow queue using the selected deletion mode.',
+    'LBL_WORKFLOW_CREATOR' => 'Created by',
+    'LBL_WORKFLOW_CREATED_TIME' => 'Created time',
     //Basic Field Names
     'LBL_NEW' => 'New',
     'LBL_WORKFLOW' => 'Workflow',
@@ -50,6 +60,7 @@ $languageStrings = [
     'LBL_CREATED_IN_OLD_LOOK_CANNOT_BE_EDITED' => 'This workflow was created in older look. Conditions created in older look cannot be edited. You can choose to recreate the conditions, or use the existing conditions without changing them.',
     'LBL_USE_EXISTING_CONDITIONS' => 'Use existing conditions',
     'LBL_RECREATE_CONDITIONS' => 'Recreate Conditions',
+    'LBL_INVALID_WORKFLOW_CONDITIONS' => 'Invalid workflow conditions.',
     'LBL_SAVE_AND_CONTINUE' => 'Save & Continue',
 
     //Step3 edit view
@@ -204,6 +215,8 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'This condition is not supported when the workflow runs only on creation. Select Has been set or changed, or another supported condition.',
+    'VTTrashTask' => 'Move to Recycle Bin',
     'JS_STATUS_CHANGED_SUCCESSFULLY' => 'Status changed Successfully',
     'JS_TASK_DELETED_SUCCESSFULLY' => 'Action deleted Successfully',
     'JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE' => 'Same fields selected more than once',

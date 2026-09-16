@@ -1026,6 +1026,8 @@ class Install_InitSchema_Model
      */
     static function populateDefaultWorkflows($adb)
     {
+        self::registerTrashWorkflowTask();
+
         vimport("~~modules/com_vtiger_workflow/include.inc");
         vimport("~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc");
         vimport("~~modules/com_vtiger_workflow/VTEntityMethodManager.inc");
@@ -1083,6 +1085,24 @@ class Install_InitSchema_Model
 
         foreach ($taskTypes as $taskType) {
             VTTaskType::registerTaskType($taskType);
+        }
+    }
+
+    public static function registerTrashWorkflowTask(): void
+    {
+        vimport('~~modules/com_vtiger_workflow/VTTaskManager.inc');
+        $taskType = VTTaskType::getInstanceFromTaskType('VTTrashTask');
+
+        if (!$taskType->get('name')) {
+            VTTaskType::registerTaskType([
+                'name' => 'VTTrashTask',
+                'label' => 'LBL_MOVE_TO_RECYCLEBIN',
+                'classname' => 'VTTrashTask',
+                'classpath' => 'modules/com_vtiger_workflow/models/TrashTask.php',
+                'templatepath' => 'modules/Settings/Workflows/Tasks/VTTrashTask.tpl',
+                'modules' => ['include' => [], 'exclude' => ['Users']],
+                'sourcemodule' => '',
+            ]);
         }
     }
 

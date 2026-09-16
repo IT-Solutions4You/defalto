@@ -63,20 +63,18 @@ class Settings_Workflows_SaveWorkflow_Action extends Core_Controller_Action
         }
         require_once 'modules/com_vtiger_workflow/expression_engine/include.inc';
 
-        foreach ($conditions as $info) {
-            foreach ($info['columns'] as $conditionRow) {
-                if ($conditionRow['valuetype'] == "expression") {
-                    try {
+        if ($filterSavedInNew == '6') {
+            foreach ($conditions as $info) {
+                foreach ($info['columns'] as $conditionRow) {
+                    if ($conditionRow['valuetype'] == "expression") {
                         $parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($conditionRow['value'])));
                         $expression = $parser->expression();
-                    } catch (Exception $e) {
-                        //It should generally not come in to this block of code , Since before save we will be checking expression validation as
-                        //Seperte ajax request
-                        echo $e->getMessage();
-                        die;
                     }
                 }
             }
+        } else {
+            // Keeping existing conditions must use persisted data, not the hidden form copy.
+            $conditions = $workflowModel->get('conditions');
         }
 
         $workflowModel->set('summary', $summary);

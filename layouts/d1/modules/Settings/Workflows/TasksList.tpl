@@ -23,7 +23,7 @@
 						<td>
                             <div class="actions d-flex align-items-center">
 								<span class="actionImages btn-group me-3">
-									<a class="btn text-secondary" data-url="{$TASK->getEditViewUrl()}">
+									<a class="btn text-secondary" data-url="{$TASK->getEditViewUrl()}" data-history-task-id="{$TASK->getId()|escape:'html'}" data-history-task-url="{$TASK->getV7EditViewUrl()|escape:'html'}">
 										<i class="fa fa-pencil alignMiddle" title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}"></i>
                                     </a>
 									<a class="deleteTask btn text-secondary" data-deleteurl="{$TASK->getDeleteActionUrl()}">

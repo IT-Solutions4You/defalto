@@ -23,9 +23,45 @@ class Core_SimpleHtmlDom_Helper {
         return $instance;
     }
 
+    /** Convert text newlines without adding breaks before opening or closing paragraphs. */
+    public static function convertNewlinesToHtml(?string $content): string
+    {
+        $parts = preg_split(
+            '/((?:\r\n|\n\r|\r|\n)[ \t\r\n]*(?=(?:<|&lt;)\/?p(?=[ \t\r\n>]|&gt;)))/i',
+            (string)$content,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE
+        );
+
+        foreach ($parts as $index => $part) {
+            if (0 === $index % 2) {
+                $parts[$index] = nl2br($part);
+            }
+        }
+
+        return implode('', $parts);
+    }
+
     public function getHtml()
     {
         return $this->html->save();
+    }
+
+    /** Remove redundant explicit breaks at paragraph boundaries without changing HTML wrappers. */
+    public static function convertParagraphBreaks(string $content): string
+    {
+        $protectedContent = '(?:<!--.*?-->|<(?<raw>pre|textarea|script|style)\b[^>]*>.*?</\k<raw>\s*>|<(?!br\s*/?>|/p\s*>)(?:"[^"]*"|\'[^\']*\'|[^\'">])*>)(*SKIP)(*F)|';
+        $content = preg_replace(
+            '~' . $protectedContent . '(?:<br\s*/?>\s*)+(?=(?:</(?:body|html)\s*>\s*)*</?p(?=[\s>]))~is',
+            '',
+            $content
+        );
+
+        return preg_replace_callback(
+            '~' . $protectedContent . '(?<paragraph></p\s*>)(?<spacing>\s*)(?:<br\s*/?>\s*)+~is',
+            static fn(array $match): string => $match['paragraph'] . $match['spacing'],
+            $content
+        );
     }
 
     public function getHtmlNode()

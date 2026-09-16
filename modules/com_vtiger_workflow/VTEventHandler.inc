@@ -108,12 +108,8 @@ class VTWorkflowEventHandler extends VTEventHandler
                     $doEvaluate = !($isNew);
                     break;
                 }
-                case VTWorkflowManager::$MANUAL:
-                {
-                    $doEvaluate = false;
-                    break;
-                }
                 case VTWorkflowManager::$ON_SCHEDULE:
+                case VTWorkflowManager::$MANUAL:
                 {
                     $doEvaluate = false;
                     break;
@@ -123,7 +119,14 @@ class VTWorkflowEventHandler extends VTEventHandler
                     throw new Exception("Should never come here! Execution Condition:" . $workflow->executionCondition);
                 }
             }
-            if ($doEvaluate && $workflow->evaluate($entityCache, $entityData->getId())) {
+
+            if (!$doEvaluate) {
+                continue;
+            }
+
+            $matches = $workflow->getEvaluationClone()->setNewRecord($isNew)->evaluate($entityCache, $entityData->getId());
+
+            if ($matches) {
                 if (VTWorkflowManager::$ONCE == $workflow->executionCondition) {
                     $entity_id = vtws_getIdComponents($entityData->getId());
                     $entity_id = $entity_id[1];

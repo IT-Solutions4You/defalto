@@ -142,7 +142,7 @@ class WorkFlowScheduler
                                 }
 
                                 if ($task->executeImmediately == true) {
-                                    $task->doTask($entityData);
+                                    ModTracker_History_Helper::processTask($task, $entityData);
                                 } else {
                                     $taskQueue->queueTask($task->id, $entityData->getId(), $delay);
                                 }
@@ -151,7 +151,8 @@ class WorkFlowScheduler
                     }
                 } while (true);
             }
-            $vtWorflowManager->updateNexTriggerTime($workflow);
+
+            $vtWorflowManager->updateNexTriggerTime($workflow, $workflow->getNextTriggerTimeValue());
         }
         $scheduledWorkflows = null;
     }
@@ -209,7 +210,7 @@ class WorkFlowScheduler
                 $operation = $condition['operation'];
 
                 //Cannot handle this condition for scheduled workflows
-                if ($operation == 'has changed') {
+                if (in_array($operation, ['has changed', 'has been set or changed', 'has been set or changed to', 'has been set or changed from'], true)) {
                     continue;
                 }
                 if ($operation == 'has changed to') {

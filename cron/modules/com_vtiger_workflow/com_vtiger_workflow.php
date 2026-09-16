@@ -75,7 +75,7 @@ function vtRunTaskJob($adb)
             $entity = new VTWorkflowEntity($adminUser, $entityId);
         }
 
-        $task->doTask($entity);
+        ModTracker_History_Helper::processTask($task, $entity);
     }
 }
 

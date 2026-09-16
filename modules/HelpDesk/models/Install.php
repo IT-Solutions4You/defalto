@@ -989,6 +989,8 @@ class HelpDesk_Install_Model extends Core_Install_Model
      */
     public function migrate(): void
     {
+        $this->migrateWorkflowConditions();
+
         /** @var $fields array column name => field name */
         $fields = [
             'title' => 'ticket_title',
