@@ -1,3 +1,11 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
 <p class="text-secondary">{vtranslate('LBL_TRASH_TASK_DESCRIPTION', $QUALIFIED_MODULE)}</p>
 <div class="row mb-3">
     <label for="trashTaskDeletionMode" class="col-sm-3 col-form-label">{vtranslate('LBL_TRASH_TASK_MODE', $QUALIFIED_MODULE)}</label>
