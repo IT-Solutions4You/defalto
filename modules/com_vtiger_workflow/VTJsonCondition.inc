@@ -386,12 +386,21 @@ class VTJsonCondition
             case "matches":
                 return preg_match($value, $fieldValue);
 
-            case "has changed" :
-                $entityDelta = new VTEntityDelta();
-                $idParts = vtws_getIdComponents($entityData->getId());
-                $hasChanged = $isNew
+            case 'has been set or changed to':
+                $wasSet = $isNew
                     ? $entityData->hasInitialFieldValue($cond['fieldname'])
-                    : $entityDelta->hasChanged($entityData->getModuleName(), $idParts[1], $cond['fieldname']);
+                    : $entityData->hasFieldChanged($cond['fieldname']);
+
+                return $wasSet && $entityData->hasFieldValue($cond['fieldname'], $value);
+            case 'has been set or changed from':
+                return !$isNew && $entityData->hasFieldChanged($cond['fieldname'])
+                    && $entityData->hasFieldValue($cond['fieldname'], $value, true);
+            case 'has been set or changed':
+                return $isNew
+                    ? $entityData->hasInitialFieldValue($cond['fieldname'])
+                    : $entityData->hasFieldChanged($cond['fieldname']);
+            case "has changed" :
+                $hasChanged = !$isNew && $entityData->hasFieldChanged($cond['fieldname']);
 
                 if (empty($value)) {
                     return $hasChanged;
@@ -563,8 +572,7 @@ class VTJsonCondition
                 return false;
             case 'has changed to' :
                 if ($isNew) {
-                    return $entityData->hasInitialFieldValue($cond['fieldname'])
-                        && decode_html($data[$cond['fieldname']]) === $value;
+                    return false;
                 }
 
                 $entityDelta = new VTEntityDelta();

@@ -210,7 +210,7 @@ class WorkFlowScheduler
                 $operation = $condition['operation'];
 
                 //Cannot handle this condition for scheduled workflows
-                if ($operation == 'has changed') {
+                if (in_array($operation, ['has changed', 'has been set or changed', 'has been set or changed to', 'has been set or changed from'], true)) {
                     continue;
                 }
                 if ($operation == 'has changed to') {

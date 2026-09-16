@@ -122,12 +122,12 @@ class VTEntityDelta extends VTEventHandler
 
     function getOldEntity($moduleName, $recordId)
     {
-        return self::$oldEntity[$moduleName][$recordId];
+        return self::$oldEntity[$moduleName][$recordId] ?? null;
     }
 
     function getNewEntity($moduleName, $recordId)
     {
-        return self::$newEntity[$moduleName][$recordId];
+        return self::$newEntity[$moduleName][$recordId] ?? null;
     }
 
     function hasChanged($moduleName, $recordId, $fieldName, $fieldValue = null)

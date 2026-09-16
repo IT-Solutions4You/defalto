@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'LBL_HAS_BEEN_SET_OR_CHANGED_TO' => 'Byla nastavena nebo změněna na',
+    'LBL_HAS_BEEN_SET_OR_CHANGED_FROM' => 'Byla nastavena nebo změněna z',
+    'LBL_HAS_BEEN_SET_OR_CHANGED' => 'Hodnota byla nastavena nebo změněna',
     'LBL_MOVE_TO_RECYCLEBIN' => 'Přesunout do koše',
     'LBL_TRASH_TASK_MODE' => 'Způsob mazání',
     'LBL_TRASH_TASK_PERMANENT' => 'Smazat trvale',
@@ -175,6 +178,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Tato podmínka není podporována při spuštění pouze při vytvoření. Vyberte Hodnota byla nastavena nebo změněna, nebo jinou podporovanou podmínku.',
     'VTTrashTask' => 'Přesunout do koše',
     "JS_STATUS_CHANGED_SUCCESSFULLY" => "Stav byl úspěšně změněn",
     "JS_TASK_DELETED_SUCCESSFULLY" => "Úkol byl úspěšně smazán",

@@ -98,7 +98,14 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
                         return false;
                     }
                 }
-                var form = jQuery(form);
+                form = jQuery(form);
+                const useLegacyConditions = jQuery('#enableAdvanceFilters').length > 0
+                    && !jQuery('#enableAdvanceFilters').is(':checked');
+
+                if (!useLegacyConditions && self.advanceFilterInstance && !self.advanceFilterInstance.validateCreationConditions()) {
+                    return false;
+                }
+
                 self.calculateValues();
                 window.onbeforeunload = null;
                 jQuery(form).find('button.saveButton').attr('disabled', 'disabled');
@@ -317,6 +324,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
                 var advanceFilterContainer = jQuery('#advanceFilterContainer');
                 vtUtils.applyFieldElementsView(jQuery('#workflow_condition'));
                 thisInstance.advanceFilterInstance = Workflows_AdvanceFilter_Js.getInstance(jQuery('.filterContainer', advanceFilterContainer));
+                thisInstance.advanceFilterInstance.registerCreationConditionEvents();
                 thisInstance.getPopUp(advanceFilterContainer);
 
                 //Workflows actions
@@ -1176,7 +1184,11 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     registerEventForScheduledWorkflow: function () {
         let thisInstance = this;
 
-        jQuery('input[name="workflow_trigger"]').on('click', function (e) {
+        jQuery('input[type="radio"][name="workflow_trigger"]').on('change', function (e) {
+            if (thisInstance.advanceFilterInstance) {
+                thisInstance.advanceFilterInstance.updateCreationConditions();
+            }
+
             let element = jQuery(e.currentTarget),
                 scheduleBoxContainer = jQuery('#scheduleBox'),
                 recurrenceBoxContainer = jQuery('.workflowRecurrenceBlock');

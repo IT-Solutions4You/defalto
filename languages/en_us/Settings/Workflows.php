@@ -18,6 +18,9 @@
  */
 
 $languageStrings = [
+    'LBL_HAS_BEEN_SET_OR_CHANGED_TO' => 'Has been set or changed to',
+    'LBL_HAS_BEEN_SET_OR_CHANGED_FROM' => 'Has been set or changed from',
+    'LBL_HAS_BEEN_SET_OR_CHANGED' => 'Has been set or changed',
     'LBL_MOVE_TO_RECYCLEBIN' => 'Move to Recycle Bin',
     'LBL_TRASH_TASK_MODE' => 'Deletion mode',
     'LBL_TRASH_TASK_PERMANENT' => 'Delete permanently',
@@ -212,6 +215,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'This condition is not supported when the workflow runs only on creation. Select Has been set or changed, or another supported condition.',
     'VTTrashTask' => 'Move to Recycle Bin',
     'JS_STATUS_CHANGED_SUCCESSFULLY' => 'Status changed Successfully',
     'JS_TASK_DELETED_SUCCESSFULLY' => 'Action deleted Successfully',
