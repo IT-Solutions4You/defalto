@@ -1,3 +1,14 @@
+# Dashboard layout persistence
+
+- Home inherits the shared Vtiger dashboard view. `DashBoard.js` initializes Gridster from widget position/size attributes rendered by `DashBoardTabContents.tpl`; pass saved column and row to `add_widget()` for positioned widgets. Automatic placement is only for new widgets or positions outside the current viewport.
+- Initialization must not save positions: responsive reflow must not overwrite the stored layout. Drag and resize completion save all affected widget positions.
+- `saveWidgetLayout()` shows the shared saving indicator and one translated result notification after all position/size requests finish. A failed request must prevent a success notification for that operation.
+- Drag/resize start hides the changed widget content through all layout writes, then calls `loadWidget(widget, true)` to regenerate the full server-rendered widget with the existing post-load initialization and chart sizing. Replacement destroys old Chart.js instances, clears cached widget instances and lifecycle listeners, and preserves the Gridster node and resize handle. Failed saves or reload requests preserve existing content and report the error. The ordinary refresh button continues to use the widget-specific refresh flow.
+- The hidden content is accompanied by a Bootstrap utility-based status placeholder with moving/resizing, saving and loading states. Labels come from the shared Core language files; restore removes the placeholder on success and failure.
+- `SaveWidgetPositions` delegates to `Vtiger_Widget_Model::updateWidgetPosition()`. Updates to `vtiger_module_dashboard_widgets` must be scoped by current user and dashboard tab, including ordinary widgets identified by link ID. MiniList, Notebook and chart widget IDs use a compound DOM ID.
+- Iterate the native `positionsmap` request array. `vtlib_array()` returns an ArrayAccess-only `Vtiger_GuardedArray` with private storage, so foreach over that wrapper silently processes no positions. Reject malformed maps and missing tab IDs instead of reporting a successful no-op.
+- This is shared Vtiger runtime behavior, with no standalone Vtiger module version or schema migration. Validate drag/refresh, resize/refresh, independent tabs containing the same widget, and narrow/wide viewport reloads; run JavaScript syntax and ITS4You ScriptsValidator checks and PHP lint.
+
 # Shared filter processing
 
 - `Vtiger_Util_Helper::transferListSearchParamsToFilterCondition()` converts list and advanced-search conditions for the query generator. Source group zero uses AND within the group; source group one uses OR. Empty groups must not be emitted, but their source positions must be preserved when choosing the within-group operator.
