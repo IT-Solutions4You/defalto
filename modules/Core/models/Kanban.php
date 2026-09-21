@@ -220,10 +220,11 @@ class Core_Kanban_Model extends Vtiger_Base_Model
         $fieldValues = $this->getFieldValues();
         $colors = [];
         $fieldName = $this->getFieldName();
+
         foreach ($fieldValues as $fieldValue) {
             $color = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $fieldValue);
 
-            if (!is_null($color) && $color !== '#ffffff') {
+            if (self::isValidHexColor($color) && $color !== '#ffffff') {
                 $colors[$fieldValue] = $color;
             } else {
                 $colors[$fieldValue] = $this->getDefaultColor();
@@ -321,7 +322,16 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
     public static function getRGBFromHex($value): string
     {
+        if (!self::isValidHexColor($value)) {
+            $value = (new self())->getDefaultColor();
+        }
+
         return implode(',', sscanf($value, "#%02x%02x%02x"));
+    }
+
+    public static function isValidHexColor($value): bool
+    {
+        return is_string($value) && preg_match('/\A#[0-9a-fA-F]{6}\z/', $value) === 1;
     }
 
     /**
