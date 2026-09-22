@@ -14,7 +14,8 @@
  * Holds the worldwide postal-code lookup table plus a single-row meta table that
  * records which dataset version is currently loaded. Imports are done into a
  * staging table and swapped in atomically (RENAME TABLE), so an interrupted or
- * failed import never leaves the live table empty or half-populated.
+ * failed import never leaves the live table empty or half-populated during the
+ * staging load.
  *
  * The live table is reference data only (records store the chosen city/PSČ as
  * plain text, no FK points here), therefore the whole table can be replaced safely.
@@ -54,7 +55,7 @@ class Settings_PostalCodes_Record_Model extends Core_DatabaseData_Model
      */
     public function createTables(): void
     {
-        $this->definePostalColumns(self::TABLE);
+        $this->definePostalColumns($this->getTable(self::TABLE, 'id'));
 
         $this->getTable(self::META, 'id')
             ->createTable()
@@ -71,9 +72,9 @@ class Settings_PostalCodes_Record_Model extends Core_DatabaseData_Model
      *
      * @throws Exception
      */
-    protected function definePostalColumns(string $table): void
+    protected function definePostalColumns(Core_DatabaseTable_Model $table): void
     {
-        $this->getTable($table, 'id')
+        $table
             ->createTable()
             ->createColumn('country_code', "varchar(2) NOT NULL DEFAULT ''")
             ->createColumn('postal_code', "varchar(20) NOT NULL DEFAULT ''")
@@ -179,8 +180,9 @@ class Settings_PostalCodes_Record_Model extends Core_DatabaseData_Model
      */
     protected function prepareStaging(): void
     {
-        $this->getDB()->query('DROP TABLE IF EXISTS ' . self::STAGING);
-        $this->definePostalColumns(self::STAGING);
+        $table = $this->getTable(self::STAGING, 'id');
+        $table->dropTable();
+        $this->definePostalColumns($table);
     }
 
     /**
@@ -266,17 +268,16 @@ class Settings_PostalCodes_Record_Model extends Core_DatabaseData_Model
 
     /**
      * Atomically swap the freshly populated staging table in for the live one.
-     * RENAME TABLE with both renames in one statement is atomic in MySQL, so there
-     * is no window where the live table is missing or empty.
+     * The live table is renamed aside before the staging table takes its name.
      */
     protected function swap(): void
     {
-        $db = $this->getDB();
         $old = self::TABLE . '_old';
 
-        $db->query('DROP TABLE IF EXISTS ' . $old);
-        $db->query('RENAME TABLE ' . self::TABLE . ' TO ' . $old . ', ' . self::STAGING . ' TO ' . self::TABLE);
-        $db->query('DROP TABLE IF EXISTS ' . $old);
+        $this->getTable($old, 'id')->dropTable();
+        $this->getTable(self::TABLE, 'id')->renameTable($old);
+        $this->getTable(self::STAGING, 'id')->renameTable(self::TABLE);
+        $this->getTable($old, 'id')->dropTable();
     }
 
     /**
@@ -301,7 +302,7 @@ class Settings_PostalCodes_Record_Model extends Core_DatabaseData_Model
         }
 
         if (empty($codes)) {
-            $db->query('DROP TABLE IF EXISTS ' . self::STAGING);
+            $this->getTable(self::STAGING, 'id')->dropTable();
 
             return;
         }
@@ -320,7 +321,7 @@ class Settings_PostalCodes_Record_Model extends Core_DatabaseData_Model
 
             throw $e;
         } finally {
-            $db->query('DROP TABLE IF EXISTS ' . self::STAGING);
+            $this->getTable(self::STAGING, 'id')->dropTable();
         }
     }
 
