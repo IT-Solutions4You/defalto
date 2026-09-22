@@ -11,6 +11,17 @@
 
 # Shared filter processing
 
+- `getTimeValueWithSeconds()` splits AM/PM from the clock before defaulting missing seconds, preserving noon/midnight for both save and list-filter conversion. Accept literal AM/PM case-insensitively; editable values must not contain translated suffixes.
+- `AdvanceFilter_Currencylist_Field_Js` emits currency IDs as option values, matching the Core toolbar and numeric currency query contract. Restore selection by either ID or legacy currency name, so older saved filters migrate to IDs when saved again.
+
+- Standalone time fields are wall-clock values without timezone conversion. `Time.tpl` passes the same user hour format to `getEditViewDisplayValue()` and the timepicker's `data-format`. Editable 12-hour values use literal AM/PM; translated suffixes belong only in display output. Other callers fall back to the current user's format. Fix edit-value preparation rather than expanding save parsing to accept translated display labels. Shared time validation enforces 12/24-hour ranges with optional seconds.
+- The list view assigns both the flat `LIST_FILTER_FIELDS` metadata and Core-owned `LIST_FILTER_FIELD_GROUPS` for the toolbar's block-grouped field selector.
+- `Vtiger_List_View::setListFilterData()` supplies toolbar state and field metadata for the base list and specialized initializers such as Documents. Call it before adding legacy field-name keys to the positional search groups.
+
+- Standard `ListViewContents.tpl` uses the Core-owned Bootstrap filter toolbar instead of the column search row. `List.php` assigns untouched `LIST_FILTER_PARAMS` before adding legacy field-name keys to `SEARCH_DETAILS`. `List.js::getListSearchParams()` reads the toolbar state when present, retaining the legacy path for specialized list templates. Resetting a saved view must clear both states; post-load rendering restores chips from the server response.
+- The filter dropdown toggle is included beside `listColumnFilterContainer` in the first header cell; applied conditions and their actions stay inside the dropdown, not in the table header. Its empty owner form is outside `listedit`, with HTML `form` attributes associating the header controls; this also preserves form ownership when floatThead moves the header.
+- `loadListViewRecords()` rejects failed requests without replacing the table and resolves successful requests after the new list content is installed. Filter changes reset paging and selection only after success. Export and mass actions continue to consume `getListSearchParams()`.
+
 - `Vtiger_Util_Helper::transferListSearchParamsToFilterCondition()` converts list and advanced-search conditions for the query generator. Source group zero uses AND within the group; source group one uses OR. Empty groups must not be emitted, but their source positions must be preserved when choosing the within-group operator.
 - `Vtiger_ListAjax_View::showSearchResults()` loads filtered entries and separately requests the total count through `Vtiger_List_View::getListViewCount()`. Both paths must receive valid conditions without a trailing group connector.
 - Filter creation persists through CustomView; applying a top-bar filter uses the shared Vtiger list search flow.

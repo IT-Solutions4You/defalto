@@ -702,9 +702,9 @@ Vtiger_Currencylist_Field_Js('AdvanceFilter_Currencylist_Field_Js', {}, {
             selectedOption = app.htmlDecode(this.getValue());
 
         for (let option in currencyLists) {
-            html += '<option value="' + currencyLists[option] + '" ';
+            html += '<option value="' + option + '" ';
 
-            if (option == selectedOption) {
+            if (option == selectedOption || currencyLists[option] === selectedOption) {
                 html += ' selected ';
             }
 

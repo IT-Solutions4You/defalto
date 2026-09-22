@@ -156,6 +156,7 @@ class Vtiger_List_View extends Vtiger_Index_View
 
         $jsFileNames = [
             'modules.Vtiger.resources.List',
+            'modules.Core.resources.ListFilter',
             "modules.$moduleName.resources.List",
             'modules.Vtiger.resources.ListSidebar',
             "modules.$moduleName.resources.ListSidebar",
@@ -348,6 +349,8 @@ class Vtiger_List_View extends Vtiger_Index_View
 
         $transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchAndTagParams, $listViewModel->getModule());
         $listViewModel->set('search_params', $transformedSearchParams);
+
+        $this->setListFilterData($viewer, $listViewModel->getModule(), $searchParams);
 
         //To make smarty to get the details easily accesible
         foreach ($searchParams as $fieldListGroup) {
@@ -584,6 +587,18 @@ class Vtiger_List_View extends Vtiger_Index_View
         return Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel);
     }
 
+    public function setListFilterData(Vtiger_Viewer $viewer, Vtiger_Module_Model $module, array $searchParams): void
+    {
+        $viewer->assign('LIST_FILTER_PARAMS', $searchParams);
+
+        if ($module->isQuickSearchEnabled()) {
+            $listFilterModel = new Core_ListFilter_Model();
+            $listFilterFields = $listFilterModel->getFields($module);
+            $viewer->assign('LIST_FILTER_FIELDS', $listFilterFields);
+            $viewer->assign('LIST_FILTER_FIELD_GROUPS', $listFilterModel->getFieldGroups($module, $listFilterFields));
+        }
+    }
+
     /**
      * @inheritDoc
      */
@@ -591,6 +606,7 @@ class Vtiger_List_View extends Vtiger_Index_View
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $cssFileNames = [
+            '~layouts/d1/modules/Core/resources/ListFilter.css',
             "~layouts/" . Vtiger_Viewer::getDefaultLayoutName() . "/lib/jquery/perfect-scrollbar/css/perfect-scrollbar.css",
         ];
         $cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
