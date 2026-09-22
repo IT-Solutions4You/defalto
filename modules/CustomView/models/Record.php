@@ -1439,6 +1439,84 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         }
     }
 
+    public function getSavedConditionCount(): int
+    {
+        // Read the same standard/advanced definitions as the list query generator.
+        $customView = new CustomView($this->getModule()->getName());
+        $standard = $customView->getStdFilterByCvid($this->getId());
+        $count = empty($standard['columnname']) ? 0 : 1;
+
+        foreach ($customView->getAdvFilterByCvid($this->getId()) ?: [] as $group) {
+            foreach ($group['columns'] ?? [] as $condition) {
+                if (!empty($condition['columnname'])) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
+
+    public function isListFilterSource(string $moduleName): bool
+    {
+        return $this->getModule()->getName() === $moduleName
+            && (new CustomView())->isPermittedCustomView($this->getId(), 'List', $moduleName) === 'yes';
+    }
+
+    /** Build a draft for the existing editor without modifying the saved view. */
+    public function getCriteriaWithListSearch(array $searchParams): array
+    {
+        $criteria = $this->transformToNewAdvancedFilter();
+        $fields = (new Core_ListFilter_Model())->getFields($this->getModule());
+
+        // Two independent OR groups cannot be flattened into the editor's one OR group.
+        if (!empty($searchParams[1]) && !empty($criteria[2]['columns'])) {
+            throw new Exception(vtranslate('LBL_FILTER_OR_GROUP_CONFLICT', 'Core'));
+        }
+
+        foreach ($searchParams as $groupIndex => $conditions) {
+            if (!in_array($groupIndex, [0, 1], true)) {
+                throw new Exception(vtranslate('LBL_INVALID_FILTER', 'Core'));
+            }
+
+            foreach ($conditions as $condition) {
+                $field = $fields[$condition[0]] ?? null;
+
+                if (!$this->isListSearchCondition($condition, $field)) {
+                    throw new Exception(vtranslate('LBL_INVALID_FILTER', 'Core'));
+                }
+
+                $criteria[$groupIndex + 1]['columns'][] = [
+                    'columnname' => $field['column'],
+                    'comparator' => $condition[1],
+                    'value' => $condition[2],
+                    'column_condition' => '',
+                ];
+            }
+        }
+
+        foreach ($criteria as $groupIndex => &$group) {
+            $group['columns'] = array_values($group['columns']);
+            $last = count($group['columns']) - 1;
+
+            foreach ($group['columns'] as $index => &$column) {
+                $column['column_condition'] = $index === $last ? '' : ($groupIndex === 1 ? 'and' : 'or');
+            }
+
+            unset($column);
+        }
+
+        unset($group);
+
+        return $criteria;
+    }
+
+    public function isListSearchCondition(array $condition, ?array $field): bool
+    {
+        return count($condition) === 3 && $field !== null
+            && isset($field['operators'][$condition[1]]) && is_scalar($condition[2]);
+    }
+
     public function getMembers()
     {
         if ($this->members == false) {
