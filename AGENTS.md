@@ -5,6 +5,7 @@
 - Trace the runtime owner before changing code. Prefer the existing module, Core, Vtiger, or Installer mechanism over a local one-off fix.
 - Before changing a module or installable extension, read the nearest `MODULE.md` under its module path (for example, `modules/<Module>/MODULE.md` or `modules/Settings/<Module>/MODULE.md`) and analyze the module's runtime owner, entry points, persistent data, external contracts, UI assets, and install lifecycle.
 - Treat the module's `MODULE.md` as durable extension memory. Create or update it in the same task whenever verified, reusable module knowledge is learned, and update every affected module file for cross-module work. Keep it concise and in English; record ownership boundaries, invariants, data flows, integration points, and validation commands, but never task history, guesses, generated inventories, environment-specific state, credentials, license keys, or other secrets. Remove or correct stale guidance when the implementation changes.
+- Maintain a customer-facing `USER_GUIDE.md` in each affected module when programming a functional module change. Describe what the module does, its user-facing workflow, important features, statuses, related-module actions, and practical usage tips in plain English. Create the file for a new module when needed, and update the guide whenever the change alters visible behavior or the supported workflow. Keep `MODULE.md` limited to technical extension memory and runtime guidance.
 - Keep Installer license checks inside the Installer-owned manual update and scheduled license-check flows. Do not add license hooks to global WebUI startup/login processing or to Users save, deactivate, or delete events; preserve the existing system and Users lifecycle behavior.
 - Keep module PHP code under `modules/<Module>/{actions,models,views,helpers,handlers,dashboards,uitypes}`.
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
@@ -50,6 +51,8 @@
 - Do not bump module versions for documentation-only, comments-only, tests-only, or generated-map-only changes.
 
 ## Control Flow Spacing
+
+- In PHP views, prefer computing branch-dependent values in local variables first, then assigning related template values together. Use fluent method chains when every method is verified to return the same object (for example, supported `Vtiger_Viewer::assign()` calls). Put each chained call on its own continuation line for multi-line groups. Preserve evaluation order and side effects; do not force chaining across unrelated operations or methods that can return null.
 
 - In PHP and JavaScript, separate a complete `if` / `elseif` / `else` chain, `foreach` block, or `while` block from adjacent statements with one blank line before and after the whole construct. This means vertical spacing, not additional spaces inside parentheses.
 - Do not insert blank lines between conditional branches. Keep the closing brace and the next branch on the same line: `} else {`, `} elseif (...) {` in PHP, or `} else if (...) {` in JavaScript. Keep the trailing `while` attached to a `do` block.
@@ -139,6 +142,8 @@
 - After changing LESS source, make sure the corresponding generated CSS is updated when this repo expects committed CSS output.
 
 ## PHP / Install Structure Checks
+
+- Use the standard `Exception` class for application errors; do not introduce `AppException`. Let the central WebUI exception handler handle these errors unless a local catch has a concrete recovery purpose.
 
 - Let `Vtiger_Loader` autoload framework component classes whose names and paths follow the `Module_Component_Type` convention, such as `Core_DateFilter_Helper` in `modules/Core/helpers/DateFilter.php`. Do not add manual `require`, `require_once`, `include`, or `include_once` statements for these components; verify the class-to-path mapping before removing a legacy include. Standalone scripts may explicitly bootstrap files when the application autoloader is not initialized.
 - Before completing a new, copied, or renamed module, compare every overridden method with the actual parent class or interface declaration. Match visibility, staticness, parameter types and defaults, reference/variadic markers, and return types; do not rely on the legacy source module's signature.

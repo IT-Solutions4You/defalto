@@ -18,6 +18,21 @@
  */
 
 $languageStrings = [
+    'LBL_SAVED_LIST_FILTER_NOTICE' => 'This list already applies saved conditions. Clearing additional filters does not remove them.',
+    'LBL_EDIT_SAVED_LIST_FILTER' => 'Edit saved conditions',
+    'LBL_CLEAR_ADDITIONAL_FILTERS' => 'Clear additional filters',
+    'LBL_RECORD_FILTERS' => 'Record filters',
+    'LBL_ADD_RECORD_FILTER' => 'Add filter',
+    'LBL_APPLY_RECORD_FILTER' => 'Apply',
+    'LBL_CLEAR_RECORD_FILTERS' => 'Clear all',
+    'LBL_SAVE_RECORD_FILTER' => 'Save as filter',
+    'LBL_FIELD' => 'Field',
+    'LBL_CONDITION' => 'Condition',
+    'LBL_VALUE' => 'Value',
+    'LBL_FILTER_UPDATE_FAILED' => 'The filter could not be updated.',
+    'LBL_FILTER_UPDATED' => 'Filter updated.',
+    'LBL_FILTER_OR_GROUP_CONFLICT' => 'These two OR groups cannot be combined in one saved filter.',
+    'LBL_INVALID_FILTER' => 'Invalid filter condition.',
     'APPTITLE' => 'Defalto CRM',
     'LBL_INSTALL_MANAGER' => 'Install Manager',
     'LBL_INSTALL_MANAGER_DESCRIPTION' => 'Manage installation, updates, migrations, and removal of supported modules.',

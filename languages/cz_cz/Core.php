@@ -9,6 +9,21 @@
  */
 
 $languageStrings = [
+    'LBL_SAVED_LIST_FILTER_NOTICE' => 'Tento seznam již používá uložené podmínky. Vymazání dodatečných filtrů je neodstraní.',
+    'LBL_EDIT_SAVED_LIST_FILTER' => 'Upravit uložené podmínky',
+    'LBL_CLEAR_ADDITIONAL_FILTERS' => 'Vymazat dodatečné filtry',
+    'LBL_RECORD_FILTERS' => 'Filtrování záznamů',
+    'LBL_ADD_RECORD_FILTER' => 'Přidat filtr',
+    'LBL_APPLY_RECORD_FILTER' => 'Použít',
+    'LBL_CLEAR_RECORD_FILTERS' => 'Vymazat vše',
+    'LBL_SAVE_RECORD_FILTER' => 'Uložit jako filtr',
+    'LBL_FIELD' => 'Pole',
+    'LBL_CONDITION' => 'Podmínka',
+    'LBL_VALUE' => 'Hodnota',
+    'LBL_FILTER_UPDATE_FAILED' => 'Filtr se nepodařilo aktualizovat.',
+    'LBL_FILTER_UPDATED' => 'Filtr byl aktualizován.',
+    'LBL_FILTER_OR_GROUP_CONFLICT' => 'Tyto dvě skupiny NEBO nelze spojit do jednoho uloženého filtru.',
+    'LBL_INVALID_FILTER' => 'Neplatná podmínka filtru.',
     'LBL_POSTAL_CODES_AVAILABLE' => 'PSČ k dispozici',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mapování adresních polí',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Určete, která adresní pole obsahují PSČ a město (a volitelně kraj a stát), aby je bylo možné automaticky doplňovat.',

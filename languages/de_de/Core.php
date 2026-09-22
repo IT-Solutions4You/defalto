@@ -18,6 +18,21 @@
  */
 
 $languageStrings = [
+    'LBL_SAVED_LIST_FILTER_NOTICE' => 'Diese Liste verwendet bereits gespeicherte Bedingungen. Das Entfernen zusätzlicher Filter hebt diese nicht auf.',
+    'LBL_EDIT_SAVED_LIST_FILTER' => 'Gespeicherte Bedingungen bearbeiten',
+    'LBL_CLEAR_ADDITIONAL_FILTERS' => 'Zusätzliche Filter entfernen',
+    'LBL_RECORD_FILTERS' => 'Datensätze filtern',
+    'LBL_ADD_RECORD_FILTER' => 'Filter hinzufügen',
+    'LBL_APPLY_RECORD_FILTER' => 'Anwenden',
+    'LBL_CLEAR_RECORD_FILTERS' => 'Alle entfernen',
+    'LBL_SAVE_RECORD_FILTER' => 'Als Filter speichern',
+    'LBL_FIELD' => 'Feld',
+    'LBL_CONDITION' => 'Bedingung',
+    'LBL_VALUE' => 'Wert',
+    'LBL_FILTER_UPDATE_FAILED' => 'Der Filter konnte nicht aktualisiert werden.',
+    'LBL_FILTER_UPDATED' => 'Filter aktualisiert.',
+    'LBL_FILTER_OR_GROUP_CONFLICT' => 'Diese zwei ODER-Gruppen können nicht in einem gespeicherten Filter kombiniert werden.',
+    'LBL_INVALID_FILTER' => 'Ungültige Filterbedingung.',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Postleitzahlen verfügbar',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Adressfeld-Zuordnung',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Legen Sie fest, welche Adressfelder die Postleitzahl und den Ort (und optional Bundesland und Land) enthalten, damit sie automatisch ausgefüllt werden können.',
