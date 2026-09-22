@@ -48,7 +48,7 @@
             {if $RECORD_ACTIONS}
                 {if $RECORD_ACTIONS['edit']}
                     <li>
-                        <a class="dropdown-item editLink" data-id="{$LISTVIEW_ENTRY->getId()}" href="{$LISTVIEW_ENTRY->getEditViewUrl()}">
+                        <a class="dropdown-item editLink" data-id="{$LISTVIEW_ENTRY->getId()}" data-url="{$LISTVIEW_ENTRY->getEditViewUrl()|escape}&amp;app={$SELECTED_MENU_CATEGORY|escape}" href="{$LISTVIEW_ENTRY->getEditViewUrl()|escape}&amp;app={$SELECTED_MENU_CATEGORY|escape}">
                             <i class="fa-solid fa-pencil text-secondary"></i>
                             <span class="ms-2">{vtranslate('LBL_EDIT', $MODULE)}</span>
                         </a>
