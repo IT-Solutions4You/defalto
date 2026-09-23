@@ -1132,6 +1132,7 @@ $languageStrings = [
     'LBL_ADD_AFTER' => 'Добавить После',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Группа',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Пожалуйста, настроить параметры исходящей сервера на странице настроек',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Пожалуйста, настроить SMS Notifier на странице настроек SMS Notifier',
     'JS_PLEASE_SELECT_ONE_RECORD'                               => 'Пожалуйста, выберите хотя бы один рекорд',

@@ -1348,6 +1348,7 @@ $languageStrings = [
     'LBL_MARGIN_AMOUNT' => 'Margin Amount',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Gruppe',
     'AM' => 'Vormittag',
     'DELETE_USER_PERMANENT_WARNING' => 'Wenn ein Benutzer dauerhaft gelöscht wird, werden alle Aufzeichnungen einschließlich der Kommentare und der Historie auf den neuen Benutzer übertragen.',
     'FIELD_MAPPING' => 'Feldzuordnung',

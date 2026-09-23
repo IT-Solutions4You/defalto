@@ -1377,6 +1377,7 @@ $languageStrings = [
     'LBL_DEFAULT_CV' => 'Default Custom View',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Group',
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
     'JS_SMS_SERVER_CONFIGURATION' => 'Please configure your SMS notifier from the SMS notifier settings page',
     'JS_PLEASE_SELECT_ONE_RECORD' => 'Please select at least one record',

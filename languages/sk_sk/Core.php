@@ -1530,6 +1530,7 @@ $languageStrings = [
     'Send Email' => 'Odoslať email',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Skupina',
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',
     'JS_SMS_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte SMS bránu',
     'JS_PLEASE_SELECT_ONE_RECORD' => 'Prosím, vyberte aspoň jeden záznam',

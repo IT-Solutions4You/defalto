@@ -1431,6 +1431,7 @@ $languageStrings = [
     'LBL_ADD_AFTER' => 'Adicionar Depois',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Grupo',
     'JS_EMAIL_SERVER_CONFIGURATION'         => 'Por favor, ajuste as configurações do Servidor Envio Mensagens a partir do menu Configurações',
     'JS_SMS_SERVER_CONFIGURATION'           => 'Por favor, configure seu Notificador SMS na página de configuração do Notificar SMS',
     'JS_PLEASE_SELECT_ONE_RECORD'           => 'Por favor, selecione ao menos um registro',

@@ -1133,6 +1133,7 @@ al di fuori di Vtiger.',
     'LBL_ADD_AFTER' => 'Aggiungere dopo',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Gruppo',
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Configura il serve in uscita dalla pagina delle impostazioni',
     'JS_SMS_SERVER_CONFIGURATION' => 'Configura il tuo SMS notifier dalla pagina delle impostazioni del SMS Notifier',
     'JS_PLEASE_SELECT_ONE_RECORD' => 'Seleziona almeno un record',

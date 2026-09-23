@@ -1129,6 +1129,7 @@ buiten Vtiger.',
     'LBL_ADD_AFTER' => 'Add After',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Groep',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Configureer a.u.b. uw uitgaande server instellingen op de instellingenpagina',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Configureer a.u.b. uw SMS notifier op de SMS notifier instellingenpagina',
     'JS_PLEASE_SELECT_ONE_RECORD'                               => 'Selecteer a.u.b. minstens één record',

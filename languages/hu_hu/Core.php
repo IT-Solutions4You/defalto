@@ -1136,6 +1136,7 @@ kívül Vtiger.',
     'LBL_ADD_AFTER' => 'Hozzáadása után',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Csoport',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Kérjük, hogy állítsd be a kimenő email szerver (SMTP) beállításait a Beállítások oldalon',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Kérjük, hogy állítsd be az SMS Küldőt az SMS Küldő beállítási oldalán.',
     'JS_PLEASE_SELECT_ONE_RECORD'                               => 'Kérjük, hogy legalább egy rekordot válassz ki',
