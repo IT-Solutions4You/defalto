@@ -348,7 +348,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
     {
         $conditions = $this->get('conditions');
         $transformedConditions = [];
-        $firstGroup = $secondGroup = [];
+        $groups = [];
 
         if (!empty($conditions)) {
             foreach ($conditions as $index => $info) {
@@ -386,29 +386,35 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
                     $folderInstance = Documents_Folder_Model::getInstanceById($value);
                     $value = $folderInstance->getName();
                 }
-                if (!($info['groupid'])) {
-                    $firstGroup[] = [
-                        'columnname'       => $columnName,
-                        'comparator'       => $info['operation'],
-                        'value'            => $value,
-                        'column_condition' => $info['joincondition'],
-                        'valuetype'        => $info['valuetype'],
-                        'groupid'          => $info['groupid']
-                    ];
-                } else {
-                    $secondGroup[] = [
-                        'columnname'       => $columnName,
-                        'comparator'       => $info['operation'],
-                        'value'            => $value,
-                        'column_condition' => $info['joincondition'],
-                        'valuetype'        => $info['valuetype'],
-                        'groupid'          => $info['groupid']
+                $groupId = (int)($info['groupid'] ?? 0);
+
+                if (!isset($groups[$groupId])) {
+                    $groups[$groupId] = [
+                        'columns' => [],
+                        'condition' => ($info['groupjoin'] ?? '') ?: 'and'
                     ];
                 }
+
+                $groups[$groupId]['columns'][] = [
+                    'columnname'       => $columnName,
+                    'comparator'       => $info['operation'],
+                    'value'            => $value,
+                    'column_condition' => $info['joincondition'],
+                    'valuetype'        => $info['valuetype'],
+                    'groupid'          => $groupId
+                ];
             }
         }
-        $transformedConditions[1] = $firstGroup ? ['columns' => $firstGroup] : [];
-        $transformedConditions[2] = $secondGroup ? ['columns' => $secondGroup] : [];
+
+        foreach (array_values($groups) as $groupIndex => $group) {
+            $transformedConditions[$groupIndex + 1] = $group;
+        }
+
+        if (!$transformedConditions) {
+            $transformedConditions[1] = [];
+        }
+
+        ksort($transformedConditions);
 
         return $transformedConditions;
     }
@@ -447,20 +453,26 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
             foreach ($conditions as $index => $condition) {
                 $columns = $condition['columns'] ?? [];
 
-                if (!in_array((string)$index, ['1', '2'], true) || !is_array($columns)) {
+                if (!ctype_digit((string)$index) || !is_array($columns)) {
                     throw new InvalidArgumentException(vtranslate('LBL_INVALID_WORKFLOW_CONDITIONS', 'Settings:Workflows'));
                 }
 
                 if (!empty($columns) && is_array($columns)) {
-                    foreach ($columns as $column) {
+                    $groupId = (int)$index - 1;
+                    $groupJoin = strtolower($condition['condition'] ?? 'and');
+                    if (!in_array($groupJoin, ['and', 'or'], true)) {
+                        throw new InvalidArgumentException(vtranslate('LBL_INVALID_WORKFLOW_CONDITIONS', 'Settings:Workflows'));
+                    }
+
+                    foreach ($columns as $columnIndex => $column) {
                         $wfCondition[] = [
                             'fieldname'     => $column['columnname'] ?? '',
                             'operation'     => $column['comparator'] ?? '',
                             'value'         => $column['value'] ?? '',
                             'valuetype'     => $column['valuetype'] ?? 'rawtext',
-                            'joincondition' => $index == '1' ? 'and' : 'or',
-                            'groupjoin'     => 'and',
-                            'groupid'       => $index == '1' ? '0' : '1'
+                            'joincondition' => $columnIndex === count($columns) - 1 ? '' : ($column['column_condition'] ?? ($groupId === 1 ? 'or' : 'and')),
+                            'groupjoin'     => $groupJoin,
+                            'groupid'       => $groupId
                         ];
                     }
                 }
