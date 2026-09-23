@@ -355,6 +355,9 @@ class Vtiger_List_View extends Vtiger_Index_View
         //To make smarty to get the details easily accesible
         foreach ($searchParams as $fieldListGroup) {
             foreach ($fieldListGroup as $fieldSearchInfo) {
+                if (!is_array($fieldSearchInfo)) {
+                    continue;
+                }
                 $fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
                 $fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
                 $fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
@@ -364,6 +367,9 @@ class Vtiger_List_View extends Vtiger_Index_View
 
         foreach ($tagParams as $fieldListGroup) {
             foreach ($fieldListGroup as $fieldSearchInfo) {
+                if (!is_array($fieldSearchInfo)) {
+                    continue;
+                }
                 $fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
                 $fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
                 $fieldSearchInfo['comparator'] = $fieldSearchInfo[1];

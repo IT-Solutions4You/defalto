@@ -47,10 +47,11 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
         }
 
         if (container.is('.filterContainer')) {
-            this.setFilterContainer(container);
+            this.setFilterContainer(container.filter('.filterContainer'));
         } else {
             this.setFilterContainer(jQuery('.filterContainer', container));
         }
+
         this.initialize();
     },
 
@@ -215,6 +216,21 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
      * @return : select element which will represent the condition element
      */
     loadConditions: function (fieldSelect) {
+        const selectedField = fieldSelect.find('option:selected'),
+            operators = selectedField.data('conditionOperators');
+
+        if (operators) {
+            const select = fieldSelect.closest('div.conditionRow').find('select[name="comparator"]'),
+                selected = select.val();
+
+            select.empty();
+            Object.entries(operators).forEach(function (entry) {
+                select.append(new Option(entry[1], entry[0], false, entry[0] === selected));
+            });
+
+            return select.trigger('change');
+        }
+
         var row = fieldSelect.closest('div.conditionRow');
         var conditionSelectElement = row.find('select[name="comparator"]');
         var conditionSelected = conditionSelectElement.val();
@@ -576,12 +592,11 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
                 if (rowElement.is(":last-child")) {
                     rowValues['column_condition'] = '';
                 }
+                rowValues['column_condition'] = rowElement.is(':last-child') ? '' : (groupElement.find('.conditionOperator').val() || 'and');
                 values[index + 1]['columns'][columnIndex] = rowValues;
                 columnIndex++;
             });
-            if (groupElement.find('div.groupCondition').length > 0) {
-                values[index + 1]['condition'] = conditionGroups.find('div.groupCondition [name="condition"]').val();
-            }
+            values[index + 1]['condition'] = groupElement.next('.groupConnector').find('.groupJoin').val() || 'and';
         });
         return values;
 
@@ -605,6 +620,54 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
         self.getAddConditionElement().on('click', function (e) {
             self.addConditionHandler(e);
         });
+    },
+
+    registerGroupEvents: function () {
+        let filterContainer = this.getFilterContainer(),
+            thisInstance = this;
+
+        filterContainer.on('click', '.addGroup', function () {
+            let groups = filterContainer.find('.conditionGroup'),
+                newGroup = groups.first().clone(false, false),
+                newConnector = groups.first().next('.groupConnector').clone(false, false),
+                nextGroupId = groups.toArray().reduce(function (maxId, group) {
+                    return Math.max(maxId, parseInt(jQuery(group).data('group-id'), 10) || 0);
+                }, -1) + 1;
+
+            newGroup.attr('data-group-id', nextGroupId);
+            newGroup.find('.conditionList .conditionRow').remove();
+            newGroup.find('.groupTitle').text(app.vtranslate('LBL_GROUP') + ' ' + (nextGroupId + 1));
+            newGroup.find('.groupDescription').remove();
+            newGroup.find('.conditionOperator').val('and');
+            newGroup.find('.groupCondition input').val('and');
+            newConnector.find('.groupJoin').val('and');
+            newGroup.find('.deleteGroup').remove();
+            newGroup.find('.header').append('<button type="button" class="btn btn-sm btn-outline-secondary deleteGroup" title="' + app.vtranslate('LBL_DELETE') + '"><i class="fa fa-trash"></i></button>');
+            newGroup.insertBefore(filterContainer.find('.addGroup'));
+            newConnector.insertBefore(filterContainer.find('.addGroup'));
+            thisInstance.addNewCondition(newGroup);
+            thisInstance.refreshGroupConnectors();
+        });
+
+        filterContainer.on('click', '.deleteGroup', function () {
+            let group = jQuery(this).closest('.conditionGroup');
+            group.next('.groupConnector').remove();
+            group.remove();
+            thisInstance.refreshGroupConnectors();
+        });
+
+        filterContainer.on('change', '.groupJoin', function () {
+            jQuery(this).prev('.conditionGroup').find('.groupCondition input').val(jQuery(this).val());
+        });
+
+        this.refreshGroupConnectors();
+    },
+
+    refreshGroupConnectors: function () {
+        let connectors = this.getFilterContainer().find('.groupConnector');
+
+        connectors.addClass('hide');
+        connectors.slice(0, -1).removeClass('hide');
     },
 
     /**
@@ -663,6 +726,7 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
      */
     registerEvents: function () {
         this.registerAddCondition();
+        this.registerGroupEvents();
         this.registerFieldChange();
         this.registerDeleteCondition();
         this.registerConditionChange();
@@ -673,16 +737,23 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
 Vtiger_Field_Js('AdvanceFilter_Field_Js', {}, {
 
     getUiTypeSpecificHtml: function () {
-        let uiTypeModel = this.getUiTypeModel();
+        const uiTypeModel = this.getUiTypeModel(),
+            ui = jQuery(uiTypeModel.getUi()),
+            controls = ui.filter('input, textarea').add(ui.find('input, textarea'))
+                .not('[type="hidden"], [type="checkbox"], [type="radio"], [type="button"], [type="submit"], [type="reset"]');
 
-        return uiTypeModel.getUi();
+        controls.addClass('form-control');
+        // Keep readonly values enabled: both filter editors must still submit them.
+        controls.filter('[readonly]').addClass('bg-body-secondary text-body-secondary');
+
+        return ui;
     },
 
     getModuleName: function () {
         let currentModule = app.getModuleName(),
             type = this.getType();
 
-        if (type === 'picklist' || type === 'multipicklist' || type === 'owner' || type === 'ownergroup' || type === 'date' || type === 'datetime' || type === 'currencyList') {
+        if (type === 'picklist' || type === 'multipicklist' || type === 'owner' || type === 'ownergroup' || type === 'date' || type === 'datetime' || type === 'currencyList' || type === 'time') {
             currentModule = 'AdvanceFilter';
         }
 
@@ -1001,7 +1072,7 @@ Vtiger_Date_Field_Js('AdvanceFilter_Date_Field_Js', {}, {
 
             return this.addValidationToElement(element);
         } else if (this._specialDateComparator(comparatorSelectedOptionVal)) {
-            let html = '<input name="' + this.getName() + '" type="text" value="' + this.getValue() + '" />';
+            let html = '<input class="form-control inputElement" name="' + this.getName() + '" type="text" value="' + this.getValue() + '" />';
 
             return jQuery(html);
         } else if (comparatorSelectedOptionVal in dateSpecificConditions) {
@@ -1010,9 +1081,9 @@ Vtiger_Date_Field_Js('AdvanceFilter_Date_Field_Js', {}, {
                 html = '';
 
             if (comparatorSelectedOptionVal === 'today' || comparatorSelectedOptionVal === 'tomorrow' || comparatorSelectedOptionVal === 'yesterday') {
-                html = '<input name="' + this.getName() + '" type="text" ReadOnly="true" value="' + startValue + '">';
+                html = '<input class="form-control inputElement" name="' + this.getName() + '" type="text" readonly value="' + startValue + '">';
             } else {
-                html = '<input name="' + this.getName() + '" type="text" ReadOnly="true" value="' + startValue + ',' + endValue + '">';
+                html = '<input class="form-control inputElement" name="' + this.getName() + '" type="text" readonly value="' + startValue + ',' + endValue + '">';
             }
 
             return jQuery(html);
@@ -1047,3 +1118,29 @@ Vtiger_Date_Field_Js('AdvanceFilter_Date_Field_Js', {}, {
 
 /** @var AdvanceFilter_Datetime_Field_Js */
 AdvanceFilter_Date_Field_Js('AdvanceFilter_Datetime_Field_Js', {}, {});
+
+/** Standalone times remain wall-clock values, including both range endpoints. */
+Vtiger_Time_Field_Js('AdvanceFilter_Time_Field_Js', {}, {
+    getUi: function () {
+        if (this.get('comparatorElementVal') !== 'bw') {
+            return this._super();
+        }
+
+        const container = jQuery('<div>'),
+            values = this.getValue().split(','),
+            hidden = jQuery('<input>', {type: 'hidden', name: this.getName()});
+
+        for (let index = 0; index < 2; index++) {
+            const model = new Vtiger_Time_Field_Js();
+
+            model.setData(jQuery.extend({}, this.getData(), {name: this.getName() + '_range_' + index, value: values[index] || ''}));
+            container.append(model.getUi());
+        }
+
+        container.append(hidden).on('input change', '.timepicker-default', function () {
+            hidden.val(container.find('.timepicker-default').map(function () { return jQuery(this).val(); }).get().join(','));
+        });
+        container.find('.timepicker-default').trigger('change');
+        return container;
+    }
+});

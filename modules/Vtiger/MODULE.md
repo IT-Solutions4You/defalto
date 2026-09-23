@@ -11,6 +11,17 @@
 
 # Shared filter processing
 
+- Group delete buttons use Bootstrap `btn-sm` to match the `form-select-sm` operator control, both in `AdvanceFilter.tpl` and in the dynamically generated markup in `AdvanceFilter.js`.
+
+- `AdvanceFilter.tpl` uses the connector's `py-2` for spacing between groups, without an additional group bottom margin. The add-group button owns its separate top margin; dynamically cloned groups retain the same spacing.
+
+- `Vtiger_AdvanceFilter_Js::init()` must retain only `.filterContainer` elements when the supplied collection also contains editor wrappers. CustomView passes nested `.filterConditionsDiv` elements; binding delegated handlers to both wrapper and filter processes one bubbling click twice and adds duplicate groups.
+
+- `AdvanceFilter_Field_Js::getUiTypeSpecificHtml()` normalizes root and nested text-like inputs and textareas to Bootstrap `form-control`, and gives readonly controls `bg-body-secondary text-body-secondary`. Hidden inputs, checkboxes, radio buttons and buttons are excluded. Calculated date previews remain `readonly`, not disabled, so saved-view serialization and quick-filter submission still include their values. Editable dates and offsets retain normal input styling; selects keep their own Select2/Bootstrap rendering.
+
+- `AdvanceFilterCondition.tpl` supplies per-field operator labels from `Core_FilterOperator_Model`; `AdvanceFilter.js` consumes those labels, retaining the legacy mapping fallback for other templates. The Core quick filter reuses the shared date/datetime field renderer. The time range renderer serializes two picker inputs through one named hidden value.
+- List conversion only maps positional conditions to advanced criteria. ListView (including popup), ExportData and MiniList instantiate `Core_QueryGenerator_Model`; its `parseAdvFilterList()` obtains the source module's `Core_Filter_Model` and normalizes conditions before delegating to the unchanged Enhanced parser. The common model normalizes time endpoints and date-only datetime ranges while preserving symbolic periods, empty operators and monetary precision. Storage and timezone conversion remain in their existing owners.
+
 - `getTimeValueWithSeconds()` splits AM/PM from the clock before defaulting missing seconds, preserving noon/midnight for both save and list-filter conversion. Accept literal AM/PM case-insensitively; editable values must not contain translated suffixes.
 - `AdvanceFilter_Currencylist_Field_Js` emits currency IDs as option values, matching the Core toolbar and numeric currency query contract. Restore selection by either ID or legacy currency name, so older saved filters migrate to IDs when saved again.
 
@@ -22,7 +33,8 @@
 - The filter dropdown toggle is included beside `listColumnFilterContainer` in the first header cell; applied conditions and their actions stay inside the dropdown, not in the table header. Its empty owner form is outside `listedit`, with HTML `form` attributes associating the header controls; this also preserves form ownership when floatThead moves the header.
 - `loadListViewRecords()` rejects failed requests without replacing the table and resolves successful requests after the new list content is installed. Filter changes reset paging and selection only after success. Export and mass actions continue to consume `getListSearchParams()`.
 
-- `Vtiger_Util_Helper::transferListSearchParamsToFilterCondition()` converts list and advanced-search conditions for the query generator. Source group zero uses AND within the group; source group one uses OR. Empty groups must not be emitted, but their source positions must be preserved when choosing the within-group operator.
+- `Vtiger_Util_Helper::transferListSearchParamsToFilterCondition()` converts list and advanced-search conditions for the query generator. Legacy source group zero uses AND within the group and source group one uses OR; modern groups carry their own within-group operator. Empty groups must not be emitted, but their source positions must be preserved when choosing legacy defaults.
+- List advanced filters preserve an explicit `condition` connector on every non-empty group, allowing more than the legacy two groups. Missing connectors retain the historical first-group AND / second-group OR defaults.
 - `Vtiger_ListAjax_View::showSearchResults()` loads filtered entries and separately requests the total count through `Vtiger_List_View::getListViewCount()`. Both paths must receive valid conditions without a trailing group connector.
 - Filter creation persists through CustomView; applying a top-bar filter uses the shared Vtiger list search flow.
 - Verify empty and populated filter groups manually; lint touched PHP files.

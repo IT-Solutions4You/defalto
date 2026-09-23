@@ -61,7 +61,7 @@ jQuery.Class('Vtiger_ListFilter_Js', {}, {
     },
 
     hasValueOptions: function (field) {
-        return field.type === 'currencyList' || Object.keys(field.values).length > 0;
+        return ['picklist', 'multipicklist', 'owner', 'ownergroup', 'currencyList', 'boolean', 'documentsFolder'].includes(field.type) || Object.keys(field.values).length > 0;
     },
 
     isMultipleValueField: function (field) {
@@ -251,6 +251,10 @@ jQuery.Class('Vtiger_ListFilter_Js', {}, {
                 selected = value.split(','),
                 groups = field.valueGroups && field.valueGroups.length ? field.valueGroups : [{values: field.values}];
 
+            if (self.isMultipleValueField(field) && operator !== 'e' && operator !== 'n') {
+                select.attr('data-tags', 'true');
+            }
+
             groups.forEach(function (group) {
                 const parent = group.label ? jQuery('<optgroup>', {label: group.label}).appendTo(select) : select;
 
@@ -268,38 +272,52 @@ jQuery.Class('Vtiger_ListFilter_Js', {}, {
             holder.append(select);
             self.initializeSelects();
         } else if (self.isDateField(field)) {
-            const group = jQuery('<div>', {class: 'input-group inputElement'}),
-                input = jQuery('<input>', {
-                    id: 'listFilterValue', type: 'text',
-                    class: 'form-control dateField listFilterValue', form: 'listFilterForm', required: true,
-                    'data-date-format': bar.find('.listFilterDateFormat').val(),
-                    'data-calendar-type': operator === 'bw' ? 'range' : 'single',
-                    'aria-label': labels.value
-                }).val(value.split(',').map(function (date) {
-                    return date.trim().split(' ')[0];
-                }).join(',')),
-                icon = jQuery('<div>', {class: 'input-group-addon input-group-text'}).append(jQuery('<i>', {class: 'fa fa-calendar', 'aria-hidden': 'true'}));
-
-            holder.append(group.append(input, icon));
-            vtUtils.registerEventForDateFields(input);
+            self.showDateValue(holder, field, operator, value);
         } else if (field.type === 'time') {
-            const group = jQuery('<div>', {class: 'input-group inputElement time'}),
-                input = jQuery('<input>', {
-                    id: 'listFilterValue', type: 'text',
-                    class: 'form-control timepicker-default listFilterValue', form: 'listFilterForm', required: true,
-                    'data-format': bar.find('.listFilterHourFormat').val(), 'aria-label': labels.value
-                }).val(value),
-                icon = jQuery('<span>', {class: 'input-group-addon input-group-text'}).append(jQuery('<i>', {class: 'fa fa-clock-o', 'aria-hidden': 'true'}));
+            const values = value.split(','),
+                count = operator === 'bw' ? 2 : 1;
 
-            holder.append(group.append(input, icon));
-            vtUtils.registerEventForTimeFields(input);
+            for (let index = 0; index < count; index++) {
+                const group = jQuery('<div>', {class: 'input-group inputElement time'}),
+                    input = jQuery('<input>', {
+                        id: index === 0 ? 'listFilterValue' : 'listFilterValueEnd', type: 'text',
+                        class: 'form-control timepicker-default listFilterValue', form: 'listFilterForm', required: true,
+                        'data-format': bar.find('.listFilterHourFormat').val(), 'aria-label': labels.value
+                    }).val(values[index] || ''),
+                    icon = jQuery('<span>', {class: 'input-group-addon input-group-text'}).append(jQuery('<i>', {class: 'fa fa-clock-o', 'aria-hidden': 'true'}));
+
+                holder.append(group.append(input, icon));
+                vtUtils.registerEventForTimeFields(input);
+            }
         } else {
             holder.append(jQuery('<input>', {id: 'listFilterValue', type: 'text', class: 'form-control listFilterValue', form: 'listFilterForm', required: true}).val(value));
 
-            if (field.type === 'reference' && Object.keys(field.referenceModules || {}).length) {
+            if (['reference', 'multireference'].includes(field.type) && Object.keys(field.referenceModules || {}).length) {
                 self.showReferenceControls(holder, field);
             }
         }
+    },
+
+    showDateValue: function (holder, field, operator, value) {
+        const info = jQuery.extend({}, field.info, {
+                name: 'listFilterValue', value: app.htmlEncode(value),
+                comparatorElementVal: operator, dateSpecificConditions: field.dateConditions
+            }),
+            model = Vtiger_Field_Js.getInstance(info, 'AdvanceFilter'),
+            ui = jQuery(model.getUiTypeSpecificHtml());
+
+        holder.append(ui);
+        holder.find('input, select').attr('form', 'listFilterForm');
+        holder.find('[name="listFilterValue"]').addClass('listFilterValue').attr('id', 'listFilterValue');
+        holder.find('input:not([type="hidden"]), select').prop('required', true).addClass('form-control');
+        holder.find('.dateField').attr('data-date-format', this.getBar().find('.listFilterDateFormat').val());
+
+        if (model.getUiTypeModel()._specialDateComparator(operator) && operator !== 'lastperiod') {
+            holder.find('.listFilterValue').attr({type: 'number', min: 0, step: 1});
+        }
+
+        vtUtils.registerEventForDateFields(holder.find('.dateField'));
+        this.initializeSelects();
     },
 
     showReferenceControls: function (holder, field) {

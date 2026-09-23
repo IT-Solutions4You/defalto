@@ -523,7 +523,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
         $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'ListView', $moduleName);
         $instance = new $modelClassName();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        $queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
+        $queryGenerator = new Core_QueryGenerator_Model($moduleModel->get('name'), $currentUser);
         $customView = new CustomView();
         if (!empty($viewId) && $viewId != "0") {
             $queryGenerator->initForCustomViewById($viewId);
@@ -596,7 +596,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
         $instance = new $modelClassName();
         $moduleModel = Vtiger_Module_Model::getInstance($value);
 
-        $queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
+        $queryGenerator = new Core_QueryGenerator_Model($moduleModel->get('name'), $currentUser);
 
         $listFields = $moduleModel->getPopupFields();
 

@@ -1,9 +1,35 @@
 # Core UI ownership
 
-- The list-filter toolbar uses `fa-solid fa-clipboard-check` for the condition action, matching the application's existing condition-oriented module icon style. Keep the translated tooltip and visually hidden label unchanged.
+- Core language files expose `LBL_GROUP` in both PHP and JavaScript dictionaries. Shared advanced filters render existing group titles through `vtranslate()` and dynamically added titles through `app.vtranslate()`; keep the translations aligned.
+
+## Module-specific filter objects
+
+Define `modules/<Module>/models/Filter.php` with `<Module>_Filter_Model extends Core_Filter_Model`. For example, a module with a `subject` field can restrict that field to equality in every filter entry point:
+
+```php
+class Example_Filter_Model extends Core_Filter_Model
+{
+    protected function initialize(): void
+    {
+        $this->setFieldOperators('subject', ['e' => vtranslate('LBL_EQUALS')]);
+    }
+}
+```
+
+Use the actual module name instead of `Example`. Unconfigured fields retain the common defaults. For metadata-dependent rules, override `getOperators()` and delegate to its parent. For value/operator transformations, override `getQueryCondition()` and pass the transformed condition to its parent. Configure shared behavior in the subclass rather than mutating one temporary factory instance: UI rendering and query execution create independent objects, including across requests.
+
+## Shared filter integration
+
+- Standalone `T` / `bw` criteria leave `getQueryCondition()` with an array of separately normalized time endpoints. Both query parsers and `getConditionValue()` accept this structure, so unrelated comma-handling flags cannot collapse the range. Other operators retain string values; Calendar `time_start`/`time_end` keep their existing timezone path. Never send a comma-separated range to the single-time `getTimeValueWithSeconds()` parser. Reapplying normalization must preserve the array and its endpoints.
+- `Core_Filter_Model::getInstance($moduleName)` resolves `<Module>_Filter_Model` from `modules/<Module>/models/Filter.php` through the standard loader, falling back to Core. Each call creates a separate object and invokes protected `initialize(): void` after setting its module. Subclasses must extend Core and preserve method signatures. Both UI paths use the source/list module's object, including for related fields.
+- `Core_FilterOperator_Model::getForField()` delegates operator presentation to that object's `getOperators(Vtiger_Field_Model $field): array`; `getDefaultForField()` holds the common defaults. Defaults consume Vtiger field/type/date definitions. Do not add toolbar allowlists. Module overrides may restrict labels/operators or call `setFieldOperators($name, $translatedOperatorMap)` in `initialize()`. These settings are object-local, not persisted.
+- `Core_QueryGenerator_Model::parseAdvFilterList()` calls `getQueryCondition(array $condition): array` for quick and saved advanced criteria before delegating escaping and SQL construction to the inherited parser. Keep legacy generators unchanged. Shared list/popup factories, list export and MiniList instantiate the Core model. The input/output contract has `columnname`, `comparator`, `value` in user display format and `column_condition`. Preserve connectors and related-field identifiers. Overrides may map a custom operator to an existing supported operator; adding a label alone does not implement new SQL semantics. Keep this method deterministic, idempotent and free of writes; do not perform timezone conversion here.
+- Quick date inputs use `AdvanceFilter_Field_Js` and the same date/datetime renderer as the saved editor, including numeric day/hour offsets, relative period quantity/unit, and calendar ranges. `lastperiod` retains its `quantity|unit` value through list conversion and saved-view read/write; it is not a date string. The shared query-condition model normalizes both standalone time endpoints and adds whole-day datetime bounds to date-only ranges. Date-only fields and currency strings stay unchanged.
+
+- The list-filter toolbar uses `fa-solid fa-filter` for the condition action. Keep the translated tooltip and visually hidden label unchanged.
 - List-filter metadata is built from `Vtiger_FilterRecordStructure_Model`, the same structure used by the saved-list condition editor. Base fields and one level of permitted reference fields therefore share field visibility, labels, operators, relation identifiers and saved-view columns. Reuse the existing `(parent ; (Module) field)` identifier and cloned field's `reference_fieldname`; keep the base module/field in popup metadata. Do not recursively expand relations.
 
-- Time filter inputs use `vtUtils.registerEventForTimeFields()` with the user's hour format and shared time validation. The existing Vtiger search converter normalizes these wall-clock values to HH:mm:ss without timezone conversion. Destroy replaced timepickers, hide them when closing the filter, and recognize picker clicks in the dropdown close guard.
+- Time filter inputs use `vtUtils.registerEventForTimeFields()` with the user's hour format and shared time validation. `Core_Filter_Model::getQueryCondition()` normalizes these wall-clock values to HH:mm:ss without timezone conversion. Destroy replaced timepickers, hide them when closing the filter, and recognize picker clicks in the dropdown close guard.
 - List-filter fields follow the display types accepted by `CustomView::getColumnsListbyBlock()` (1, 2, 3), in addition to field visibility and permissions. Exclude line-item-only fields (5), password fields (4), and starred/tag fields (6); retain inventory totals with display type 3. Apply this in `Core_ListFilter_Model::isFilterField()` before building either flat metadata or block groups, including metadata reused when saving toolbar filters.
 
 - Reference filter inputs offer the existing `Vtiger_Popup_Js` record picker. Field metadata supplies allowed reference modules and translated module labels; polymorphic references use a Select2 module selector. Popup selection fills the record name while preserving the operator and edit position, since reference queries compare display names. Free text remains available for contains conditions.

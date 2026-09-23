@@ -736,7 +736,6 @@ class Vtiger_Util_Helper
             $listSearchParams = [];
         }
         $advFilterConditionFormat = [];
-        $glueOrder = ['and', 'or'];
         $groupIterator = 0;
         foreach ($listSearchParams as $groupInfo) {
             if (empty($groupInfo)) {
@@ -746,8 +745,16 @@ class Vtiger_Util_Helper
             }
             $groupConditionInfo = [];
             $groupColumnsInfo = [];
-            $groupConditionGlue = $glueOrder[$groupIterator];
-            foreach ($groupInfo as $fieldSearchInfo) {
+            $groupConditionGlue = strtolower($groupInfo['condition'] ?? ($groupIterator === 1 ? 'or' : 'and'));
+            if (!in_array($groupConditionGlue, ['and', 'or'], true)) {
+                $groupConditionGlue = 'and';
+            }
+            $groupFields = $groupInfo;
+            unset($groupFields['condition']);
+            foreach ($groupFields as $fieldSearchInfo) {
+                if (!is_array($fieldSearchInfo)) {
+                    continue;
+                }
                 $advFilterFieldInfoFormat = [];
                 $fieldName = $fieldSearchInfo[0];
                 preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
@@ -765,51 +772,25 @@ class Vtiger_Util_Helper
                 $operator = $fieldSearchInfo[1];
                 $fieldValue = $fieldSearchInfo[2];
 
-                //Request will be having in terms of AM and PM but the database will be having in 24 hr format so converting
-                //Database format
-
-                if ($fieldInfo && $fieldInfo->getFieldDataType() == "time") {
-                    $fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-                }
-
-                $specialDateTimeConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
-                if ($fieldName == 'date_start' || $fieldName == 'due_date' || ($fieldInfo && $fieldInfo->getFieldDataType() == "datetime") && !in_array(
-                        $operator,
-                        $specialDateTimeConditions
-                    )) {
-                    $dateValues = explode(',', $fieldValue);
-                    //Indicate whether it is fist date in the between condition
-                    $isFirstDate = true;
-                    foreach ($dateValues as $key => $dateValue) {
-                        $dateTimeCompoenents = explode(' ', $dateValue);
-                        if (empty($dateTimeCompoenents[1])) {
-                            if ($isFirstDate) {
-                                $dateTimeCompoenents[1] = '00:00:00';
-                            } else {
-                                $dateTimeCompoenents[1] = '23:59:59';
-                            }
-                        }
-                        $dateValue = implode(' ', $dateTimeCompoenents);
-                        $dateValues[$key] = $dateValue;
-                        $isFirstDate = false;
-                    }
-                    $fieldValue = implode(',', $dateValues);
-                }
-
+                // Values stay in display format; the shared module filter normalizes
+                // both quick and saved conditions at the query-generator boundary.
                 if ($fieldInfo) {
                     $columnName = $fieldInfo->getCustomViewColumnName();
                 }
                 $advFilterFieldInfoFormat['columnname'] = $columnName;
                 $advFilterFieldInfoFormat['comparator'] = $operator;
                 $advFilterFieldInfoFormat['value'] = $fieldValue;
-                $advFilterFieldInfoFormat['column_condition'] = $groupConditionGlue;
+                $fieldConditionGlue = strtolower($fieldSearchInfo[3] ?? $groupConditionGlue);
+                $advFilterFieldInfoFormat['column_condition'] = in_array($fieldConditionGlue, ['and', 'or'], true)
+                    ? $fieldConditionGlue
+                    : $groupConditionGlue;
                 $groupColumnsInfo[] = $advFilterFieldInfoFormat;
             }
             $noOfConditions = php7_count($groupColumnsInfo);
             //to remove the last column condition
             $groupColumnsInfo[$noOfConditions - 1]['column_condition'] = '';
             $groupConditionInfo['columns'] = $groupColumnsInfo;
-            $groupConditionInfo['condition'] = 'and';
+            $groupConditionInfo['condition'] = $groupConditionGlue;
             $advFilterConditionFormat[] = $groupConditionInfo;
             $groupIterator++;
         }

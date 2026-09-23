@@ -10,7 +10,7 @@
     <input type="hidden" class="listFilterHourFormat" value="{$CURRENT_USER_MODEL->get('hour_format')|escape}">
     <div class="dropdown">
         <button type="button" class="btn btn-sm text-nowrap text-secondary listFilterAdd" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-config='{literal}{"popperConfig":{"strategy":"fixed"}}{/literal}' aria-expanded="false" title="{vtranslate('LBL_RECORD_FILTERS', 'Core')|escape}">
-            <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>
+            <i class="fa-solid fa-filter" aria-hidden="true"></i>
             <span class="visually-hidden">{vtranslate('LBL_RECORD_FILTERS', 'Core')}</span>
             <span class="listFilterCount badge bg-primary ms-1 d-none"></span>
         </button>
