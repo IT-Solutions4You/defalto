@@ -478,11 +478,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
                     }
 
                     $temp_val = explode(",", $advFitlerValue);
-                    $specialDateConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
-                    if (($fieldType == 'date' || ($fieldType == 'time' && $fieldName != 'time_start' && $fieldName != 'time_end') || ($fieldType == 'datetime')) && ($fieldType != '' && $advFitlerValue != '') && !in_array(
-                            $advFilterComparator,
-                            $specialDateConditions
-                        )) {
+                    if (Core_FilterOperator_Model::isCalendarValue($fieldType, $fieldName, $advFilterComparator) && $advFitlerValue != '') {
                         $val = [];
                         for ($x = 0; $x < php7_count($temp_val); $x++) {
                             //if date and time given then we have to convert the date and
@@ -769,11 +765,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
                     $advfilterval = $fieldModel->getEditViewDisplayValue($advfilterval);
                 }
 
-                $specialDateConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
-                if (($col[4] == 'D' || ($col[4] == 'T' && $col[1] != 'time_start' && $col[1] != 'time_end') || ($col[4] == 'DT')) && !in_array(
-                        $criteria['comparator'],
-                        $specialDateConditions
-                    )) {
+                if (Core_FilterOperator_Model::isCalendarValue($col[4], $col[1], $criteria['comparator'])) {
                     $val = [];
                     for ($x = 0; $x < php7_count($temp_val); $x++) {
                         if (empty($temp_val[$x])) {
@@ -1365,49 +1357,65 @@ class CustomView_Record_Model extends Vtiger_Base_Model
     }
 
     /**
-     * Function used to transform the older filter condition to suit newer filters.
-     * The newer filters have only two groups one with ALL(AND) condition between each
-     * filter and other with ANY(OR) condition, this functions tranforms the older
-     * filter with 'AND' condition between filters of a group and will be placed under
-     * match ALL conditions group and the rest of it will be placed under match Any group.
-     * @return <Array>
+     * Transform stored custom-view criteria into sequential editor groups.
+     *
+     * @return array
      */
     function transformToNewAdvancedFilter()
     {
         $standardFilter = $this->transformStandardFilter();
         $advancedFilter = $this->getAdvancedCriteria();
-        $allGroupColumns = $anyGroupColumns = [];
-        foreach ($advancedFilter as $index => $group) {
-            $columns = $group['columns'];
-            $and = $or = 0;
-            $block = $group['condition'];
-            if (php7_count($columns) != 1) {
-                foreach ($columns as $column) {
-                    if ($column['column_condition'] == 'and') {
-                        ++$and;
-                    } else {
-                        ++$or;
-                    }
-                }
-                if ($and == php7_count($columns) - 1 && php7_count($columns) != 1) {
-                    $allGroupColumns = array_merge($allGroupColumns, $group['columns']);
-                } else {
-                    $anyGroupColumns = array_merge($anyGroupColumns, $group['columns']);
-                }
-            } elseif ($block == 'and' || $index == 1) {
-                $allGroupColumns = array_merge($allGroupColumns, $group['columns']);
-            } else {
-                $anyGroupColumns = array_merge($anyGroupColumns, $group['columns']);
-            }
-        }
-        if ($standardFilter) {
-            $allGroupColumns = array_merge($allGroupColumns, $standardFilter);
-        }
         $transformedAdvancedCondition = [];
-        $transformedAdvancedCondition[1] = ['columns' => $allGroupColumns, 'condition' => 'and'];
-        $transformedAdvancedCondition[2] = ['columns' => $anyGroupColumns, 'condition' => ''];
 
-        return $transformedAdvancedCondition;
+        foreach ($advancedFilter as $group) {
+            $columns = array_values(array_filter($group['columns'] ?? [], static function (array $column): bool {
+                return !empty($column['columnname']) && $column['columnname'] !== 'none';
+            }));
+            if (!$columns) {
+                continue;
+            }
+
+            $transformedAdvancedCondition[] = [
+                'columns' => $columns,
+                'condition' => in_array(($group['condition'] ?? ''), ['and', 'or'], true) ? $group['condition'] : 'and'
+            ];
+        }
+
+        if ($standardFilter) {
+            if (!$transformedAdvancedCondition) {
+                $transformedAdvancedCondition[] = ['columns' => [], 'condition' => 'and'];
+            }
+            $transformedAdvancedCondition[0]['columns'] = array_merge($transformedAdvancedCondition[0]['columns'], $standardFilter);
+        }
+
+        if (!$transformedAdvancedCondition) {
+            $transformedAdvancedCondition[] = ['columns' => [], 'condition' => 'and'];
+        }
+
+        $transformedAdvancedCondition = array_values($transformedAdvancedCondition);
+        foreach ($transformedAdvancedCondition as $index => &$group) {
+            $group['columns'] = array_values($group['columns']);
+            $withinJoin = 'and';
+            foreach ($group['columns'] as $column) {
+                if (!empty($column['column_condition'])) {
+                    $withinJoin = $column['column_condition'];
+                    break;
+                }
+            }
+
+            foreach ($group['columns'] as $columnIndex => &$column) {
+                $column['column_condition'] = $columnIndex === count($group['columns']) - 1 ? '' : $withinJoin;
+            }
+            unset($column);
+        }
+        unset($group);
+
+        $indexedConditions = [];
+        foreach ($transformedAdvancedCondition as $index => $group) {
+            $indexedConditions[$index + 1] = $group;
+        }
+
+        return $indexedConditions;
     }
 
     /*
@@ -1469,17 +1477,20 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         $criteria = $this->transformToNewAdvancedFilter();
         $fields = (new Core_ListFilter_Model())->getFields($this->getModule());
 
-        // Two independent OR groups cannot be flattened into the editor's one OR group.
-        if (!empty($searchParams[1]) && !empty($criteria[2]['columns'])) {
-            throw new Exception(vtranslate('LBL_FILTER_OR_GROUP_CONFLICT', 'Core'));
-        }
-
         foreach ($searchParams as $groupIndex => $conditions) {
             if (!in_array($groupIndex, [0, 1], true)) {
                 throw new Exception(vtranslate('LBL_INVALID_FILTER', 'Core'));
             }
 
+            if (!isset($criteria[$groupIndex + 1])) {
+                $criteria[$groupIndex + 1] = ['columns' => [], 'condition' => 'and'];
+            }
+
             foreach ($conditions as $condition) {
+                if (!is_array($condition)) {
+                    continue;
+                }
+
                 $field = $fields[$condition[0]] ?? null;
 
                 if (!$this->isListSearchCondition($condition, $field)) {
@@ -1490,7 +1501,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
                     'columnname' => $field['column'],
                     'comparator' => $condition[1],
                     'value' => $condition[2],
-                    'column_condition' => '',
+                    'column_condition' => $condition[3] ?? '',
                 ];
             }
         }
@@ -1498,9 +1509,16 @@ class CustomView_Record_Model extends Vtiger_Base_Model
         foreach ($criteria as $groupIndex => &$group) {
             $group['columns'] = array_values($group['columns']);
             $last = count($group['columns']) - 1;
+            $withinJoin = 'and';
+            foreach ($group['columns'] as $column) {
+                if (!empty($column['column_condition'])) {
+                    $withinJoin = $column['column_condition'];
+                    break;
+                }
+            }
 
             foreach ($group['columns'] as $index => &$column) {
-                $column['column_condition'] = $index === $last ? '' : ($groupIndex === 1 ? 'and' : 'or');
+                $column['column_condition'] = $index === $last ? '' : $withinJoin;
             }
 
             unset($column);
@@ -1508,12 +1526,24 @@ class CustomView_Record_Model extends Vtiger_Base_Model
 
         unset($group);
 
-        return $criteria;
+        $criteria = array_values(array_filter($criteria, static function (array $group): bool {
+            return !empty($group['columns']);
+        }));
+        if (!$criteria) {
+            $criteria[] = ['columns' => [], 'condition' => 'and'];
+        }
+
+        $indexedCriteria = [];
+        foreach ($criteria as $index => $group) {
+            $indexedCriteria[$index + 1] = $group;
+        }
+
+        return $indexedCriteria;
     }
 
     public function isListSearchCondition(array $condition, ?array $field): bool
     {
-        return count($condition) === 3 && $field !== null
+        return in_array(count($condition), [3, 4], true) && $field !== null
             && isset($field['operators'][$condition[1]]) && is_scalar($condition[2]);
     }
 

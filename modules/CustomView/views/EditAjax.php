@@ -63,14 +63,7 @@ class CustomView_EditAjax_View extends Vtiger_IndexAjax_View
             $advanceCriteria = $customViewModel->transformToNewAdvancedFilter();
         }
 
-        $dateFilters = Vtiger_Field_Model::getDateFilterTypes();
-
-        foreach ($dateFilters as $comparatorKey => $comparatorInfo) {
-            $comparatorInfo['startdate'] = DateTimeField::convertToUserFormat($comparatorInfo['startdate']);
-            $comparatorInfo['enddate'] = DateTimeField::convertToUserFormat($comparatorInfo['enddate']);
-            $comparatorInfo['label'] = vtranslate($comparatorInfo['label'], $module);
-            $dateFilters[$comparatorKey] = $comparatorInfo;
-        }
+        $dateFilters = Vtiger_Field_Model::getDisplayDateFilterTypes();
 
         $advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
         $currentUserModel = Users_Record_Model::getCurrentUserModel();

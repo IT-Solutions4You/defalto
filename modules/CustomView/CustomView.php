@@ -1095,11 +1095,7 @@ class CustomView extends CRMEntity
                         $advfilterval = $fieldModel->getDBInsertValue($advfilterval);
                     }
 
-                    $specialDateTimeConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
-                    if (($col[4] == 'D' || ($col[4] == 'T' && $col[1] != 'time_start' && $col[1] != 'time_end') || ($col[4] == 'DT')) && !in_array(
-                            $criteria['comparator'],
-                            $specialDateTimeConditions
-                        )) {
+                    if (Core_FilterOperator_Model::isCalendarValue($col[4], $col[1], $criteria['comparator'])) {
                         $val = [];
                         for ($x = 0; $x < php7_count($temp_val); $x++) {
                             if (empty($temp_val[$x])) {
