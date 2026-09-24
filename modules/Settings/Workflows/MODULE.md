@@ -1,5 +1,10 @@
 # Workflow management
 
+- Add-condition and add-group buttons share the saved-list editor's standard `btn btn-outline-secondary` size with inline flex alignment and `gap-2` for the plus icon. The add-group button explicitly uses `border`. Only individual condition groups have panel borders; the editor has no outer bordered wrapper. Never use `table table-bordered` on filter containers: table descendant rules override borders on nested controls.
+- `AdvanceFilter.tpl` reuses the shared skin's `filterConditionContainer` header and row spacing and full-width controls. Condition rows use the saved-list editor's 4/3/flexible/auto column layout: the value fills remaining space and the delete button occupies only its own width. Keep this markup in `AdvanceFilterCondition.tpl` so saved rows and cloned rows match; workflow comparator and value-type contracts remain separate from list filters.
+
+- The condition editor uses a wrapping flex header with a nonwrapping group title and `w-auto` small operator select. Group delete buttons use `btn-sm`, matching the shared dynamic-group renderer. Connector padding owns inter-group spacing; keep group bottom margins zero and the add-group button's top margin separate. Use Bootstrap utilities in the template rather than inline style overrides.
+
 - `CreateEntity.tpl` passes the source workflow `MODULE_MODEL` to `VTCreateEntityTask::getFieldInfo()` for saved mappings, mandatory fields, and newly added fields. Parent owner options must come from the source module, while ordinary user/group choices remain those of the destination field.
 
 - `VTTrashTask` uses the standard task selector/editor and `Tasks/VTTrashTask.tpl`. The `deletionMode` select is saved through the task getFieldNames contract and defaults to trash; permanent deletion is explicitly selected and described as non-restorable. Labels and explanations belong to Settings/Workflows language files. Task execution belongs to `modules/com_vtiger_workflow`; trigger selection and task filtering retain their existing behavior. Workflow execution/management have no root installable module version.

@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    <div class="row conditionRow mb-3">
+    <div class="row conditionRow">
         <div class="col-lg-4 col-md-4 col-sm-4">
             {assign var=FIELD_TYPE value='string'}
             <select class="{if empty($NOCHOSEN)}select2{/if} col-lg-12" name="columnname" data-placeholder="{vtranslate('LBL_SELECT_FIELD',$QUALIFIED_MODULE)}">
@@ -70,8 +70,8 @@
                 {/foreach}
             </select>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-4  fieldUiHolder">
-            <input name="{if isset($SELECTED_FIELD_MODEL) && $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}"/>
+        <div class="col-lg col-md col-sm fieldUiHolder">
+            <input name="{if isset($SELECTED_FIELD_MODEL) && $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="form-control inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}"/>
         </div>
         <div class="hide">
             <!-- TODO : see if you need to respect CONDITION_INFO condition or / and  -->
@@ -80,10 +80,10 @@
             {/if}
             <input type="hidden" name="column_condition" value="{$CONDITION}"/>
         </div>
-        <div class="col-lg-1">
-            <div class="btn btn-outline-secondary deleteCondition cursorPointer" title="{vtranslate('LBL_DELETE', $MODULE)}">
+        <div class="col-lg-auto col-md-auto col-sm-auto text-end">
+            <button type="button" class="btn btn-outline-secondary deleteCondition" title="{vtranslate('LBL_DELETE', $MODULE)}">
                 <i class="fa fa-trash"></i>
-            </div>
+            </button>
         </div>
     </div>
 {/strip}

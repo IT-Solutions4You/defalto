@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    <div class="filterContainer bg-body">
+    <div class="filterContainer filterConditionContainer bg-body">
         <input type="hidden" name="date_filters" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATE_FILTERS))}'/>
         <input type=hidden name="advanceFilterOpsByFieldType" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($ADVANCED_FILTER_OPTIONS_BY_TYPE))}'/>
         {foreach key=ADVANCE_FILTER_OPTION_KEY item=ADVANCE_FILTER_OPTION from=$ADVANCED_FILTER_OPTIONS}
@@ -22,15 +22,15 @@
             {if $GROUP_KEY eq 1 || !empty($GROUP_INFO['columns'])}
             {assign var=GROUP_TITLE value=vtranslate('LBL_GROUP','Core')|cat:' '|cat:$GROUP_KEY}
             {assign var=GROUP_DESCRIPTION value=''}
-            <div class="conditionGroup contentsBackground border rounded p-3 mb-3" data-group-id="{$GROUP_KEY-1}">
-                <div class="header d-flex align-items-center gap-2">
-                    <strong class="groupTitle">{$GROUP_TITLE}</strong>
+            <div class="conditionGroup contentsBackground border rounded p-3 mb-0" data-group-id="{$GROUP_KEY-1}">
+                <div class="header d-flex flex-wrap align-items-center gap-2">
+                    <strong class="groupTitle text-nowrap">{$GROUP_TITLE}</strong>
                     {if !empty($GROUP_DESCRIPTION)}<span class="groupDescription">({$GROUP_DESCRIPTION})</span>{/if}
-                    <select name="conditionOperator" class="form-select form-select-sm conditionOperator" title="{vtranslate('LBL_GROUP',$MODULE)}">
+                    <select name="conditionOperator" class="form-select form-select-sm conditionOperator w-auto" title="{vtranslate('LBL_GROUP',$MODULE)}">
                         <option value="and" {if $WITHIN_JOIN eq 'and'}selected{/if}>AND</option>
                         <option value="or" {if $WITHIN_JOIN eq 'or'}selected{/if}>OR</option>
                     </select>
-                    {if $GROUP_KEY gt 2}<button type="button" class="btn btn-outline-secondary deleteGroup" title="{vtranslate('LBL_DELETE',$MODULE)}"><i class="fa fa-trash"></i></button>{/if}
+                    {if $GROUP_KEY gt 2}<button type="button" class="btn btn-sm btn-outline-secondary deleteGroup" title="{vtranslate('LBL_DELETE',$MODULE)}"><i class="fa fa-trash"></i></button>{/if}
                 </div>
                 <div class="contents">
                     <div class="conditionList">
@@ -42,7 +42,7 @@
                         {include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION="and" CONDITION_INFO=array() NOCHOSEN=true}
                     </div>
                     <div class="addCondition">
-                        <button type="button" class="btn btn-outline-secondary">{vtranslate('LBL_ADD_CONDITION',$MODULE)}</button>
+                        <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2"><i class="fa fa-plus" aria-hidden="true"></i><span>{vtranslate('LBL_ADD_CONDITION',$MODULE)}</span></button>
                     </div>
                     <div class="groupCondition hide"><input type="hidden" name="condition" value="{$GROUP_JOIN}"/></div>
                 </div>
@@ -55,6 +55,6 @@
             </div>
             {/if}
         {/foreach}
-        <button type="button" class="btn btn-outline-secondary addGroup"><i class="fa fa-plus"></i> {vtranslate('LBL_GROUP','Core')}</button>
+        <button type="button" class="btn btn-outline-secondary border d-inline-flex align-items-center gap-2 addGroup mt-3"><i class="fa fa-plus" aria-hidden="true"></i><span>{vtranslate('LBL_GROUP','Core')}</span></button>
     </div>
 {/strip}
