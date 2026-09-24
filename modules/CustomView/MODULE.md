@@ -1,5 +1,7 @@
 # Ownership and contracts
 
+- Empty advanced criteria normalize to a group containing `columns: []` and connector metadata. The shared Vtiger template checks the columns to show a single initial blank row; do not remove the normalized metadata to control presentation.
+
 - Saved-view and quick-list operator presentation delegates through `Core_FilterOperator_Model` to the source module's `Core_Filter_Model` instance. `EditAjax` uses `Vtiger_Field_Model::getDisplayDateFilterTypes()` so date labels and period units are translated consistently. `Core_FilterOperator_Model::isCalendarValue()` excludes relative day/hour quantities and `lastperiod` from date-format conversion in persistence and readback. Readback remains in user display format; both query generators then use the same module filter's `getQueryCondition()` as quick filtering.
 - Time criteria retain their existing persistence/display conversion and special handling for time_start/time_end. Validate save/reopen of time ranges and relative periods as well as immediate quick-filter execution.
 
