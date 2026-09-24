@@ -29,7 +29,7 @@
 	<div class="conditionGroup contentsBackground border rounded p-3 mb-0" data-group-id="{$GROUP_KEY-1}" style="padding-bottom:15px;">
         <div class="header">
 			<strong class="groupTitle">{vtranslate('LBL_GROUP','Core')} {$GROUP_KEY}</strong>
-			<select name="conditionOperator" class="form-select form-select-sm conditionOperator d-inline-block w-auto ms-2">
+			<select name="conditionOperator" class="form-select form-select-sm conditionOperator d-inline-block w-auto mx-2">
 				<option value="and" {if $WITHIN_JOIN eq 'and'}selected{/if}>AND</option>
 				<option value="or" {if $WITHIN_JOIN eq 'or'}selected{/if}>OR</option>
 			</select>
@@ -66,6 +66,6 @@
 	</div>
 	{/if}
 	{/foreach}
-	<button type="button" class="btn btn-outline-secondary addGroup mt-3"><i class="fa fa-plus"></i> {vtranslate('LBL_GROUP','Core')}</button>
+	<button type="button" class="btn btn-outline-secondary border addGroup mt-3"><i class="fa fa-plus"></i> {vtranslate('LBL_GROUP','Core')}</button>
 </div>
 {/strip}

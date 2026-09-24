@@ -296,6 +296,30 @@ Vtiger.Class("Vtiger_List_Js", {
         var listViewContainer = this.getListViewContainer();
         return listViewContainer.find('[name="cvid"]').val();
     },
+    updateListUrl: function () {
+        if (app.view() !== 'List' || app.getParentModuleName() === 'Settings') {
+            return;
+        }
+
+        const viewId = this.getCurrentCvId();
+
+        if (!viewId) {
+            return;
+        }
+
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('viewname', viewId);
+        url.searchParams.set('search_params', JSON.stringify(this.getListSearchParams(false)));
+
+        const state = window.history.state ? jQuery.extend({}, window.history.state, {url: url.href}) : null;
+
+        window.history.replaceState(state, '', url.href);
+
+        if (jQuery.pjax && jQuery.pjax.state) {
+            jQuery.pjax.state.url = url.href;
+        }
+    },
     getModuleName: function () {
         if (this._moduleName != false) {
             return this._moduleName;
@@ -478,6 +502,7 @@ Vtiger.Class("Vtiger_List_Js", {
             self.listFilter.showFilterChips();
         }
 
+        self.updateListUrl();
         app.event.trigger('post.listViewFilter.click', jQuery('.searchRow'));
         app.helper.hideProgress();
         self.markSelectedIdsCheckboxes();
@@ -2641,6 +2666,7 @@ Vtiger.Class("Vtiger_List_Js", {
             self.listFilter.registerEvents();
         }
 
+        self.updateListUrl();
         self.registerDeleteRecordClickEvent();
         self.registerCheckBoxClickEvent();
         self.registerSelectAllClickEvent();

@@ -617,7 +617,7 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
     registerAddCondition: function () {
         let self = this;
 
-        self.getAddConditionElement().on('click', function (e) {
+        self.getFilterContainer().on('click', '.addCondition button', function (e) {
             self.addConditionHandler(e);
         });
     },
