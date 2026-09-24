@@ -1,3 +1,12 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
+
 {strip}
 {assign var=SAVED_FILTER_COUNT value=0}
 {if $CURRENT_CV_MODEL}
@@ -21,7 +30,10 @@
                     <div class="fw-semibold mb-1">{$CURRENT_CV_MODEL->getDisplayName()|escape} <span class="badge bg-info text-dark">{$SAVED_FILTER_COUNT}</span></div>
                     <div>{vtranslate('LBL_SAVED_LIST_FILTER_NOTICE', 'Core')}</div>
                     {if $CURRENT_CV_MODEL->isCvEditable()}
-                        <button type="button" class="btn btn-sm btn-outline-secondary mt-2 listFilterSavedEdit" data-cv-edit-url="{$CURRENT_CV_MODEL->getEditUrl()|escape}">{vtranslate('LBL_EDIT_SAVED_LIST_FILTER', 'Core')}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary bg-white text-dark mt-2 listFilterSavedEdit" data-cv-edit-url="{$CURRENT_CV_MODEL->getEditUrl()|escape}">
+                            <i class="fa-solid fa-pen me-2" aria-hidden="true"></i>
+                            <span>{vtranslate('LBL_EDIT_SAVED_LIST_FILTER', 'Core')}</span>
+                        </button>
                     {/if}
                 </div>
             {/if}

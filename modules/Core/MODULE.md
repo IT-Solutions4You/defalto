@@ -1,5 +1,7 @@
 # Core UI ownership
 
+- The saved-condition edit action in `ListFilter.tpl` uses a decorative pen icon and Bootstrap white-background/dark-text utilities for contrast inside the informational alert. Keep its `listFilterSavedEdit` class and edit URL data attribute for the existing delegated handler.
+
 - Core language files expose `LBL_GROUP` in both PHP and JavaScript dictionaries. Shared advanced filters render existing group titles through `vtranslate()` and dynamically added titles through `app.vtranslate()`; keep the translations aligned.
 
 ## Module-specific filter objects

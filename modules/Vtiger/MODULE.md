@@ -11,6 +11,12 @@
 
 # Shared filter processing
 
+- The shared `AdvanceFilter.tpl` supplies the CustomView saved-list editor. Its add-group button uses Bootstrap `border` for a complete outline; keep table border classes away from non-table filter containers.
+
+- Temporary `search_params` belong to the current list request/URL. `Vtiger_ListView_Model` excludes them from shared sort-session writes and returns an empty search fallback when reading legacy session arrays; scalar tag entries and other preferences retain their contracts. List JavaScript pins the rendered `viewname` and conditions in the current URL on initialization and successful refresh, preserving PJAX history metadata. Empty filters must remain explicit so another tab's conditions cannot be restored. Switching saved views uses the existing reset flow; exports and mass actions use the current DOM state. Validate two tabs, reload, clearing, view switching and failed AJAX requests.
+
+- Delegate add-condition clicks from the filter container to `.addCondition button`. New groups are cloned without events, so direct bindings on initially rendered buttons do not cover them. `addConditionHandler()` resolves the clicked button's group and uses the existing row initialization.
+
 - Group delete buttons use Bootstrap `btn-sm` to match the `form-select-sm` operator control, both in `AdvanceFilter.tpl` and in the dynamically generated markup in `AdvanceFilter.js`.
 
 - `AdvanceFilter.tpl` uses the connector's `py-2` for spacing between groups, without an additional group bottom margin. The add-group button owns its separate top margin; dynamically cloned groups retain the same spacing.

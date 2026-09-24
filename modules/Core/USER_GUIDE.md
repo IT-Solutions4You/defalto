@@ -1,5 +1,7 @@
 # List filters
 
+When a saved list already contains conditions, its notice offers a white Edit saved conditions button with a pen icon if you have permission to edit the list. Use it to change the saved conditions.
+
 The saved-list editor displays numbered condition groups in your selected language, including groups added while editing.
 
 Use the funnel icon beside the column selector to narrow the current list. Choose a field, a condition and its value, then select Apply. Text, numbers, selections, owners, related records and dates use the same conditions as the saved-list editor.
