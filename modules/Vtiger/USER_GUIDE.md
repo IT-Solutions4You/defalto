@@ -1,5 +1,7 @@
 # Shared record lists
 
+A new saved-list filter starts with one empty condition ready for field selection. Choose a field, comparison and value, then add more conditions as needed.
+
 Each open list keeps its selected saved view and temporary conditions in its own address. You can leave All open in one tab and build conditions in another without changing the first tab, including after a refresh. Switching to another saved view clears temporary conditions. Copy the current address to reopen the same view and conditions.
 
 Use Add condition inside any group, including a newly added group, to add another condition to that group without reopening the editor.

@@ -40,7 +40,7 @@
 			 {foreach item=CONDITION_INFO from=$GROUP_INFO['columns']|default:array()}
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE CONDITION_INFO=$CONDITION_INFO MODULE=$MODULE CONDITION=$CONDITION_INFO['column_condition']|default:$GROUP_JOIN}
 			{/foreach}
-			{if $SHOW_DEFAULT_CONDITIONS && php7_count($GROUP_INFO) eq 0}
+			{if $SHOW_DEFAULT_CONDITIONS && empty($GROUP_INFO['columns'])}
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION_INFO=array() CONDITION=$GROUP_JOIN}
 			{/if}
 			</div>
