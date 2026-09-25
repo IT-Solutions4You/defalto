@@ -460,9 +460,12 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
                 if (!empty($columns) && is_array($columns)) {
                     $groupId = (int)$index - 1;
                     $groupJoin = strtolower($condition['condition'] ?? 'and');
+
                     if (!in_array($groupJoin, ['and', 'or'], true)) {
                         throw new InvalidArgumentException(vtranslate('LBL_INVALID_WORKFLOW_CONDITIONS', 'Settings:Workflows'));
                     }
+
+                    $lastColumn = array_key_last($columns);
 
                     foreach ($columns as $columnIndex => $column) {
                         $wfCondition[] = [
@@ -470,7 +473,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model
                             'operation'     => $column['comparator'] ?? '',
                             'value'         => $column['value'] ?? '',
                             'valuetype'     => $column['valuetype'] ?? 'rawtext',
-                            'joincondition' => $columnIndex === count($columns) - 1 ? '' : ($column['column_condition'] ?? ($groupId === 1 ? 'or' : 'and')),
+                            'joincondition' => $columnIndex === $lastColumn ? '' : ($column['column_condition'] ?? ($groupId === 1 ? 'or' : 'and')),
                             'groupjoin'     => $groupJoin,
                             'groupid'       => $groupId
                         ];

@@ -82,84 +82,40 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
         return !invalid;
     },
 
-    getFieldSpecificType: function (fieldSelected) {
-        const fieldInfo = fieldSelected.data('fieldinfo');
-
-        return fieldInfo.type;
-    },
-
     getModuleName: function () {
         return app.getModuleName();
     },
 
+    loadConditions: function (fieldSelect) {
+        const select = fieldSelect.closest('.conditionRow').find('select[name="comparator"]'),
+            field = fieldSelect.find('option:selected');
 
-    /**
-     * Function to add new condition row
-     * @params : condtionGroupElement - group where condtion need to be added
-     * @return : current instance
-     */
-    addNewCondition: function (conditionGroupElement) {
-        var basicElement = jQuery('.basic', conditionGroupElement);
-        var newRowElement = basicElement.find('.conditionRow').clone(true, true);
-        jQuery('select', newRowElement).addClass('select2');
-        var conditionList = jQuery('.conditionList', conditionGroupElement);
-        conditionList.append(newRowElement);
+        // Older compiled templates provide field types, but no per-field operator map.
+        if (!field.data('conditionOperators')) {
+            field.data('conditionOperators', this.getLegacyFieldOperators(field));
+        }
 
-        //change in to chosen elements
-        vtUtils.showSelect2ElementView(newRowElement.find('select.select2'));
-        newRowElement.find('[name="columnname"]').find('optgroup:first option:first').attr('selected', 'selected').trigger('change');
-        return this;
+        select.removeData('workflowComparatorOptions');
+        this._super(fieldSelect);
+        this.updateCreationConditionOptions(select);
+        select.addClass('validate[required]');
+        return select;
     },
 
-    /**
-     * Function to load condition list for the selected field
-     * (overrrided to remove "has changed" condition for related record fields in workflows)
-     * @params : fieldSelect - select element which will represents field list
-     * @return : select element which will represent the condition element
-     */
-    loadConditions: function (fieldSelect) {
-        var row = fieldSelect.closest('div.conditionRow');
-        var conditionSelectElement = row.find('select[name="comparator"]');
-        var conditionSelected = conditionSelectElement.val();
-        var fieldSelected = fieldSelect.find('option:selected');
-        var fieldLabel = fieldSelected.val();
-        var match = fieldLabel.match(/\((\w+)\) (\w+)/);
-        var fieldSpecificType = this.getFieldSpecificType(fieldSelected)
-        var conditionList = this.getConditionListFromType(fieldSpecificType);
-        //for none in field name
-        if (typeof conditionList == 'undefined') {
-            conditionList = {};
-            conditionList['none'] = '';
-        }
-        var options = '';
-        for (var key in conditionList) {
-            //IE Browser consider the prototype properties also, it should consider has own properties only.
-            if (conditionList.hasOwnProperty(key)) {
-                var conditionValue = conditionList[key];
-                var conditionLabel = this.getConditionLabel(conditionValue);
-                if (match != null) {
-                    if (!['has changed', 'has been set or changed', 'has been set or changed to', 'has been set or changed from'].includes(conditionValue)) {
-                        options += '<option value="' + conditionValue + '"';
-                        if (conditionValue == conditionSelected) {
-                            options += ' selected="selected" ';
-                        }
-                        options += '>' + conditionLabel + '</option>';
-                    }
-                } else {
-                    options += '<option value="' + conditionValue + '"';
-                    if (conditionValue == conditionSelected) {
-                        options += ' selected="selected" ';
-                    }
-                    options += '>' + conditionLabel + '</option>';
-                }
+    getLegacyFieldOperators: function (field) {
+        const info = field.data('fieldinfo'),
+            operators = this.fieldTypeConditionMapping[info ? info.type : ''] || [],
+            related = /\((\w+)\) (\w+)/.test(field.val() || ''),
+            excluded = ['has changed', 'has been set or changed', 'has been set or changed to', 'has been set or changed from'],
+            result = {};
+
+        operators.forEach(operator => {
+            if (!related || !excluded.includes(operator)) {
+                result[operator] = this.getConditionLabel(operator);
             }
-        }
-        conditionSelectElement.removeData('workflowComparatorOptions');
-        conditionSelectElement.empty().html(options).trigger('change');
-        this.updateCreationConditionOptions(conditionSelectElement);
-        // adding validation to comparator field
-        conditionSelectElement.addClass('validate[required]');
-        return conditionSelectElement;
+        });
+
+        return result;
     },
 
     /**
@@ -257,16 +213,15 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
 
                 rowValues['groupid'] = String(groupElement.data('group-id') || index);
 
-                if (rowElement.is(":last-child")) {
-                    rowValues['column_condition'] = '';
-                }
-
-                rowValues['column_condition'] = rowElement.is(':last-child') ? '' : (groupElement.find('.conditionOperator').val() || 'and');
+                rowValues['column_condition'] = rowValues['column_condition'] || 'and';
                 iterationValues[columnIndex] = rowValues;
                 columnIndex++;
             });
 
             if (!jQuery.isEmptyObject(iterationValues)) {
+                const columnKeys = Object.keys(iterationValues);
+
+                iterationValues[columnKeys[columnKeys.length - 1]]['column_condition'] = '';
                 values[index + 1] = {};
                 //values[index+1]['columns'] = {};
                 values[index + 1]['columns'] = iterationValues;

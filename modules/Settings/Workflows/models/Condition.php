@@ -25,7 +25,7 @@ class Settings_Workflows_Condition_Model
         foreach ($conditions as $index => $condition) {
             if (!is_array($condition)
                 || count(array_intersect(['fieldname', 'operation', 'value', 'valuetype', 'groupid', 'groupjoin', 'joincondition'], array_keys($condition))) !== 7
-                || $condition['groupjoin'] !== 'and'
+                || !in_array($condition['groupjoin'], ['and', 'or'], true)
                 || $condition['groupid'] != $normalized[$index]['groupid']) {
                 return false;
             }
@@ -36,7 +36,7 @@ class Settings_Workflows_Condition_Model
 
     /**
      * Return editor-compatible conditions without changing their boolean meaning.
-     * Unsupported expressions remain legacy; never infer groups from groupjoin.
+     * Preserve row order and outgoing AND/OR connectors, as in saved lists.
      */
     public static function getEditableConditions($conditions): ?array
     {
@@ -72,10 +72,9 @@ class Settings_Workflows_Condition_Model
         $result = [];
 
         foreach ($groups as $group => $rows) {
-            $operator = null;
             $groupJoin = null;
 
-            foreach ($rows as $index => $row) {
+            foreach ($rows as $row) {
                 $rowGroupJoin = ($row['groupjoin'] ?? '') ?: 'and';
 
                 if ($groupJoin !== null && $groupJoin !== $rowGroupJoin) {
@@ -83,38 +82,24 @@ class Settings_Workflows_Condition_Model
                 }
 
                 $groupJoin = $rowGroupJoin;
-
-                if ($index === count($rows) - 1) {
-                    continue;
-                }
-
                 $join = ($row['joincondition'] ?? '') ?: 'and';
 
-                if (!in_array($join, ['and', 'or'], true) || ($operator !== null && $operator !== $join)) {
+                if (!in_array($join, ['and', 'or'], true)) {
                     return null;
                 }
-
-                $operator = $join;
             }
 
             $targetGroup = (int)$group;
-            $lastJoin = $rows[count($rows) - 1]['joincondition'] ?? '';
-
-            if ($operator !== null && $lastJoin !== '' && $lastJoin !== $operator) {
-                return null;
-            }
 
             foreach ($rows as $index => $row) {
                 $row['value'] = $row['value'] ?? '';
                 $row['valuetype'] = ($row['valuetype'] ?? '') ?: 'rawtext';
                 $row['groupid'] = (string)$targetGroup;
                 $row['groupjoin'] = $groupJoin;
-                $row['joincondition'] = $index === count($rows) - 1 ? '' : $operator;
+                $row['joincondition'] = $index === count($rows) - 1 ? '' : (($row['joincondition'] ?? '') ?: 'and');
                 $result[$targetGroup][] = $row;
             }
         }
-
-        ksort($result);
 
         return $result ? array_merge(...array_values($result)) : [];
     }
