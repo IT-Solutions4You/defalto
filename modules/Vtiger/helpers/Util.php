@@ -787,6 +787,12 @@ class Vtiger_Util_Helper
                 $groupColumnsInfo[] = $advFilterFieldInfoFormat;
             }
             $noOfConditions = php7_count($groupColumnsInfo);
+
+            if ($noOfConditions === 0) {
+                $groupIterator++;
+                continue;
+            }
+
             //to remove the last column condition
             $groupColumnsInfo[$noOfConditions - 1]['column_condition'] = '';
             $groupConditionInfo['columns'] = $groupColumnsInfo;

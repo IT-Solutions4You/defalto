@@ -34,7 +34,7 @@
                                     <div class="textAlignCenter well contentsBackground">{vtranslate('LBL_PLEASE_SELECT_MODULE',$MODULE)}</div>
                                 {else}
                                     <input type="hidden" name="searchFields" data-value='{ZEND_JSON::encode($SEARCH_FIELD_NAMES)}' />
-                                    {include file='AdvanceFilter.tpl'|@vtemplate_path SHOW_DEFAULT_CONDITIONS=false}
+                                    {include file='AdvanceFilter.tpl'|@vtemplate_path SHOW_DEFAULT_CONDITIONS=true}
                                 {/if}
                             </form>
                         </div>

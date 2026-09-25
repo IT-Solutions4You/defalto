@@ -13,11 +13,10 @@ Vtiger_AdvanceFilter_Js('Vtiger_SearchAdvanceFilter_Js', {}, {
 
     /**
      * Function to get the advance filter values
-     * This will call the base to get the values and dont send group condition if there is not condition
-     * exists in the next condition group
+     * Keep outgoing connectors between populated groups and clear the final connector.
      *
      * @params cleanGroupConditions <Boolean> - states whether to clean group conditions or not -- default true
-     *   this will remove group condition if next condition group dont have any conditions
+     *   clears the connector after the last populated group
      */
     getValues: function (cleanGroupConditions) {
 
@@ -31,21 +30,15 @@ Vtiger_AdvanceFilter_Js('Vtiger_SearchAdvanceFilter_Js', {}, {
             return values;
         }
 
-        for (var key in values) {
-            var conditionGroupInfo = values[key];
-            var nextConditionGroupInfo = values[parseInt(key) + 1]
+        const groupKeys = Object.keys(values).filter(function (key) {
+            return !jQuery.isEmptyObject(values[key]['columns']);
+        });
 
-            //there is not next condition group so no need to perform the caliculation
-            if (typeof nextConditionGroupInfo == 'undefined') {
-                continue;
-            }
-            var nextConditionColumns = nextConditionGroupInfo['columns'];
-
-            // if you dont have conditions in next group we should not send group condition in current condition group
-            if (jQuery.isEmptyObject(nextConditionColumns)) {
-                delete conditionGroupInfo['condition']
-            }
+        // Empty intermediate groups must not discard the preceding group's connector.
+        if (groupKeys.length) {
+            delete values[groupKeys[groupKeys.length - 1]]['condition'];
         }
+
         return values;
     }
 });

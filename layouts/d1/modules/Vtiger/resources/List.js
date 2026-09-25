@@ -2543,14 +2543,8 @@ Vtiger.Class("Vtiger_List_Js", {
 
                     //add available field to selected list
                     availFieldsList.on('click', '.item', function (e) {
-                        var selectedFieldsEles = selectedFieldsList.find('.item');
-                        var limit = jQuery('#maxListFieldsSelectionSize').text();
-                        if (selectedFieldsEles.length > limit) {
-                            app.helper.showErrorNotification({message: app.vtranslate('JS_YOU_CAN_SELECT_ONLY') + ' ' + limit + ' ' + app.vtranslate('JS_ITEMS')});
-                            return false;
-                        }
-                        var sourceFieldEle = jQuery(e.currentTarget);
-                        var targetFieldEle = selectedFieldsListContainer.find('.item-dummy').clone();
+                        const sourceFieldEle = jQuery(e.currentTarget),
+                            targetFieldEle = selectedFieldsListContainer.find('.item-dummy').clone();
                         targetFieldEle.removeClass('hide item-dummy').addClass('item');
                         targetFieldEle.attr('data-cv-columnname', sourceFieldEle.attr('data-cv-columnname'));
                         targetFieldEle.attr('data-columnname', sourceFieldEle.attr('data-columnname'));

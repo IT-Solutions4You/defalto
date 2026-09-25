@@ -67,6 +67,7 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
         this.changeFieldElementsView(this.getFilterContainer());
         this.initializeOperationMappingDetails();
         this.loadFieldSpecificUiForAll();
+        this.refreshConditionConnectors();
     },
 
     changeFieldElementsView: function (elementsContainer) {
@@ -178,10 +179,11 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
             newRowElement = basicElement.find('.conditionRow').clone(true, true),
             conditionList = jQuery('.conditionList', conditionGroupElement);
 
-        newRowElement.find('select').addClass('select2');
+        newRowElement.find('select').not('[name="column_condition"]').addClass('select2');
         newRowElement.appendTo(conditionList);
 
         vtUtils.showSelect2ElementView(newRowElement.find('select.select2'));
+        this.refreshConditionConnectors();
 
         return this;
     },
@@ -589,13 +591,19 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
                     }
                 }
 
-                if (rowElement.is(":last-child")) {
-                    rowValues['column_condition'] = '';
-                }
-                rowValues['column_condition'] = rowElement.is(':last-child') ? '' : (groupElement.find('.conditionOperator').val() || 'and');
+                rowValues['column_condition'] = rowElement.find('.rowConditionConnector').length
+                    ? rowValues['column_condition'] || 'and'
+                    : groupElement.find('.conditionOperator').val() || 'and';
                 values[index + 1]['columns'][columnIndex] = rowValues;
                 columnIndex++;
             });
+
+            const columnKeys = Object.keys(values[index + 1]['columns']);
+
+            if (columnKeys.length) {
+                values[index + 1]['columns'][columnKeys[columnKeys.length - 1]]['column_condition'] = '';
+            }
+
             values[index + 1]['condition'] = groupElement.next('.groupConnector').find('.groupJoin').val() || 'and';
         });
         return values;
@@ -606,9 +614,20 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
      * Event handle which will be triggred on deletion of a condition row
      */
     deleteConditionHandler: function (e) {
-        var element = jQuery(e.currentTarget);
-        var row = element.closest('.conditionRow');
+        const element = jQuery(e.currentTarget),
+            row = element.closest('.conditionRow');
+
         row.remove();
+        this.refreshConditionConnectors();
+    },
+
+    refreshConditionConnectors: function () {
+        this.getFilterContainer().find('.conditionList').each(function () {
+            const rows = jQuery(this).children('.conditionRow');
+
+            rows.find('.rowConditionConnector').removeClass('invisible').find('select').prop('disabled', false);
+            rows.last().find('.rowConditionConnector').addClass('invisible').find('select').prop('disabled', true);
+        });
     },
 
     /**
@@ -642,7 +661,7 @@ jQuery.Class("Vtiger_AdvanceFilter_Js", {
             newGroup.find('.groupCondition input').val('and');
             newConnector.find('.groupJoin').val('and');
             newGroup.find('.deleteGroup').remove();
-            newGroup.find('.header').append('<button type="button" class="btn btn-sm btn-outline-secondary deleteGroup" title="' + app.vtranslate('LBL_DELETE') + '"><i class="fa fa-trash"></i></button>');
+            newGroup.find('.header').append('<button type="button" class="btn btn-sm btn-outline-secondary bg-white text-secondary deleteGroup ms-2" title="' + app.vtranslate('LBL_DELETE') + '"><i class="fa fa-trash"></i></button>');
             newGroup.insertBefore(filterContainer.find('.addGroup'));
             newConnector.insertBefore(filterContainer.find('.addGroup'));
             thisInstance.addNewCondition(newGroup);

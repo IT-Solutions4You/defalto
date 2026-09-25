@@ -1,3 +1,7 @@
+# List column selection
+
+- The shared `List.js` column configuration dialog allows any number of available fields. Keep the minimum of one selected field; submit the complete ordered `columnslist` through the existing save flow.
+
 # Dashboard layout persistence
 
 - Home inherits the shared Vtiger dashboard view. `DashBoard.js` initializes Gridster from widget position/size attributes rendered by `DashBoardTabContents.tpl`; pass saved column and row to `add_widget()` for positioned widgets. Automatic placement is only for new widgets or positions outside the current viewport.
@@ -11,6 +15,14 @@
 
 # Shared filter processing
 
+- Shared filter buttons use Bootstrap `bg-white text-secondary` for a white background with readable labels on hover. Keep group deletion compact; group-to-group connectors use standard `form-select` sizing without `form-select-sm`. Cloned rows/groups and dynamically created delete buttons must retain these classes.
+
+- Translate shared row and group connectors through Core `LBL_AND`/`LBL_OR`. Dynamic group deletion uses the Core JavaScript `LBL_DELETE` translation; verify both PHP and JavaScript dictionaries when auditing editor labels.
+
+- Shared advanced-filter rows expose individual `column_condition` AND/OR selectors. `refreshConditionConnectors()` hides and disables the last visible row's selector after initialization, insertion and deletion. Serialization clears the last included condition's connector even when trailing blank rows are skipped. Keep the group-operator fallback for specialized templates without `.rowConditionConnector`; group-to-group joins remain separate.
+
+- `Vtiger_BasicAjax_View::showAdvancedSearch()` supplies one empty, one-based criteria group. `AdvanceSearch.tpl` explicitly enables default conditions so opening advanced search or selecting another module renders one selectable condition row through the shared template. The Home module-selection placeholder remains separate.
+
 - `AdvanceFilter.tpl` renders one blank selectable row when default conditions are enabled and the group's `columns` are empty. Check columns rather than the whole group: CustomView supplies empty groups with connector metadata. Populated groups must not receive an extra row; preserve the `SHOW_DEFAULT_CONDITIONS` opt-out.
 
 - The shared `AdvanceFilter.tpl` supplies the CustomView saved-list editor. Its add-group button uses Bootstrap `border` for a complete outline; keep table border classes away from non-table filter containers.
@@ -19,9 +31,10 @@
 
 - Delegate add-condition clicks from the filter container to `.addCondition button`. New groups are cloned without events, so direct bindings on initially rendered buttons do not cover them. `addConditionHandler()` resolves the clicked button's group and uses the existing row initialization.
 
-- Group delete buttons use Bootstrap `btn-sm` to match the `form-select-sm` operator control, both in `AdvanceFilter.tpl` and in the dynamically generated markup in `AdvanceFilter.js`.
+- Group delete buttons use `btn-sm` and `ms-2` beside the group heading, both in the shared template and dynamically created markup. Keep the shared header flex-aligned; do not push deletion to the far right.
+- Render deletion for every saved group after the first (`GROUP_KEY > 1`), matching dynamically added groups. Retain the first group as the base used for cloning new groups.
 
-- `AdvanceFilter.tpl` uses the connector's `py-2` for spacing between groups, without an additional group bottom margin. The add-group button owns its separate top margin; dynamically cloned groups retain the same spacing.
+- `AdvanceFilter.tpl` uses Bootstrap `bg-body-secondary` for theme-aware group backgrounds, `p-3` for group padding and the connector's `py-2` for spacing between groups, without inline padding or an additional group bottom margin. The add-group button owns its separate top margin; dynamically cloned groups retain the same styling.
 
 - `Vtiger_AdvanceFilter_Js::init()` must retain only `.filterContainer` elements when the supplied collection also contains editor wrappers. CustomView passes nested `.filterConditionsDiv` elements; binding delegated handlers to both wrapper and filter processes one bubbling click twice and adds duplicate groups.
 
@@ -59,3 +72,8 @@
 - Workflow create/update entries use the `fa-cogs` timeline icon in place of the actor icon or uploaded avatar.
 - `VTEntityDelta::getDataDelta()` exposes the existing field comparison semantics for ModTracker's independent audit snapshots; workflow condition deltas retain their own original save baseline.
 - `Vtiger_Text_UIType::getDisplayValue()` owns HTML-versus-text formatting via the owning field model's isHtmlField() and configurable htmlFields list. HTML values pass through unchanged; commentcontent retains its legacy pass-through. Other text fields preserve the existing removeTags/sanitization order and use Core_SimpleHtmlDom_Helper::convertNewlinesToHtml(). Field-model getDisplayValue() delegates here for text fields.
+
+- `AdvanceFilter.tpl` and `AdvanceFilterCondition.tpl` are the single advanced-condition layout for saved lists and workflows. `FILTER_EDITOR` supplies field columns, field metadata, translated operators, source/translation modules and default-row policy through `Core_FilterEditor_Model` or a subclass. The template default retains legacy source-module and column-method inputs. Reset the selected field for every row, including hidden clone rows, and escape option/input values. Empty criteria retain a first group; the adapter controls whether it contains a visible blank row.
+- Workflow compatibility templates include these shared files and its JS inherits base row/group actions. Keep styling changes here, without workflow-specific markup branches. Per-field operator metadata serves saved comparator options and dynamic field changes; workflow JS adds trigger restrictions after parent rendering.
+
+- `Vtiger_SearchAdvanceFilter_Js` clears only the last populated group connector. Empty intermediate groups must not erase the preceding connector. `transferListSearchParamsToFilterCondition()` ignores groups containing only connector metadata, preserving legacy source positions without creating a column at index -1.
