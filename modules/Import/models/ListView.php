@@ -180,7 +180,7 @@ class Import_ListView_Model extends Vtiger_ListView_Model
         $instance = new $modelClassName();
 
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        $queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
+        $queryGenerator = new Core_QueryGenerator_Model($moduleModel->get('name'), $currentUser);
 
         $customView = new CustomView();
         $viewId = $customView->getViewIdByName('All', $moduleName);
