@@ -1404,7 +1404,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
             }
 
             foreach ($group['columns'] as $columnIndex => &$column) {
-                $column['column_condition'] = $columnIndex === count($group['columns']) - 1 ? '' : $withinJoin;
+                $column['column_condition'] = $columnIndex === count($group['columns']) - 1 ? '' : (($column['column_condition'] ?? '') ?: $withinJoin);
             }
             unset($column);
         }
@@ -1518,7 +1518,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model
             }
 
             foreach ($group['columns'] as $index => &$column) {
-                $column['column_condition'] = $index === $last ? '' : $withinJoin;
+                $column['column_condition'] = $index === $last ? '' : (($column['column_condition'] ?? '') ?: $withinJoin);
             }
 
             unset($column);
