@@ -36,7 +36,7 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model
         $instance = new $modelClassName();
 
         $sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
-        $queryGenerator = new EnhancedQueryGenerator($sourceModuleModel->get('name'), $currentUser);
+        $queryGenerator = new Core_QueryGenerator_Model($sourceModuleModel->get('name'), $currentUser);
         $cvidObj = CustomView_Record_Model::getAllFilterByModule($sourceModuleModel->get('name'));
         $cvid = $cvidObj->getId('cvid');
         $queryGenerator->initForCustomViewById($cvid);
