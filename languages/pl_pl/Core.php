@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Warunek',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Kody pocztowe dostępne',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mapowanie pól adresowych',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Określ, które pola adresowe zawierają kod pocztowy i miejscowość (oraz opcjonalnie województwo i kraj), aby mogły być automatycznie uzupełniane.',
@@ -1256,6 +1257,7 @@ na zewnątrz free rosyjska.',
     'LBL_ADD_AFTER' => 'Dodać po',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Usuń',
     'LBL_GROUP' => 'Grupowy',
     'JS_EMAIL_SERVER_CONFIGURATION'        => 'Należy skonfigurować ustawienia serwera poczty wychodzącej - SMTP',
     'JS_SMS_SERVER_CONFIGURATION'          => 'Należy skonfigurować bramkę SMS w panelu konfiguracji.',

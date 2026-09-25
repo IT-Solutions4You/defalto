@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Condizione',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Codici postali disponibili',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mappatura dei campi indirizzo',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Definisci quali campi indirizzo contengono il CAP e la città (e facoltativamente la provincia e il paese) per poterli completare automaticamente.',
@@ -1133,6 +1134,7 @@ al di fuori di Vtiger.',
     'LBL_ADD_AFTER' => 'Aggiungere dopo',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Elimina',
     'LBL_GROUP' => 'Gruppo',
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Configura il serve in uscita dalla pagina delle impostazioni',
     'JS_SMS_SERVER_CONFIGURATION' => 'Configura il tuo SMS notifier dalla pagina delle impostazioni del SMS Notifier',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Feltétel',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Irányítószámok elérhetők',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Címmezők hozzárendelése',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Adja meg, mely címmezők tartalmazzák az irányítószámot és a várost (és opcionálisan a megyét és az országot), hogy automatikusan kitölthetők legyenek.',
@@ -1136,6 +1137,7 @@ kívül Vtiger.',
     'LBL_ADD_AFTER' => 'Hozzáadása után',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Törlés',
     'LBL_GROUP' => 'Csoport',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Kérjük, hogy állítsd be a kimenő email szerver (SMTP) beállításait a Beállítások oldalon',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Kérjük, hogy állítsd be az SMS Küldőt az SMS Küldő beállítási oldalán.',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Voorwaarde',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Postcodes beschikbaar',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Adresveld-toewijzing',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Bepaal welke adresvelden de postcode en plaats (en optioneel provincie en land) bevatten, zodat ze automatisch kunnen worden ingevuld.',
@@ -1129,6 +1130,7 @@ buiten Vtiger.',
     'LBL_ADD_AFTER' => 'Add After',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Wis',
     'LBL_GROUP' => 'Groep',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Configureer a.u.b. uw uitgaande server instellingen op de instellingenpagina',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Configureer a.u.b. uw SMS notifier op de SMS notifier instellingenpagina',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Condición',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Códigos postales disponibles',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Asignación de campos de dirección',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Defina qué campos de dirección contienen el código postal y la ciudad (y opcionalmente el estado y el país) para poder completarlos automáticamente.',
@@ -1134,6 +1135,7 @@ fuera de Vtiger.',
     'LBL_ADD_AFTER' => 'Agregar después de',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Eliminar',
     'LBL_GROUP' => 'Grupo',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Por favor configure el servidor de salida desde la página de configuración ',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Por favor configure el notificador de SMS en la página de configuración de SMS',

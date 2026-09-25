@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Villkor',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Postnummer tillgängliga',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mappning av adressfält',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Ange vilka adressfält som innehåller postnummer och ort (och valfritt län och land) så att de kan fyllas i automatiskt.',
@@ -1268,6 +1269,7 @@ utanför Vtiger.',
     'LBL_ADD_AFTER' => 'Lägg till Efter',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Ta Bort',
     'LBL_GROUP' => 'Grupp',
     'JS_EMAIL_SERVER_CONFIGURATION'        => 'Vänligen konfigurera utgående serverinställningar från inställningssidan',
     'JS_SMS_SERVER_CONFIGURATION'          => 'Vänligen konfigurera SMS anmälaren från SMS anmälaren inställningar sidan',

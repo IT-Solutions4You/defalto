@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Condition',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Postal codes available',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Address field mapping',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Define which address fields hold the postal code and city (and optionally the state and country) so they can be auto-completed.',
@@ -1130,6 +1131,7 @@ $languageStrings = [
     'LBL_ADD_AFTER' => 'Add After',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Delete',
     'LBL_GROUP' => 'Group',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Please configure your outgoing server settings from the settings page',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Please configure your SMS notifier from the SMS notifier settings page',

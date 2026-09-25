@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'شرط',
     'LBL_POSTAL_CODES_AVAILABLE' => 'الرموز البريدية متاحة',
     'LBL_ADDRESS_FIELD_MAPPING' => 'تعيين حقول العنوان',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'حدّد حقول العنوان التي تحتوي على الرمز البريدي والمدينة (واختيارياً المنطقة والدولة) ليتم تعبئتها تلقائياً.',
@@ -1269,6 +1270,7 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
     'LBL_ADD_AFTER' => 'إضافة بعد',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'حذف',
     'LBL_GROUP' => 'مجموعة',
     'JS_EMAIL_SERVER_CONFIGURATION'        => 'يرجى تكوين إعدادات ملقم البريد الصادر الخاص بك من صفحة الاعدادات',
     'JS_SMS_SERVER_CONFIGURATION'          => 'يرجى تكوين اعدادات الرسائل النصية من صفحة الاعدادات',
