@@ -201,3 +201,4 @@ The result is a table grouped by status and a chart showing the total amount for
 | **A colleague cannot see the report.** | Check report sharing and their CRM permissions. |
 
 **Before sharing a report:** check its name, primary module, columns, filters, calculations, currency, and sharing recipients. For a Summary report, also check grouping and both chart axes.
+Empty condition groups are ignored. The connector after a populated group joins it to the next populated group, even with an empty group between them.
