@@ -45,6 +45,7 @@
 								{$FIELD_INFO['type'] = 'picklist'}
 						{/if}
 					{/if}
+					data-condition-operators='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode(Core_FilterOperator_Model::getForField($FIELD_MODEL, $SOURCE_MODULE)))}'
 					data-fieldinfo='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($FIELD_INFO))}' 
                     {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}>
 					{if $SOURCE_MODULE neq $MODULE_MODEL->get('name')}
@@ -62,17 +63,13 @@
 		<select class="{if empty($NOCHOSEN)}select2{/if} col-lg-12" name="comparator">
 			 <option value="none">{vtranslate('LBL_NONE',$MODULE)}</option>
 			{if isset($FIELD_TYPE) && isset($ADVANCED_FILTER_OPTIONS_BY_TYPE[$FIELD_TYPE])}
-				{assign var=ADVANCE_FILTER_OPTIONS value=$ADVANCED_FILTER_OPTIONS_BY_TYPE[$FIELD_TYPE]}
-				{if $FIELD_TYPE eq 'D' || $FIELD_TYPE eq 'DT'}
-					{assign var=DATE_FILTER_CONDITIONS value=array_keys($DATE_FILTERS)}
-					{assign var=ADVANCE_FILTER_OPTIONS value=array_merge($ADVANCE_FILTER_OPTIONS,$DATE_FILTER_CONDITIONS)}
-				{/if}
-				{foreach item=ADVANCE_FILTER_OPTION from=$ADVANCE_FILTER_OPTIONS}
+				{assign var=FIELD_OPERATORS value=Core_FilterOperator_Model::getForField($SELECTED_FIELD_MODEL, $SOURCE_MODULE)}
+				{foreach key=ADVANCE_FILTER_OPTION item=OPERATOR_LABEL from=$FIELD_OPERATORS}
 					<option value="{$ADVANCE_FILTER_OPTION}"
 					{if $ADVANCE_FILTER_OPTION eq $CONDITION_INFO['comparator']}
 							selected
 					{/if}
-					>{if isset($DATE_FILTERS[$ADVANCE_FILTER_OPTION])}{$DATE_FILTERS[$ADVANCE_FILTER_OPTION]['label']}{else}{vtranslate($ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION])}{/if}</option>
+					>{$OPERATOR_LABEL|escape}</option>
 				{/foreach}
 			{/if}
 		</select>

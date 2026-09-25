@@ -1,0 +1,33 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+.listFilterEditor {
+    width: 28rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+}
+
+.listFilterChips .listFilterEdit {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: left;
+    min-width: 0;
+}
+
+/* Keep the attached results in the editor's flow so its scroll area grows. */
+.listFilterEditor .listFilterSelectContainer > .select2-container:not(.select2) {
+    position: static !important;
+    display: block;
+    width: 100%;
+}
+
+.listFilterEditor .listFilterSelectContainer > .select2-container:not(.select2) .select2-dropdown {
+    position: static;
+}

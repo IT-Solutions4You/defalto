@@ -43,6 +43,10 @@
         {include file="ListViewActions.tpl"|vtemplate_path:$MODULE}
     {/if}
 
+    {if $MODULE_MODEL->isQuickSearchEnabled() && !$SEARCH_MODE_RESULTS}
+        {* The header inputs belong to this form, not the surrounding inline-edit form. *}
+        <form id="listFilterForm" class="listFilterForm"></form>
+    {/if}
     <div id="table-content" class="table-container">
         <form name='list' id='listedit' action='' onsubmit="return false;">
             <table id="listview-table" class="table listview-table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords{/if}">
@@ -79,6 +83,9 @@
                                         {/if}
                                     </div>
                                 {/if}
+                                {if $MODULE_MODEL->isQuickSearchEnabled()}
+                                    {include file="ListFilter.tpl"|vtemplate_path:'Core'}
+                                {/if}
                             </div>
                         {elseif $SEARCH_MODE_RESULTS}
                             {vtranslate('LBL_ACTIONS',$MODULE)}
@@ -110,33 +117,6 @@
                     {/foreach}
                 </tr>
 
-                {if $MODULE_MODEL->isQuickSearchEnabled() && !$SEARCH_MODE_RESULTS}
-                    <tr class="searchRow listViewSearchContainer">
-                        <th class="inline-search-btn">
-                            <div class="table-actions">
-                                <button class="btn text-secondary {if php7_count($SEARCH_DETAILS) gt 0}hide{/if}" data-trigger="listSearch">
-                                    <i class="fa fa-search"></i>
-                                    <span class="s2-btn-text d-none">{vtranslate("LBL_SEARCH",$MODULE)}</span>
-                                </button>
-                                <button class="searchAndClearButton btn text-secondary {if php7_count($SEARCH_DETAILS) eq 0}hide{/if}" data-trigger="clearListSearch">
-                                    <i class="fa fa-close"></i>
-                                    <span class="d-none">{vtranslate("LBL_CLEAR",$MODULE)}</span>
-                                </button>
-                            </div>
-                        </th>
-                        {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-                            <th>
-                                {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
-                                {assign var=SEARCH_INFO_DETAILS_FOR_FIELD value=['searchValue' => '', 'comparator' => '']}
-                                {if isset($SEARCH_DETAILS[$LISTVIEW_HEADER->getName()])}
-                                    {assign var=SEARCH_INFO_DETAILS_FOR_FIELD value=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()]}
-                                {/if}
-                                {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE) FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_INFO_DETAILS_FOR_FIELD USER_MODEL=$CURRENT_USER_MODEL}
-                                <input type="hidden" class="operatorValue" value="{$SEARCH_INFO_DETAILS_FOR_FIELD['comparator']}">
-                            </th>
-                        {/foreach}
-                    </tr>
-                {/if}
                 </thead>
                 <tbody class="overflow-y">
                 {foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=listview}

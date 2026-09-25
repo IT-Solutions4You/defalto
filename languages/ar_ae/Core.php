@@ -1269,6 +1269,7 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
     'LBL_ADD_AFTER' => 'إضافة بعد',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'مجموعة',
     'JS_EMAIL_SERVER_CONFIGURATION'        => 'يرجى تكوين إعدادات ملقم البريد الصادر الخاص بك من صفحة الاعدادات',
     'JS_SMS_SERVER_CONFIGURATION'          => 'يرجى تكوين اعدادات الرسائل النصية من صفحة الاعدادات',
     'JS_PLEASE_SELECT_ONE_RECORD'          => 'يرجى تحديد سجل واحد على الأقل',

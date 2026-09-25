@@ -1149,6 +1149,7 @@ fuera de Vtiger.',
     'LBL_ADD_AFTER' => 'añadir Después',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Grupo',
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Por favor, configura el servidor de correo saliente en la sección de configuración',
     'JS_SMS_SERVER_CONFIGURATION' => 'Por favor, configura los datos de acceso a tu proveedor de servicio SMS en configuración del módulo',
     'JS_PLEASE_SELECT_ONE_RECORD' => 'Por favor, selecciona al menos un registro',

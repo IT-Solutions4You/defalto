@@ -1256,6 +1256,7 @@ na zewnątrz free rosyjska.',
     'LBL_ADD_AFTER' => 'Dodać po',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Grupowy',
     'JS_EMAIL_SERVER_CONFIGURATION'        => 'Należy skonfigurować ustawienia serwera poczty wychodzącej - SMTP',
     'JS_SMS_SERVER_CONFIGURATION'          => 'Należy skonfigurować bramkę SMS w panelu konfiguracji.',
     'JS_PLEASE_SELECT_ONE_RECORD'          => 'Proszę zaznaczyć przynajmniej jeden rekord.',

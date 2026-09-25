@@ -245,8 +245,11 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js", {
                 params1.push(fieldName);
                 params1.push(conditionSpecificValues[i]['comparator']);
                 params1.push(conditionSpecificValues[i]['value']);
+                params1.push(conditionSpecificValues[i]['column_condition']);
                 conditionSpecificParams.push(params1);
             }
+
+            conditionSpecificParams.condition = conditionValues[index]['condition'];
 
             searchParams.push(conditionSpecificParams);
         }

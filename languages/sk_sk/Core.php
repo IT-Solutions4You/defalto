@@ -9,6 +9,21 @@
  */
 
 $languageStrings = [
+    'LBL_SAVED_LIST_FILTER_NOTICE' => 'Tento zoznam už používa uložené podmienky. Vymazanie dodatočných filtrov ich neodstráni.',
+    'LBL_EDIT_SAVED_LIST_FILTER' => 'Upraviť uložené podmienky',
+    'LBL_CLEAR_ADDITIONAL_FILTERS' => 'Vymazať dodatočné filtre',
+    'LBL_RECORD_FILTERS' => 'Filtrovanie záznamov',
+    'LBL_ADD_RECORD_FILTER' => 'Pridať filter',
+    'LBL_APPLY_RECORD_FILTER' => 'Použiť',
+    'LBL_CLEAR_RECORD_FILTERS' => 'Vymazať všetko',
+    'LBL_SAVE_RECORD_FILTER' => 'Uložiť ako filter',
+    'LBL_FIELD' => 'Pole',
+    'LBL_CONDITION' => 'Podmienka',
+    'LBL_VALUE' => 'Hodnota',
+    'LBL_FILTER_UPDATE_FAILED' => 'Filter sa nepodarilo aktualizovať.',
+    'LBL_FILTER_UPDATED' => 'Filter bol aktualizovaný.',
+    'LBL_FILTER_OR_GROUP_CONFLICT' => 'Tieto dve skupiny ALEBO nemožno spojiť do jedného uloženého filtra.',
+    'LBL_INVALID_FILTER' => 'Neplatná podmienka filtra.',
     'LBL_INSTALL_MANAGER' => 'Správca inštalácií',
     'LBL_INSTALL_MANAGER_DESCRIPTION' => 'Spravujte inštaláciu, aktualizácie, migrácie a odstránenie podporovaných modulov.',
     'LBL_AVAILABLE_MODULES' => 'Dostupné moduly',
@@ -1515,6 +1530,7 @@ $languageStrings = [
     'Send Email' => 'Odoslať email',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Skupina',
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte server odchádzajúcej pošty',
     'JS_SMS_SERVER_CONFIGURATION' => 'Prosím, v nastaveniach systému nakonfigurujte SMS bránu',
     'JS_PLEASE_SELECT_ONE_RECORD' => 'Prosím, vyberte aspoň jeden záznam',
@@ -2018,6 +2034,9 @@ $jsLanguageStrings = [
     'JS_REQUIRED_PARAMETER_CONFIRMATION' => 'Niektoré nastavenia PHP nespĺňajú odporúčané hodnoty. Toto môže ovplyvniť niektoré funkcie vtiger CRM. Ste si istí, že chcete pokračovať?',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diakritika nie je povolená. Povolená je pomlčka, podčiarkovník a medzera.',
     'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Na používanie a inštaláciu AI rozšírenia je potrebná Membership licencia',
+    'JS_DASHBOARD_MOVING' => 'Presúvanie widgetu',
+    'JS_DASHBOARD_RESIZING' => 'Zmena veľkosti widgetu',
+    'JS_DASHBOARD_RELEASE_TO_SAVE' => 'Pustením uložíte rozmiestnenie',
     'JS_YES' => 'Áno',
     'JS_NO' => 'Nie',
     'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Zatvorením okna sa všetky zadané údaje stratia. Prajete si zatvoriť okno?'

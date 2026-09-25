@@ -19,6 +19,19 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
 
     public int $limit = 0;
 
+    public function parseAdvFilterList($advFilterList, $glue = '')
+    {
+        $filterModel = Core_Filter_Model::getInstance($this->module);
+
+        foreach ($advFilterList as $groupIndex => $group) {
+            foreach ($group['columns'] as $columnIndex => $condition) {
+                $advFilterList[$groupIndex]['columns'][$columnIndex] = $filterModel->getQueryCondition($condition);
+            }
+        }
+
+        return parent::parseAdvFilterList($advFilterList, $glue);
+    }
+
     public static function getInstance($module, $user = false): self
     {
         if (!$user) {

@@ -51,12 +51,12 @@ class Settings_Workflows_Condition_Model
             $condition = (array)$condition;
             $group = (string)($condition['groupid'] ?? '0');
 
-            if (!in_array($group, ['0', '1'], true)
+            if (!ctype_digit($group)
                 || !isset($condition['fieldname'], $condition['operation']) || !array_key_exists('value', $condition)
                 || in_array($condition['fieldname'], ['', 'none'], true)
                 || in_array($condition['operation'], ['', 'none'], true)
                 || ($condition['value'] !== null && !is_scalar($condition['value']))
-                || !in_array($condition['groupjoin'] ?? '', ['', 'and'], true)) {
+                || !in_array($condition['groupjoin'] ?? '', ['', 'and', 'or'], true)) {
                 return null;
             }
 
@@ -73,8 +73,17 @@ class Settings_Workflows_Condition_Model
 
         foreach ($groups as $group => $rows) {
             $operator = null;
+            $groupJoin = null;
 
             foreach ($rows as $index => $row) {
+                $rowGroupJoin = ($row['groupjoin'] ?? '') ?: 'and';
+
+                if ($groupJoin !== null && $groupJoin !== $rowGroupJoin) {
+                    return null;
+                }
+
+                $groupJoin = $rowGroupJoin;
+
                 if ($index === count($rows) - 1) {
                     continue;
                 }
@@ -88,15 +97,10 @@ class Settings_Workflows_Condition_Model
                 $operator = $join;
             }
 
-            $targetGroup = $operator === null ? (int)$group : ($operator === 'and' ? 0 : 1);
+            $targetGroup = (int)$group;
             $lastJoin = $rows[count($rows) - 1]['joincondition'] ?? '';
 
             if ($operator !== null && $lastJoin !== '' && $lastJoin !== $operator) {
-                return null;
-            }
-
-            if (isset($result[$targetGroup])) {
-                // Merging OR groups joined by AND would change their meaning.
                 return null;
             }
 
@@ -104,8 +108,8 @@ class Settings_Workflows_Condition_Model
                 $row['value'] = $row['value'] ?? '';
                 $row['valuetype'] = ($row['valuetype'] ?? '') ?: 'rawtext';
                 $row['groupid'] = (string)$targetGroup;
-                $row['groupjoin'] = 'and';
-                $row['joincondition'] = $index === count($rows) - 1 ? '' : ($targetGroup === 0 ? 'and' : 'or');
+                $row['groupjoin'] = $groupJoin;
+                $row['joincondition'] = $index === count($rows) - 1 ? '' : $operator;
                 $result[$targetGroup][] = $row;
             }
         }

@@ -255,15 +255,13 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
                     rowValues['valuetype'] = 'rawtext';
                 }
 
-                if (index == '0') {
-                    rowValues['groupid'] = '0';
-                } else {
-                    rowValues['groupid'] = '1';
-                }
+                rowValues['groupid'] = String(groupElement.data('group-id') || index);
 
                 if (rowElement.is(":last-child")) {
                     rowValues['column_condition'] = '';
                 }
+
+                rowValues['column_condition'] = rowElement.is(':last-child') ? '' : (groupElement.find('.conditionOperator').val() || 'and');
                 iterationValues[columnIndex] = rowValues;
                 columnIndex++;
             });
@@ -272,9 +270,7 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
                 values[index + 1] = {};
                 //values[index+1]['columns'] = {};
                 values[index + 1]['columns'] = iterationValues;
-            }
-            if (groupElement.find('div.groupCondition').length > 0 && !jQuery.isEmptyObject(values[index + 1])) {
-                values[index + 1]['condition'] = conditionGroups.find('div.groupCondition [name="condition"]').val();
+                values[index + 1]['condition'] = groupElement.next('.groupConnector').find('.groupJoin').val() || 'and';
             }
         });
         return values;

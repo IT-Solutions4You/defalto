@@ -523,7 +523,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
         $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'ListView', $moduleName);
         $instance = new $modelClassName();
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        $queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
+        $queryGenerator = new Core_QueryGenerator_Model($moduleModel->get('name'), $currentUser);
         $customView = new CustomView();
         if (!empty($viewId) && $viewId != "0") {
             $queryGenerator->initForCustomViewById($viewId);
@@ -596,7 +596,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
         $instance = new $modelClassName();
         $moduleModel = Vtiger_Module_Model::getInstance($value);
 
-        $queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
+        $queryGenerator = new Core_QueryGenerator_Model($moduleModel->get('name'), $currentUser);
 
         $listFields = $moduleModel->getPopupFields();
 
@@ -689,11 +689,22 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
 
     public static function getSortParamsSession($key)
     {
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
+        $params = $_SESSION[$key] ?? null;
+
+        if (is_array($params)) {
+            // Temporary conditions belong to the requesting list, including an explicitly empty filter.
+            $params['search_params'] = [];
+        }
+
+        return $params;
     }
 
     public static function setSortParamsSession($key, $params)
     {
+        if (is_array($params)) {
+            unset($params['search_params']);
+        }
+
         $_SESSION[$key] = $params;
     }
 

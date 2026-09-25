@@ -210,6 +210,8 @@ class Documents_List_View extends Vtiger_List_View
         $transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchAndTagParams, $listViewModel->getModule());
         $listViewModel->set('search_params', $transformedSearchParams);
 
+        $this->setListFilterData($viewer, $listViewModel->getModule(), $searchParams);
+
         //To make smarty to get the details easily accesible
         foreach ($searchParams as $fieldListGroup) {
             foreach ($fieldListGroup as $fieldSearchInfo) {
@@ -318,7 +320,20 @@ class Documents_List_View extends Vtiger_List_View
         $viewer->assign('VIEWID', $cvId);
         //Vtiger7
         $viewer->assign('REQUEST_INSTANCE', $request);
-        $viewer->assign('CUSTOM_VIEWS', CustomView_Record_Model::getAllByGroup($moduleName));
+        $allCustomViews = CustomView_Record_Model::getAllByGroup($moduleName);
+        $currentCustomView = null;
+
+        foreach ($allCustomViews as $views) {
+            foreach ($views as $viewModel) {
+                if ((int)$viewModel->getId() === (int)$cvId) {
+                    $currentCustomView = $viewModel;
+                    break 2;
+                }
+            }
+        }
+
+        $viewer->assign('CUSTOM_VIEWS', $allCustomViews)
+            ->assign('CURRENT_CV_MODEL', $currentCustomView);
     }
 
     /**

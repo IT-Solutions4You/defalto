@@ -1268,6 +1268,7 @@ utanför Vtiger.',
     'LBL_ADD_AFTER' => 'Lägg till Efter',
 ];
 $jsLanguageStrings = [
+    'LBL_GROUP' => 'Grupp',
     'JS_EMAIL_SERVER_CONFIGURATION'        => 'Vänligen konfigurera utgående serverinställningar från inställningssidan',
     'JS_SMS_SERVER_CONFIGURATION'          => 'Vänligen konfigurera SMS anmälaren från SMS anmälaren inställningar sidan',
     'JS_PLEASE_SELECT_ONE_RECORD'          => 'Välj minst en post',
