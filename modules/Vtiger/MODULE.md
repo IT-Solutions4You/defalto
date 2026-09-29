@@ -1,3 +1,9 @@
+# Shared Select2 fields
+
+- `applyFieldElementsView()` can run on pages or dynamic containers without any `select.select2` elements. `showSelect2ElementView()` must return the empty jQuery collection unchanged before initialization; selected-result registration must tolerate a missing Select2 instance. A thrown error here interrupts the shared document-ready queue, including the later page-ready timing callback.
+- `vtUtils.showSelect2ElementView()` in `resources/Utils.js` initializes shared Select2 fields, including `uitypes/Owner.tpl`, full pages and overlays. `JSResources.tpl` loads the vendor Select2 4 library before this helper. There is no standalone Vtiger installable module version or persistence change for this UI behavior.
+- `registerSelect2SelectedResults()` wraps the instance results adapter's `setClasses()` to hide selected results and exhausted optgroups on each native selection refresh. Restore marked results before recalculating selection; remove `aria-selected` from hidden results because the bundled adapter uses that attribute for keyboard navigation. Preserve option values, selected labels, custom templates and vendor files. Check single/multiple selection, optgroups, search, deselection, keyboard navigation and AJAX results when changing this integration.
+
 # List column selection
 
 - The shared `List.js` column configuration dialog allows any number of available fields. Keep the minimum of one selected field; submit the complete ordered `columnslist` through the existing save flow.
