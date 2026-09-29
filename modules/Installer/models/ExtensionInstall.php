@@ -26,7 +26,8 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
      */
     public static function getAll(): array
     {
-        $modules = array_merge(self::getApiModules(), Vtiger_Module_Model::getAll());
+        $apiModules = self::getApiModules();
+        $modules = array_merge($apiModules, Vtiger_Module_Model::getAll());
         $extensions = [];
 
         foreach ($modules as $moduleName => $module) {
@@ -34,7 +35,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
                 $moduleName = $module->getName();
             }
 
-            if (in_array($moduleName, self::$ignoredModules)) {
+            if (in_array($moduleName, self::$ignoredModules) && !isset($apiModules[$moduleName])) {
                 continue;
             }
 
@@ -87,6 +88,11 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
      */
     public static function getApiInfo()
     {
+        if (2 !== ($_SESSION['Installer_ExtensionCatalogVersion'] ?? null)) {
+            self::clearCache();
+            $_SESSION['Installer_ExtensionCatalogVersion'] = 2;
+        }
+
         if (!array_key_exists('Installer_ExtensionInstall', $_SESSION)) {
             $_SESSION['Installer_ExtensionInstall'] = Installer_Api_Model::getInstance()->getExtensionInstall();
         }
@@ -103,7 +109,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $models = [];
 
         foreach ($modules as $module) {
-            $models[$module] = Vtiger_Module_Model::getCleanInstance($module);
+            $models[$module] = $module;
         }
 
         return $models;
@@ -180,7 +186,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             return $messages;
         }
 
-        if ($this->isCoreModule()) {
+        if ($this->isCoreModule() || $this->isPublicDownload()) {
             $messages['primary'] = vtranslate('LBL_MODULE_ACTIVE', 'Installer');
 
             return $messages;
@@ -277,6 +283,22 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         return (string)$this->get('version');
     }
 
+    public function isInstallAvailable(): bool
+    {
+        if (!$this->hasDownloadUrl()) {
+            return false;
+        }
+
+        $installedVersion = $this->getVersion();
+        $availableVersion = $this->getUpdateVersion();
+
+        if ('' === $installedVersion) {
+            return true;
+        }
+
+        return '' !== $availableVersion && version_compare($availableVersion, $installedVersion, '>');
+    }
+
     public function getIcon(): string
     {
         $module = $this->getModule();
@@ -291,11 +313,20 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             return false;
         }
 
+        if ($this->isPublicDownload()) {
+            return true;
+        }
+
         $license = $this->getLicense();
 
         return $license
             && $license->isValidLicense()
             && $license->hasExtensionEntitlement($this->getName());
+    }
+
+    public function isPublicDownload(): bool
+    {
+        return true === $this->get('installer_public_download');
     }
 
     /**
@@ -329,7 +360,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
     public function isVisibleInInstaller(): bool
     {
-        if ($this->hasDownloadUrl()) {
+        if (!empty($this->getApiData())) {
             return true;
         }
 
