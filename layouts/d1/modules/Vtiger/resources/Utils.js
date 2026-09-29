@@ -72,6 +72,10 @@ var vtUtils = {
      * Function which will show the select2 element for select boxes . This will use select2 library
      */
     showSelect2ElementView: function (selectElement, params) {
+        if (!selectElement.length) {
+            return selectElement;
+        }
+
         if (selectElement.length > 1) {
             selectElement.each(function () {
                 vtUtils.showSelect2ElementView($(this), params);
@@ -177,6 +181,8 @@ var vtUtils = {
             instance.dropdown.css('z-index', 1000002);
         });
 
+        vtUtils.registerSelect2SelectedResults(selectElement);
+
         //validator should not validate select2 text inputs
         $('.select2-search input').addClass('ignore-validation');
 
@@ -187,6 +193,49 @@ var vtUtils = {
         selectElement.trigger('select2-loaded');
 
         return selectElement;
+    },
+
+    registerSelect2SelectedResults: function (selectElement) {
+        const instance = selectElement.data('select2');
+
+        if (!instance) {
+            return;
+        }
+
+        const results = instance.results,
+            setClasses = results.setClasses;
+
+        // Use Select2's selection refresh so AJAX results and open multiselects stay in sync.
+        results.setClasses = function () {
+            this.$results.find('.select2-result-selected-hidden')
+                .removeClass('select2-result-selected-hidden')
+                .removeAttr('hidden')
+                .attr('aria-selected', 'false');
+            this.$results.find('.select2-result-group-hidden')
+                .removeClass('select2-result-group-hidden')
+                .removeAttr('hidden');
+            setClasses.apply(this, arguments);
+
+            const selected = this.$results.find('[aria-selected="true"]'),
+                hasSelectedHighlight = selected.hasClass('select2-results__option--highlighted');
+
+            // Removing aria-selected also excludes hidden options from keyboard navigation.
+            selected.addClass('select2-result-selected-hidden')
+                .attr('hidden', true)
+                .removeAttr('aria-selected')
+                .removeClass('select2-results__option--highlighted');
+            this.$results.find('[role="group"]').each(function () {
+                const group = jQuery(this);
+
+                if (!group.find('.select2-results__option').not('[hidden]').length) {
+                    group.addClass('select2-result-group-hidden').attr('hidden', true);
+                }
+            });
+
+            if (hasSelectedHighlight) {
+                this.highlightFirstItem();
+            }
+        };
     },
 
     /**

@@ -1,3 +1,7 @@
+# Dropdown fields
+
+Searchable dropdowns, including Assigned To, hide already selected values from the list of choices. The current value remains visible in the field. Select another value to replace it. In fields that allow multiple values, remove a selected item to make it available in the choices again.
+
 # Shared record lists
 
 Column settings allow more than 15 fields with no maximum count. Add the fields you need, arrange their order, and save. At least one field must remain selected.
