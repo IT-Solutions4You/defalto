@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Koşul',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Posta kodları mevcut',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Adres alanı eşleştirmesi',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Hangi adres alanlarının posta kodu ve şehir (ve isteğe bağlı olarak il ve ülke) içerdiğini belirleyin, böylece otomatik olarak doldurulabilirler.',
@@ -1131,6 +1132,7 @@ Vtiger dışında.',
     'LBL_ADD_AFTER' => 'Sonra Ekle',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Sil',
     'LBL_GROUP' => 'Grup',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Please configure your outgoing server settings from the settings page',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Please configure your SMS notifier from the SMS notifier settings page',

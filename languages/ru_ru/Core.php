@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Условие',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Почтовые индексы доступны',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Сопоставление полей адреса',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Укажите, какие поля адреса содержат почтовый индекс и город (и при необходимости регион и страну), чтобы их можно было автоматически заполнять.',
@@ -1132,6 +1133,7 @@ $languageStrings = [
     'LBL_ADD_AFTER' => 'Добавить После',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'удалять',
     'LBL_GROUP' => 'Группа',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Пожалуйста, настроить параметры исходящей сервера на странице настроек',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Пожалуйста, настроить SMS Notifier на странице настроек SMS Notifier',

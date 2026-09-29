@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Condiție',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Coduri poștale disponibile',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Maparea câmpurilor de adresă',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Definiți ce câmpuri de adresă conțin codul poștal și orașul (și opțional județul și țara), pentru a putea fi completate automat.',
@@ -1133,6 +1134,7 @@ Faceți clic pe autorizați și de a obține Contacte din Google.',
     'LBL_ADD_AFTER' => 'Add After',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Sterge',
     'LBL_GROUP' => 'Grup',
     'JS_EMAIL_SERVER_CONFIGURATION'                             => 'Please configure your outgoing server settings from the settings page',
     'JS_SMS_SERVER_CONFIGURATION'                               => 'Please configure your SMS notifier from the SMS notifier settings page',

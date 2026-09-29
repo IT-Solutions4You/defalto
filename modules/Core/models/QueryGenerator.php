@@ -24,12 +24,30 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
         $filterModel = Core_Filter_Model::getInstance($this->module);
 
         foreach ($advFilterList as $groupIndex => $group) {
+            if (empty($group['columns'])) {
+                unset($advFilterList[$groupIndex]);
+                continue;
+            }
+
             foreach ($group['columns'] as $columnIndex => $condition) {
                 $advFilterList[$groupIndex]['columns'][$columnIndex] = $filterModel->getQueryCondition($condition);
             }
+
+            $lastColumn = array_key_last($group['columns']);
+            $advFilterList[$groupIndex]['columns'][$lastColumn]['column_condition'] = '';
         }
 
-        return parent::parseAdvFilterList($advFilterList, $glue);
+        if (!$advFilterList) {
+            return;
+        }
+
+        $lastGroup = array_key_last($advFilterList);
+        $advFilterList[$lastGroup]['condition'] = '';
+
+        // Keep OR groups inside the surrounding deleted/access/search constraints.
+        $this->startGroup($glue);
+        parent::parseAdvFilterList($advFilterList);
+        $this->endGroup();
     }
 
     public static function getInstance($module, $user = false): self

@@ -193,6 +193,11 @@ class WorkFlowScheduler
             'less than days later'     => 'bw',
             'more than days later'     => 'g',
         ];
+        // Change-only predicates have no snapshot in scheduled execution.
+        $conditions = array_values(array_filter($conditions ?? [], static function ($condition) {
+            return !in_array($condition['operation'], ['has changed', 'has changed to', 'has changed from',
+                'has been set or changed', 'has been set or changed to', 'has been set or changed from'], true);
+        }));
         $noOfConditions = php7_count($conditions);
         //Algorithm :
         //1. If the query has already where condition then start a new group with and condition, else start a group
@@ -206,19 +211,13 @@ class WorkFlowScheduler
             } else {
                 $queryGenerator->startGroup('');
             }
+
+            // Keep every group, including OR groups, inside the caller's constraints.
+            $queryGenerator->startGroup('');
+
             foreach ($conditions as $index => $condition) {
                 $operation = $condition['operation'];
-
-                //Cannot handle this condition for scheduled workflows
-                if (in_array($operation, ['has changed', 'has been set or changed', 'has been set or changed to', 'has been set or changed from'], true)) {
-                    continue;
-                }
-                if ($operation == 'has changed to') {
-                    continue;
-                }
-                if ($operation == 'has changed from') {
-                    continue;
-                }
+                $referenceField = null;
 
                 $value = $condition['value'];
 
@@ -238,9 +237,11 @@ class WorkFlowScheduler
                 if (in_array($operation, $this->_specialDateTimeOperator())) {
                     $value = $this->_parseValueForDate($condition, $fieldModel);
                 }
-                $columnCondition = $condition['joincondition'];
-                $groupId = $condition['groupid'];
-                $groupJoin = $condition['groupjoin'];
+
+                $previousCondition = $conditions[$index - 1] ?? null;
+                $columnCondition = $previousCondition ? (($previousCondition['joincondition'] ?? '') ?: 'and') : '';
+                $groupId = $condition['groupid'] ?? 0;
+                $groupJoin = ($previousCondition['groupjoin'] ?? '') ?: 'and';
                 $operator = $conditionMapping[$operation];
                 $fieldname = $condition['fieldname'];
                 $valueType = $condition['valuetype'];
@@ -250,20 +251,12 @@ class WorkFlowScheduler
                     $operator = 'e';
                 }
 
-                if ($index > 0 && $groupId != $conditions[$index - 1]['groupid']) {    // if new group, end older group and start new
+                if ($previousCondition && $groupId != ($previousCondition['groupid'] ?? 0)) {
                     $queryGenerator->endGroup();
-                    if ($groupJoin) {
-                        $queryGenerator->startGroup($groupJoin);
-                    } else {
-                        $queryGenerator->startGroup(QueryGenerator::$AND);
-                    }
+                    $queryGenerator->startGroup($groupJoin);
+                    $columnCondition = '';
                 }
 
-                if ($index > 0 && $groupId != $conditions[$index - 1]['groupid']) {    //if first condition in new group, send empty condition to append
-                    $columnCondition = null;
-                } elseif (empty($columnCondition) && $index > 0) {
-                    $columnCondition = $conditions[$index - 1]['joincondition'];
-                }
                 $value = html_entity_decode($value);
                 preg_match('/(\w+) : \((\w+)\) (\w+)/', $condition['fieldname'], $matches);
                 if (php7_count($matches) != 0) {
@@ -295,6 +288,8 @@ class WorkFlowScheduler
                     $queryGenerator->addCondition($fieldname, $value, $operator, $columnCondition);
                 }
             }
+
+            $queryGenerator->endGroup();
             $queryGenerator->endGroup();
         }
     }

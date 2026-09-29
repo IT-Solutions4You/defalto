@@ -1,5 +1,11 @@
 # Saved lists
 
+You can select more than 15 columns when creating or editing a saved list. There is no maximum column count; choose the fields you need and arrange their order.
+
+Use Cancel on the left or Save on the right of the editor's compact footer.
+
+Choose AND or OR beside a condition to connect it to the next condition. The last row in each group has no connector. Individual choices are retained when you save and reopen the list or create a draft with Save as filter.
+
 When creating a filter without existing conditions, one empty condition is ready for you to select a field. There is no need to click Add condition for the first rule.
 
 Create or edit a saved list to choose columns, conditions, sorting and sharing. The condition options match the quick filter for the same field. Text and selection fields support their applicable comparisons; checkbox conditions select Yes or No.

@@ -189,7 +189,7 @@ jQuery.Class("Vtiger_CustomView_Js", {}, {
      */
     registerSelect2ElementForColumnsSelection: function () {
         var selectElement = this.getColumnSelectElement();
-        vtUtils.showSelect2ElementView(selectElement, {maximumSelectionSize: 15});
+        vtUtils.showSelect2ElementView(selectElement);
     },
 
     registerFilterCreateEvents: function () {

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_CONDITION' => 'Condição',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Códigos postais disponíveis',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mapeamento de campos de endereço',
     'LBL_ADDRESS_FIELD_MAPPING_DESC' => 'Defina quais campos de endereço contêm o código postal e a cidade (e opcionalmente o estado e o país) para que possam ser preenchidos automaticamente.',
@@ -1431,6 +1432,7 @@ $languageStrings = [
     'LBL_ADD_AFTER' => 'Adicionar Depois',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Apagar',
     'LBL_GROUP' => 'Grupo',
     'JS_EMAIL_SERVER_CONFIGURATION'         => 'Por favor, ajuste as configurações do Servidor Envio Mensagens a partir do menu Configurações',
     'JS_SMS_SERVER_CONFIGURATION'           => 'Por favor, configure seu Notificador SMS na página de configuração do Notificar SMS',

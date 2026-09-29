@@ -30,10 +30,11 @@
 
 ## API and Metadata Boundaries
 
-- Use the Installer API endpoints through `Installer_Api_Model`: `/license/v1` for license actions, `/extension/v1` for protected extension metadata, and `/system/v1` for system metadata.
+- Use the Installer API endpoints through `Installer_Api_Model`: `/license/v1` for license actions, `/extension/v1` for the public extension catalog and licensed packages, and `/system/v1` for system metadata.
 - Normalize the installation URL and send the current licensed-user count through the existing request builders. Keep timeouts, transport-error classification, JSON validation, and sensitive-value redaction centralized in the API model.
 - Without an active Membership license, the system endpoint may return public update status. Preserve only `version` and `label`, and blank or remove download URLs, package folders, checksums, and every other protected package field.
-- Retrieve extension package metadata only for valid licenses. Tag each returned extension with its originating `installer_license_id` so the install flow revalidates the correct license.
+- Fetch the public `/extension/v1` catalog without credentials, retaining entries without download URLs for display. Only packages with download URL and folder in this unauthenticated response receive the locally assigned `installer_public_download` flag. Never trust an API-provided flag to bypass licensing.
+- Retrieve protected extension package metadata only for valid licenses with the matching entitlement. Tag packages with their originating `installer_license_id`; metadata from an unrelated license must not overwrite an entitled package or public download.
 - `Installer_SystemInstall_Model` and `Installer_ExtensionInstall_Model` own their session caches. Reuse these caches instead of adding duplicate API calls, and clear them after forced checks or successful state-changing operations.
 
 ## System Update Flow
@@ -47,10 +48,11 @@
 
 ## Extension Install Flow
 
-- Validate module names before lookup or installation and bind each protected package to the license identified by `installer_license_id`. Force-check that license immediately before installation.
+- Validate module names before lookup or installation and bind each protected package to the license identified by `installer_license_id`. Force-check that license immediately before installation. Refresh catalog metadata before installation, including public packages; public downloads require no license.
 - Merge API extension metadata with installed module state in `Installer_ExtensionInstall_Model`; do not duplicate this reconciliation in a view or template.
-- Keep installed custom extensions visible in the Installer module list even when no license is active. Do not list ordinary Core CRM modules merely because they are installed.
-- Offer an extension install/update action only when protected download metadata exists and its originating license is currently valid and explicitly entitles that module. Stale metadata must never expose an update action.
+- Show every API catalog extension and installed custom extension even when no license is active. Do not list ordinary Core CRM modules merely because they are installed. Resolve catalog names against installed module records instead of treating clean module placeholders as installed modules.
+- Offer install/update actions for public packages or protected packages whose originating license is currently valid and explicitly entitles that module. Show the download-unavailable explanation for other entries. Session catalog format version 2 invalidates the earlier license-only catalog once.
+- `Installer_ExtensionInstall_Model::isInstallAvailable()` controls the catalog button: a downloadable package must have no installed version or a strictly newer available version. Equal or older catalog versions hide the button without presenting a license error for an otherwise downloadable package.
 - Install extension packages only under the allowed roots `modules`, `layouts`, `languages`, and `cron`. Require the standard writable paths and, for a new module, the module metadata and privilege paths needed by the install lifecycle.
 - Require `<Module>_Install_Model`, validate entity-module table metadata, and use the Core `postinstall` or `postupdate` lifecycle. Preserve and restore an existing module's sharing permission and regenerate module metadata through the existing Core mechanism.
 - Before commit, verify that the module exists and is active, its installed version matches the package metadata, and its default URL is usable. Clear extension metadata after successful installation.
@@ -81,6 +83,6 @@
 ## Validation
 
 - For Installer PHP changes, run `php -l` on every touched PHP file.
-- Run the focused standalone tests relevant to the change under `tests/unit/Installer*Test.php`, especially license/API, multi-license, package installation/rollback, optimization/cache, and requirements-version coverage.
+- Run available focused Installer checks; use manual PHP scenarios for catalog normalization, public downloads, multiple-license merging, and entitlement rejection when no standalone tests are present.
 - After changing `layouts/d1/modules/Installer/resources/*.js`, run a JavaScript syntax check and the application scripts validator, and confirm the expected `Installer_<Script>_Js` class is present.
 - For functional Installer changes, bump both the application patch in `version.php` and the final component of `Installer::$moduleVersion` exactly once. Documentation-only changes to this file require neither version bump.

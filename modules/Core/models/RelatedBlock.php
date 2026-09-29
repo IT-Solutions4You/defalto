@@ -430,13 +430,8 @@ class Core_RelatedBlock_Model extends Core_DatabaseData_Model
      */
     public function getFormatedFilters(): array
     {
-        $filters = $this->getFilters();
-
-        if (empty($filters[2]['columns'])) {
-            $filters[1]['condition'] = '';
-        }
-
-        return $filters;
+        // The shared query parser removes empty groups and terminal connectors.
+        return $this->getFilters();
     }
 
     /**

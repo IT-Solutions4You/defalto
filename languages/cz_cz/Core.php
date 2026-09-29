@@ -1511,6 +1511,7 @@ $languageStrings = [
     'Send Email' => 'Odoslat email',
 ];
 $jsLanguageStrings = [
+    'LBL_DELETE' => 'Smazat',
     'LBL_GROUP' => 'Skupina',
     'JS_EMAIL_SERVER_CONFIGURATION' => 'Prosím, v nastavení systému nakonfigurujte server odchozí pošty',
     'JS_SMS_SERVER_CONFIGURATION' => 'Prosím,  v nastavení systému nastavte odchozí SMS',

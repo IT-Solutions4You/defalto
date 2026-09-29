@@ -252,20 +252,24 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
 
         Core_Install_Model::logSuccess(htmlspecialchars($version, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
 
+        Installer_ExtensionInstall_Model::clearCache();
         $install = Installer_ExtensionInstall_Model::getInstance($version);
-        $license = $install->getLicense() ?: Installer_License_Model::getLicenseForExtension($version);
 
-        if (!$license) {
-            throw new Exception(vtranslate('LBL_LICENSE_INACTIVE', 'Installer'));
+        if (!$install->isPublicDownload()) {
+            $license = $install->getLicense() ?: Installer_License_Model::getLicenseForExtension($version);
+
+            if (!$license) {
+                throw new Exception(vtranslate('LBL_LICENSE_INACTIVE', 'Installer'));
+            }
+
+            $license->check(true);
+
+            if (!$license->isValidLicense()) {
+                throw new Exception($license->getErrorMessage() ?: vtranslate('LBL_LICENSE_INACTIVE', 'Installer'));
+            }
+
+            $install = Installer_ExtensionInstall_Model::getInstance($version);
         }
-
-        $license->check(true);
-
-        if (!$license->isValidLicense()) {
-            throw new Exception($license->getErrorMessage() ?: vtranslate('LBL_LICENSE_INACTIVE', 'Installer'));
-        }
-
-        $install = Installer_ExtensionInstall_Model::getInstance($version);
 
         if (!$install->hasDownloadUrl()) {
             throw new Exception(vtranslate('LBL_LICENSE_DOWNLOAD_UNAVAILABLE', 'Installer'));

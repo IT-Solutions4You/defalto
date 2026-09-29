@@ -1,5 +1,11 @@
 # Ownership and contracts
 
+- Saved-list column selection has no maximum field count. `CustomView.js` initializes Select2 without a selection limit; `CustomView_Record_Model` persists every selected column in `vtiger_cvcolumnlist` in order.
+
+- The saved-list editor footer uses standard `modal-footer` spacing with `container-fluid p-0`, matching the shared modal footer. Preserve `modal-overlay-footer`, `customViewSubmit`, `saveButton` and `cancelLink` hooks; avoid extra padding utilities or nonbreaking spaces around the actions.
+
+- Advanced criteria readback and Save as filter drafts preserve each nonempty `column_condition`, including mixed AND/OR rows. Only missing connectors use the group's legacy fallback; the final row is always connector-free. Do not flatten all row connectors to the first operator when preparing the editor.
+
 - Empty advanced criteria normalize to a group containing `columns: []` and connector metadata. The shared Vtiger template checks the columns to show a single initial blank row; do not remove the normalized metadata to control presentation.
 
 - Saved-view and quick-list operator presentation delegates through `Core_FilterOperator_Model` to the source module's `Core_Filter_Model` instance. `EditAjax` uses `Vtiger_Field_Model::getDisplayDateFilterTypes()` so date labels and period units are translated consistently. `Core_FilterOperator_Model::isCalendarValue()` excludes relative day/hour quantities and `lastperiod` from date-format conversion in persistence and readback. Readback remains in user display format; both query generators then use the same module filter's `getQueryCondition()` as quick filtering.

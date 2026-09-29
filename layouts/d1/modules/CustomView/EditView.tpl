@@ -133,14 +133,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer modal-overlay-footer border-top border-1 p-3">
-					<div class="container-fluid">
+				<div class="modal-footer modal-overlay-footer">
+					<div class="container-fluid p-0">
 						<div class="row">
 							<div class="col-6">
 								<a class="btn btn-primary cancelLink" href="javascript:void(0);" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 							</div>
 							<div class="col-6 text-end">
-								<button type='submit' class='btn btn-primary active saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
+								<button type='submit' class='btn btn-primary active saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>
 							</div>
 						</div>
 					</div>

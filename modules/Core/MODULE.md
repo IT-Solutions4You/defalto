@@ -2,9 +2,11 @@
 
 - The saved-condition edit action in `ListFilter.tpl` uses a decorative pen icon and Bootstrap white-background/dark-text utilities for contrast inside the informational alert. Keep its `listFilterSavedEdit` class and edit URL data attribute for the existing delegated handler.
 
-- Core language files expose `LBL_GROUP` in both PHP and JavaScript dictionaries. Shared advanced filters render existing group titles through `vtranslate()` and dynamically added titles through `app.vtranslate()`; keep the translations aligned.
+- Core language files expose `LBL_GROUP` and `LBL_DELETE` in both PHP and JavaScript dictionaries. Shared advanced filters render existing labels through `vtranslate()` and dynamically added labels through `app.vtranslate()`; keep the translations aligned. `LBL_CONDITION` supplies the accessible row-connector label in every Core locale.
 
 ## Module-specific filter objects
+
+- `Core_QueryGenerator_Model::parseAdvFilterList()` removes empty groups and clears connectors after each group's last column and the last nonempty group before delegating. Wrap the complete filter in a group using the incoming glue, so OR groups cannot escape surrounding deleted/access/search constraints. Never repair completed SQL strings. Verify sparse group keys, trailing empty groups, empty criteria and multiple parser calls with AND glue.
 
 Define `modules/<Module>/models/Filter.php` with `<Module>_Filter_Model extends Core_Filter_Model`. For example, a module with a `subject` field can restrict that field to equality in every filter entry point:
 
@@ -79,3 +81,12 @@ Use the actual module name instead of `Example`. Unconfigured fields retain the 
 - `convertParagraphBreaks()` handles existing plain br elements at paragraph boundaries separately from newline conversion. It removes runs before opening/closing p and after closing p, including before closing body/html wrappers followed by a paragraph. It preserves interior paragraph breaks, other text breaks, HTML wrappers/attributes, comments and pre/textarea/script/style content. It is idempotent and used only for final workflow email HTML; explicit blank lines immediately adjacent to paragraphs are intentionally removed there.
 
 - `Core_Install_Model::updateWorkflowTask()` saves module-provided condition arrays through `Settings_Workflows_Record_Model`; `VTWorkflowManager::save()` normalizes supported conditions into the modern editor format. `updateWorkflowTasks()` skips definitions already present by module and workflow name. Explicit data migration calls `migrateWorkflowConditions()` with the module's `registerWorkflowTasks`: uniquely matched legacy definitions are regenerated from module defaults, while modern customizations remain unchanged.
+
+## Shared condition editor presentation
+
+- `Core_FilterEditor_Model` owns the presentation contract for the existing Vtiger `AdvanceFilter.tpl` and `AdvanceFilterCondition.tpl`. It delegates list operators to `Core_FilterOperator_Model`, retaining source-module overrides and related-field contracts. List user references keep name-valued choices. It does not normalize query values, convert dates/currencies, persist conditions or choose permitted fields.
+- Inject `FILTER_EDITOR` with a subclass instance to specialize `getColumnName()`, `getOperators()`, `getFieldInfo()`, `getTranslationModule()` or `hasDefaultCondition()`. Operator maps contain translated labels. Keep matching method signatures and use the normal loader. The inherited factory creates the called subclass and keeps source/translation/legacy column-method settings local to that object.
+- Workflow presentation is implemented by `Settings_Workflows_FilterEditor_Model`; do not import workflow rules into Core. Shared templates contain all group/row/button markup and default to the Core adapter when none is supplied. Preserve explicit `SHOW_DEFAULT_CONDITIONS` and `COLUMNNAME_API` overrides for existing consumers.
+- Validate both adapters through real Smarty rendering, quoted values, source-module operators, owner values, Documents metadata and blank-row policy. Check workflow JS inheritance in a browser, including add/delete groups and rows, mixed connectors, serialization and trigger changes; load new classes with their actual parent and run PHP lint.
+
+- Related-block filters pass stored connectors unchanged to the Core query parser. Never infer the last group from a fixed key such as 2; empty and sparse groups are normalized at the shared query boundary.

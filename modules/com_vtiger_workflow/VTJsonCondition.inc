@@ -101,51 +101,53 @@ class VTJsonCondition
                 $i++;
             }
 
+            $groupValues = [];
+            $groupOperators = [];
+
             foreach ($expressionResults as $groupId => $groupExprResultSet) {
-                $groupResult = true;
+                $values = [];
+                $operators = [];
+
                 foreach ($groupExprResultSet as $exprResult) {
-                    if (isset($exprResult['result'])) { // Condition to skip last condition
-                        $result = $exprResult['result'];
-                        $logicalOperator = $exprResult['logicaloperator'] ?? null;
-
-                        if (!empty($logicalOperator)) {
-                            switch ($logicalOperator) {
-                                case 'and' :
-                                    $groupResult = ($groupResult && $result);
-                                    break;
-                                case 'or' :
-                                    $groupResult = ($groupResult || $result);
-                                    break;
-                            }
-                        } else { // Case for the first condition
-                            $groupResult = $result;
+                    if (isset($exprResult['result'])) {
+                        if ($values) {
+                            $operators[] = $exprResult['logicaloperator'] ?? 'and';
                         }
+
+                        $values[] = (bool)$exprResult['result'];
                     }
                 }
-                $groupResults[$groupId]['result'] = $groupResult;
+
+                $groupValues[] = $this->evaluateBooleanValues($values, $operators);
+                $groupOperators[] = $groupResults[$groupId]['logicaloperator'];
             }
 
-            foreach ($groupResults as $groupId => $groupResult) {
-                $result = $groupResult['result'];
-                $logicalOperator = $groupResult['logicaloperator'];
-                if (isset($result)) { // Condition to skip last condition
-                    if (!empty($logicalOperator)) {
-                        switch ($logicalOperator) {
-                            case 'and' :
-                                $finalResult = ($finalResult && $result);
-                                break;
-                            case 'or' :
-                                $finalResult = ($finalResult || $result);
-                                break;
-                        }
-                    } else { // Case for the first condition
-                        $finalResult = $result;
-                    }
-                }
-            }
+            $finalResult = $this->evaluateBooleanValues($groupValues, $groupOperators);
         }
 
         return $finalResult;
+    }
+
+    /** Evaluate outgoing connectors with the same AND-before-OR precedence as SQL. */
+    protected function evaluateBooleanValues(array $values, array $operators): bool
+    {
+        if (!$values) {
+            return true;
+        }
+
+        $result = false;
+        $term = $values[0];
+
+        foreach (array_slice($values, 1) as $index => $value) {
+            if (($operators[$index] ?? 'and') === 'or') {
+                $result = $result || $term;
+                $term = $value;
+            } else {
+                $term = $term && $value;
+            }
+        }
+
+        return $result || $term;
     }
 
     function startsWith($str, $subStr)
