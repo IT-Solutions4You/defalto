@@ -49,13 +49,13 @@
 ## Extension Install Flow
 
 - Validate module names before lookup or installation and bind each protected package to the license identified by `installer_license_id`. Force-check that license immediately before installation. Refresh catalog metadata before installation, including public packages; public downloads require no license.
-- Merge API extension metadata with installed module state in `Installer_ExtensionInstall_Model`; do not duplicate this reconciliation in a view or template.
+- Merge API extension metadata with installed module state in `Installer_ExtensionInstall_Model`; do not duplicate this reconciliation in a view or template. Read the installed version from the literal `$moduleVersion` declaration in `modules/<Module>/<Module>.php`, without loading the module class, and use that file version for labels and update availability instead of `vtiger_tab.version`.
 - Show every API catalog extension and installed custom extension even when no license is active. Do not list ordinary Core CRM modules merely because they are installed. Resolve catalog names against installed module records instead of treating clean module placeholders as installed modules.
 - Offer install/update actions for public packages or protected packages whose originating license is currently valid and explicitly entitles that module. Show the download-unavailable explanation for other entries. Session catalog format version 2 invalidates the earlier license-only catalog once.
 - `Installer_ExtensionInstall_Model::isInstallAvailable()` controls the catalog button: a downloadable package must have no installed version or a strictly newer available version. Equal or older catalog versions hide the button without presenting a license error for an otherwise downloadable package.
 - Install extension packages only under the allowed roots `modules`, `layouts`, `languages`, and `cron`. Require the standard writable paths and, for a new module, the module metadata and privilege paths needed by the install lifecycle.
 - Require `<Module>_Install_Model`, validate entity-module table metadata, and use the Core `postinstall` or `postupdate` lifecycle. Preserve and restore an existing module's sharing permission and regenerate module metadata through the existing Core mechanism.
-- Before commit, verify that the module exists and is active, its installed version matches the package metadata, and its default URL is usable. Clear extension metadata after successful installation.
+- Before commit, verify that the module exists and is active, the `moduleVersion` declared by its installed main module file matches the package metadata, and its default URL is usable. Read the declaration directly from the file so a class loaded before extraction cannot retain an old version. Do not use `vtiger_tab.version` for this package-version validation. Clear extension metadata after successful installation.
 - If any later step fails, roll back copied files, restore sharing state where possible, restore database error settings, and rethrow the original failure with any rollback problem logged separately.
 
 ## Package Safety and Recovery

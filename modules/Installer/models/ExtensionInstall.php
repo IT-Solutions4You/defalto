@@ -159,7 +159,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         }
 
         if ($instance->module) {
-            $instance->set('version', $instance->module->get('version'));
+            $instance->set('version', $instance->getInstalledFileVersion());
         }
 
         $instance->retrieveApiData();
@@ -221,7 +221,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $instance = new self();
         $instance->setName($module->getName());
         $instance->module = $module;
-        $instance->set('version', $module->get('version'));
+        $instance->set('version', $instance->getInstalledFileVersion());
 
         return $instance;
     }
@@ -452,7 +452,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             $module = $this->finalizeInstalledModule();
             $download->commit();
             $this->module = $module;
-            $this->set('version', $module->get('version'));
+            $this->set('version', $this->getInstalledFileVersion());
 
             return $module;
         } catch (Throwable $throwable) {
@@ -566,11 +566,12 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         }
 
         $expectedVersion = $this->getUpdateVersion();
-        $installedVersion = (string)$module->get('version');
+        $installedVersion = $this->getInstalledFileVersion();
 
         if ($expectedVersion !== '' && version_compare($installedVersion, $expectedVersion, '!=')) {
             throw new RuntimeException(
-                'Installed module version does not match package version: ' . $installedVersion . ' != ' . $expectedVersion
+                'Installed module file version does not match package version: '
+                . $installedVersion . ' != ' . $expectedVersion
             );
         }
 
@@ -581,6 +582,78 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         Core_Install_Model::logSuccess('Post-install validation passed: ' . $moduleName . ' ' . $installedVersion);
 
         return $module;
+    }
+
+    protected function getInstalledFileVersion(): string
+    {
+        $moduleName = $this->getName();
+        self::validateModuleName($moduleName);
+        $moduleFile = 'modules/' . $moduleName . '/' . $moduleName . '.php';
+
+        if (!is_file($moduleFile)) {
+            return '';
+        }
+
+        $source = file_get_contents($moduleFile);
+
+        if (false === $source) {
+            return '';
+        }
+
+        $tokens = token_get_all($source);
+        $tokenCount = count($tokens);
+
+        for ($index = 0; $index < $tokenCount; $index++) {
+            $token = $tokens[$index];
+
+            if (!is_array($token) || T_VARIABLE !== $token[0] || '$moduleVersion' !== $token[1]) {
+                continue;
+            }
+
+            $assignmentIndex = $this->getNextVersionTokenIndex($tokens, $index + 1);
+
+            if (null === $assignmentIndex || '=' !== $tokens[$assignmentIndex]) {
+                continue;
+            }
+
+            $valueIndex = $this->getNextVersionTokenIndex($tokens, $assignmentIndex + 1);
+            $valueToken = null === $valueIndex ? null : $tokens[$valueIndex];
+
+            if (is_array($valueToken) && T_CONSTANT_ENCAPSED_STRING === $valueToken[0]) {
+                return $this->getVersionStringLiteral($valueToken[1]);
+            }
+        }
+
+        return '';
+    }
+
+    protected function getNextVersionTokenIndex(array $tokens, int $startIndex): ?int
+    {
+        $tokenCount = count($tokens);
+
+        for ($index = $startIndex; $index < $tokenCount; $index++) {
+            $token = $tokens[$index];
+
+            if (is_array($token) && in_array($token[0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)) {
+                continue;
+            }
+
+            return $index;
+        }
+
+        return null;
+    }
+
+    protected function getVersionStringLiteral(string $literal): string
+    {
+        $quote = $literal[0] ?? '';
+        $value = substr($literal, 1, -1);
+
+        if ("'" === $quote) {
+            return trim(str_replace(["\\\\", "\\'"], ["\\", "'"], $value));
+        }
+
+        return trim(stripcslashes($value));
     }
 
     /**
