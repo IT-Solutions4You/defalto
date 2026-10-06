@@ -27,6 +27,48 @@ class ModTracker_Record_Model extends Vtiger_Record_Model
 
     public $parent;
 
+    /** @var array<int, Settings_Workflows_Record_Model|null> */
+    protected array $workflowModels = [];
+    /** @var array<string, Settings_Workflows_TaskRecord_Model|null> */
+    protected array $workflowTaskModels = [];
+
+    public function getWorkflow(): ?Settings_Workflows_Record_Model
+    {
+        if (!$this->get('workflow_id') || !Users_Record_Model::getCurrentUserModel()->isAdminUser()) {
+            return null;
+        }
+
+        $id = (int)$this->get('workflow_id');
+
+        if (!array_key_exists($id, $this->workflowModels)) {
+            $model = new Settings_Workflows_Record_Model();
+            $row = $model->getWorkflowTable()->selectData(['workflow_id', 'workflowname', 'summary'], ['workflow_id' => $id]);
+            $this->workflowModels[$id] = $row ? $model->setData($row) : null;
+        }
+
+        return $this->workflowModels[$id];
+    }
+
+    public function getWorkflowTask(): ?Settings_Workflows_TaskRecord_Model
+    {
+        $workflow = $this->getWorkflow();
+
+        if (!$workflow || !$this->get('task_id')) {
+            return null;
+        }
+
+        $id = (int)$this->get('task_id');
+        $key = $workflow->getId() . ':' . $id;
+
+        if (!array_key_exists($key, $this->workflowTaskModels)) {
+            $model = new Settings_Workflows_TaskRecord_Model();
+            $row = $model->getTaskTable()->selectData(['task_id'], ['task_id' => $id, 'workflow_id' => $workflow->getId()]);
+            $this->workflowTaskModels[$key] = $row ? Settings_Workflows_TaskRecord_Model::getInstance($id, $workflow) : null;
+        }
+
+        return $this->workflowTaskModels[$key];
+    }
+
     /**
      * Function to get the history of updates on a record
      *
@@ -43,8 +85,7 @@ class ModTracker_Record_Model extends Vtiger_Record_Model
         $startIndex = $pagingModel->getStartIndex();
         $pageLimit = $pagingModel->getPageLimit();
 
-        $listQuery = "SELECT * FROM vtiger_modtracker_basic WHERE crmid = ? AND module = ? " .
-            " ORDER BY changedon DESC LIMIT $startIndex, $pageLimit";
+        $listQuery = "SELECT * FROM vtiger_modtracker_basic WHERE crmid = ? AND module = ? ORDER BY changedon DESC, id DESC LIMIT $startIndex, $pageLimit";
 
         $result = $db->pquery($listQuery, [$parentRecordId, $moduleName]);
         $rows = $db->num_rows($result);
@@ -66,7 +107,9 @@ class ModTracker_Record_Model extends Vtiger_Record_Model
     {
         if (!Vtiger_Util_Helper::checkRecordExistance($id)) {
             $this->parent = Vtiger_Record_Model::getInstanceById($id, $moduleName);
-        } else {
+        }
+
+        else {
             $this->parent = Vtiger_Record_Model::getCleanInstance($moduleName);
             $this->parent->id = $id;
             $this->parent->setId($id);
@@ -81,6 +124,7 @@ class ModTracker_Record_Model extends Vtiger_Record_Model
     function checkStatus($callerStatus)
     {
         $status = $this->get('status');
+
         if ($status == $callerStatus) {
             return true;
         }
@@ -136,6 +180,7 @@ class ModTracker_Record_Model extends Vtiger_Record_Model
         $db = PearDatabase::getInstance();
 
         $fieldInstances = [];
+
         if ($this->isCreate() || $this->isUpdate()) {
             $result = $db->pquery('SELECT * FROM vtiger_modtracker_detail WHERE id = ?', [$id]);
             $rows = $db->num_rows($result);
@@ -148,6 +193,7 @@ class ModTracker_Record_Model extends Vtiger_Record_Model
                 }
 
                 $fieldModel = Vtiger_Field_Model::getInstance($row['fieldname'], $this->getParent()->getModule());
+
                 if (!$fieldModel) {
                     continue;
                 }

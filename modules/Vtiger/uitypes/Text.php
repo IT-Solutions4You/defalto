@@ -27,14 +27,21 @@ class Vtiger_Text_UIType extends Vtiger_Base_UIType
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false, $removeTags = false)
     {
-        if (in_array($this->get('field')->getFieldName(), ['signature', 'commentcontent'])) {
+        $fieldModel = $this->get('field');
+
+        if ($fieldModel->isHtmlField()) {
             return $value;
         }
+
+        if ('commentcontent' === $fieldModel->getFieldName()) {
+            return $value;
+        }
+
         if ($removeTags) {
             $value = strip_tags($value, '<br>');
         }
 
-        return nl2br(purifyHtmlEventAttributes($value, true));
+        return Core_SimpleHtmlDom_Helper::convertNewlinesToHtml(purifyHtmlEventAttributes($value, true));
     }
 
     /**

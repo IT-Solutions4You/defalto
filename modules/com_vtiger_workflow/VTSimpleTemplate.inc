@@ -319,6 +319,15 @@ class VTSimpleTemplate
             return;
         }
         switch ($fieldInstance->getFieldDataType()) {
+            case 'text':
+                $fieldModel = Vtiger_Field_Model::getInstance($fieldName, Vtiger_Module_Model::getInstance($moduleName));
+
+                if ($fieldModel) {
+                    return $fieldModel->getDisplayValue($fieldValue);
+                }
+
+                break;
+
             case 'date'            :
                 if (!empty($fieldValue)) {
                     $dateFieldObj = new DateTimeField($fieldValue);
@@ -395,7 +404,7 @@ class VTSimpleTemplate
                 $fieldValue;
         }
 
-        return nl2br($fieldValue);
+        return Core_SimpleHtmlDom_Helper::convertNewlinesToHtml($fieldValue);
     }
 
     /**
@@ -421,7 +430,7 @@ class VTSimpleTemplate
             $content = decode_html($comment['commentcontent']);
 
             if (!empty($content)) {
-                $commentsList .= nl2br($content);
+                $commentsList .= Core_SimpleHtmlDom_Helper::convertNewlinesToHtml($content);
 
                 if ($isSummaryField) {
                     $dateTime = new DateTimeField($comment['createdtime']);

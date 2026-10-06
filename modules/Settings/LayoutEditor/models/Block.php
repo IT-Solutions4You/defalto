@@ -31,24 +31,18 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model
      * Function to check whether adding custom field is allowed or not
      * @return <Boolean> true/false
      */
-    public function isAddCustomFieldEnabled()
+    public function isAddCustomFieldEnabled(): bool
     {
-        $actionNotSupportedModules = array_merge(InventoryItem_Utils_Helper::getInventoryItemModules(), ['Faq', 'HelpDesk']);
         $blocksEliminatedArray = [
             'HelpDesk' => ['LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'],
             'Faq'      => ['LBL_COMMENT_INFORMATION'],
         ];
-        if (in_array($this->module->name, $actionNotSupportedModules)) {
-            if (!empty($blocksEliminatedArray[$this->module->name])) {
-                if (in_array($this->get('label'), $blocksEliminatedArray[$this->module->name])) {
-                    return false;
-                }
-            } else {
-                return false;
-            }
+
+        foreach (InventoryItem_Utils_Helper::getInventoryItemModules() as $inventoryModule) {
+            $blocksEliminatedArray[$inventoryModule] = ['LBL_ITEM_DETAILS'];
         }
 
-        return true;
+        return !in_array($this->get('label'), $blocksEliminatedArray[$this->module->name] ?? [], true);
     }
 
     public static function updateFieldSequenceNumber($blockFieldSequence, $moduleModel = false)

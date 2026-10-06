@@ -139,6 +139,8 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View
         $viewer->assign('DATE_FILTERS', $dateFilters);
         $viewer->assign('ADVANCED_FILTER_OPTIONS', Settings_Workflows_Field_Model::getAdvancedFilterOptions());
         $viewer->assign('ADVANCED_FILTER_OPTIONS_BY_TYPE', Settings_Workflows_Field_Model::getAdvancedFilterOpsByFieldType());
+        $viewer->assign('FILTER_EDITOR', Settings_Workflows_FilterEditor_Model::getInstance($selectedModuleName));
+        // Retain workflow identifiers for legacy or already compiled condition templates.
         $viewer->assign('COLUMNNAME_API', 'getWorkFlowFilterColumnName');
 
         $viewer->assign('FIELD_EXPRESSIONS', Settings_Workflows_Module_Model::getExpressions());

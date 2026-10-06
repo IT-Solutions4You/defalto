@@ -17,6 +17,9 @@
  */
 
 $languageStrings = [
+    'LBL_HAS_BEEN_SET_OR_CHANGED_TO' => 'Has been set or changed to',
+    'LBL_HAS_BEEN_SET_OR_CHANGED_FROM' => 'Has been set or changed from',
+    'LBL_HAS_BEEN_SET_OR_CHANGED' => 'Has been set or changed',
     'LBL_NEW'                                    => 'New',
     'LBL_WORKFLOW'                               => 'Workflow',
     'LBL_CREATING_WORKFLOW'                      => 'Creating WorkFlow',
@@ -151,6 +154,7 @@ $languageStrings = [
     'LBL_WORKFLOW_SEARCH'          => 'Search by Name',
 ];
 $jsLanguageStrings = [
+    'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'This condition is not supported when the workflow runs only on creation. Select Has been set or changed, or another supported condition.',
     'JS_STATUS_CHANGED_SUCCESSFULLY'         => 'Status changed Successfully',
     'JS_TASK_DELETED_SUCCESSFULLY'           => 'Action deleted Successfully',
     'JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE' => 'Same fields selected more than once',

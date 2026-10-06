@@ -318,6 +318,11 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
         $content = $this->convertUrlsToTrackUrls($content);
         $content = $this->convertCssToInline($content);
+
+        if ('WF' === $this->get('source')) {
+            $content = Core_SimpleHtmlDom_Helper::convertParagraphBreaks($content);
+        }
+
         $content .= $this->getBranding();
         $content .= $this->getTrackImageDetails();
 

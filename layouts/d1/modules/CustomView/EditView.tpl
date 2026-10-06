@@ -42,11 +42,11 @@
 								</div>
 								<div class="col-lg-6">
 									<label class="checkbox-inline p-2">
-										<input class="form-check-input" type="checkbox" name="setdefault" value="1" {if $CUSTOMVIEW_MODEL->isDefault()} checked="checked"{/if}>
+										<input class="form-check-input" type="checkbox" name="setdefault" value="1" {if !$LIST_FILTER_DRAFT && $CUSTOMVIEW_MODEL->isDefault()} checked="checked"{/if}>
 										<span class="ms-2">{vtranslate('LBL_SET_AS_DEFAULT',$MODULE)}</span>
 									</label>
 									<label class="checkbox-inline p-2">
-										<input class="form-check-input" id="setmetrics" name="setmetrics" type="checkbox" value="1" {if $CUSTOMVIEW_MODEL->get('setmetrics') eq '1'} checked="checked"{/if}>
+										<input class="form-check-input" id="setmetrics" name="setmetrics" type="checkbox" value="1" {if !$LIST_FILTER_DRAFT && $CUSTOMVIEW_MODEL->get('setmetrics') eq '1'} checked="checked"{/if}>
 										<span class="ms-2">{vtranslate('LBL_LIST_IN_METRICS',$MODULE)}</span>
 									</label>
 								</div>
@@ -133,14 +133,14 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer modal-overlay-footer border-top border-1 p-3">
-					<div class="container-fluid">
+				<div class="modal-footer modal-overlay-footer">
+					<div class="container-fluid p-0">
 						<div class="row">
 							<div class="col-6">
 								<a class="btn btn-primary cancelLink" href="javascript:void(0);" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 							</div>
 							<div class="col-6 text-end">
-								<button type='submit' class='btn btn-primary active saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
+								<button type='submit' class='btn btn-primary active saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>
 							</div>
 						</div>
 					</div>

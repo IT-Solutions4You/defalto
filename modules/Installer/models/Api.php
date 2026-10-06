@@ -71,7 +71,15 @@ class Installer_Api_Model extends Vtiger_Net_Client
      */
     public function getExtensionInstall(): array
     {
-        $extensions = [];
+        // Download metadata returned without a license identifies public packages.
+        $extensions = self::transformExtensionResponse($this->sendJsonRequest('/extension/v1', []));
+
+        foreach ($extensions as &$extensionInfo) {
+            $extensionInfo['installer_public_download'] = self::hasExtensionPackage($extensionInfo);
+            $extensionInfo['installer_license_id'] = 0;
+        }
+
+        unset($extensionInfo);
 
         foreach (Installer_License_Model::getAll() as $license) {
             $license->check();
@@ -102,12 +110,26 @@ class Installer_Api_Model extends Vtiger_Net_Client
 
             $licensedExtensions = self::transformExtensionResponse($response);
 
-            foreach ($licensedExtensions as &$extensionInfo) {
-                $extensionInfo['installer_license_id'] = $license->getId();
-            }
-            unset($extensionInfo);
+            foreach ($licensedExtensions as $moduleName => $extensionInfo) {
+                if (!empty($extensions[$moduleName]['installer_public_download'])) {
+                    continue;
+                }
 
-            $extensions = array_replace($extensions, $licensedExtensions);
+                if (!$license->hasExtensionEntitlement($moduleName) || !self::hasExtensionPackage($extensionInfo)) {
+                    if (!isset($extensions[$moduleName])) {
+                        $extensions[$moduleName] = [
+                            'label' => (string)($extensionInfo['label'] ?? $moduleName),
+                            'update_version' => (string)$extensionInfo['update_version'],
+                        ];
+                    }
+
+                    continue;
+                }
+
+                $extensionInfo['installer_license_id'] = $license->getId();
+                $extensionInfo['installer_public_download'] = false;
+                $extensions[$moduleName] = $extensionInfo;
+            }
         }
 
         return $extensions;
@@ -212,10 +234,19 @@ class Installer_Api_Model extends Vtiger_Net_Client
     {
         return array_filter(
             $response,
-            static fn (mixed $extensionInfo): bool => is_array($extensionInfo)
-                && '' !== trim((string)($extensionInfo['download-url'] ?? ''))
-                && '' !== trim((string)($extensionInfo['download-folder'] ?? ''))
+            static fn (mixed $extensionInfo, mixed $moduleName): bool => is_string($moduleName)
+                && 1 === preg_match('/^[A-Za-z][A-Za-z0-9_]*$/', $moduleName)
+                && is_array($extensionInfo)
+                && is_scalar($extensionInfo['update_version'] ?? null)
+                && '' !== trim((string)$extensionInfo['update_version']),
+            ARRAY_FILTER_USE_BOTH
         );
+    }
+
+    public static function hasExtensionPackage(array $extensionInfo): bool
+    {
+        return '' !== trim((string)($extensionInfo['download-url'] ?? ''))
+            && '' !== trim((string)($extensionInfo['download-folder'] ?? ''));
     }
 
     public static function convertToNonNegativeInteger(mixed $value): int|false

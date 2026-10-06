@@ -72,7 +72,7 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model
             $db = PearDatabase::getInstance();
 
             $filterid = $this->widgetModel->get('filterid');
-            $this->queryGenerator = new EnhancedQueryGenerator($this->getTargetModule(), $currentUserModel);
+            $this->queryGenerator = new Core_QueryGenerator_Model($this->getTargetModule(), $currentUserModel);
             $this->queryGenerator->initForCustomViewById($filterid);
             $this->queryGenerator->setFields($this->getTargetFields());
 

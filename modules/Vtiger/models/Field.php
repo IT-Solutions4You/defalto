@@ -26,6 +26,14 @@ class Vtiger_Field_Model extends Vtiger_Field
 {
     var $webserviceField = false;
 
+    /** Field names whose values contain HTML rather than plain text. */
+    public array $htmlFields = [];
+
+    public function isHtmlField(): bool
+    {
+        return in_array($this->getName(), $this->htmlFields, true);
+    }
+
     const REFERENCE_TYPE = 'reference';
     const OWNER_TYPE = 'owner';
     const OWNERGROUP_TYPE = 'group';

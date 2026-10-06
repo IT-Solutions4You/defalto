@@ -48,7 +48,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType
      *
      * @return <String> time
      */
-    public static function getTimeValueInAMorPM($time)
+    public static function getTimeValueInAMorPM($time, $translate = true)
     {
         if ($time) {
             if (substr_count($time, ':') < 2) {
@@ -56,18 +56,18 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType
             } /* to overcome notice of missing index 2 (seconds) below */
 
             [$hours, $minutes, $seconds] = explode(':', $time);
-            $format = vtranslate('PM');
+            $format = $translate ? vtranslate('PM') : 'PM';
 
             if ($hours > 12) {
                 $hours = (int)$hours - 12;
             } elseif ($hours < 12) {
-                $format = vtranslate('AM');
+                $format = $translate ? vtranslate('AM') : 'AM';
             }
 
             //If hours zero then we need to make it as 12 AM
             if ($hours == '00') {
                 $hours = '12';
-                $format = vtranslate('AM');
+                $format = $translate ? vtranslate('AM') : 'AM';
             }
 
             return "$hours:$minutes $format";
@@ -86,19 +86,16 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType
     public static function getTimeValueWithSeconds($time)
     {
         if ($time) {
-            if (substr_count($time, ':') < 2) {
-                $time .= ':';
-            }
-
-            $timeDetails = explode(' ', $time);
-            [$hours, $minutes, $seconds] = explode(':', $timeDetails[0]);
+            $timeDetails = preg_split('/\s+/', trim($time));
+            [$hours, $minutes, $seconds] = array_pad(explode(':', $timeDetails[0]), 3, '00');
+            $period = strtoupper($timeDetails[1] ?? '');
 
             //If pm exists and if it not 12 then we need to make it to 24-hour format
-            if (isset($timeDetails[1]) && $timeDetails[1] === 'PM' && $hours != '12') {
+            if ($period === 'PM' && $hours != '12') {
                 $hours = $hours + 12;
             }
 
-            if (isset($timeDetails[1]) && $timeDetails[1] === 'AM' && $hours == '12') {
+            if ($period === 'AM' && $hours == '12') {
                 $hours = '00';
             }
 
@@ -106,7 +103,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType
                 $seconds = '00';
             }
 
-            return "$hours:$minutes:$seconds";
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
         } else {
             return '';
         }
@@ -146,9 +143,13 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType
      *
      * @return converted value
      */
-    public function getEditViewDisplayValue($value)
+    public function getEditViewDisplayValue($value, $hourFormat = null)
     {
-        return self::getTimeValueInAMorPM($value);
+        if (!in_array($hourFormat, ['12', '24'], true)) {
+            $hourFormat = Users_Privileges_Model::getCurrentUserModel()->get('hour_format');
+        }
+
+        return $hourFormat == '12' ? self::getTimeValueInAMorPM($value, false) : $value;
     }
 
     public function getListSearchTemplateName()
@@ -167,7 +168,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType
      */
     public function getDBInsertValue($value)
     {
-        if (preg_match('/AM|PM/', $value)) {
+        if (preg_match('/AM|PM/i', $value)) {
             $value = Vtiger_Time_UIType::getTimeValueWithSeconds($value);
         }
 

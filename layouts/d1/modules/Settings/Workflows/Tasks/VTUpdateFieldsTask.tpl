@@ -50,7 +50,7 @@
                     </select>
                 </div>
                 <div class="fieldUiHolder col-4">
-                    <input type="text" class="getPopupUi inputElement form-control" readonly="" name="fieldValue" data-display-value="{$FIELD_MAP['display-value']}" value="{$FIELD_MAP['value']}"/>
+                    <input type="text" class="getPopupUi inputElement form-control" readonly="" name="fieldValue" data-display-value="{$FIELD_MAP['display-value']|escape:'html'}" value="{$FIELD_MAP['value']|escape:'html'}"/>
                     <input type="hidden" name="valuetype" value="{$FIELD_MAP['valuetype']}"/>
                 </div>
             </div>

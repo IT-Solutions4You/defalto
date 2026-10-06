@@ -753,13 +753,8 @@ class Reporting_Record_Model extends Vtiger_Record_Model
      */
     public function getFormatedFilters(): array
     {
-        $filters = $this->getFilter();
-
-        if (empty($filters[2]['columns'])) {
-            $filters[1]['condition'] = '';
-        }
-
-        return $filters;
+        // The shared query parser removes empty groups and terminal connectors.
+        return $this->getFilter();
     }
 
     public function getPrimaryModule(): string

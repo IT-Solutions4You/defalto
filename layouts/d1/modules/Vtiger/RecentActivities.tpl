@@ -32,7 +32,13 @@
                                         </time>
                                         {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                         {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
-                                        {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
+                                        {if $RECENT_ACTIVITY->get('workflow_id')}
+                                            <div class="col-auto update_icon">
+                                                <div class="rounded-circle bg-info d-flex align-items-center justify-content-center" {$IMAGE_SIZE}>
+                                                    <i class="update_image fa fa-cogs" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                        {elseif $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
                                             <div class="col-auto update_icon">
                                                 <div class="rounded-circle bg-info d-flex align-items-center justify-content-center" {$IMAGE_SIZE}>
                                                     <i class="update_image vicon-vtigeruser"></i>
@@ -49,8 +55,9 @@
                                         {/if}
                                         <div class="col-7 update_info">
                                             <h5 class="fw-bold">
-                                                <span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getName()}</span>
-                                                <span>{vtranslate('LBL_CREATED', $MODULE_NAME)}</span>
+                                                {include file='Workflow.tpl'|vtemplate_path:'ModTracker'}
+                                                {if !$RECENT_ACTIVITY->get('workflow_id')}<span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getName()}</span>{/if}
+                                                {if !$RECENT_ACTIVITY->get('workflow_id')}<span>{vtranslate('LBL_CREATED', $MODULE_NAME)}</span>{/if}
                                             </h5>
                                         </div>
                                     </li>
@@ -63,7 +70,13 @@
                                         </time>
                                         {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                         {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
-                                        {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
+                                        {if $RECENT_ACTIVITY->get('workflow_id')}
+                                            <div class="col-auto update_icon">
+                                                <div class="rounded-circle bg-info d-flex align-items-center justify-content-center" {$IMAGE_SIZE}>
+                                                    <i class="update_image fa fa-cogs" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                        {elseif $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
                                             <div class="col-auto update_icon">
                                                 <div class="rounded-circle bg-info d-flex align-items-center justify-content-center" {$IMAGE_SIZE}>
                                                     <i class="update_image vicon-vtigeruser"></i>
@@ -81,8 +94,9 @@
                                         <div class="col-7 update_info">
                                             <div>
                                                 <h5 class="fw-bold">
-                                                    <span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getDisplayName()}</span>
-                                                    <span>{vtranslate('LBL_UPDATED', $MODULE_NAME)}</span>
+                                                    {include file='Workflow.tpl'|vtemplate_path:'ModTracker'}
+                                                    {if !$RECENT_ACTIVITY->get('workflow_id')}<span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getDisplayName()}</span>{/if}
+                                                    {if !$RECENT_ACTIVITY->get('workflow_id')}<span>{vtranslate('LBL_UPDATED', $MODULE_NAME)}</span>{/if}
                                                 </h5>
                                             </div>
                                             {foreach item=FIELDMODEL from=$RECENT_ACTIVITY->getFieldInstances()}

@@ -113,6 +113,7 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View
         $viewer->assign('SEARCHABLE_MODULES', $searchableModules);
         $viewer->assign('SEARCH_FIELD_NAMES', $moduleModel ? $searchModel->getSearchFieldNames($moduleModel) : []);
         $viewer->assign('CUSTOMVIEW_MODEL', $customViewModel);
+        $viewer->assign('ADVANCE_CRITERIA', [1 => ['columns' => [], 'condition' => 'and']]);
 
         $advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
         $viewer->assign('ADVANCED_FILTER_OPTIONS', Vtiger_Field_Model::getAdvancedFilterOptions());

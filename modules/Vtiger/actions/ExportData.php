@@ -133,7 +133,7 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
         $cvId = $request->get('viewname');
         $moduleName = $request->get('source_module');
 
-        $queryGenerator = new EnhancedQueryGenerator($moduleName, $currentUser);
+        $queryGenerator = new Core_QueryGenerator_Model($moduleName, $currentUser);
         $queryGenerator->initForCustomViewById($cvId);
         $fieldInstances = $this->moduleFieldInstances;
 

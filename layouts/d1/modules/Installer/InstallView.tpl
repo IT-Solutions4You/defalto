@@ -198,11 +198,13 @@
                     </div>
                     <div class="col-lg-4">{$EXTENSION_MODEL->getUpdateVersion()}</div>
                     <div class="col-lg-4 d-flex">
-                        {if $EXTENSION_MODEL->hasDownloadUrl()}
+                        {if $EXTENSION_MODEL->isInstallAvailable()}
                             <button type="button" class="btn btn-primary" data-download-extension="{$EXTENSION_MODEL->getName()}">
                                 <i class="fa-solid fa-download"></i>
                                 <span class="ms-2">{vtranslate($EXTENSION_MODEL->getDownloadLabel(), $QUALIFIED_MODULE)}</span>
                             </button>
+                        {elseif !$EXTENSION_MODEL->hasDownloadUrl()}
+                            <span class="text-secondary">{vtranslate('LBL_LICENSE_DOWNLOAD_UNAVAILABLE', $QUALIFIED_MODULE)}</span>
                         {/if}
                         {assign var=EXTENSION_LINKS value=$EXTENSION_MODEL->getLinks()}
                         {if $EXTENSION_LINKS}

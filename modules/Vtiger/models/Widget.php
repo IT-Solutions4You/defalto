@@ -180,15 +180,20 @@ class Vtiger_Widget_Model extends Vtiger_Base_Model
         return $self;
     }
 
-    public static function updateWidgetPosition($position, $linkId, $widgetId, $userId)
+    public static function updateWidgetPosition($position, $linkId, $widgetId, $userId, $tabId)
     {
+        if (!$tabId) {
+            return;
+        }
+
         if (!$linkId && !$widgetId) {
             return;
         }
 
         $db = PearDatabase::getInstance();
-        $sql = 'UPDATE vtiger_module_dashboard_widgets SET position=? WHERE userid=?';
-        $params = [$position, $userId];
+        $sql = 'UPDATE vtiger_module_dashboard_widgets SET position=? WHERE userid=? AND dashboardtabid=?';
+        $params = [$position, $userId, $tabId];
+
         if ($linkId) {
             $sql .= ' AND linkid = ?';
             $params[] = $linkId;
@@ -196,6 +201,7 @@ class Vtiger_Widget_Model extends Vtiger_Base_Model
             $sql .= ' AND id = ?';
             $params[] = $widgetId;
         }
+
         $db->pquery($sql, $params);
     }
 

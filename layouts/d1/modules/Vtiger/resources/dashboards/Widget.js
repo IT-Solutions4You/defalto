@@ -220,13 +220,20 @@ Vtiger.Class('Vtiger_Widget_Js', {
         }
 
         app.helper.showProgress();
-        app.request.post(params).then(function (err, data) {
+        return app.request.post(params).then(function (err, data) {
             app.helper.hideProgress();
+            contentContainer.removeClass('hide');
+
+            if (err) {
+                app.helper.showErrorNotification({message: err});
+
+                return err;
+            }
 
             contentContainer.html(data);
             contentContainer.find('.widgetChartContainer').css('height', parent.height() - 60);
             contentContainer.trigger(Vtiger_Widget_Js.widgetPostRefereshEvent);
-        },);
+        });
     },
 
     registerFilter: function () {
@@ -894,18 +901,22 @@ Vtiger_Widget_Js('Vtiger_Notebook_Widget_Js', {}, {
     },
 
     refreshWidget: function () {
-        var parent = this.getContainer();
-        var element = parent.find('a[name="drefresh"]');
-        var url = element.data('url');
-
-        var contentContainer = parent.find('.dashboardWidgetContent');
-        var params = {};
-        params.url = url;
+        const parent = this.getContainer(),
+            element = parent.find('a[name="drefresh"]'),
+            contentContainer = parent.find('.dashboardWidgetContent'),
+            params = {url: element.data('url')};
 
         app.helper.showProgress();
-        app.request.post(params).then(
+        return app.request.post(params).then(
             function (err, data) {
                 app.helper.hideProgress();
+                contentContainer.removeClass('hide');
+
+                if (err) {
+                    app.helper.showErrorNotification({message: err});
+
+                    return err;
+                }
 
                 if (contentContainer.closest('.mCustomScrollbar').length) {
                     contentContainer.mCustomScrollbar('destroy');

@@ -394,7 +394,7 @@ class Accounts_Install_Model extends Core_Install_Model
                     'presence' => 2,
                     'typeofdata' => 'I~O',
                     'quickcreate' => 1,
-                    'displaytype' => 2,
+                    'displaytype' => 1,
                     'masseditable' => 0,
                     'summaryfield' => 0,
                     'related_modules' => [
@@ -668,6 +668,8 @@ class Accounts_Install_Model extends Core_Install_Model
      */
     public function migrate(): void
     {
+        $this->migrateWorkflowConditions();
+
         $moduleName = $this->getModuleName();
         $fields = [
             'account_type' => 'accounttype',

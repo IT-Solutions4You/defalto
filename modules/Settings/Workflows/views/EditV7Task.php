@@ -94,28 +94,23 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View
                 $ownerFieldModels = $relationModuleModel->getFieldsByType('owner');
 
                 $fieldMapping = Zend_Json::decode($taskObject->field_value_mapping);
+
                 foreach ($fieldMapping as $key => $mappingInfo) {
-                    if (array_key_exists($mappingInfo['fieldname'], $ownerFieldModels)) {
-                        if (!empty($mappingInfo['value'])) {
-                            if (is_numeric($mappingInfo['value'])) {
-                                $userRecordModel = Users_Record_Model::getInstanceById($mappingInfo['value'], 'Users');
-                            } else {
-                                $userRecordModel = Users_Record_Model::getInstanceByName($mappingInfo['value']);
-                            }
-                        }
+                    if (!$taskModel->isOwnerNameMapping($mappingInfo, $ownerFieldModels)) {
+                        continue;
+                    }
 
-                        if ($userRecordModel) {
-                            $ownerName = $userRecordModel->getId();
-                        } elseif (!empty ($mappingInfo['value'])) {
-                            $groupRecordModel = Settings_Groups_Record_Model::getInstance($mappingInfo['value']);
-                            $ownerName = $groupRecordModel->getId();
-                        }
+                    if ($taskModel->isParentOwnerField($mappingInfo['value'], $moduleModel)) {
+                        continue;
+                    }
 
-                        if (!empty($mappingInfo['value'])) {
-                            $fieldMapping[$key]['value'] = $ownerName;
-                        }
+                    $ownerModel = $taskModel->retrieveOwnerByName($mappingInfo['value']);
+
+                    if ($ownerModel) {
+                        $fieldMapping[$key]['value'] = $ownerModel->getId();
                     }
                 }
+
                 $taskObject->field_value_mapping = json_encode($fieldMapping, JSON_HEX_APOS);
             }
         }
@@ -230,4 +225,5 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View
 
         $viewer->view('EditTask.tpl', $qualifiedModuleName);
     }
+
 }

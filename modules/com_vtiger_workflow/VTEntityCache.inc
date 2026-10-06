@@ -123,6 +123,83 @@ class VTWorkflowEntity
         $this->data[$fieldName] = $value;
     }
 
+    public function hasInitialFieldValue(string $fieldName): bool
+    {
+        // Zero and false are initial values; absent or empty fields are not changes.
+        $value = $this->data[$fieldName] ?? null;
+
+        return $value !== null && $value !== '' && $value !== [];
+    }
+
+    public function hasFieldChanged(string $fieldName): bool
+    {
+        $entityDelta = new VTEntityDelta();
+        $moduleName = $this->getModuleName();
+        $idParts = vtws_getIdComponents($this->getId());
+        $recordId = $idParts[1];
+        $oldEntity = $entityDelta->getOldEntity($moduleName, $recordId);
+
+        if (!$oldEntity) {
+            return false;
+        }
+
+        $newEntity = $entityDelta->getNewEntity($moduleName, $recordId);
+
+        if (!$newEntity) {
+            return false;
+        }
+
+        $oldData = $oldEntity->getData();
+        $newData = $newEntity->getData();
+
+        // Save-event snapshots wrap their fields in TrackableObject; retain explicit null keys.
+        if ($oldData instanceof TrackableObject) {
+            $oldData = $oldData->getColumnFields();
+        }
+
+        if ($newData instanceof TrackableObject) {
+            $newData = $newData->getColumnFields();
+        }
+
+        if (!array_key_exists($fieldName, $oldData) || !array_key_exists($fieldName, $newData)) {
+            return false;
+        }
+
+        // Preserve explicit null transitions, including null to zero, omitted by the shared delta.
+        if ($oldData[$fieldName] === null || $newData[$fieldName] === null) {
+            return $oldData[$fieldName] !== $newData[$fieldName];
+        }
+
+        return $entityDelta->hasChanged($moduleName, $recordId, $fieldName);
+    }
+
+    public function hasFieldValue(string $fieldName, $value, bool $useOldValue = false): bool
+    {
+        $data = $this->getData();
+
+        if ($useOldValue) {
+            $idParts = vtws_getIdComponents($this->getId());
+            $oldEntity = (new VTEntityDelta())->getOldEntity($this->getModuleName(), $idParts[1]);
+
+            if (!$oldEntity) {
+                return false;
+            }
+
+            $data = $oldEntity->getData();
+        }
+
+        if ($data instanceof TrackableObject) {
+            $data = $data->getColumnFields();
+        }
+
+        if (!array_key_exists($fieldName, $data)) {
+            return false;
+        }
+
+        // Editor literals are strings; an empty comparison also represents a null field.
+        return decode_html((string)$data[$fieldName]) === decode_html((string)$value);
+    }
+
     function save()
     {
         vtws_update($this->data, $this->user);

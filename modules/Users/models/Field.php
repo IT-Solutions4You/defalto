@@ -21,6 +21,8 @@
  */
 class Users_Field_Model extends Vtiger_Field_Model
 {
+    public array $htmlFields = ['signature'];
+
     /**
      * Function to check whether the current field is read-only
      * @return <Boolean> - true/false

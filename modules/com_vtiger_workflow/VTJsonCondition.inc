@@ -20,6 +20,17 @@ require_once("include/Zend/Json.php");
 
 class VTJsonCondition
 {
+    private bool $isNew = false;
+
+    public function setNewRecord(bool $isNew): void
+    {
+        $this->isNew = $isNew;
+    }
+
+    public function isNewRecord(): bool
+    {
+        return $this->isNew;
+    }
 
     function __construct()
     {
@@ -90,51 +101,53 @@ class VTJsonCondition
                 $i++;
             }
 
+            $groupValues = [];
+            $groupOperators = [];
+
             foreach ($expressionResults as $groupId => $groupExprResultSet) {
-                $groupResult = true;
+                $values = [];
+                $operators = [];
+
                 foreach ($groupExprResultSet as $exprResult) {
-                    if (isset($exprResult['result'])) { // Condition to skip last condition
-                        $result = $exprResult['result'];
-                        $logicalOperator = $exprResult['logicaloperator'] ?? null;
-
-                        if (!empty($logicalOperator)) {
-                            switch ($logicalOperator) {
-                                case 'and' :
-                                    $groupResult = ($groupResult && $result);
-                                    break;
-                                case 'or' :
-                                    $groupResult = ($groupResult || $result);
-                                    break;
-                            }
-                        } else { // Case for the first condition
-                            $groupResult = $result;
+                    if (isset($exprResult['result'])) {
+                        if ($values) {
+                            $operators[] = $exprResult['logicaloperator'] ?? 'and';
                         }
+
+                        $values[] = (bool)$exprResult['result'];
                     }
                 }
-                $groupResults[$groupId]['result'] = $groupResult;
+
+                $groupValues[] = $this->evaluateBooleanValues($values, $operators);
+                $groupOperators[] = $groupResults[$groupId]['logicaloperator'];
             }
 
-            foreach ($groupResults as $groupId => $groupResult) {
-                $result = $groupResult['result'];
-                $logicalOperator = $groupResult['logicaloperator'];
-                if (isset($result)) { // Condition to skip last condition
-                    if (!empty($logicalOperator)) {
-                        switch ($logicalOperator) {
-                            case 'and' :
-                                $finalResult = ($finalResult && $result);
-                                break;
-                            case 'or' :
-                                $finalResult = ($finalResult || $result);
-                                break;
-                        }
-                    } else { // Case for the first condition
-                        $finalResult = $result;
-                    }
-                }
-            }
+            $finalResult = $this->evaluateBooleanValues($groupValues, $groupOperators);
         }
 
         return $finalResult;
+    }
+
+    /** Evaluate outgoing connectors with the same AND-before-OR precedence as SQL. */
+    protected function evaluateBooleanValues(array $values, array $operators): bool
+    {
+        if (!$values) {
+            return true;
+        }
+
+        $result = false;
+        $term = $values[0];
+
+        foreach (array_slice($values, 1) as $index => $value) {
+            if (($operators[$index] ?? 'and') === 'or') {
+                $result = $result || $term;
+                $term = $value;
+            } else {
+                $term = $term && $value;
+            }
+        }
+
+        return $result || $term;
     }
 
     function startsWith($str, $subStr)
@@ -162,6 +175,7 @@ class VTJsonCondition
     function checkCondition($entityData, $cond, $referredEntityData = null)
     {
         $data = $entityData->getData();
+        $isNew = $this->isNewRecord() && $referredEntityData === null;
 
         $condition = $cond['operation'];
         if (empty($condition)) {
@@ -374,10 +388,22 @@ class VTJsonCondition
             case "matches":
                 return preg_match($value, $fieldValue);
 
+            case 'has been set or changed to':
+                $wasSet = $isNew
+                    ? $entityData->hasInitialFieldValue($cond['fieldname'])
+                    : $entityData->hasFieldChanged($cond['fieldname']);
+
+                return $wasSet && $entityData->hasFieldValue($cond['fieldname'], $value);
+            case 'has been set or changed from':
+                return !$isNew && $entityData->hasFieldChanged($cond['fieldname'])
+                    && $entityData->hasFieldValue($cond['fieldname'], $value, true);
+            case 'has been set or changed':
+                return $isNew
+                    ? $entityData->hasInitialFieldValue($cond['fieldname'])
+                    : $entityData->hasFieldChanged($cond['fieldname']);
             case "has changed" :
-                $entityDelta = new VTEntityDelta();
-                $idParts = vtws_getIdComponents($entityData->getId());
-                $hasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $idParts[1], $cond['fieldname']);
+                $hasChanged = !$isNew && $entityData->hasFieldChanged($cond['fieldname']);
+
                 if (empty($value)) {
                     return $hasChanged;
                 } else {
@@ -547,11 +573,19 @@ class VTJsonCondition
 
                 return false;
             case 'has changed to' :
+                if ($isNew) {
+                    return false;
+                }
+
                 $entityDelta = new VTEntityDelta();
                 $idParts = vtws_getIdComponents($entityData->getId());
 
                 return $entityDelta->hasChanged($entityData->getModuleName(), $idParts[1], $cond['fieldname'], $value);
             case 'has changed from' :
+                if ($isNew) {
+                    return false;
+                }
+
                 $entityDelta = new VTEntityDelta();
                 $idParts = vtws_getIdComponents($entityData->getId());
 

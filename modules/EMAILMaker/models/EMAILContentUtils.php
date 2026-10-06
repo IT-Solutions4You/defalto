@@ -588,7 +588,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             }
         } elseif (in_array($fieldname, (array)$UITypes["textareas"])) {
             if (strpos($value, '&lt;br /&gt;') === false && strpos($value, '&lt;br/&gt;') === false && strpos($value, '&lt;br&gt;') === false) {
-                $value = nl2br($value);
+                $value = Core_SimpleHtmlDom_Helper::convertNewlinesToHtml($value);
             }
             $value = html_entity_decode($value, ENT_QUOTES, $def_charset);
         } elseif (in_array($fieldname, (array)$UITypes["multipicklists"])) {

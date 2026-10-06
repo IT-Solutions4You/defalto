@@ -265,23 +265,14 @@ jQuery.validator.addMethod("check-filter-duplicate", function (value, element, p
 );
 
 jQuery.validator.addMethod("time", function (value, element, params) {
-        element = jQuery(element);
-        if (!value) return true;
-        try {
-            var fieldValue = value;
-            var time = fieldValue.replace(fieldValue.match(/[AP]M/i), '');
-            var timeValue = time.split(":");
-            var dateformat = element.data('format');
-
-            if (timeValue.length != 2 || isNaN(timeValue[0]) || isNaN(timeValue[1])
-                || timeValue[0] > dateformat || timeValue[1] > 59) {
-                return false;
-            }
+        if (!value) {
             return true;
-        } catch (err) {
-            console.log(err);
-            return false;
         }
+
+        const format = String(jQuery(element).data('format')),
+            pattern = format === '12' ? /^(0?[1-9]|1[0-2]):[0-5]\d(?::[0-5]\d)?\s+[AP]M$/i : /^([01]?\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
+
+        return pattern.test(value.trim());
     }, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_TIME'))
 );
 

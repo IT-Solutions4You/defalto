@@ -296,6 +296,30 @@ Vtiger.Class("Vtiger_List_Js", {
         var listViewContainer = this.getListViewContainer();
         return listViewContainer.find('[name="cvid"]').val();
     },
+    updateListUrl: function () {
+        if (app.view() !== 'List' || app.getParentModuleName() === 'Settings') {
+            return;
+        }
+
+        const viewId = this.getCurrentCvId();
+
+        if (!viewId) {
+            return;
+        }
+
+        const url = new URL(window.location.href);
+
+        url.searchParams.set('viewname', viewId);
+        url.searchParams.set('search_params', JSON.stringify(this.getListSearchParams(false)));
+
+        const state = window.history.state ? jQuery.extend({}, window.history.state, {url: url.href}) : null;
+
+        window.history.replaceState(state, '', url.href);
+
+        if (jQuery.pjax && jQuery.pjax.state) {
+            jQuery.pjax.state.url = url.href;
+        }
+    },
     getModuleName: function () {
         if (this._moduleName != false) {
             return this._moduleName;
@@ -413,6 +437,7 @@ Vtiger.Class("Vtiger_List_Js", {
         listViewContainer.find('#orderBy').val('');
         listViewContainer.find("#sortOrder").val('');
         listViewContainer.find('#currentSearchParams').val(JSON.stringify(new Array()));
+        listViewContainer.find('.listFilterState').val('[]');
         listViewContainer.find('#currentTagParams').val(JSON.stringify(new Array()));
         listViewContainer.find('[name="tag"]').val('');
         listViewContainer.find('[name="list_headers"]').val('');
@@ -446,13 +471,25 @@ Vtiger.Class("Vtiger_List_Js", {
 
         if (urlParams['view'] == 'ListAjax') {
             app.request.post({data: urlParams}).then(function (err, res) {
-                aDeferred.resolve(res);
+                if (err) {
+                    app.helper.hideProgress();
+                    aDeferred.reject(err);
+                    return;
+                }
+
                 self.postLoadListViewRecords(res);
+                aDeferred.resolve(res);
             });
         } else {
             app.request.pjax({data: urlParams}).then(function (err, res) {
-                aDeferred.resolve(res);
+                if (err) {
+                    app.helper.hideProgress();
+                    aDeferred.reject(err);
+                    return;
+                }
+
                 self.postLoadListViewRecords(res);
+                aDeferred.resolve(res);
             });
         }
         return aDeferred.promise();
@@ -460,6 +497,12 @@ Vtiger.Class("Vtiger_List_Js", {
     postLoadListViewRecords: function (res) {
         var self = this;
         self.placeListContents(res);
+
+        if (self.listFilter) {
+            self.listFilter.showFilterChips();
+        }
+
+        self.updateListUrl();
         app.event.trigger('post.listViewFilter.click', jQuery('.searchRow'));
         app.helper.hideProgress();
         self.markSelectedIdsCheckboxes();
@@ -530,6 +573,12 @@ Vtiger.Class("Vtiger_List_Js", {
         return !isNaN(num);
     },
     getListSearchParams: function (includeStarFilters) {
+        if (this.listFilter && this.listFilter.getBar().length) {
+            const params = this.listFilter.getParams();
+
+            return includeStarFilters === false ? params : this.addStarSearchParams(params);
+        }
+
         if (typeof includeStarFilters == "undefined") {
             includeStarFilters = true;
         }
@@ -2494,14 +2543,8 @@ Vtiger.Class("Vtiger_List_Js", {
 
                     //add available field to selected list
                     availFieldsList.on('click', '.item', function (e) {
-                        var selectedFieldsEles = selectedFieldsList.find('.item');
-                        var limit = jQuery('#maxListFieldsSelectionSize').text();
-                        if (selectedFieldsEles.length > limit) {
-                            app.helper.showErrorNotification({message: app.vtranslate('JS_YOU_CAN_SELECT_ONLY') + ' ' + limit + ' ' + app.vtranslate('JS_ITEMS')});
-                            return false;
-                        }
-                        var sourceFieldEle = jQuery(e.currentTarget);
-                        var targetFieldEle = selectedFieldsListContainer.find('.item-dummy').clone();
+                        const sourceFieldEle = jQuery(e.currentTarget),
+                            targetFieldEle = selectedFieldsListContainer.find('.item-dummy').clone();
                         targetFieldEle.removeClass('hide item-dummy').addClass('item');
                         targetFieldEle.attr('data-cv-columnname', sourceFieldEle.attr('data-cv-columnname'));
                         targetFieldEle.attr('data-columnname', sourceFieldEle.attr('data-columnname'));
@@ -2611,6 +2654,13 @@ Vtiger.Class("Vtiger_List_Js", {
         self.registerRowDoubleClickEvent();
         self.registerListViewBasicActions();
         self.registerListViewSearch();
+
+        if (typeof Vtiger_ListFilter_Js !== 'undefined') {
+            self.listFilter = new Vtiger_ListFilter_Js(self);
+            self.listFilter.registerEvents();
+        }
+
+        self.updateListUrl();
         self.registerDeleteRecordClickEvent();
         self.registerCheckBoxClickEvent();
         self.registerSelectAllClickEvent();

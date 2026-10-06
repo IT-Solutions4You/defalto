@@ -36,16 +36,26 @@ class Vtiger_SaveWidgetPositions_Action extends Vtiger_IndexAjax_View
     public function process(Vtiger_Request $request)
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
+        $tabId = $request->get('tabid');
 
-        $positionsMap = vtlib_array($request->get('positionsmap'));
+        $positionsMap = $request->get('positionsmap', []);
+
+        if (!is_array($positionsMap)) {
+            throw new InvalidArgumentException('Invalid dashboard widget positions');
+        }
+
+        if (!$tabId) {
+            throw new InvalidArgumentException('Missing dashboard tab');
+        }
 
         if ($positionsMap) {
             foreach ($positionsMap as $id => $position) {
-                [$linkid, $widgetid] = explode('-', $id);
+                [$linkid, $widgetid] = array_pad(explode('-', $id, 2), 2, null);
+
                 if ($widgetid) {
-                    Vtiger_Widget_Model::updateWidgetPosition($position, null, $widgetid, $currentUser->getId());
+                    Vtiger_Widget_Model::updateWidgetPosition($position, null, $widgetid, $currentUser->getId(), $tabId);
                 } else {
-                    Vtiger_Widget_Model::updateWidgetPosition($position, $linkid, null, $currentUser->getId());
+                    Vtiger_Widget_Model::updateWidgetPosition($position, $linkid, null, $currentUser->getId(), $tabId);
                 }
             }
         }

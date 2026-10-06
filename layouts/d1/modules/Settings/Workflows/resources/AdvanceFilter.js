@@ -17,84 +17,105 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
     allConditionValidationNeededFieldList: ['double', 'integer'],
 
     // comparators which do not have any field Specific UI.
-    comparatorsWithNoValueBoxMap: ['has changed', 'is empty', 'is not empty', 'is added'],
+    comparatorsWithNoValueBoxMap: ['has changed', 'has been set or changed', 'is empty', 'is not empty', 'is added'],
 
-    getFieldSpecificType: function (fieldSelected) {
-        const fieldInfo = fieldSelected.data('fieldinfo');
+    isCreationOnly: function () {
+        return jQuery('#workflow_edit input[type="radio"][name="workflow_trigger"]:checked').val() === '1';
+    },
 
-        return fieldInfo.type;
+    isUpdateOnlyComparator: function (comparator) {
+        return ['has changed', 'has changed to', 'has changed from', 'has been set or changed from'].includes(comparator);
+    },
+
+    updateCreationConditionOptions: function (select) {
+        const selected = select.val(),
+            creationOnly = this.isCreationOnly(),
+            invalid = creationOnly && this.isUpdateOnlyComparator(selected),
+            row = select.closest('.conditionRow');
+        let options = select.data('workflowComparatorOptions');
+
+        if (!options) {
+            options = select.find('option').clone();
+            select.data('workflowComparatorOptions', options);
+        }
+
+        select.empty();
+        options.each((index, option) => {
+            if (!creationOnly || !this.isUpdateOnlyComparator(option.value) || option.value === selected) {
+                select.append(jQuery(option).clone());
+            }
+        });
+        select.val(selected).trigger('change.select2');
+        row.find('.workflowCreationConditionError').remove();
+        select.attr('aria-invalid', invalid ? 'true' : 'false');
+
+        if (invalid) {
+            jQuery('<div class="workflowCreationConditionError text-danger small" role="alert"></div>')
+                .text(app.vtranslate('JS_WORKFLOW_CREATION_CONDITION_INVALID')).appendTo(row);
+        }
+    },
+
+    updateCreationConditions: function () {
+        this.getFilterContainer().find('.conditionList .conditionRow select[name="comparator"]').each((index, element) => {
+            this.updateCreationConditionOptions(jQuery(element));
+        });
+    },
+
+    registerCreationConditionEvents: function () {
+        this.getFilterContainer().off('change.workflowCreation', 'select[name="comparator"]')
+            .on('change.workflowCreation', 'select[name="comparator"]', (event) => {
+                this.updateCreationConditionOptions(jQuery(event.currentTarget));
+            });
+        this.updateCreationConditions();
+    },
+
+    validateCreationConditions: function () {
+        const invalid = this.isCreationOnly() && this.getFilterContainer()
+            .find('.conditionList .conditionRow select[name="comparator"]').toArray()
+            .some(element => this.isUpdateOnlyComparator(jQuery(element).val()));
+
+        if (invalid) {
+            this.updateCreationConditions();
+            app.helper.showErrorNotification({message: app.vtranslate('JS_WORKFLOW_CREATION_CONDITION_INVALID')});
+        }
+
+        return !invalid;
     },
 
     getModuleName: function () {
         return app.getModuleName();
     },
 
+    loadConditions: function (fieldSelect) {
+        const select = fieldSelect.closest('.conditionRow').find('select[name="comparator"]'),
+            field = fieldSelect.find('option:selected');
 
-    /**
-     * Function to add new condition row
-     * @params : condtionGroupElement - group where condtion need to be added
-     * @return : current instance
-     */
-    addNewCondition: function (conditionGroupElement) {
-        var basicElement = jQuery('.basic', conditionGroupElement);
-        var newRowElement = basicElement.find('.conditionRow').clone(true, true);
-        jQuery('select', newRowElement).addClass('select2');
-        var conditionList = jQuery('.conditionList', conditionGroupElement);
-        conditionList.append(newRowElement);
+        // Older compiled templates provide field types, but no per-field operator map.
+        if (!field.data('conditionOperators')) {
+            field.data('conditionOperators', this.getLegacyFieldOperators(field));
+        }
 
-        //change in to chosen elements
-        vtUtils.showSelect2ElementView(newRowElement.find('select.select2'));
-        newRowElement.find('[name="columnname"]').find('optgroup:first option:first').attr('selected', 'selected').trigger('change');
-        return this;
+        select.removeData('workflowComparatorOptions');
+        this._super(fieldSelect);
+        this.updateCreationConditionOptions(select);
+        select.addClass('validate[required]');
+        return select;
     },
 
-    /**
-     * Function to load condition list for the selected field
-     * (overrrided to remove "has changed" condition for related record fields in workflows)
-     * @params : fieldSelect - select element which will represents field list
-     * @return : select element which will represent the condition element
-     */
-    loadConditions: function (fieldSelect) {
-        var row = fieldSelect.closest('div.conditionRow');
-        var conditionSelectElement = row.find('select[name="comparator"]');
-        var conditionSelected = conditionSelectElement.val();
-        var fieldSelected = fieldSelect.find('option:selected');
-        var fieldLabel = fieldSelected.val();
-        var match = fieldLabel.match(/\((\w+)\) (\w+)/);
-        var fieldSpecificType = this.getFieldSpecificType(fieldSelected)
-        var conditionList = this.getConditionListFromType(fieldSpecificType);
-        //for none in field name
-        if (typeof conditionList == 'undefined') {
-            conditionList = {};
-            conditionList['none'] = '';
-        }
-        var options = '';
-        for (var key in conditionList) {
-            //IE Browser consider the prototype properties also, it should consider has own properties only.
-            if (conditionList.hasOwnProperty(key)) {
-                var conditionValue = conditionList[key];
-                var conditionLabel = this.getConditionLabel(conditionValue);
-                if (match != null) {
-                    if (conditionValue != 'has changed') {
-                        options += '<option value="' + conditionValue + '"';
-                        if (conditionValue == conditionSelected) {
-                            options += ' selected="selected" ';
-                        }
-                        options += '>' + conditionLabel + '</option>';
-                    }
-                } else {
-                    options += '<option value="' + conditionValue + '"';
-                    if (conditionValue == conditionSelected) {
-                        options += ' selected="selected" ';
-                    }
-                    options += '>' + conditionLabel + '</option>';
-                }
+    getLegacyFieldOperators: function (field) {
+        const info = field.data('fieldinfo'),
+            operators = this.fieldTypeConditionMapping[info ? info.type : ''] || [],
+            related = /\((\w+)\) (\w+)/.test(field.val() || ''),
+            excluded = ['has changed', 'has been set or changed', 'has been set or changed to', 'has been set or changed from'],
+            result = {};
+
+        operators.forEach(operator => {
+            if (!related || !excluded.includes(operator)) {
+                result[operator] = this.getConditionLabel(operator);
             }
-        }
-        conditionSelectElement.empty().html(options).trigger('change');
-        // adding validation to comparator field
-        conditionSelectElement.addClass('validate[required]');
-        return conditionSelectElement;
+        });
+
+        return result;
     },
 
     /**
@@ -190,26 +211,21 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
                     rowValues['valuetype'] = 'rawtext';
                 }
 
-                if (index == '0') {
-                    rowValues['groupid'] = '0';
-                } else {
-                    rowValues['groupid'] = '1';
-                }
+                rowValues['groupid'] = String(groupElement.data('group-id') || index);
 
-                if (rowElement.is(":last-child")) {
-                    rowValues['column_condition'] = '';
-                }
+                rowValues['column_condition'] = rowValues['column_condition'] || 'and';
                 iterationValues[columnIndex] = rowValues;
                 columnIndex++;
             });
 
             if (!jQuery.isEmptyObject(iterationValues)) {
+                const columnKeys = Object.keys(iterationValues);
+
+                iterationValues[columnKeys[columnKeys.length - 1]]['column_condition'] = '';
                 values[index + 1] = {};
                 //values[index+1]['columns'] = {};
                 values[index + 1]['columns'] = iterationValues;
-            }
-            if (groupElement.find('div.groupCondition').length > 0 && !jQuery.isEmptyObject(values[index + 1])) {
-                values[index + 1]['condition'] = conditionGroups.find('div.groupCondition [name="condition"]').val();
+                values[index + 1]['condition'] = groupElement.next('.groupConnector').find('.groupJoin').val() || 'and';
             }
         });
         return values;
@@ -233,10 +249,28 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js', {}, {
 });
 /** @var Workflows_Field_Js */
 Vtiger_Field_Js('Workflows_Field_Js', {}, {
+    addValueTypeInput: function (html) {
+        let element = jQuery(html),
+            valueTypeInputs = element.filter('[name="valuetype"]').add(element.find('[name="valuetype"]'));
+
+        if (!valueTypeInputs.length) {
+            element = element.add(jQuery('<input type="hidden" name="valuetype" />').val(this.get('workflow_valuetype') || 'rawtext'));
+        }
+
+        return element;
+    },
 
     getUiTypeSpecificHtml: function () {
-        var uiTypeModel = this.getUiTypeModel();
-        return uiTypeModel.getUi();
+        let uiTypeModel = this.getUiTypeModel(),
+            html = jQuery(uiTypeModel.getUi()),
+            popupInputs = html.filter('.getPopupUi').add(html.find('.getPopupUi'));
+
+        // Expressions and field references are source text, not formatted field values.
+        if (this.get('workflow_valuetype') === 'fieldname' || this.get('workflow_valuetype') === 'expression') {
+            popupInputs.val(this.getValue());
+        }
+
+        return html;
     },
 
     getModuleName: function () {
@@ -250,11 +284,21 @@ Vtiger_Field_Js('Workflows_Field_Js', {}, {
      * return <String or Jquery> it can return either plain html or jquery object
      */
     getUi: function () {
-        let html = '<input type="text" class="WorkflowField getPopupUi inputElement form-control" name="' + this.getName() + '"  /><input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
-        html = jQuery(html);
+        let html = this.addValueTypeInput(
+            '<input type="text" class="WorkflowField getPopupUi inputElement form-control" name="' + this.getName() + '" />'
+        );
         html.filter('.getPopupUi').val(app.htmlDecode(this.getValue()));
 
         return this.addValidationToElement(html);
+    }
+});
+
+Workflows_Field_Js('Workflows_Email_Field_Js', {}, {
+    getUi: function () {
+        let emailField = new Vtiger_Email_Field_Js(),
+            ui = emailField.setData(this.getData()).getUi();
+
+        return this.addValueTypeInput(ui);
     }
 });
 
@@ -277,6 +321,9 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
     },
 
     getDisplayValue: function () {
+        if (this.get('workflow_valuetype') === 'expression' || this.get('workflow_valuetype') === 'fieldname') {
+            return this.getValue();
+        }
         return this.get('display-value') ?? this.getValue();
     },
 
@@ -314,9 +361,11 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js', {}, {
                 return this._super();
             }
         } else {
-            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getDisplayValue() + '" />' +
+            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '" />' +
                 '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
             element = jQuery(html);
+            // Preserve expression source, including quotes, without parsing it as HTML.
+            element.filter('.getPopupUi').val(this.getDisplayValue());
 
             return this.addValidationToElement(element);
         }

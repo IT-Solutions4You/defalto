@@ -18,6 +18,14 @@
  */
 
 $languageStrings = [
+    'LBL_HAS_BEEN_SET_OR_CHANGED_TO' => 'Wurde gesetzt oder geändert auf',
+    'LBL_HAS_BEEN_SET_OR_CHANGED_FROM' => 'Wurde gesetzt oder geändert von',
+    'LBL_HAS_BEEN_SET_OR_CHANGED' => 'Wert wurde gesetzt oder geändert',
+    'LBL_MOVE_TO_RECYCLEBIN' => 'In den Papierkorb verschieben',
+    'LBL_TRASH_TASK_MODE' => 'Löschmodus',
+    'LBL_TRASH_TASK_PERMANENT' => 'Endgültig löschen',
+    'LBL_TRASH_TASK_PERMANENT_DESCRIPTION' => 'Die endgültige Löschung entfernt den Datensatz nach Abschluss der regulären Löschhandler aus dem Papierkorb. Der Datensatz kann nicht wiederhergestellt werden.',
+    'LBL_TRASH_TASK_DESCRIPTION' => 'Verarbeitet den Quelldatensatz über die reguläre Workflow-Warteschlange mit dem gewählten Löschmodus.',
     'LBL_NEW' => 'New',
     'LBL_WORKFLOW' => 'Workflow',
     'LBL_CREATING_WORKFLOW' => 'Creating WorkFlow',
@@ -152,6 +160,8 @@ $languageStrings = [
     'LBL_WORKFLOW_SEARCH' => 'Suche nach Name',
 ];
 $jsLanguageStrings = [
+    'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Diese Bedingung wird bei ausschließlicher Ausführung beim Erstellen nicht unterstützt. Wählen Sie Wert wurde gesetzt oder geändert oder eine andere unterstützte Bedingung.',
+    'VTTrashTask' => 'In den Papierkorb verschieben',
     'JS_STATUS_CHANGED_SUCCESSFULLY' => 'Status changed Successfully',
     'JS_TASK_DELETED_SUCCESSFULLY' => 'Aktion erfolgreich gelöscht',
     'JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE' => 'Same fields selected more than once',

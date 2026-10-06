@@ -15,7 +15,7 @@ class ModTracker_Install_Model extends Core_Install_Model
      * [events, file, class, condition, dependOn, modules]
      */
     public array $registerEventHandler = [
-        [['vtiger.entity.aftersave.final', 'vtiger.entity.beforedelete', 'vtiger.entity.afterrestore'], 'modules/ModTracker/ModTrackerHandler.php', 'ModTrackerHandler'],
+        [['vtiger.entity.beforesave', 'vtiger.entity.aftersave.final', 'vtiger.entity.beforedelete', 'vtiger.entity.afterrestore'], 'modules/ModTracker/ModTrackerHandler.php', 'ModTrackerHandler'],
     ];
 
     /**
@@ -31,6 +31,7 @@ class ModTracker_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
+        $this->installTables();
         $this->updateEventHandler();
     }
 
@@ -75,6 +76,8 @@ class ModTracker_Install_Model extends Core_Install_Model
             ->createColumn('crmid', 'int(20) default NULL')
             ->createColumn('module', 'varchar(50) default NULL')
             ->createColumn('whodid', 'int(20) default NULL')
+            ->createColumn('workflow_id', 'int(19) default NULL')
+            ->createColumn('task_id', 'int(19) default NULL')
             ->createColumn('changedon', 'datetime default NULL')
             ->createColumn('status', 'int(1) default \'0\'')
             ->createKey('PRIMARY KEY IF NOT EXISTS  (`id`)')

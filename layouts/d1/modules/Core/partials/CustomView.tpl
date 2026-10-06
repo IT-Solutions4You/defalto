@@ -20,7 +20,7 @@
         <div class="overflow-hidden w-25vw-max cursorPointer text-secondary" data-bs-toggle="dropdown" title="{$ACTIVE_CV_LABEL}">
             <div class="d-flex align-items-center">
                 <span class="current-filter-name text-truncate filter-name fs-5 d-none d-sm-inline">{$ACTIVE_CV_LABEL}</span>
-                <i class="fa-solid fa-filter ms-2"></i>
+                <i class="fa-solid fa-chevron-down ms-2"></i>
             </div>
         </div>
         <div class="dropdown-menu w-30rem position-absolute">

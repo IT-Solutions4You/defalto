@@ -18,6 +18,17 @@
  */
 
 $languageStrings = [
+    'LBL_WORKFLOW_DETAILS' => 'Workflow details',
+    'LBL_HISTORY_WORKFLOW' => 'Workflow',
+    'LBL_HISTORY_USER' => 'User',
+    'LBL_HISTORY_TASK' => 'Task type',
+    'LBL_WORKFLOW_DESCRIPTION' => 'Workflow description',
+    'LBL_TASK_DESCRIPTION' => 'Task description',
+    'LBL_HISTORY_UNAVAILABLE' => 'Task unavailable',
+    'LBL_OPEN_WORKFLOW' => 'Open workflow',
+    'LBL_OPEN_TASK' => 'Open task',
+    'LBL_WORKFLOW_CHANGE' => 'Changed by workflow',
+    'LBL_WORKFLOW_VIA' => 'via',
     'SINGLE_ModTracker' => 'ModTracker Record',
 ];
 $jsLanguageStrings = [
