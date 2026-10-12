@@ -28,6 +28,7 @@ class Products_RecordQuickPreview_View extends Vtiger_RecordQuickPreview_View
             'modules.PriceBooks.resources.RelatedList',
             "modules.$moduleName.resources.Detail",
             "modules.$moduleName.resources.RelatedList",
+            'modules.Core.resources.QuickPreview',
         ];
 
         return $this->checkAndConvertJsScripts($jsFileNames);

@@ -1,3 +1,14 @@
+# Record-header tooltips
+
+- Vtiger.js retains the shared preview request launcher and stale-response counter. After the modal's SCRIPTS execute, its callback invokes Core QuickPreview's static registerPreview(). Do not load Core QuickPreview globally or initialize it inline in Smarty.
+- getQuickPreviewHeaderScripts() declares base and module-specific Detail/RelatedList dependencies followed by Core QuickPreview. Overrides must retain Core QuickPreview last; RecordQuickPreview::process() only assigns the returned list without merging extra resources. All record delete links use Vtiger_Detail_Js.deleteRecord(); keep the link model independent of preview context and JavaScript controller selection.
+- Detail's shared static deleteRecord(url, handler) accepts a success callback (params, result) or an object with optional hasRecord(params), onSuccess(params, result) and onError(error, params). registerDeleteRecordHandler()/removeDeleteRecordHandler() manage the modal's scoped handler without referencing a QuickPreview class or modal selector. A registered handler is selected only for its matching record; it is rechecked after confirmation. Pending state prevents duplicate requests, and success callbacks never run after cancellation or a failed response.
+- Without a matching/explicit handler, Detail keeps the host controller's remove() entry point, preserving module overrides. The base remove() invokes the same shared deletion flow with a default success callback that redirects to the returned list URL. Core's handler instead closes its own modal and refreshes the source screen.
+- ListViewQuickPreview.tpl consumes ordered, cache-busted SCRIPTS at the end of modal markup. Escaped field JSON belongs to a hidden control and scoped container data, not a global quick_preview_uimeta. Core owns modal actions and cleanup, including removing its script elements and class on close.
+
+- `vtUtils.enableTooltips()` reuses Bootstrap tooltip instances through `getOrCreateInstance()` because full-page and dynamic preview initialization can revisit the same elements. Creating another instance can leave visible tooltips with orphaned handlers.
+- `DetailViewHeaderTitle.tpl` record-action tooltips use the hover trigger and accessible button labels. Clicking an action must not keep its tooltip visible through focus after the pointer leaves. Verify repeated preview opens and action confirmation/cancellation.
+
 # Shared Select2 fields
 
 - `applyFieldElementsView()` can run on pages or dynamic containers without any `select.select2` elements. `showSelect2ElementView()` must return the empty jQuery collection unchanged before initialization; selected-result registration must tolerate a missing Select2 instance. A thrown error here interrupts the shared document-ready queue, including the later page-ready timing callback.

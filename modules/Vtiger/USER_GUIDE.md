@@ -1,3 +1,9 @@
+# Record actions
+
+Quick-preview actions apply to the displayed record, not the underlying screen. Deletion uses one confirmation and updates the source screen after success. Errors leave the preview open. See the Core user guide for the shared preview workflow.
+
+Record-header action icons show a label while the mouse is over them. The label disappears when the mouse leaves, including after clicking an action or cancelling its confirmation. The buttons also have accessible labels for assistive technology.
+
 # Dropdown fields
 
 Searchable dropdowns, including Assigned To, hide already selected values from the list of choices. The current value remains visible in the field. Select another value to replace it. In fields that allow multiple values, remove a selected item to make it available in the choices again.

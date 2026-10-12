@@ -1,5 +1,13 @@
 # List filters
 
+## Record quick preview
+
+Open a record's eye icon or supported reference link to inspect it without leaving the current screen. Record actions apply to the record shown in the preview, even when the underlying page belongs to another module. Existing record permissions still apply.
+
+Deleting requires confirmation. Cancelling or a failed deletion leaves the preview open. After success, a standard list or an integrated custom screen refreshes in place; other screens refresh their current page to update references and widgets. If you delete the record of the underlying full detail page, you return to that module's list.
+
+An unsuccessful preview request shows an error instead of opening an empty window. Closing a preview releases its temporary controls; reopening initializes the newly selected record independently. Previous/next navigation is available for the source module's standard list, not for unrelated module references or custom board ordering.
+
 Multiple condition groups are evaluated together, including when groups are joined with OR. Normal record visibility restrictions still apply to all matching groups.
 
 When a saved list already contains conditions, its notice offers a white Edit saved conditions button with a pen icon if you have permission to edit the list. Use it to change the saved conditions.
