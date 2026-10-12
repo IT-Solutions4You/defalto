@@ -100,9 +100,79 @@ Vtiger.Class("Vtiger_Detail_Js", {
 	 * function to trigger delete record action
 	 * @params: delete record url.
 	 */
-    deleteRecord: function (deleteRecordActionUrl) {
-        var detailInstance = window.app.controller();
-        detailInstance.remove(deleteRecordActionUrl);
+    deleteRecordHandler: false,
+
+    registerDeleteRecordHandler: function (handler) {
+        this.deleteRecordHandler = handler;
+    },
+
+    removeDeleteRecordHandler: function (handler) {
+        if (this.deleteRecordHandler === handler) {
+            this.deleteRecordHandler = false;
+        }
+    },
+
+    /**
+     * Delete through the shared confirmation/request flow.
+     * handler may be a success callback (params, result) or {hasRecord, onSuccess, onError}.
+     * A registered handler applies only to its matching active record.
+     */
+    deleteRecord: function (deleteRecordActionUrl, handler) {
+        const params = app.convertUrlToDataParams(deleteRecordActionUrl),
+            registeredHandler = this.deleteRecordHandler;
+
+        if (!handler && registeredHandler && registeredHandler.hasRecord(params)) {
+            handler = registeredHandler;
+        }
+
+        if (!handler) {
+            return window.app.controller().remove(deleteRecordActionUrl);
+        }
+
+        if (typeof handler === 'function') {
+            handler = {onSuccess: handler};
+        }
+
+        if (handler.pending || (handler.hasRecord && !handler.hasRecord(params))) {
+            return;
+        }
+
+        handler.pending = true;
+
+        return app.helper.showConfirmationBox({message: app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function () {
+            // The handler's target can disappear or change while confirmation remains open.
+            if (handler.hasRecord && !handler.hasRecord(params)) {
+                handler.pending = false;
+
+                return;
+            }
+
+            params.ajaxDelete = true;
+            app.helper.showProgress();
+
+            return app.request.post({data: params}).then(function (error, data) {
+                handler.pending = false;
+                app.helper.hideProgress();
+
+                if (error || (data && typeof data === 'object')) {
+                    const failure = error || data.prototype || data;
+
+                    if (handler.onError) {
+                        handler.onError(failure, params);
+                    } else {
+                        app.helper.showAlertBox({message: failure && failure.message || failure});
+                    }
+
+                    return;
+                }
+
+                if (handler.onSuccess) {
+                    handler.onSuccess(params, data);
+                }
+            });
+        }, function () {
+            handler.pending = false;
+        });
     },
 
 
@@ -828,24 +898,9 @@ Vtiger.Class("Vtiger_Detail_Js", {
      * @returns {undefined}
      */
     remove: function (deleteRecordActionUrl) {
-        var message = app.vtranslate('LBL_DELETE_CONFIRMATION');
-        app.helper.showConfirmationBox({'message': message}).then(function (data) {
-                var params = app.convertUrlToDataParams(deleteRecordActionUrl + "&ajaxDelete=true");
-                app.request.post({data: params}).then(
-                    function (err, data) {
-                        if (err === null) {
-                            if (typeof data !== 'object') {
-                                var appName = app.getAppName();
-                                window.location.href = data + '&app=' + appName;
-                            } else {
-                                app.helper.showAlertBox({'message': data.prototype.message});
-                            }
-                        } else {
-                            app.helper.showAlertBox({'message': err});
-                        }
-                    });
-            }
-        );
+        return Vtiger_Detail_Js.deleteRecord(deleteRecordActionUrl, function (params, listUrl) {
+            window.location.href = listUrl + '&app=' + app.getAppName();
+        });
     },
 
     /**
@@ -1112,7 +1167,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             let fieldInfo;
 
             if (true === self.getQuickPreviewDetailMode()) {
-                fieldInfo = quick_preview_uimeta.field.get(fieldName);
+                fieldInfo = self.getContainer().data('quickPreviewFieldInfo')[fieldName];
             } else if (true === self.getOverlayDetailMode()) {
                 fieldInfo = related_uimeta.field.get(fieldName);
             } else {

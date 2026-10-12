@@ -362,6 +362,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
             "modules.$moduleName.resources.Detail",
             "modules.Vtiger.resources.RelatedList",
             "modules.$moduleName.resources.RelatedList",
+            'modules.Core.resources.QuickPreview',
         ];
 
         return $this->checkAndConvertJsScripts($jsFileNames);
