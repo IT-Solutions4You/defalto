@@ -34,7 +34,7 @@ class Settings_Workflows_FilterRecordStructure_Model extends Settings_Workflows_
         $values = [];
 
         $baseModuleModel = $moduleModel = $this->getModule();
-        $blockModelList = $moduleModel->getBlocks();
+        $blockModelList = Core_FilterEditor_Model::getConditionBlocks($moduleModel);
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
             if (!empty ($fieldModelList)) {
@@ -81,7 +81,7 @@ class Settings_Workflows_FilterRecordStructure_Model extends Settings_Workflows_
                     continue;
                 }
                 $moduleModel = Vtiger_Module_Model::getInstance($refModule);
-                $blockModelList = $moduleModel->getBlocks();
+                $blockModelList = Core_FilterEditor_Model::getConditionBlocks($moduleModel);
                 foreach ($blockModelList as $blockLabel => $blockModel) {
                     $fieldModelList = $blockModel->getFields();
                     if (!empty ($fieldModelList)) {

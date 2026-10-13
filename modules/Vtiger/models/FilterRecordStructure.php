@@ -33,7 +33,7 @@ class Vtiger_FilterRecordStructure_Model extends Vtiger_RecordStructure_Model
         $recordExists = !empty($recordModel);
         $baseModuleModel = $moduleModel = $this->getModule();
         $baseModuleName = $baseModuleModel->getName();
-        $blockModelList = $moduleModel->getBlocks();
+        $blockModelList = Core_FilterEditor_Model::getConditionBlocks($moduleModel);
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
             if (!empty ($fieldModelList)) {
@@ -59,7 +59,7 @@ class Vtiger_FilterRecordStructure_Model extends Vtiger_RecordStructure_Model
                         continue;
                     }
                     $refModuleModel = Vtiger_Module_Model::getInstance($refModule);
-                    $blockModelList = $refModuleModel->getBlocks();
+                    $blockModelList = Core_FilterEditor_Model::getConditionBlocks($refModuleModel);
                     $fieldModelList = null;
                     foreach ($blockModelList as $blockLabel => $blockModel) {
                         $fieldModelList = $blockModel->getFields();

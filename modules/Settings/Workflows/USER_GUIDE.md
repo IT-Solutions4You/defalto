@@ -6,6 +6,8 @@ The condition editor organizes rules into numbered groups, like saved lists. Cho
 
 The editor shares its layout and controls with saved-list filters. Use Add condition with the plus icon to add a blank rule to the current group, then choose its field. Workflow comparisons and expressions remain available for the fields that support them. Use the matching Group button with the plus icon to add another group, and the trash icon beside a condition to remove that rule. Any group after the first can be removed using the trash button beside its title. These buttons and the spacing of condition rows match the saved-list condition editor. The value control fills the available width, with the trash button at the right edge. Select a field and comparison; enter a value when the comparison requires one. Event comparisons such as a comment being added may not need a value.
 
+For inventory documents, the field selector lists the main record blocks first and the Item Details fields last.
+
 Each condition group has its own outline, without an enclosing frame around the whole editor. The Group button appears below the condition groups.
 
 Review the execution frequency and configured actions before saving. Conditions determine which records qualify; actions determine what the workflow does to those records or related records.

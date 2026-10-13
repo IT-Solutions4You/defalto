@@ -14,6 +14,8 @@ Column settings allow more than 15 fields with no maximum count. Add the fields 
 
 Advanced search starts with one condition row after a module is selected. Choose a field, comparison and value; use Add condition or Group to expand the search. Selecting another module starts with a fresh condition row for that module.
 
+For inventory documents, condition field lists show the main record blocks first and the Item Details fields last. The record edit and detail screens retain their normal layout.
+
 A new saved-list filter starts with one empty condition ready for field selection. Choose a field, comparison and value, then add more conditions as needed.
 
 Each open list keeps its selected saved view and temporary conditions in its own address. You can leave All open in one tab and build conditions in another without changing the first tab, including after a refresh. Switching to another saved view clears temporary conditions. Copy the current address to reopen the same view and conditions.

@@ -1,6 +1,7 @@
 # Workflow management
 
 - `Settings_Workflows_FilterEditor_Model` extends `Core_FilterEditor_Model` and supplies workflow column identifiers, translated comparators, related-field restrictions, document field metadata and the empty-editor policy. `Settings_Workflows_Field_Model` remains the operator-definition owner; field structures retain field permissions and workflow value types. Both Edit and EditAjax assign `FILTER_EDITOR`.
+- Workflow condition structures use `Core_FilterEditor_Model::getConditionBlocks()` for source and referenced modules. Preserve the configured order of ordinary blocks and place the block named `LBL_ITEM_DETAILS` after them; this ordering is presentation-only and must not affect workflow field identifiers or execution.
 - Workflow `AdvanceFilter.tpl` and `AdvanceFilterCondition.tpl` are compatibility includes only. All group/row/button markup belongs to the shared Vtiger templates. Do not copy design markup into workflow templates or branch on workflow module names in shared templates. Future layout changes must flow through the shared templates automatically.
 - `Workflows_AdvanceFilter_Js` inherits row/group creation, deletion and connector visibility. Its `loadConditions()` delegates per-field operator rendering to the parent, then applies creation-trigger restrictions. Keep workflow serialization, expressions and specialized value renderers here. A newly added row starts with no field selected, like saved lists.
 
