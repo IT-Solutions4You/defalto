@@ -747,21 +747,7 @@ class Vtiger_Functions
      */
     static function validateImageMetadata($data, bool $short = true): bool
     {
-        if (is_array($data)) {
-            foreach ($data as $value) {
-                $ok = self::validateImageMetadata($value, $short);
-
-                if (!$ok) {
-                    return false;
-                }
-            }
-        } else {
-            if (stripos($data, $short ? '<?' : '<?php') !== false) { // suspicious dynamic content
-                return false;
-            }
-        }
-
-        return true;
+        return Core_ImageValidation_Helper::validateMetadata($data, $short);
     }
 
     /**
@@ -773,62 +759,7 @@ class Vtiger_Functions
      */
     static function validateImage(array $file_details): bool
     {
-        $allowedImageFormats = Vtiger_Functions::$supportedImageFormats;
-
-        // Determine mime-types based on file-content for generic type (Outlook add-on).
-        if ($file_details['type'] === 'application/octet-stream' && function_exists('mime_content_type')) {
-            $file_details['type'] = mime_content_type($file_details['tmp_name']);
-        }
-
-        $filetype = strtolower(pathinfo($file_details['name'], PATHINFO_EXTENSION));
-
-        if (!in_array($filetype, $allowedImageFormats)) {
-            return false;
-        }
-
-        $mimeType = mime_content_type($file_details['tmp_name']);
-        [$mimeTypeContents, $mimeSubtype] = explode('/', $mimeType);
-
-        if (strtolower($mimeTypeContents) !== 'image' || !in_array($mimeSubtype, $allowedImageFormats)) {
-            return false;
-        }
-
-        $shortTagSupported = (bool)ini_get('short_open_tag');
-
-        $tmpFileName = $file_details['tmp_name'];
-
-        if (in_array($file_details['type'], ['image/jpeg', 'image/tiff'])) {
-            $exifData = @exif_read_data($tmpFileName);
-
-            if ($exifData && !self::validateImageMetadata($exifData, $shortTagSupported)) {
-                return false;
-            }
-
-            if ($file_details['type'] === 'image/jpeg' && extension_loaded('gd') && function_exists('gd_info')) {
-                $img = imagecreatefromjpeg($tmpFileName);
-                imagejpeg($img, $tmpFileName);
-            }
-        }
-
-        $imageContents = file_get_contents($tmpFileName);
-        $shortTag = $shortTagSupported ? '<?' : '<?php';
-
-        if (stripos($imageContents, $shortTag) !== false) {
-            return false;
-        }
-
-        if (in_array('svg+xml', [$filetype, $mimeSubtype])) {
-            // Remove malicious HTML attributes with values from the contents.
-            $imageContents = purifyHtmlEventAttributes($imageContents, true);
-            file_put_contents($tmpFileName, $imageContents);
-        }
-
-        /*
-         * File functions like  filegroup(), fileowner(), filesize(), filetype(), fileperms() and few others,caches file information, we need to clear the cache so it will not return the cache value if we perform/call same function after updating the file
-        */
-        clearstatcache();
-
-        return true;
+        return Core_ImageValidation_Helper::validate($file_details, self::$supportedImageFormats);
     }
 
     static function getMergedDescription($description, $id, $parent_type, $removeTags = false)

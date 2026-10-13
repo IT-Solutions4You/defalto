@@ -19,6 +19,10 @@
 class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
 {
     public static array $logoSupportedFormats = ['jpeg', 'jpg', 'png', 'gif', 'pjpeg', 'x-png'];
+    public static int $logoMaxFileSize = 1048576;
+    public static int $logoMaxWidth = 5000;
+    public static int $logoMaxHeight = 5000;
+    public static string $defaultLogoPath = 'layouts/d1/resources/Images/login-logo.png';
 
     public $baseTable = 'vtiger_organizationdetails';
     public $baseIndex = 'organization_id';
@@ -157,7 +161,19 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
      * Function to get Logo path to display
      * @return <String> path
      */
-    public function getLogoPath()
+    public function getLogoPath(): string
+    {
+        $customLogoPath = $this->getCustomLogoPath();
+
+        return $customLogoPath ?: self::$defaultLogoPath;
+    }
+
+    public function hasCustomLogo(): bool
+    {
+        return (bool)$this->getCustomLogoPath();
+    }
+
+    public function getCustomLogoPath(): string
     {
         $logoPath = $this->logoPath;
         $handler = @opendir($logoPath);
@@ -169,7 +185,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
                 if ($logoName === $file && in_array(str_replace('.', '', strtolower(substr($file, -4))), self::$logoSupportedFormats) && $file != "." && $file != "..") {
                     closedir($handler);
 
-                    return $logoPath;
+                    return (string)$logoPath;
                 }
             }
         }
@@ -178,14 +194,103 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
     }
 
     /**
-     * Function to save the logoinfo
+     * Return the translated error label for an invalid logo upload.
      */
-    public function saveLogo($logoName)
+    public function getLogoValidationError(array $logoDetails): string
+    {
+        if (($logoDetails['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            return 'LBL_INVALID_IMAGE';
+        }
+
+        if (($logoDetails['size'] ?? 0) > self::$logoMaxFileSize) {
+            return 'LBL_MAXIMUM_SIZE_EXCEEDS';
+        }
+
+        $extension = strtolower(pathinfo($logoDetails['name'] ?? '', PATHINFO_EXTENSION));
+
+        if (!in_array($extension, self::$logoSupportedFormats, true)) {
+            return 'LBL_WRONG_IMAGE_TYPE';
+        }
+
+        $imageInfo = @getimagesize($logoDetails['tmp_name'] ?? '');
+
+        if (!$imageInfo || empty($imageInfo[0]) || empty($imageInfo[1]) || empty($imageInfo[2])) {
+            return 'LBL_INVALID_IMAGE';
+        }
+
+        $detectedFormat = image_type_to_extension($imageInfo[2], false);
+
+        if (!$this->isLogoFormatMatch($extension, $detectedFormat)) {
+            return 'LBL_LOGO_FILE_TYPE_MISMATCH';
+        }
+
+        if (!$this->hasSupportedLogoDimensions($imageInfo)) {
+            return 'LBL_LOGO_IMAGE_DIMENSIONS_EXCEED_LIMIT';
+        }
+
+        if (!Vtiger_Functions::validateImage($logoDetails)) {
+            return 'LBL_INVALID_IMAGE';
+        }
+
+        return '';
+    }
+
+    public function isLogoFormatMatch(string $extension, string $detectedFormat): bool
+    {
+        $formatAliases = [
+            'jpeg'  => 'jpeg',
+            'jpg'   => 'jpeg',
+            'pjpeg' => 'jpeg',
+            'png'   => 'png',
+            'x-png' => 'png',
+            'gif'   => 'gif',
+        ];
+
+        return isset($formatAliases[$extension], $formatAliases[$detectedFormat])
+            && $formatAliases[$extension] === $formatAliases[$detectedFormat];
+    }
+
+    public function hasSupportedLogoDimensions(array $imageInfo): bool
+    {
+        return $imageInfo[0] <= self::$logoMaxWidth && $imageInfo[1] <= self::$logoMaxHeight;
+    }
+
+    public function saveLogo(string $logoName): bool
     {
         $uploadDir = vglobal('root_directory') . '/' . $this->logoPath;
-        $logoName = $uploadDir . $logoName;
-        move_uploaded_file($_FILES["logo"]["tmp_name"], $logoName);
-        copy($logoName, $uploadDir . 'application.ico');
+        $logoPath = $uploadDir . $logoName;
+
+        if (!move_uploaded_file($_FILES['logo']['tmp_name'], $logoPath)) {
+            return false;
+        }
+
+        if (!copy($logoPath, $uploadDir . 'application.ico')) {
+            unlink($logoPath);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public function removeLogo(string $logoName): void
+    {
+        $uploadDir = vglobal('root_directory') . '/' . $this->logoPath;
+        $logoName = basename(decode_html($logoName));
+        $logoPath = $uploadDir . $logoName;
+
+        $this->set('logoname', '');
+        $this->save();
+
+        if ($logoName && is_file($logoPath)) {
+            @unlink($logoPath);
+        }
+
+        $defaultFavicon = vglobal('root_directory') . '/layouts/d1/favicon/favicon.ico';
+
+        if (is_file($defaultFavicon)) {
+            @copy($defaultFavicon, $uploadDir . 'application.ico');
+        }
     }
 
     public function getParams(): array

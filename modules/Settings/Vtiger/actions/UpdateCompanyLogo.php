@@ -28,24 +28,27 @@ class Settings_Vtiger_UpdateCompanyLogo_Action extends Settings_Vtiger_Basic_Act
         $moduleModel = Settings_Vtiger_CompanyDetails_Model::getInstance();
 
         $logoDetails = $_FILES['logo'];
-        $saveLogo = Vtiger_Functions::validateImage($logoDetails);
+        $validationError = $moduleModel->getLogoValidationError($logoDetails);
 
-        if ($saveLogo) {
+        if (!$validationError) {
             $sanitizedFileName = ltrim(basename(' ' . Vtiger_Util_Helper::sanitizeUploadFileName($logoDetails['name'], vglobal('upload_badext'))));
 
             if (pathinfo($sanitizedFileName, PATHINFO_EXTENSION) !== 'txt') {
-                $moduleModel->saveLogo($sanitizedFileName);
-                $moduleModel->set('logoname', $sanitizedFileName);
-                $moduleModel->save();
+                if ($moduleModel->saveLogo($sanitizedFileName)) {
+                    $moduleModel->set('logoname', $sanitizedFileName);
+                    $moduleModel->save();
+                } else {
+                    $validationError = 'LBL_LOGO_SAVE_FAILED';
+                }
             } else {
-                $saveLogo = false;
+                $validationError = 'LBL_INVALID_IMAGE';
             }
         }
 
         $reloadUrl = $moduleModel->getIndexViewUrl();
 
-        if (!$saveLogo) {
-            $reloadUrl .= '&error=LBL_INVALID_IMAGE';
+        if ($validationError) {
+            $reloadUrl .= '&error=' . urlencode($validationError);
         }
 
         header('Location: ' . $reloadUrl);

@@ -26,74 +26,121 @@ Vtiger.Class("Settings_Vtiger_CompanyDetails_Js", {}, {
     },
 
     registerSaveCompanyDetailsEvent: function () {
-        var thisInstance = this;
-        var form = jQuery('#updateCompanyDetailsForm');
-        var params = {
-            submitHandler: function (form) {
-                var form = jQuery(form);
-                var result = thisInstance.checkValidation();
-                if (result === false) {
-                    return result;
-                } else {
-                    return true;
+        const thisInstance = this,
+            form = jQuery('#updateCompanyDetailsForm'),
+            params = {
+                submitHandler: function (domForm) {
+                    if (!thisInstance.checkValidation()) {
+                        return false;
+                    }
+
+                    const formData = new FormData(domForm),
+                        saveButton = form.find('.saveButton');
+
+                    saveButton.prop('disabled', true);
+                    app.helper.showProgress();
+
+                    app.request.post({
+                        data: formData,
+                        processData: false,
+                        contentType: false
+                    }).then(function (error, data) {
+                        app.helper.hideProgress();
+
+                        if (error) {
+                            saveButton.prop('disabled', false);
+                            app.helper.showErrorNotification({
+                                message: error.message || app.vtranslate('JS_ERROR')
+                            });
+
+                            return;
+                        }
+
+                        window.location.href = data.reloadUrl;
+                    });
+
+                    return false;
                 }
-            }
-        };
+            };
+
         form.vtValidate(params);
     },
 
     registerCancelClickEvent: function () {
+        const form = jQuery('#updateCompanyDetailsForm'),
+            logoPreview = form.find('.companyLogoPreview'),
+            removalMessage = form.find('.companyLogoRemovalMessage');
+
         jQuery('.cancelLink').on('click', function () {
             jQuery('#CompanyDetailsContainer').removeClass('hide');
-            jQuery('#updateCompanyDetailsForm').addClass('hide');
+            form.addClass('hide');
             jQuery('#updateCompanyDetails').removeClass('hide');
+            form.find('#removeCompanyLogo').val('0');
+            form.find('#logoFile').val('');
+            logoPreview.removeClass('hide');
+            removalMessage.addClass('hide');
         });
     },
 
     checkValidation: function () {
-        var imageObj = jQuery('#logoFile');
-        var imageName = imageObj.val();
-        if (imageName != '') {
-            var image_arr = new Array();
-            image_arr = imageName.split(".");
-            var image_arr_last_index = image_arr.length - 1;
-            if (image_arr_last_index < 0) {
+        const imageObj = jQuery('#logoFile'),
+            imageName = imageObj.val();
+
+        if (imageName !== '') {
+            const imageParts = imageName.split('.'),
+                extensionIndex = imageParts.length - 1;
+
+            if (extensionIndex < 0) {
                 app.helper.showErrorNotification({'message': app.vtranslate('LBL_WRONG_IMAGE_TYPE')});
                 imageObj.val('');
+
                 return false;
             }
-            var image_extensions = JSON.parse(jQuery('#supportedImageFormats').val());
-            var image_ext = image_arr[image_arr_last_index].toLowerCase();
-            if (image_extensions.indexOf(image_ext) != '-1') {
-                var size = imageObj[0].files[0].size;
-                if (size < 1024000) {
+
+            const imageExtensions = JSON.parse(jQuery('#supportedImageFormats').val()),
+                imageExtension = imageParts[extensionIndex].toLowerCase();
+
+            if (imageExtensions.indexOf(imageExtension) !== -1) {
+                const size = imageObj[0].files[0].size,
+                    maximumSize = Number(jQuery('#maximumLogoFileSize').val());
+
+                if (size <= maximumSize) {
                     return true;
                 } else {
                     app.helper.showErrorNotification({'message': app.vtranslate('LBL_MAXIMUM_SIZE_EXCEEDS')});
+
                     return false;
                 }
             } else {
                 app.helper.showErrorNotification({'message': app.vtranslate('LBL_WRONG_IMAGE_TYPE')});
                 imageObj.val('');
+
                 return false;
             }
-
         }
+
+        return true;
     },
 
-    registerCompanyLogoDimensionsValidation: function () {
-        let updateCompanyDetailsForm = jQuery('form#updateCompanyDetailsForm'),
-            logoFile = updateCompanyDetailsForm.find('#logoFile');
+    registerCompanyLogoEvent: function () {
+        const updateCompanyDetailsForm = jQuery('form#updateCompanyDetailsForm'),
+            logoFile = updateCompanyDetailsForm.find('#logoFile'),
+            removeLogo = updateCompanyDetailsForm.find('#removeCompanyLogo'),
+            logoPreview = updateCompanyDetailsForm.find('.companyLogoPreview'),
+            removalMessage = updateCompanyDetailsForm.find('.companyLogoRemovalMessage');
 
         logoFile.on('change', function () {
-            let url = window.URL || window.webkitURL,
-                image,
-                file = this.files[0];
-
-            if (file && typeof Image === 'function') {
-                image = new Image();
-                image.src = url.createObjectURL(file);
+            if (this.files.length) {
+                removeLogo.val('0');
+                removalMessage.addClass('hide');
             }
+        });
+
+        updateCompanyDetailsForm.find('.removeCompanyLogo').on('click', function () {
+            removeLogo.val('1');
+            logoFile.val('');
+            logoPreview.addClass('hide');
+            removalMessage.removeClass('hide');
         });
     },
 
@@ -101,7 +148,7 @@ Vtiger.Class("Settings_Vtiger_CompanyDetails_Js", {}, {
         this.registerUpdateDetailsClickEvent();
         this.registerSaveCompanyDetailsEvent();
         this.registerCancelClickEvent();
-        this.registerCompanyLogoDimensionsValidation();
+        this.registerCompanyLogoEvent();
     }
 
 });

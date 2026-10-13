@@ -393,7 +393,16 @@ $languageStrings = [
     'LBL_CLIENT_ID' => 'Client Id',
     'LBL_CLIENT_SECRET' => 'Client Secret',
     'LBL_CLIENT_TOKEN' => 'Client Token',
+    'LBL_INVALID_IMAGE' => 'Invalid image.',
+    'LBL_WRONG_IMAGE_TYPE' => 'This image type is not supported. Upload a JPEG, PNG, or GIF file.',
+    'LBL_MAXIMUM_SIZE_EXCEEDS' => 'The logo file may be no larger than 1 MB.',
+    'LBL_LOGO_FILE_TYPE_MISMATCH' => 'The file extension does not match the actual image format. Save the logo as a JPEG, PNG, or GIF file and try again.',
+    'LBL_LOGO_IMAGE_DIMENSIONS_EXCEED_LIMIT' => 'The logo dimensions are too large. The maximum supported size is 5000 × 5000 pixels.',
+    'LBL_LOGO_SAVE_FAILED' => 'The logo could not be saved. Check the logo directory permissions and try again.',
+    'LBL_REMOVE_COMPANY_LOGO' => 'Remove company logo',
+    'LBL_COMPANY_LOGO_WILL_BE_REMOVED' => 'The current company logo will be removed after you save the changes.',
 ];
+
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',
     'JS_GROUP_DELETED_SUCCESSFULLY' => 'Group deleted successfully',
