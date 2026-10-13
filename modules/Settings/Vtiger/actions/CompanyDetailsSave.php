@@ -23,16 +23,12 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
         $moduleModel = Settings_Vtiger_CompanyDetails_Model::getInstance();
         $reloadUrl = $moduleModel->getIndexViewUrl();
 
-        try {
-            $this->Save($request);
-        } catch (Exception $e) {
-            if ($e->getMessage() == "LBL_INVALID_IMAGE") {
-                $reloadUrl .= '&error=LBL_INVALID_IMAGE';
-            } elseif ($e->getMessage() == "LBL_FIELDS_INFO_IS_EMPTY") {
-                $reloadUrl = $moduleModel->getEditViewUrl() . '&error=LBL_FIELDS_INFO_IS_EMPTY';
-            }
-        }
-        header('Location: ' . $reloadUrl);
+        $this->saveCompanyDetails($request);
+
+        $response = new Vtiger_Response();
+        $response->setResult(['reloadUrl' => $reloadUrl]);
+
+        return $response;
     }
 
     /**
@@ -41,36 +37,46 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
      * @return void
      * @throws Exception
      */
-    public function Save(Vtiger_Request $request): void
+    public function saveCompanyDetails(Vtiger_Request $request): void
     {
         $moduleModel = Settings_Vtiger_CompanyDetails_Model::getInstance();
+        $qualifiedModuleName = $request->getModule(false);
 
         if (!$request->get('organizationname')) {
-            throw new Exception('LBL_FIELDS_INFO_IS_EMPTY', 103);
+            throw new Exception(vtranslate('LBL_FIELDS_INFO_IS_EMPTY', $qualifiedModuleName), 103);
         }
 
         $logoName = false;
 
         if (!empty($_FILES['logo']['name'])) {
             $logoDetails = $_FILES['logo'];
-            $saveLogo = Vtiger_Functions::validateImage($logoDetails);
+            $validationError = $moduleModel->getLogoValidationError($logoDetails);
+
+            if ($validationError) {
+                $validationMessage = vtranslate($validationError, $qualifiedModuleName);
+
+                if ($validationError === 'LBL_MAXIMUM_SIZE_EXCEEDS') {
+                    $validationMessage = sprintf($validationMessage, $moduleModel->getLogoMaxFileSizeInMegabytes());
+                }
+
+                throw new Exception($validationMessage, 103);
+            }
+
             global $upload_badext;// from config.inc.php
             $logoName = sanitizeUploadFileName($logoDetails['name'], $upload_badext);
 
-            if ($saveLogo && pathinfo($logoName, PATHINFO_EXTENSION) != 'txt') {
-                $moduleModel->saveLogo($logoName);
+            if (pathinfo($logoName, PATHINFO_EXTENSION) !== 'txt') {
+                if (!$moduleModel->saveLogo($logoName)) {
+                    throw new Exception(vtranslate('LBL_LOGO_SAVE_FAILED', $qualifiedModuleName), 103);
+                }
             } else {
-                $saveLogo = false;
+                throw new Exception(vtranslate('LBL_INVALID_IMAGE', $qualifiedModuleName), 103);
             }
-        } else {
-            $saveLogo = true;
-        }
-
-        if (!$saveLogo) {
-            throw new Exception('LBL_INVALID_IMAGE', 103);
         }
 
         $fields = $moduleModel->getFields();
+        $removeLogo = $request->get('remove_logo') === '1' && !$logoName;
+        $currentLogoName = decode_html((string)$moduleModel->get('logoname'));
 
         foreach ($fields as $fieldName => $fieldType) {
             $fieldValue = $request->get($fieldName);
@@ -78,6 +84,8 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
             if ($fieldName === 'logoname') {
                 if (!empty($logoDetails['name']) && $logoName) {
                     $fieldValue = decode_html(ltrim(basename(" " . $logoName)));
+                } elseif ($removeLogo) {
+                    $fieldValue = '';
                 } else {
                     $fieldValue = decode_html($moduleModel->get($fieldName));
                 }
@@ -91,7 +99,11 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
             }
         }
 
-        $moduleModel->save();
+        if ($removeLogo) {
+            $moduleModel->removeLogo($currentLogoName);
+        } else {
+            $moduleModel->save();
+        }
     }
 
     /**

@@ -12,6 +12,12 @@
     <div class="px-4 pb-4">
         <div>
             <input type="hidden" id="supportedImageFormats" value='{ZEND_JSON::encode(Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)}'/>
+            <input type="hidden" id="maximumLogoFileSize" value="{$MODULE_MODEL->getLogoMaxFileSize()}" data-size-megabytes="{$MODULE_MODEL->getLogoMaxFileSizeInMegabytes()}"/>
+            {if !empty($ERROR_MESSAGE)}
+                <div class="alert alert-danger mt-3" role="alert">
+                    {vtranslate($ERROR_MESSAGE, $QUALIFIED_MODULE)}
+                </div>
+            {/if}
             <div class="container-fluid p-3 bg-body rounded">
                 <div class="row align-items-center">
                     <div class="col">
@@ -37,11 +43,7 @@
                                         <div class="col-lg-3 fieldLabel"></div>
                                         <div class="col-lg-6 fieldValue">
                                             <div class="companyLogo">
-                                                {if $MODULE_MODEL->getLogoPath()}
-                                                    <img src="{$MODULE_MODEL->getLogoPath()}" width="240"/>
-                                                {else}
-                                                    {vtranslate('LBL_NO_LOGO_EDIT_AND_UPLOAD', $QUALIFIED_MODULE)}
-                                                {/if}
+                                                <img src="{$MODULE_MODEL->getLogoPath()}" width="240" alt="{vtranslate('LBL_COMPANY_LOGO', $QUALIFIED_MODULE)}"/>
                                             </div>
                                         </div>
                                     </div>
@@ -80,9 +82,20 @@
                                     <div class="col-lg-3 fieldLabel"></div>
                                     <div class="col-lg-6 fieldValue">
                                         <div class="company-logo-content rounded border mb-3">
-                                            <img src="{$MODULE_MODEL->getLogoPath()}" width="240"/>
+                                            <div class="companyLogoPreview position-relative">
+                                                <img src="{$MODULE_MODEL->getLogoPath()}" width="240" alt="{vtranslate('LBL_COMPANY_LOGO', $QUALIFIED_MODULE)}"/>
+                                                {if $MODULE_MODEL->hasCustomLogo()}
+                                                    <button type="button" class="removeCompanyLogo btn btn-sm btn-danger position-absolute top-0 end-0" title="{vtranslate('LBL_REMOVE_COMPANY_LOGO', $QUALIFIED_MODULE)}" aria-label="{vtranslate('LBL_REMOVE_COMPANY_LOGO', $QUALIFIED_MODULE)}">
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </button>
+                                                {/if}
+                                            </div>
+                                            <div class="companyLogoRemovalMessage alert alert-warning m-2 hide">
+                                                {vtranslate('LBL_COMPANY_LOGO_WILL_BE_REMOVED', $QUALIFIED_MODULE)}
+                                            </div>
                                             <hr>
-                                            <input type="file" name="logo" id="logoFile"/>
+                                            <input type="hidden" name="remove_logo" id="removeCompanyLogo" value="0"/>
+                                            <input type="file" name="logo" id="logoFile" accept=".jpeg,.jpg,.png,.gif,image/jpeg,image/png,image/gif"/>
                                         </div>
                                         <div class="alert alert-info m-0">
                                             {vtranslate('LBL_LOGO_RECOMMENDED_MESSAGE',$QUALIFIED_MODULE)}

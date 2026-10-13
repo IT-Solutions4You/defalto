@@ -1,3 +1,7 @@
+# Shared image validation
+
+- `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades. They delegate statically to `Core_ImageValidation_Helper`; keep validation logic out of this legacy utility.
+
 # Record-header tooltips
 
 - Vtiger.js retains the shared preview request launcher and stale-response counter. After the modal's SCRIPTS execute, its callback invokes Core QuickPreview's static registerPreview(). Do not load Core QuickPreview globally or initialize it inline in Smarty.

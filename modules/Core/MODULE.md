@@ -85,6 +85,12 @@ Use the actual module name instead of `Example`. Unconfigured fields retain the 
 - Module selection and filtering use `Vtiger_BasicSearch_Js` in `layouts/d1/modules/Vtiger/resources/BasicSearch.js`; search configuration belongs to GlobalSearch.
 - Shared picker styling lives in `layouts/d1/skins/base/style.less` and its committed `style.css`. Keep the dropdown scrollable within the viewport, allowing for the extra search row below the `lg` breakpoint and using the shared header height variables.
 
+# Shared image validation
+
+- `Core_ImageValidation_Helper` owns reusable upload-image validation: filename extension, content-derived MIME type, embedded PHP markers, EXIF metadata inspection, optional JPEG re-encoding and SVG event-attribute sanitization.
+- Callers should use `Core_ImageValidation_Helper::validate()` directly. Legacy `Vtiger_Functions::validateImage()` and `validateImageMetadata()` remain static compatibility facades and must only delegate to this helper.
+- Never trust the browser-provided MIME type. JPEG processing must use the detected content MIME type, reject decoder or encoder failures and release the GD image resource.
+
 # Workflow installation
 
 - `Core_SimpleHtmlDom_Helper::convertNewlinesToHtml()` preserves newline/indentation runs immediately before opening or closing p tags (also entity-encoded tags), applying nl2br elsewhere. It never deletes existing br tags or document wrappers and does not parse, sanitize, or decode HTML. Workflow fields/comments, the Text UI type, and legacy EMAILMaker textarea conversion share this behavior.
