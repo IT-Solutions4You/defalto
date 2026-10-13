@@ -36,6 +36,8 @@
 
 # Shared filter processing
 
+- Condition field structures obtain their blocks through `Core_FilterEditor_Model::getConditionBlocks()`. The block named `LBL_ITEM_DETAILS` is shown after the module's other blocks in advanced search, saved filters, list filters and report conditions, without changing edit or detail layouts.
+
 - Shared filter buttons use Bootstrap `bg-white text-secondary` for a white background with readable labels on hover. Keep group deletion compact; group-to-group connectors use standard `form-select` sizing without `form-select-sm`. Cloned rows/groups and dynamically created delete buttons must retain these classes.
 
 - Translate shared row and group connectors through Core `LBL_AND`/`LBL_OR`. Dynamic group deletion uses the Core JavaScript `LBL_DELETE` translation; verify both PHP and JavaScript dictionaries when auditing editor labels.
