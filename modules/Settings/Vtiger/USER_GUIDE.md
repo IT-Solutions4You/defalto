@@ -6,7 +6,7 @@ Administrators can maintain the company name, contact and bank information, desc
 
 ### Company logo
 
-- Upload a JPEG, PNG, or GIF image with a maximum file size of 1 MB and maximum dimensions of 5000 × 5000 pixels.
+- Upload a JPEG, PNG, or GIF image within the maximum upload size configured in the CRM and maximum dimensions of 5000 × 5000 pixels.
 - The filename extension must match the image's real format. For example, a PNG image renamed to `.jpg` is rejected with an explanation instead of causing an application error.
 - If an upload cannot be accepted, the form stays open and displays the specific reason in an error notification.
 - To replace the logo, choose a new image and save the company details.

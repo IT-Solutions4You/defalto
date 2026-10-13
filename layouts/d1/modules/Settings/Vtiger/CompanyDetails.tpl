@@ -12,7 +12,7 @@
     <div class="px-4 pb-4">
         <div>
             <input type="hidden" id="supportedImageFormats" value='{ZEND_JSON::encode(Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)}'/>
-            <input type="hidden" id="maximumLogoFileSize" value="{Settings_Vtiger_CompanyDetails_Model::$logoMaxFileSize}"/>
+            <input type="hidden" id="maximumLogoFileSize" value="{$MODULE_MODEL->getLogoMaxFileSize()}" data-size-megabytes="{$MODULE_MODEL->getLogoMaxFileSizeInMegabytes()}"/>
             {if !empty($ERROR_MESSAGE)}
                 <div class="alert alert-danger mt-3" role="alert">
                     {vtranslate($ERROR_MESSAGE, $QUALIFIED_MODULE)}

@@ -19,7 +19,6 @@
 class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
 {
     public static array $logoSupportedFormats = ['jpeg', 'jpg', 'png', 'gif', 'pjpeg', 'x-png'];
-    public static int $logoMaxFileSize = 1048576;
     public static int $logoMaxWidth = 5000;
     public static int $logoMaxHeight = 5000;
     public static string $defaultLogoPath = 'layouts/d1/resources/Images/login-logo.png';
@@ -202,7 +201,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
             return 'LBL_INVALID_IMAGE';
         }
 
-        if (($logoDetails['size'] ?? 0) > self::$logoMaxFileSize) {
+        if (($logoDetails['size'] ?? 0) > $this->getLogoMaxFileSize()) {
             return 'LBL_MAXIMUM_SIZE_EXCEEDS';
         }
 
@@ -233,6 +232,16 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model
         }
 
         return '';
+    }
+
+    public function getLogoMaxFileSize(): int
+    {
+        return (int)Vtiger_Util_Helper::getMaxUploadSizeInBytes();
+    }
+
+    public function getLogoMaxFileSizeInMegabytes(): int
+    {
+        return (int)Vtiger_Util_Helper::getMaxUploadSize();
     }
 
     public function isLogoFormatMatch(string $extension, string $detectedFormat): bool

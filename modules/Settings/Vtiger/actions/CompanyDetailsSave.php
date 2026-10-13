@@ -53,7 +53,13 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
             $validationError = $moduleModel->getLogoValidationError($logoDetails);
 
             if ($validationError) {
-                throw new Exception(vtranslate($validationError, $qualifiedModuleName), 103);
+                $validationMessage = vtranslate($validationError, $qualifiedModuleName);
+
+                if ($validationError === 'LBL_MAXIMUM_SIZE_EXCEEDS') {
+                    $validationMessage = sprintf($validationMessage, $moduleModel->getLogoMaxFileSizeInMegabytes());
+                }
+
+                throw new Exception($validationMessage, 103);
             }
 
             global $upload_badext;// from config.inc.php

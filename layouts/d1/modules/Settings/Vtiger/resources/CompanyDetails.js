@@ -107,7 +107,10 @@ Vtiger.Class("Settings_Vtiger_CompanyDetails_Js", {}, {
                 if (size <= maximumSize) {
                     return true;
                 } else {
-                    app.helper.showErrorNotification({'message': app.vtranslate('LBL_MAXIMUM_SIZE_EXCEEDS')});
+                    const maximumSizeInMegabytes = jQuery('#maximumLogoFileSize').data('size-megabytes'),
+                        errorMessage = app.vtranslate('LBL_MAXIMUM_SIZE_EXCEEDS').replace('%s', maximumSizeInMegabytes);
+
+                    app.helper.showErrorNotification({'message': errorMessage});
 
                     return false;
                 }
