@@ -9,3 +9,8 @@
 # Display conditions
 
 - `EMAILMaker_FilterRecordStructure_Model` uses `Core_FilterEditor_Model::getConditionBlocks()` for source and referenced modules. Ordinary blocks keep their configured order, while the block named `LBL_ITEM_DETAILS` is presented last. This changes only display-condition field ordering.
+
+# Attachment images
+
+- Browser-visible user, contact, product, record and company attachment images use `Core_Storage_Model::getAttachmentPublicUrl()` rather than exposing `vtiger_attachments.path`. This keeps templates compatible with attachment storage outside the web directory.
+- PDFMaker keeps using resolved physical paths for local PDF rendering; do not replace those paths with browser URLs without validating the PDF renderer.

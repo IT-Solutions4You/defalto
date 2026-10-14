@@ -31,16 +31,18 @@ class CustomerPortal_Utils
         $imageId = $adb->query_result($result, 0, 'attachmentsid');
         $imagePath = $adb->query_result($result, 0, 'path');
         $imageName = $adb->query_result($result, 0, 'name');
+        $storedName = $adb->query_result($result, 0, 'storedname');
         $imageType = $adb->query_result($result, 0, 'type');
         $imageOriginalName = urlencode(decode_html($imageName));
 
         if (!empty($imageName)) {
             $imageDetails[] = [
-                'id'      => $imageId,
-                'orgname' => $imageOriginalName,
-                'path'    => $imagePath . $imageId,
-                'name'    => $imageName,
-                'type'    => $imageType
+                'id'         => $imageId,
+                'orgname'    => $imageOriginalName,
+                'path'       => $imagePath,
+                'name'       => $imageName,
+                'storedname' => $storedName,
+                'type'       => $imageType
             ];
         }
 
@@ -53,8 +55,13 @@ class CustomerPortal_Utils
 
     static function getEncodedImage($imageDetails)
     {
-        global $root_directory;
-        $image = $root_directory . '/' . $imageDetails['path'] . '_' . $imageDetails['name'];
+        $attachment = [
+            'attachmentsid' => $imageDetails['id'],
+            'path'          => $imageDetails['path'],
+            'name'          => $imageDetails['name'],
+            'storedname'    => $imageDetails['storedname'],
+        ];
+        $image = Core_Storage_Model::getInstance()->getAttachmentFilePath($attachment);
         $image_data = file_get_contents($image);
         $encoded_image = base64_encode($image_data);
         $encodedImageData = [];

@@ -310,10 +310,11 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             $row = self::fixStoredName($row);
             $site_url = self::fixSiteUrl($site_url);
 
-            $image_id = $row['attachmentsid'];
-            $image_path = $row['path'];
             $image_name = $row['storedname'];
-            $imgpath = $site_url . $image_path . $image_id . '_' . $image_name;
+            $imgpath = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                (int)$row['attachmentsid'],
+                (string)$row['name'],
+            );
 
             if ($image_name != '') {
                 $image = '<img src="' . $imgpath . '" width="250px" border="0">';
@@ -333,13 +334,15 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
             $result = $db->pquery($query, [$id]);
             $num_rows = $db->num_rows($result);
             if ($num_rows > 0) {
-                $site_url = self::fixSiteUrl($site_url);
                 $row = $db->query_result_rowdata($result);
                 $row = self::fixStoredName($row);
 
-                $image_src = $row["path"] . $row["attachmentsid"] . "_" . $row["storedname"];
+                $image_src = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                    (int)$row['attachmentsid'],
+                    (string)$row['name'],
+                );
 
-                return "<img src='" . $site_url . $image_src . "'/>";
+                return "<img src='" . $image_src . "'/>";
             }
         } else {
             return "";
@@ -426,6 +429,7 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
 
             $products[$row["productid"] . "#_#" . $row["sequence_no"]][$row["attachmentsid"]]["path"] = $row["path"];
             $products[$row["productid"] . "#_#" . $row["sequence_no"]][$row["attachmentsid"]]["name"] = $row['storedname'];
+            $products[$row["productid"] . "#_#" . $row["sequence_no"]][$row["attachmentsid"]]["original_name"] = $row['name'];
         }
 
         $saved_res = $db->pquery("SELECT productid, sequence, attachmentid, width, height FROM vtiger_emakertemplates_images WHERE crmid=?", [$id]);
@@ -446,18 +450,34 @@ class EMAILMaker_EMAILContentUtils_Model extends Core_TemplateContent_Helper
                             $width = $saved_wh[$productid . "_" . $seq]["width"];
                             $height = $saved_wh[$productid . "_" . $seq]["height"];
 
-                            $mainImgs[$productid . "_" . $seq]["src"] = $images["path"] . $attid . '_' . $images["name"];
+                            $mainImgs[$productid . "_" . $seq]["src"] = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                                (int)$attid,
+                                (string)$images['original_name'],
+                                false,
+                            );
                             $mainImgs[$productid . "_" . $seq]["width"] = $width;
                             $mainImgs[$productid . "_" . $seq]["height"] = $height;
                         }
                     } elseif (!isset($bacImgs[$productid . "_" . $seq])) {   // add only the first backup image
-                        $bacImgs[$productid . "_" . $seq]["src"] = $images["path"] . $attid . '_' . $images["name"];
+                        $bacImgs[$productid . "_" . $seq]["src"] = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                            (int)$attid,
+                            (string)$images['original_name'],
+                            false,
+                        );
                     }
                 }
             }
         }
 
         return [$mainImgs, $bacImgs];
+    }
+
+    protected function getRecordImageSource(array $data): string
+    {
+        return Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+            (int)$data['attachmentsid'],
+            (string)$data['name'],
+        );
     }
 
     public function getInventoryImagesQuery($isProductModule)

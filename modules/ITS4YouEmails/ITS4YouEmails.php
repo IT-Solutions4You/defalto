@@ -10,7 +10,7 @@
 
 class ITS4YouEmails extends CRMEntity
 {
-    public string $moduleVersion = '1.3';
+    public string $moduleVersion = '1.4';
     public string $moduleName = 'ITS4YouEmails';
     public string $parentName = 'Tools';
     public string $moduleLabel = 'Emails';

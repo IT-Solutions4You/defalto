@@ -91,6 +91,13 @@ Use the actual module name instead of `Example`. Unconfigured fields retain the 
 - Callers should use `Core_ImageValidation_Helper::validate()` directly. Legacy `Vtiger_Functions::validateImage()` and `validateImageMetadata()` remain static compatibility facades and must only delegate to this helper.
 - Never trust the browser-provided MIME type. JPEG processing must use the detected content MIME type, reject decoder or encoder failures and release the GD image resource.
 
+# Attachment storage
+
+- `Core_Storage_Model` owns resolution and creation of the configured attachment storage directory. `$storage_directory` may be absolute; unset and empty values fall back to `storage/`.
+- `decideFilePath()` and `CRMEntity::getAttachmentUploadPath()` delegate to the Core storage model. Persistent attachment writers that already call `decideFilePath()` therefore share the configured root.
+- Keep the physical path stored in `vtiger_attachments.path` readable by existing download and preview flows. `getAttachmentFilePath()` resolves both legacy relative paths and new absolute paths. Storage directories are created recursively; the upload operation validates the actual write because PHP `is_writable()` can reject valid Windows paths.
+- Reporting and other temporary generated files use `initTemporaryFileDirectory()` and must not be placed in persistent attachment storage.
+
 # Workflow installation
 
 - `Core_SimpleHtmlDom_Helper::convertNewlinesToHtml()` preserves newline/indentation runs immediately before opening or closing p tags (also entity-encoded tags), applying nl2br elsewhere. It never deletes existing br tags or document wrappers and does not parse, sanitize, or decode HTML. Workflow fields/comments, the Text UI type, and legacy EMAILMaker textarea conversion share this behavior.

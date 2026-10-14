@@ -911,31 +911,24 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
         });
     },
     showPopupModal: function (data) {
-        let popupModal = jQuery('.popupModal'),
-            modal = jQuery('.myModal');
-
-        if (data) {
-            popupModal.remove();
-            popupModal.unbind();
-
-            jQuery('body').append(jQuery('<div id="popupModal" class="modal popupModal">' + data + '</div>'));
+        if (!data) {
+            return;
         }
 
-        vtUtils.applyFieldElementsView(popupModal);
+        const modal = this.getMassEmailForm().closest('.modal'),
+            popupModal = app.helper.showPopup(data, {
+                cb: function () {
+                    modal.css('opacity', .5);
+                }
+            });
 
-        popupModal = jQuery('.popupModal');
-        popupModal.one('shown.bs.modal', function () {
-            modal.css('opacity', .5);
-            modal.unbind();
-        });
         popupModal.one('hidden.bs.modal', function () {
-            this.remove();
-
             modal.css('opacity', 1);
-            modal.removeData("modal").modal(app.helper.defaultModalParams());
-            modal.bind();
+
+            if (modal.is(':visible')) {
+                jQuery('body').addClass('modal-open');
+            }
         });
-        popupModal.modal('show');
     },
     getMassEmailForm: function () {
         if (false === this.massEmailForm) {

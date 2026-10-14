@@ -83,8 +83,10 @@ if (!function_exists('its4you_getContactImage')) {
             if ($num_rows > 0) {
                 $row = $adb->query_result_rowdata($result);
                 $row = EMAILMaker_EMAILContentUtils_Model::fixStoredName($row);
-                $site_URL = EMAILMaker_EMAILContentUtils_Model::fixSiteUrl(vglobal('site_URL'));
-                $image_src = $site_URL . $row['path'] . $row['attachmentsid'] . '_' . $row['storedname'];
+                $image_src = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                    (int)$row['attachmentsid'],
+                    (string)$row['name'],
+                );
 
                 return "<img src='" . $image_src . "' width='" . $width . "' height='" . $height . "'/>";
             }

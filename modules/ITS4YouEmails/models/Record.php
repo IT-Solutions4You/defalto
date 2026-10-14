@@ -614,7 +614,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $mailer = $this->getMailer();
 
         foreach ($this->getAttachments() as $attachment) {
-            $fileNameWithPath = vglobal('root_directory') . $attachment['filenamewithpath'];
+            $fileNameWithPath = $attachment['filenamewithpath'];
 
             if (is_file($fileNameWithPath)) {
                 $mailer->addAttachment($fileNameWithPath, $attachment['attachment']);
@@ -671,7 +671,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                 $fileName = decode_html($row['name']);
                 $storedName = !empty($row['storedname']) ? decode_html($row['storedname']) : $fileName;
                 $path = $row['path'];
-                $fileNameWithPath = $path . $attachmentId . '_' . $storedName;
+                $fileNameWithPath = Core_Storage_Model::getInstance()->getAttachmentFilePath($row);
 
                 $attachments[] = [
                     'attachment'       => $fileName,
@@ -718,7 +718,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                     'attachment'       => $fileName,
                     'storedname'       => $storedName,
                     'size'             => $this->getFormattedFileSize($row['filesize']),
-                    'filenamewithpath' => $row['path'] . $row['attachmentsid'] . '_' . $storedName
+                    'filenamewithpath' => Core_Storage_Model::getInstance()->getAttachmentFilePath($row)
                 ];
             }
         }

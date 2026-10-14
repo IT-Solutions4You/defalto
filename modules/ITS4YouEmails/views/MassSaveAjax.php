@@ -271,7 +271,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                     $oldFileName = $existingAttachInfo['fileid'] . '_' . $oldFileName;
                 }
 
-                $oldFilePath = rtrim($filePath, '/') . '/' . $oldFileName;
+                $oldFilePath = Core_Storage_Model::getInstance()->getFilePath($filePath, $oldFileName);
 
                 $attachmentId = $this->db->getUniqueID('vtiger_crmentity');
                 $binFile = sanitizeUploadFileName($fileName, $upload_badext);

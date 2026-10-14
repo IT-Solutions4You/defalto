@@ -99,7 +99,10 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
             $db->pquery("UPDATE vtiger_crmentity set deleted = 1 WHERE crmid = ?", [$atResultRow['attachid']]);
 
-            $filepath = $atResultRow['path'] . "/" . $atResultRow['attachid'] . "_" . $atResultRow['aname'];
+            $filepath = Core_Storage_Model::getInstance()->getFilePath(
+                (string)$atResultRow['path'],
+                $atResultRow['attachid'] . '_' . $atResultRow['aname'],
+            );
             if (file_exists($filepath)) {
                 unlink($filepath);
             }
@@ -166,7 +169,10 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
 
         while ($row = $db->fetchByAssoc($result)) {
             $fileName = sanitizeUploadFileName($row['aname'], vglobal('upload_badext'));
-            $filePath = $row['path'] . $row['attachid'] . '_' . $fileName;
+            $filePath = Core_Storage_Model::getInstance()->getFilePath(
+                (string)$row['path'],
+                $row['attachid'] . '_' . $fileName,
+            );
             $fileSize = filesize($filePath);
             $fileContent = '';
 

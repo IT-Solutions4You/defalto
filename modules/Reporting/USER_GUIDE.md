@@ -171,6 +171,8 @@ From the saved report's detail view, use:
 - **Export XLS** for a spreadsheet you can work with in Excel.
 - **Export PDF** for a document suitable for reading and sharing.
 
+Export files are generated temporarily and are kept separate from the persistent attachment storage used by Documents and other CRM records.
+
 Save your changes and check the filters and currency before exporting. Exports use the saved report.
 
 ## 11. Example: total invoice amounts by status

@@ -44,3 +44,7 @@ Module-specific condition options apply in both editors. Time ranges and date-on
 
 The advanced filter layout is shared with workflow conditions. Groups, AND/OR selectors and add/remove buttons behave consistently. Available comparisons still depend on the field and on whether you are editing a list filter or a workflow.
 Empty condition groups are ignored. The connector after a populated group joins it to the next populated group, even with an empty group between them.
+
+# Attachments
+
+Record images, previews, and downloads continue to work when an administrator stores persistent attachments outside the public web directory. Access still follows the existing record and file permissions.

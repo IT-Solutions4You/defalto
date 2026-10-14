@@ -24,7 +24,8 @@ class Reporting_PDF_Model extends Vtiger_Base_Model
 
     public function getPDF(): string
     {
-        $file = sprintf('%s/PDF%s.pdf', rtrim(decideFilePath(), '/'), time());
+        $directory = Core_Storage_Model::getInstance()->initTemporaryFileDirectory();
+        $file = sprintf('%sPDF%s.pdf', $directory, time());
         $this->mpdf->Output($file);
 
         return $file;

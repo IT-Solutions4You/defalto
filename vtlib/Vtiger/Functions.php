@@ -692,51 +692,7 @@ class Vtiger_Functions
 
     static function initStorageFileDirectory()
     {
-        $filepath = 'storage/';
-
-        $year = date('Y');
-        $month = date('F');
-        $day = date('j');
-        $week = '';
-        $permissions = self::getGroupPermissionsFromConfigFile();
-        if (!is_dir($filepath . $year)) {
-            //create new folder
-            mkdir($filepath . $year);
-            $yearPath = $filepath . $year;
-            exec("chown -R $permissions  $yearPath");
-        }
-
-        if (!is_dir($filepath . $year . "/" . $month)) {
-            //create new folder
-            $monthFilePath = "$year/$month";
-            $monthPath = $filepath . $monthFilePath;
-            mkdir($filepath . $monthFilePath);
-            exec("chown -R $permissions  $monthPath");
-        }
-
-        if ($day > 0 && $day <= 7) {
-            $week = 'week1';
-        } elseif ($day > 7 && $day <= 14) {
-            $week = 'week2';
-        } elseif ($day > 14 && $day <= 21) {
-            $week = 'week3';
-        } elseif ($day > 21 && $day <= 28) {
-            $week = 'week4';
-        } else {
-            $week = 'week5';
-        }
-
-        if (!is_dir($filepath . $year . "/" . $month . "/" . $week)) {
-            //create new folder
-            $weekFilePath = "$year/$month/$week";
-            $weekPath = $filepath . $weekFilePath;
-            mkdir($filepath . $weekFilePath);
-            exec("chown -R $permissions  $weekPath");
-        }
-
-        $filepath = $filepath . $year . "/" . $month . "/" . $week . "/";
-
-        return $filepath;
+        return Core_Storage_Model::getInstance()->initAttachmentFileDirectory();
     }
 
     /**

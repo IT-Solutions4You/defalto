@@ -317,7 +317,7 @@ class CRMEntity extends CRMExtension
         $filetmp_name = $file_details['tmp_name'];
 
         //get the file path inwhich folder we want to upload the file
-        $upload_file_path = decideFilePath();
+        $upload_file_path = $this->getAttachmentUploadPath();
 
         // upload the file in server
         $encryptFileName = Vtiger_Util_Helper::getEncryptedFileName($binFile);
@@ -373,6 +373,14 @@ class CRMEntity extends CRMExtension
 
             return false;
         }
+    }
+
+    /**
+     * Return the directory used for a newly uploaded attachment.
+     */
+    protected function getAttachmentUploadPath(): string
+    {
+        return decideFilePath();
     }
 
     /** Function to insert values in the vtiger_crmentity for the specified module

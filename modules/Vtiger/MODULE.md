@@ -2,6 +2,11 @@
 
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades. They delegate statically to `Core_ImageValidation_Helper`; keep validation logic out of this legacy utility.
 
+# Attachment storage
+
+- Shared record downloads and `Vtiger_ShowFile_Helper` resolve `vtiger_attachments.path` through `Core_Storage_Model`. This supports legacy relative paths and configured absolute paths outside the web directory.
+- Browser-visible images must use `Core_Storage_Model::getAttachmentPublicUrl()` instead of exposing the physical path. Persistent attachment writers continue through `decideFilePath()`; temporary generated files use the Core temporary-directory flow.
+
 # Record-header tooltips
 
 - Vtiger.js retains the shared preview request launcher and stale-response counter. After the modal's SCRIPTS execute, its callback invokes Core QuickPreview's static registerPreview(). Do not load Core QuickPreview globally or initialize it inline in Smarty.
