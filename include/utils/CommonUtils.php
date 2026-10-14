@@ -189,7 +189,7 @@ function getEntityName($module, $ids_list, $compute = true)
  */
 function decideFilePath()
 {
-    return Vtiger_Functions::initStorageFileDirectory();
+    return Core_Storage_Model::getInstance()->initAttachmentFileDirectory();
 }
 
 /**

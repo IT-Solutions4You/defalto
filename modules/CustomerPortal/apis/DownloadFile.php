@@ -83,8 +83,12 @@ class CustomerPortal_DownloadFile extends CustomerPortal_API_Abstract
                 }
                 $realfilename = decode_html($adb->query_result($fileres, 0, 'name'));
 
-                $saved_filename = $fileid . "_" . $filename;
-                $filenamewithpath = $filepath . $saved_filename;
+                $filenamewithpath = Core_Storage_Model::getInstance()->getAttachmentFilePath([
+                    'attachmentsid' => $fileid,
+                    'path' => $filepath,
+                    'name' => $realfilename,
+                    'storedname' => $filename,
+                ]);
                 $filesize = filesize($filenamewithpath);
                 $fileDetails = [];
                 $fileDetails['fileid'] = $fileid;
@@ -104,11 +108,9 @@ class CustomerPortal_DownloadFile extends CustomerPortal_API_Abstract
                 if (empty($filename)) {
                     $filename = $attachmentDetails['name'];
                 }
-                $filepath = $attachmentDetails['path'];
                 $realfilename = decode_html($attachmentDetails['name']);
 
-                $saved_filename = $fileid . "_" . $filename;
-                $filenamewithpath = $filepath . $saved_filename;
+                $filenamewithpath = Core_Storage_Model::getInstance()->getAttachmentFilePath($attachmentDetails);
                 $filesize = filesize($filenamewithpath);
                 $filetype = $attachmentDetails['type'];
 

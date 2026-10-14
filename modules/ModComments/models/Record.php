@@ -553,8 +553,12 @@ class ModComments_Record_Model extends Vtiger_Record_Model
                 $attachmentsList[$i]['fileid'] = $attachmentId;
                 $attachmentsList[$i]['storedname'] = decode_html($storedName);
                 $attachmentsList[$i]['path'] = $path;
-                $saved_filename = $attachmentId . "_" . $filename;
-                $filenamewithpath = $path . $saved_filename;
+                $filenamewithpath = Core_Storage_Model::getInstance()->getAttachmentFilePath([
+                    'attachmentsid' => $attachmentId,
+                    'path' => $path,
+                    'name' => $rawFileName,
+                    'storedname' => $filename,
+                ]);
                 $filesize = filesize($filenamewithpath);
                 $attachmentsList[$i]['filenamewithpath'] = $filenamewithpath;
                 $attachmentsList[$i]['size'] = $filesize;

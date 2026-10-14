@@ -236,8 +236,11 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
                 $row['storedname'] = $row['name'];
             }
 
-            $products[$row['productid'] . '#_#' . $row['productname'] . '#_#' . $row['sequence_no']][$row['attachmentsid']]['path'] = $row['path'];
             $products[$row['productid'] . '#_#' . $row['productname'] . '#_#' . $row['sequence_no']][$row['attachmentsid']]['name'] = $row['storedname'];
+            $products[$row['productid'] . '#_#' . $row['productname'] . '#_#' . $row['sequence_no']][$row['attachmentsid']]['url'] = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                (int)$row['attachmentsid'],
+                (string)$row['name'],
+            );
         }
 
         $saved_sql = 'SELECT productid, sequence, attachmentid, width, height FROM vtiger_pdfmaker_images WHERE crmid=?';
@@ -281,7 +284,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
                     $prodImg .= '<label class="d-inline-block p-2">
                         <input class="form-check-input" type="radio" name="img_' . $productid . '_' . $seq . '" value="' . $attid . '"' . $checked . '/>
-                        <img class="ms-2 rounded" src="' . $images["path"] . $attid . '_' . $images["name"] . '" alt="' . $images["name"] . '" title="' . $images["name"] . '" style="height:40px;">
+                        <img class="ms-2 rounded" src="' . $images['url'] . '" alt="' . $images["name"] . '" title="' . $images["name"] . '" style="height:40px;">
                     </label>';
                 }
             }

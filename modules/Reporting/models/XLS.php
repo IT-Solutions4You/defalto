@@ -78,7 +78,8 @@ class Reporting_XLS_Model extends Vtiger_Base_Model
 
     public function getXLXS(): string
     {
-        $url = sprintf('%s/XLX%s.xlsx', rtrim(decideFilePath(), '/'), time());
+        $directory = Core_Storage_Model::getInstance()->initTemporaryFileDirectory();
+        $url = sprintf('%sXLX%s.xlsx', $directory, time());
 
         $writer = new Xlsx($this->spreadsheet);
         $writer->save($url);

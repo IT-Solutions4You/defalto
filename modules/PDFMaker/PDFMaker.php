@@ -17,7 +17,7 @@ class PDFMaker extends CRMExtension
     public string $moduleName = 'PDFMaker';
     public string $moduleLabel = 'PDFMaker';
     public string $parentName = 'TOOLS';
-    public string $moduleVersion = '0.4';
+    public string $moduleVersion = '0.5';
     /**
      * @var mixed|null
      */

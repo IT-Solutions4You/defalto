@@ -26,3 +26,9 @@ For a time condition such as Between 11:00 and 13:00, both boundaries are includ
 
 Saved-list and workflow condition editors use the same group layout, condition rows and add/remove controls. Workflow filters retain their own comparisons and expressions. Choose a field after adding a condition; use AND/OR beside rows and between groups to combine rules.
 Empty condition groups are ignored. The connector after a populated group joins it to the next populated group, even with an empty group between them.
+
+# Attachment storage
+
+Administrators can set `$storage_directory` in `config.inc.php` to a relative directory such as `storage/` or an absolute directory such as `/home/storage/`. If it is empty or not configured, the application uses `storage/`.
+
+New persistent attachments from Documents, email, comments, profile images, PDFs, and other CRM upload flows use this directory. Existing attachments keep working from their saved relative or absolute paths. Browser images are delivered through the CRM file endpoint, so the physical directory does not need to be publicly accessible.

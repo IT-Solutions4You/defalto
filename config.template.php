@@ -94,6 +94,10 @@ $PORTAL_URL = $site_URL . '/customerportal';
 // root directory path
 $root_directory = '_VT_ROOTDIR_';
 
+// physical directory for persisted attachment files
+// may be an absolute path outside the public web directory
+$storage_directory = 'storage/';
+
 // cache direcory path
 $cache_dir = '_VT_CACHEDIR_';
 

@@ -10,3 +10,5 @@
 - Validate JavaScript with `node --check layouts/d1/modules/Reporting/resources/Edit.js` and ITS4You ScriptsValidator (`source_module=Reporting&only_errors=1`). Manually check an empty calculation selection, enabling/disabling calculations, and report type choices without seeded picklist values. Run `php -l` on changed PHP files and check inherited signatures for field-model changes.
 
 - `getFormatedFilters()` preserves stored groups and connectors. Empty intermediate groups and sparse keys are handled by the shared query parser, not a two-group assumption.
+
+- PDF and XLS exports are generated under the configured temporary directory through `Core_Storage_Model::initTemporaryFileDirectory()`. They must not use persistent attachment storage.

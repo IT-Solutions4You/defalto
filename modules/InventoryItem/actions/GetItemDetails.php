@@ -73,7 +73,10 @@ class InventoryItem_GetItemDetails_Action extends Core_Controller_Action
             $imageDetailsList = Products_Record_Model::getProductsImageDetails($productIdsList);
 
             foreach ($imageDetailsList as $productId => $imageDetails) {
-                $imageSourcesList[$productId] = $imageDetails[0]['path'] . '_' . $imageDetails[0]['orgname'];
+                $imageSourcesList[$productId] = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                    (int)$imageDetails[0]['id'],
+                    (string)$imageDetails[0]['name'],
+                );
             }
         }
 

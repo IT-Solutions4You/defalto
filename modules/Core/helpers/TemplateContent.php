@@ -127,9 +127,12 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
             $row['storedname'] = $row['name'];
         }
 
-        $image_src = $row['path'] . $row['attachmentsid'] . "_" . $row['storedname'];
+        $image_src = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+            (int)$row['attachmentsid'],
+            (string)$row['name'],
+        );
 
-        return "<img src='" . $site_url . "/" . $image_src . "'/>";
+        return "<img src='" . $image_src . "'/>";
     }
 
     /**
@@ -443,9 +446,14 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
         return sprintf(
             '<img class="itemImage itemImage%d" src="%s" style="%s">',
             $data['record_id'],
-            rtrim($data['path'], '/') . '/' . $data['attachmentsid'] . '_' . $data['storedname'],
+            $this->getRecordImageSource($data),
             $data['style'],
         );
+    }
+
+    protected function getRecordImageSource(array $data): string
+    {
+        return Core_Storage_Model::getInstance()->getAttachmentFilePath($data);
     }
 
     /**

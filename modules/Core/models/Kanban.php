@@ -116,8 +116,11 @@ class Core_Kanban_Model extends Vtiger_Base_Model
 
             if ($recordModel) {
                 foreach ($recordModel->getImageDetails() as $image) {
-                    if (!isset($image['url'])) {
-                        $image['url'] = $image['path'] . '_' . $image['name'];
+                    if (empty($image['url']) && !empty($image['id']) && !empty($image['name'])) {
+                        $image['url'] = Core_Storage_Model::getInstance()->getAttachmentPublicUrl(
+                            (int)$image['id'],
+                            (string)$image['name'],
+                        );
                     }
 
                     if (!empty($image['name'])) {

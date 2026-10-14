@@ -9,3 +9,9 @@
 # List record actions
 
 - The Documents record-action template uses the shared `Vtiger_List_Js::registerEditLink()` handler. Links with `editLink` must supply `data-url` with the record edit URL and app context; the handler reads that attribute and adds list return parameters. Retain `href` for native link navigation.
+
+# Document storage
+
+- Physical files uploaded through Documents use the shared `Core_Storage_Model::initAttachmentFileDirectory()` flow. The root comes from `$storage_directory`; an unset or empty value falls back to `storage/`. Absolute roots outside the web directory are supported.
+- `CRMEntity::getAttachmentUploadPath()` remains the shared upload hook and delegates through `decideFilePath()`, so Documents follows the same storage policy as other persisted attachments.
+- The dated `YEAR/MONTH/weekN` directory written to `vtiger_attachments.path` is created recursively. The upload result remains the authoritative write check because PHP `is_writable()` is unreliable for valid Windows paths. Existing document downloads continue to read the stored attachment path.

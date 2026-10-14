@@ -69,7 +69,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                         $fileDetails['fileid'] = $fileDetails['attachmentsid'];
                         $fileDetails['docid'] = $fileDetails['crmid'];
                         $fileDetails['attachment'] = $fileDetails['name'];
-                        $fileDetails['size'] = filesize($fileDetails['path'] . $fileDetails['attachmentsid'] . "_" . $fileDetails['name']);
+                        $fileDetails['size'] = filesize(
+                            Core_Storage_Model::getInstance()->getAttachmentFilePath($fileDetails)
+                        );
                         $attachements[] = $fileDetails;
                     }
                 }
@@ -546,7 +548,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $fileDetails['docid'] = $fileDetails['crmid'];
         $fileDetails['attachment'] = $fileDetails['name'];
         $fileDetails['nondeletable'] = false;
-        $fileDetails['size'] = filesize(decode_html($fileDetails['path'] . $fileDetails['attachmentsid'] . '_' . $fileDetails['storedname']));
+        $fileDetails['size'] = filesize(
+            decode_html(Core_Storage_Model::getInstance()->getAttachmentFilePath($fileDetails))
+        );
 
         return $fileDetails;
     }

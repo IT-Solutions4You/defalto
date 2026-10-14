@@ -217,7 +217,9 @@ class ITS4YouEmails_Utils_Helper
         $fileDetail['docid'] = $fileDetail['crmid'];
         $fileDetail['attachment'] = $fileDetail['name'];
         $fileDetail['nondeletable'] = false;
-        $fileDetail['size'] = filesize(decode_html($fileDetail['path'] . $fileDetail['attachmentsid'] . '_' . $fileDetail['storedname']));
+        $fileDetail['size'] = filesize(
+            decode_html(Core_Storage_Model::getInstance()->getAttachmentFilePath($fileDetail))
+        );
 
         return $fileDetail;
     }

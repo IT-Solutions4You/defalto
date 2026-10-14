@@ -206,21 +206,18 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
         if (!empty($attachmentsIds)) {
             $deleteRelQuery = 'DELETE FROM vtiger_seattachmentsrel WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
             $db->pquery($deleteRelQuery, [$recordIds]);
-            $attachmentsLocation = [];
             $getPathQuery = 'SELECT * FROM vtiger_attachments WHERE attachmentsid in (' . generateQuestionMarks($attachmentsIds) . ')';
             $pathResult = $db->pquery($getPathQuery, [$attachmentsIds]);
-            if ($db->num_rows($pathResult)) {
-                for ($i = 0; $i < ($db->num_rows($pathResult)); $i++) {
-                    $attachmentsLocation[$i] = $db->query_result($pathResult, $i, 'path');
-                    $attachmentName = $db->query_result($pathResult, $i, 'name');
-                    $attachmentId = $db->query_result($pathResult, $i, 'attachmentsid');
-                    $fileName = $attachmentsLocation[$i] . $attachmentId . '_' . decode_html($attachmentName);
-                    if (file_exists($fileName)) {
-                        chmod($fileName, 0750);
-                        unlink($fileName);
-                    }
+
+            while ($attachment = $db->fetchByAssoc($pathResult)) {
+                $fileName = Core_Storage_Model::getInstance()->getAttachmentFilePath($attachment);
+
+                if (file_exists($fileName)) {
+                    chmod($fileName, 0750);
+                    unlink($fileName);
                 }
             }
+
             $deleteAttachmentQuery = 'DELETE FROM vtiger_attachments WHERE attachmentsid in (' . generateQuestionMarks($attachmentsIds) . ')';
             $db->pquery($deleteAttachmentQuery, [$attachmentsIds]);
         }
