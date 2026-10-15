@@ -38,16 +38,12 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract
                 exit;
             }
 
-            //validate filter fields with portal settings
             $activeFields = CustomerPortal_Utils::getActiveFields($module);
-            if ($fieldsArray !== null) {
-                foreach ($fieldsArray as $key => $value) {
-                    if (!in_array($key, $activeFields)) {
-                        throw new Exception($key . " is not accessible.", 1412);
-                        exit;
-                    }
-                }
-            }
+            $filterConditions = CustomerPortal_Utils::getVtqlFilterConditions(
+                $fieldsArray,
+                $activeFields,
+                $request->get('groupConditions')
+            );
 
             $fields = $fields = implode(',', $activeFields);
             if (empty($mode)) {
@@ -73,18 +69,10 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract
                         $parentId = $contactWebserviceId;
                     }
                 }
-                $groupConditionsBy = $request->get('groupConditions');
-                if (empty($groupConditionsBy)) {
-                    $groupConditionsBy = 'AND';
-                }
                 $countSql = sprintf('SELECT count(*) FROM %s', $module);
 
-                if (!empty($fieldsArray)) {
-                    $countSql = sprintf('SELECT count(*) FROM %s WHERE ', $module);
-                    foreach ($fieldsArray as $key => $value) {
-                        $countSql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
-                    }
-                    $countSql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $countSql);
+                if (!empty($filterConditions)) {
+                    $countSql = sprintf('SELECT count(*) FROM %s WHERE %s', $module, $filterConditions);
                 }
                 $moduleLabel = CustomerPortal_Utils::getRelatedModuleLabel($module);
                 $countResult = vtws_query_related($countSql, $parentId, $moduleLabel, $current_user);
@@ -96,12 +84,8 @@ class CustomerPortal_ExportRecords extends CustomerPortal_API_Abstract
             $records = [];
 
             for ($i = 0; $i < $loopCount; $i++) {
-                if (!empty($fieldsArray)) {
-                    $sql = sprintf('SELECT %s FROM %s WHERE ', $fields, $module);
-                    foreach ($fieldsArray as $key => $value) {
-                        $sql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
-                    }
-                    $sql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $sql);
+                if (!empty($filterConditions)) {
+                    $sql = sprintf('SELECT %s FROM %s WHERE %s', $fields, $module, $filterConditions);
                 } else {
                     $sql = sprintf('SELECT %s FROM %s', $fields, $module);
                 }
