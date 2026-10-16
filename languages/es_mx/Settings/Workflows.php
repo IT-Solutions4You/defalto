@@ -17,6 +17,29 @@
  */
 
 $languageStrings = [
+    'Share with' => 'Compartir con',
+    'Do not share with' => 'No compartir con',
+    'LBL_AddSharing' => 'Compartir con',
+    'LBL_RemoveSharing' => 'No compartir con',
+    'LBL_HAS_BEEN_SET_OR_CHANGED_TO' => 'Se ha establecido o cambiado a',
+    'LBL_HAS_BEEN_SET_OR_CHANGED_FROM' => 'Se ha establecido o cambiado desde',
+    'LBL_HAS_BEEN_SET_OR_CHANGED' => 'Se ha establecido o cambiado',
+    'LBL_MOVE_TO_RECYCLEBIN' => 'Mover a la papelera',
+    'LBL_TRASH_TASK_MODE' => 'Modo de eliminación',
+    'LBL_TRASH_TASK_PERMANENT' => 'Eliminar permanentemente',
+    'LBL_TRASH_TASK_PERMANENT_DESCRIPTION' => 'La eliminación permanente quita el registro de la papelera después de que finalicen los controladores de eliminación normales. El registro no se puede restaurar.',
+    'LBL_TRASH_TASK_DESCRIPTION' => 'Procesa el registro de origen mediante la cola de flujo de trabajo estándar con el modo de eliminación seleccionado.',
+    'LBL_WORKFLOW_CREATOR' => 'Creado por',
+    'LBL_WORKFLOW_CREATED_TIME' => 'Fecha de creación',
+    'LBL_INVALID_WORKFLOW_CONDITIONS' => 'Las condiciones del flujo de trabajo no son válidas.',
+    // Extended workflow action labels
+    'Create Calendar Record' => 'Crear registro de calendario',
+    'Send Email from EMAIL Maker' => 'Enviar correo desde EMAIL Maker',
+    'Make record readonly' => 'Convertir el registro en solo lectura',
+    'LBL_VTTrashTask' => 'Mover a la papelera',
+    'LBL_VTCalendarTask' => 'Crear registro de calendario',
+    'LBL_VTEMAILMakerMailTask' => 'Enviar correo desde EMAIL Maker',
+    'LBL_VTReadonly' => 'Convertir el registro en solo lectura',
     'LBL_NEW'                                    => 'Nuevo',
     'LBL_WORKFLOW'                               => 'Flujo de trabajo',
     'LBL_CREATING_WORKFLOW'                      => 'Creando flujo de trabajo',
@@ -174,7 +197,7 @@ $languageStrings = [
     'has changed to'            => 'ha cambiado a %s',
     'has changed from'          => 'ha cambiado a un valor diferente de %s',
     'before'                    => 'antes de %s',
-    'after'                     => 'después',
+    'after'                     => 'después de %s',
     'is today'                  => 'es hoy',
     'is tomorrow'               => 'es mañana',
     'is yesterday'              => 'fue ayer',
@@ -200,6 +223,13 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'AddSharing' => 'Compartir con',
+    'RemoveSharing' => 'No compartir con',
+    'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Esta condición no se admite cuando el flujo de trabajo se ejecuta solo al crear el registro. Seleccione «Se ha establecido o cambiado» u otra condición compatible.',
+    'VTTrashTask' => 'Mover a la papelera',
+    'VTCalendarTask' => 'Crear registro de calendario',
+    'VTEMAILMakerMailTask' => 'Enviar correo desde EMAIL Maker',
+    'VTReadonly' => 'Convertir el registro en solo lectura',
     'JS_STATUS_CHANGED_SUCCESSFULLY'         => 'El estatus cambió exitosamente',
     'JS_TASK_DELETED_SUCCESSFULLY'           => 'Acción eliminada exitosamente',
     'JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE' => 'Los mismos campos han sido seleccionados más de una vez',
