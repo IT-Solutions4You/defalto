@@ -55,7 +55,7 @@
                 </div>
             </div>
         {/foreach}
-        {include file="FieldExpressions.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
+        {include file="FieldExpressions.tpl"|@vtemplate_path:$QUALIFIED_MODULE ENABLE_TEMPLATE_VARIABLES=true}
     </div>
     <br>
     <div class="row my-3 basicAddFieldContainer hide">

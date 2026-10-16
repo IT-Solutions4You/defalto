@@ -50,6 +50,7 @@ class Settings_Workflows_CreateEntity_View extends Settings_Vtiger_Index_View
 
         $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
         $viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
+        $viewer->assign('ALL_FIELD_OPTIONS', $recordStructureInstance->getHtmlOptions($recordStructureInstance->getAllFields()));
 
         $relatedModule = $request->get('relatedModule');
         $relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);

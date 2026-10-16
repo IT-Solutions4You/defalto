@@ -1,3 +1,8 @@
+# Summary widgets
+
+- `SummaryViewWidget.tpl` translates a widget label in the module named by the widget's `linkName`; widgets without a related-module owner fall back to the current record module. Keep the heading and the add-action label on this same translation boundary so related widgets such as Appointments are not rendered with their technical labels.
+- `SummaryViewWidgets.tpl` treats a missing or empty `DETAILVIEWWIDGET` link group as a valid empty summary layout. Guard the collection before iterating because `getDetailViewLinks()` does not guarantee a key for link types without available links.
+
 # Shared image validation
 
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades. They delegate statically to `Core_ImageValidation_Helper`; keep validation logic out of this legacy utility.

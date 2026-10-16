@@ -141,6 +141,17 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             var conditionRow = fieldValueElement.closest('.conditionRow');
 
             var clonedPopupUi = conditionsContainer.find('.popupUi').clone(true, true).removeClass('hide').removeClass('popupUi').addClass('clonedPopupUi');
+            if (conditionsContainer.hasClass('templateVariablesEnabled') || clonedPopupUi.hasClass('templateVariablesEnabled')) {
+                clonedPopupUi.addClass('templateVariablesEnabled');
+            }
+
+            if (conditionsContainer.hasClass('rawTextTemplateOnly') || clonedPopupUi.hasClass('rawTextTemplateOnly')) {
+                valueType = 'rawtext';
+                clonedPopupUi.addClass('rawTextTemplateOnly');
+                clonedPopupUi.find('.textType option:not([value="rawtext"])').remove();
+                clonedPopupUi.find('.textType').val(valueType);
+            }
+
             clonedPopupUi.find('select').addClass('select2');
             clonedPopupUi.find('.fieldValue').val(fieldValue);
             clonedPopupUi.find('.fieldValue').removeClass('hide');
@@ -242,21 +253,34 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     },
 
     registerSelectOptionEvent: function (data) {
-        jQuery('.useField,.useFunction', data).on('change', function (e) {
-            var currentElement = jQuery(e.currentTarget);
-            var newValue = currentElement.val();
-            var oldValue = data.find('.fieldValue').filter(':visible').val();
-            var textType = currentElement.closest('.clonedPopupUi').find('select.textType').val();
-            if (currentElement.hasClass('useField')) {
+        const thisInstance = this;
+
+        jQuery('.useField,.useFunction,.useTemplateVariable', data).on('change', function (e) {
+            const currentElement = jQuery(e.currentTarget),
+                newValue = currentElement.val(),
+                oldValue = data.find('.fieldValue').filter(':visible').val(),
+                textType = currentElement.closest('.clonedPopupUi').find('select.textType').val();
+            let concatenatedValue;
+
+            if (!newValue) {
+                return;
+            }
+
+            if (currentElement.hasClass('useTemplateVariable')) {
+                const templateVariable = thisInstance.normalizeTemplateVariables(newValue);
+
+                concatenatedValue = oldValue + templateVariable;
+            } else if (currentElement.hasClass('useField')) {
                 //If it is fieldname mode then we need to allow only one field
                 if (oldValue != '' && textType != 'fieldname') {
-                    var concatenatedValue = oldValue + ' ' + newValue;
+                    concatenatedValue = oldValue + ' ' + newValue;
                 } else {
                     concatenatedValue = newValue;
                 }
             } else {
                 concatenatedValue = oldValue + newValue;
             }
+
             data.find('.fieldValue').val(concatenatedValue);
             currentElement.val('').select2("val", '');
         });
@@ -265,9 +289,11 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         jQuery('.textType', data).on('change', function (e) {
             let valueType = jQuery(e.currentTarget).val();
             valueType = app.helper.purifyContent(valueType);
-            const useFieldContainer = jQuery('.useFieldContainer', data);
-            const useFunctionContainer = jQuery('.useFunctionContainer', data);
-            const uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
+            const useFieldContainer = jQuery('.useFieldContainer', data),
+                useFunctionContainer = jQuery('.useFunctionContainer', data),
+                useTemplateVariableContainer = jQuery('.useTemplateVariableContainer', data),
+                templateVariablesEnabled = data.hasClass('templateVariablesEnabled') || data.find('.templateVariablesEnabled').length > 0,
+                uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
             jQuery('.fieldValue', data).hide();
             jQuery('[data-' + uiType + ']', data).show();
 
@@ -282,12 +308,21 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
                 useFunctionContainer.addClass('hide');
             }
 
+            if (valueType === 'rawtext' && templateVariablesEnabled) {
+                useTemplateVariableContainer.removeClass('hide');
+            } else {
+                useTemplateVariableContainer.addClass('hide');
+            }
+
             jQuery('.helpmessagebox', data).addClass('hide');
             jQuery('#' + valueType + '_help', data).removeClass('hide');
             data.find('.fieldValue').val('');
         });
     },
     postShowModalAction: function (data, valueType) {
+        const useTemplateVariableContainer = jQuery('.useTemplateVariableContainer', data),
+            templateVariablesEnabled = data.hasClass('templateVariablesEnabled') || data.find('.templateVariablesEnabled').length > 0;
+
         if (valueType == 'fieldname') {
             jQuery('.useFieldContainer', data).removeClass('hide');
             jQuery('.textType', data).val(valueType).trigger('change');
@@ -295,6 +330,12 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             jQuery('.useFieldContainer', data).removeClass('hide');
             jQuery('.useFunctionContainer', data).removeClass('hide');
             jQuery('.textType', data).val(valueType).trigger('change');
+        }
+
+        if (valueType === 'rawtext' && templateVariablesEnabled) {
+            useTemplateVariableContainer.removeClass('hide');
+        } else {
+            useTemplateVariableContainer.addClass('hide');
         }
         jQuery('#' + valueType + '_help', data).removeClass('hide');
         var uiType = jQuery('.textType', data).find('option:selected').data('ui');
@@ -570,6 +611,9 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     VTCreateEntityTaskCustomValidation: function () {
         return this.checkDuplicateFieldsSelected();
     },
+    VTCalendarTaskCustomValidation: function () {
+        return this.checkDuplicateFieldsSelected();
+    },
     VTCreateEventTaskCustomValidation: function () {
         return this.checkStartAndEndDate();
     },
@@ -594,17 +638,16 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         return result;
     },
     checkDuplicateFieldsSelected: function () {
-        var selectedFieldNames = jQuery('#save_fieldvaluemapping').find('.conditionRow').find('[name="fieldname"]');
-        var result = true;
-        var failureMessage = app.vtranslate('JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE');
+        const selectedFieldNames = jQuery('#save_fieldvaluemapping').find('.conditionRow').find('[name="fieldname"]'),
+            failureMessage = app.vtranslate('JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE');
+        let result = true;
+
         jQuery.each(selectedFieldNames, function (i, ele) {
-            var fieldName = jQuery(ele).attr("value");
-            var taskType = jQuery('#taskType').val();
-            if (taskType == "VTUpdateFieldsTask") {
-                var fields = jQuery('[data-workflow_columnname="' + fieldName + '"]').not(':hidden');
-            } else {
-                var fields = jQuery('[name="' + fieldName + '"]').not(':hidden');
-            }
+            const fieldName = jQuery(ele).val(),
+                fields = selectedFieldNames.filter(function () {
+                    return jQuery(this).val() === fieldName;
+                });
+
             if (fields.length > 1) {
                 result = failureMessage;
                 return false;
@@ -618,6 +661,11 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     },
     preSaveVTCreateEntityTask: function (tasktype) {
         var values = this.getValues(tasktype);
+        jQuery('[name="field_value_mapping"]').val(JSON.stringify(values));
+    },
+    preSaveVTCalendarTask: function (tasktype) {
+        const values = this.getValues(tasktype);
+
         jQuery('[name="field_value_mapping"]').val(JSON.stringify(values));
     },
     preSaveVTEmailTask: function (tasktype) {
@@ -641,6 +689,9 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         return new Array('fieldname', 'value', 'valuetype', 'modulename');
     },
     getVTUpdateFieldsTaskFieldList: function () {
+        return new Array('fieldname', 'value', 'valuetype');
+    },
+    getVTCalendarTaskFieldList: function () {
         return new Array('fieldname', 'value', 'valuetype');
     },
     getValues: function (tasktype) {
@@ -805,28 +856,50 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         })
     },
     registerFillTaskFieldsEvent: function () {
+        const thisInstance = this;
+
         jQuery('#saveTask').on('change', '.task-fields', function (e) {
-            var currentElement = jQuery(e.currentTarget);
-            var inputElement = currentElement.closest('.row').find('.fields');
+            const currentElement = jQuery(e.currentTarget),
+                inputElement = currentElement.closest('.row').find('.fields'),
+                selectedValue = thisInstance.normalizeTemplateVariables(currentElement.val());
+
             if (currentElement.hasClass('overwriteSelection')) {
-                inputElement.val(currentElement.val());
+                inputElement.val(selectedValue);
             } else {
-                var oldValue = inputElement.val();
-                var newValue = oldValue + currentElement.val();
+                const oldValue = inputElement.val(),
+                    newValue = oldValue + selectedValue;
+
                 inputElement.val(newValue);
             }
         });
     },
     registerFillMailContentEvent: function () {
+        const thisInstance = this;
+
         jQuery('#task-fieldnames,#task_timefields,#task-templates,#task-emailtemplates').change(function (e) {
-            var textarea = CKEDITOR.instances.content;
-            var value = jQuery(e.currentTarget).val();
+            const textarea = CKEDITOR.instances.content,
+                currentElement = jQuery(e.currentTarget);
+            let value = currentElement.val();
+
+            if (currentElement.is('#task-fieldnames,#task_timefields')) {
+                value = thisInstance.normalizeTemplateVariables(value);
+            }
+
             if (textarea != undefined) {
                 textarea.insertHtml(value);
             } else if (jQuery('textarea[name="content"]')) {
                 var textArea = jQuery('textarea[name="content"]');
                 textArea.insertAtCaret(value);
             }
+        });
+    },
+    normalizeTemplateVariables: function (value) {
+        if (typeof value !== 'string') {
+            return value;
+        }
+
+        return value.replace(/\$(\w+|\(\w+ : \([_\w]+\) \w+\))(?=[^$\w]|$)/g, function (variable) {
+            return variable + '$';
         });
     },
     registerVTEmailTaskEvents: function () {
@@ -843,6 +916,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         this.registerAddFieldEvent();
         this.registerDeleteConditionEvent();
         this.registerFieldChange();
+        this.registerTemplateModalEvent();
         this.fieldValueMap = false;
         if (jQuery('#fieldValueMapping').val() != '') {
             this.fieldValueReMapping();
@@ -852,6 +926,31 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             thisInstance.loadFieldSpecificUi(jQuery(field));
         });
         this.getPopUp(jQuery('#saveTask'));
+    },
+    registerVTCalendarTaskEvents: function () {
+        this.registerVTUpdateFieldsTaskEvents();
+    },
+    registerTemplateModalEvent: function () {
+        jQuery('#saveTask').off('click.workflowTemplateModal').on('click.workflowTemplateModal', '.templateModalTrigger', function (event) {
+            const templateButton = jQuery(event.currentTarget),
+                fieldUiHolder = templateButton.closest('.fieldUiHolder'),
+                valueElement = fieldUiHolder.find('[data-value="value"]').first(),
+                storedValueType = templateButton.data('template-value-type');
+            let value = storedValueType === 'rawtext' ? valueElement.val() : templateButton.data('template-value');
+
+            if (Array.isArray(value)) {
+                value = value.join(',');
+            }
+
+            const templateInput = jQuery('<input type="text" class="getPopupUi inputElement form-control" name="value" data-value="value" readonly>')
+                .val(value || '')
+                .data('picklistvalues', {});
+
+            fieldUiHolder.empty()
+                .append(templateInput)
+                .append(jQuery('<input type="hidden" name="valuetype">').val(storedValueType || 'rawtext'));
+            templateInput.trigger('click');
+        });
     },
     registerVTPushNotificationTaskEvents: function () {
         this.registerFillMailContentEvent();
@@ -982,6 +1081,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         }
 
         fieldUiHolder.html(fieldSpecificUi);
+        this.addTemplateModalTrigger(fieldUiHolder, fieldInfo, taskType);
 
         if (fieldInfo.type === 'picklist' || fieldInfo.type === 'multipicklist') {
             const editablePicklistValues = Object.values(fieldInfo.editablepicklistvalues);
@@ -1024,6 +1124,21 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
             }
         }
         return this;
+    },
+    addTemplateModalTrigger: function (fieldUiHolder, fieldInfo, taskType) {
+        const templateTaskTypes = ['VTUpdateFieldsTask', 'VTCreateEntityTask', 'VTCalendarTask'];
+
+        if (!templateTaskTypes.includes(taskType) || fieldUiHolder.find('.getPopupUi').length) {
+            return;
+        }
+
+        const templateButton = jQuery('<button type="button" class="btn btn-outline-secondary templateModalTrigger mt-2"><i class="fa fa-pencil"></i></button>');
+
+        templateButton
+            .attr('title', app.vtranslate('LBL_SET_VALUE'))
+            .data('template-value', fieldInfo.value || '')
+            .data('template-value-type', fieldInfo.workflow_valuetype || 'rawtext');
+        fieldUiHolder.append(templateButton);
     },
     /**
      * Functiont to get the field specific ui for the selected field
