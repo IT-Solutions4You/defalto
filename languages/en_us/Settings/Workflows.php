@@ -18,6 +18,18 @@
  */
 
 $languageStrings = [
+    'Share with' => 'Share with',
+    'Do not share with' => 'Do not share with',
+    'LBL_AddSharing' => 'Share with',
+    'LBL_RemoveSharing' => 'Do not share with',
+    // Extended workflow action labels
+    'Create Calendar Record' => 'Create Calendar Record',
+    'Send Email from EMAIL Maker' => 'Send Email from EMAIL Maker',
+    'Make record readonly' => 'Make Record Read-only',
+    'LBL_VTTrashTask' => 'Move to Recycle Bin',
+    'LBL_VTCalendarTask' => 'Create Calendar Record',
+    'LBL_VTEMAILMakerMailTask' => 'Send Email from EMAIL Maker',
+    'LBL_VTReadonly' => 'Make Record Read-only',
     'LBL_HAS_BEEN_SET_OR_CHANGED_TO' => 'Has been set or changed to',
     'LBL_HAS_BEEN_SET_OR_CHANGED_FROM' => 'Has been set or changed from',
     'LBL_HAS_BEEN_SET_OR_CHANGED' => 'Has been set or changed',
@@ -215,6 +227,11 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'AddSharing' => 'Share with',
+    'RemoveSharing' => 'Do not share with',
+    'VTCalendarTask' => 'Create Calendar Record',
+    'VTEMAILMakerMailTask' => 'Send Email from EMAIL Maker',
+    'VTReadonly' => 'Make Record Read-only',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'This condition is not supported when the workflow runs only on creation. Select Has been set or changed, or another supported condition.',
     'VTTrashTask' => 'Move to Recycle Bin',
     'JS_STATUS_CHANGED_SUCCESSFULLY' => 'Status changed Successfully',
