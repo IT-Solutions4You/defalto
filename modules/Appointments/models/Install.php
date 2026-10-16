@@ -414,31 +414,6 @@ class Appointments_Install_Model extends Core_Install_Model
     }
 
     /**
-     * @throws Exception
-     */
-    public function install()
-    {
-        require_once 'include/utils/utils.php';
-        require_once 'vtlib/Vtiger/Module.php';
-        require_once 'vtlib/Vtiger/Cron.php';
-        require_once 'modules/ModComments/ModComments.php';
-        require_once 'modules/ModTracker/ModTracker.php';
-
-        switch ($this->eventType) {
-            case 'module.postinstall':
-            case 'module.enabled':
-            case 'module.postupdate':
-                $this->addCustomLinks();
-                break;
-            case 'module.disabled':
-            case 'module.preuninstall':
-            case 'module.preupdate':
-                $this->deleteCustomLinks();
-                break;
-        }
-    }
-
-    /**
      * @return void
      */
     protected function installFields()

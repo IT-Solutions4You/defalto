@@ -25,6 +25,7 @@ class VTCalendarTask extends VTTask
     public string $end_time = '';
     public $entityData;
     public $executeImmediately = true;
+    public string $field_value_mapping = '';
     public array $fieldNames = [
         'subject',
         'description',
@@ -40,6 +41,7 @@ class VTCalendarTask extends VTTask
         'end_field',
         'end_direction',
         'is_all_day',
+        'field_value_mapping',
     ];
     public array $ignoredFieldNames = [
         'subject',
@@ -74,12 +76,15 @@ class VTCalendarTask extends VTTask
      */
     public function doTask($entityData): string
     {
+        global $current_user, $default_timezone;
+
         $this->entityData = $entityData;
         [$tabId, $recordId] = explode('x', $this->entityData->getId());
+        $entityCache = new VTEntityCache($this->entityData->user ?? $current_user);
 
         $recordModel = Vtiger_Record_Model::getCleanInstance($this->moduleName);
-        $recordModel->set('subject', $this->subject);
-        $recordModel->set('description', $this->description);
+        $recordModel->set('subject', $this->renderTemplateValue($this->subject, $entityCache));
+        $recordModel->set('description', $this->renderTemplateValue($this->description, $entityCache));
         $recordModel->set('calendar_status', $this->calendar_status);
         $recordModel->set('calendar_type', $this->calendar_type);
         $recordModel->set('assigned_to_user', $this->getAssignedTo());
@@ -88,7 +93,21 @@ class VTCalendarTask extends VTTask
         $recordModel->set('is_all_day', $this->is_all_day);
 
         foreach ($this->getOtherFields() as $fieldName => $fieldModel) {
-            $recordModel->set($fieldName, $this->get($fieldName));
+            $recordModel->set($fieldName, $this->renderTemplateValue((string)$this->get($fieldName), $entityCache));
+        }
+
+        $mappableFields = $this->getMappableFields();
+
+        foreach ($this->getFieldValueMapping() as $fieldInfo) {
+            $fieldName = $fieldInfo['fieldname'] ?? '';
+            $fieldModel = $mappableFields[$fieldName] ?? null;
+
+            if (!$fieldModel) {
+                continue;
+            }
+
+            $value = $this->getMappedFieldValue($fieldInfo, $fieldModel, $entityCache, $default_timezone);
+            $recordModel->set($fieldName, $value);
         }
 
         $recordModel->set($this->getRelationField(), $recordId);
@@ -195,9 +214,115 @@ class VTCalendarTask extends VTTask
      */
     public function getFieldNames(): array
     {
-        $this->fieldNames = array_merge($this->fieldNames, $this->getOtherFieldNames());
+        $this->fieldNames = array_values(array_unique(array_merge($this->fieldNames, $this->getOtherFieldNames())));
 
         return $this->fieldNames;
+    }
+
+    public function getFieldInfo(Vtiger_Field_Model $fieldModel): array
+    {
+        return $fieldModel->getFieldInfo();
+    }
+
+    public function getFieldValueMapping(): array
+    {
+        if (empty($this->field_value_mapping)) {
+            return [];
+        }
+
+        $mapping = Zend_Json::decode($this->field_value_mapping);
+
+        return is_array($mapping) ? $mapping : [];
+    }
+
+    protected function getMappedFieldValue(
+        array $fieldInfo,
+        Vtiger_Field_Model $fieldModel,
+        VTEntityCache $entityCache,
+        string $defaultTimezone
+    ): mixed {
+        global $current_user;
+
+        $value = trim((string)($fieldInfo['value'] ?? ''));
+        $valueType = $fieldInfo['valuetype'] ?? 'rawtext';
+
+        if ($valueType === 'fieldname') {
+            $value = $this->renderTemplateValue('$' . ltrim($value, '$'), $entityCache);
+        } elseif ($valueType === 'expression') {
+            require_once 'modules/com_vtiger_workflow/expression_engine/include.inc';
+            date_default_timezone_set($current_user->time_zone);
+
+            $parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($value)));
+            $expression = $parser->expression();
+            $evaluator = new VTFieldExpressionEvaluater($expression);
+            $evaluator->fieldInstance = $fieldModel;
+            $value = $evaluator->evaluate($this->entityData);
+
+            date_default_timezone_set($defaultTimezone);
+        } else {
+            $value = $this->renderTemplateValue($value, $entityCache);
+        }
+
+        if (preg_match('/([^:]+):boolean$/', (string)$value, $matches)) {
+            $value = $matches[1] === 'true' ? '1' : '0';
+        }
+
+        if ($fieldModel->getFieldDataType() === 'multipicklist') {
+            $value = implode(' |##| ', array_map('trim', explode(',', (string)$value)));
+        }
+
+        if (in_array($fieldModel->getFieldDataType(), ['owner', 'reference'], true)) {
+            $value = $this->getReferenceValue($fieldModel, $value);
+        }
+
+        return $value;
+    }
+
+    public function getMappableFields(): array
+    {
+        $fields = [];
+
+        foreach ($this->getModuleModel()->getFields() as $field) {
+            if ($this->isMappableField($field)) {
+                $fields[$field->getName()] = $field;
+            }
+        }
+
+        return $fields;
+    }
+
+    protected function getReferenceValue(Vtiger_Field_Model $fieldModel, mixed $value): mixed
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        if (is_string($value) && preg_match('/^\d+x\d+$/', $value)) {
+            $value = vtws_getIdComponents($value)[1];
+        }
+
+        if (is_numeric($value)) {
+            return $value;
+        }
+
+        if ($fieldModel->getFieldDataType() === 'owner') {
+            $userId = getUserId_Ol($value);
+            $groupId = getGrpId($value);
+
+            return $userId ?: $groupId;
+        }
+
+        $referenceModules = $fieldModel->getReferenceList();
+
+        foreach ($referenceModules as $referenceModule) {
+            $recordId = Vtiger_Util_Helper::getRecordId($value, $referenceModule, true);
+
+            if ($recordId) {
+                return $recordId;
+            }
+        }
+
+        return '';
     }
 
     public function getModuleModel()
@@ -281,6 +406,19 @@ class VTCalendarTask extends VTTask
     public function isOtherField($field): bool
     {
         return !(in_array($field->getName(), $this->ignoredFieldNames) || !$field->isActiveField() || !$field->isEditable() || !$field->isMandatory());
+    }
+
+    public function isMappableField(Vtiger_Field_Model $field): bool
+    {
+        return !in_array($field->getName(), $this->ignoredFieldNames, true)
+            && $field->isActiveField()
+            && $field->isEditable()
+            && !$field->isMandatory();
+    }
+
+    protected function renderTemplateValue(string $value, VTEntityCache $entityCache): string
+    {
+        return (new VTSimpleTemplate($value))->render($entityCache, $this->entityData->getId());
     }
 
     public function setSourceModule($module)

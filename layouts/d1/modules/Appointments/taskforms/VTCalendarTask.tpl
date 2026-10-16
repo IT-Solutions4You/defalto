@@ -7,19 +7,25 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {$TASK_OBJECT->setSourceModule($SOURCE_MODULE)}
+{assign var=MAPPABLE_FIELDS value=$TASK_OBJECT->getMappableFields()}
 <div class="row form-group">
     <div class="col-sm-6 col-xs-6">
-        <div class="row py-2">
-            <div class="col-sm-3 col-xs-3">{vtranslate('Subject', $QUALIFIED_MODULE)}<span class="text-danger ms-2">*</span></div>
-            <div class="col-sm-9 col-xs-9">
-                <input name="subject" class="inputElement form-control" type="text" required="required" value="{$TASK_OBJECT->subject}">
+        <div class="conditionsContainer rawTextTemplateOnly">
+            <div class="row conditionRow py-2">
+                <div class="col-sm-3 col-xs-3">{vtranslate('Subject', $QUALIFIED_MODULE)}<span class="text-danger ms-2">*</span></div>
+                <div class="fieldUiHolder col-sm-9 col-xs-9">
+                    <input name="subject" class="getPopupUi inputElement form-control" type="text" readonly required="required" value="{$TASK_OBJECT->subject}">
+                    <input type="hidden" name="valuetype" value="rawtext">
+                </div>
             </div>
-        </div>
-        <div class="row py-2">
-            <div class="col-sm-3 col-xs-3">{vtranslate('Description', $QUALIFIED_MODULE)}</div>
-            <div class="col-sm-9 col-xs-9">
-                <textarea name="description" class="inputElement form-control" type="text">{$TASK_OBJECT->description}</textarea>
+            <div class="row conditionRow py-2">
+                <div class="col-sm-3 col-xs-3">{vtranslate('Description', $QUALIFIED_MODULE)}</div>
+                <div class="fieldUiHolder col-sm-9 col-xs-9">
+                    <textarea name="description" class="getPopupUi inputElement form-control" type="text" readonly>{$TASK_OBJECT->description}</textarea>
+                    <input type="hidden" name="valuetype" value="rawtext">
+                </div>
             </div>
+            {include file="FieldExpressions.tpl"|@vtemplate_path:$QUALIFIED_MODULE ENABLE_TEMPLATE_VARIABLES=true RAW_TEXT_ONLY=true}
         </div>
         <div class="row py-2">
             <div class="col-sm-3 col-xs-3">{vtranslate('Status', $QUALIFIED_MODULE)}<span class="text-danger ms-2">*</span></div>
@@ -133,6 +139,71 @@
                 <input name="is_all_day" type="checkbox"  class="inputElement form-check-input" {if '1' eq $TASK_OBJECT->is_all_day}checked{/if} value="1">
             </div>
         </div>
+    </div>
+</div>
+<div class="row py-3 border-top">
+    <div class="col-sm-9">
+        <h5>{vtranslate('LBL_ADD_FIELDS', $QUALIFIED_MODULE)}</h5>
+    </div>
+    <div class="col-sm-3 text-end">
+        <button type="button" class="btn btn-outline-secondary" id="addFieldBtn">
+            <i class="fa-solid fa-plus"></i>
+            <span class="ms-2">{vtranslate('LBL_ADD_FIELD', $QUALIFIED_MODULE)}</span>
+        </button>
+    </div>
+</div>
+<input type="hidden" id="fieldValueMapping" name="field_value_mapping" value='{Vtiger_Util_Helper::toSafeHTML($TASK_OBJECT->field_value_mapping)}'>
+<div class="conditionsContainer" id="save_fieldvaluemapping">
+    {foreach from=$TASK_OBJECT->getFieldValueMapping() item=FIELD_MAP}
+        {assign var=SELECTED_FIELD_MODEL value=$MAPPABLE_FIELDS[$FIELD_MAP['fieldname']]}
+        {if empty($SELECTED_FIELD_MODEL)}
+            {continue}
+        {/if}
+        <div class="row conditionRow my-3">
+            <div class="cursorPointer col-auto text-center">
+                <span class="btn btn-outline-secondary deleteCondition">
+                    <i class="fa fa-trash"></i>
+                </span>
+            </div>
+            <div class="col-4">
+                <select name="fieldname" class="select2 form-select" data-placeholder="{vtranslate('LBL_SELECT_FIELD', $QUALIFIED_MODULE)}">
+                    <option></option>
+                    {foreach from=$MAPPABLE_FIELDS item=FIELD_MODEL}
+                        {assign var=FIELD_INFO value=$TASK_OBJECT->getFieldInfo($FIELD_MODEL)}
+                        <option value="{$FIELD_MODEL->getName()}" {if $FIELD_MAP['fieldname'] eq $FIELD_MODEL->getName()}selected{/if} data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_MODEL->getName()}" data-fieldinfo='{Vtiger_Functions::jsonEncode($FIELD_INFO)}'>
+                            {vtranslate($FIELD_MODEL->getLabel(), $FIELD_MODEL->getModuleName())}
+                        </option>
+                    {/foreach}
+                </select>
+            </div>
+            <div class="fieldUiHolder col-4">
+                <input type="text" class="getPopupUi inputElement form-control" readonly name="fieldValue" data-display-value="{$FIELD_MAP['display-value']|escape:'html'}" value="{$FIELD_MAP['value']|escape:'html'}">
+                <input type="hidden" name="valuetype" value="{$FIELD_MAP['valuetype']}">
+            </div>
+        </div>
+    {/foreach}
+    {include file="FieldExpressions.tpl"|@vtemplate_path:$QUALIFIED_MODULE ENABLE_TEMPLATE_VARIABLES=true RAW_TEXT_ONLY=false}
+</div>
+<div class="row my-3 basicAddFieldContainer hide">
+    <div class="cursorPointer col-auto text-center">
+        <span class="btn btn-outline-secondary deleteCondition">
+            <i class="fa fa-trash"></i>
+        </span>
+    </div>
+    <div class="col-4">
+        <select name="fieldname" data-placeholder="{vtranslate('LBL_SELECT_FIELD', $QUALIFIED_MODULE)}">
+            <option></option>
+            {foreach from=$MAPPABLE_FIELDS item=FIELD_MODEL}
+                {assign var=FIELD_INFO value=$TASK_OBJECT->getFieldInfo($FIELD_MODEL)}
+                <option value="{$FIELD_MODEL->getName()}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_MODEL->getName()}" data-fieldinfo='{Vtiger_Functions::jsonEncode($FIELD_INFO)}'>
+                    {vtranslate($FIELD_MODEL->getLabel(), $FIELD_MODEL->getModuleName())}
+                </option>
+            {/foreach}
+        </select>
+    </div>
+    <div class="fieldUiHolder col-4">
+        <input type="text" class="inputElement form-control" readonly name="fieldValue" value="">
+        <input type="hidden" name="valuetype" value="rawtext">
     </div>
 </div>
 {foreach from=$TASK_OBJECT->getOtherFields() item=$FIELD_MODEL key=$FIELD_NAME}
