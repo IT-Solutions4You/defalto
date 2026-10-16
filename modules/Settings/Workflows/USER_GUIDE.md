@@ -12,4 +12,8 @@ Each condition group has its own outline, without an enclosing frame around the 
 
 Review the execution frequency and configured actions before saving. Conditions determine which records qualify; actions determine what the workflow does to those records or related records.
 
+Workflow action value editors use the same variable format. Inserted variables use PDFMaker-compatible `$field$`, while existing `$field` values remain supported. In **Update Fields**, **Create Entity**, and **Create Calendar Record**, open a mapped value to combine text with one or more source-record variables; use the pencil button when the field normally displays a select. For a direct type-preserving copy into a date, number, currency, or similar field, use the Field Name value type instead of a raw-text template. Workflow condition values remain literal comparisons and therefore do not offer template variables.
+
+The **Create Calendar Record** action supports additional standard and custom Appointments fields. Use **Add field** to select a destination field and choose fixed text, source-record variables, a source field, or an expression. The same template modal is used for Subject and Description.
+
 When reopening an existing workflow, the selected fields and comparisons should remain populated, including related-record fields. If field names appear blank after an update, reload after the application update has finished before editing or saving its conditions.

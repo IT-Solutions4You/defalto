@@ -7,6 +7,10 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
+{assign var=WIDGET_TRANSLATION_MODULE value=$DETAIL_VIEW_WIDGET->get('linkName')}
+{if empty($WIDGET_TRANSLATION_MODULE)}
+    {assign var=WIDGET_TRANSLATION_MODULE value=$MODULE_NAME}
+{/if}
 <div class="summaryWidgetContainer bg-body rounded mb-3">
     <div class="widgetContainer_{$DETAIL_VIEW_WIDGET->getId()}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}" data-sequence="{$DETAIL_VIEW_WIDGET->get('sequence')}">
         <div class="widget_header border-1 border-bottom p-3 clearfix">
@@ -14,7 +18,7 @@
             {if $DETAIL_VIEW_WIDGET->get('relatedField')}
                 <input type="hidden" name="relatedField" value="{$DETAIL_VIEW_WIDGET->get('relatedField')}"/>
             {/if}
-            <h4 class="display-inline-block pull-left">{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</h4>
+            <h4 class="display-inline-block pull-left">{vtranslate($DETAIL_VIEW_WIDGET->getLabel(), $WIDGET_TRANSLATION_MODULE)}</h4>
             {if $DETAIL_VIEW_WIDGET->get('showDetails')}
                 <div class="pull-right">
                     <button type="button" class="btn btn-sm text-secondary fw-bold" onclick="Vtiger_Detail_Js.openDetail(this);" data-detail-url="{$RECORD->getFullDetailViewUrl()}">
@@ -39,7 +43,7 @@
                         <button class="btn btn-sm text-secondary fw-bold addButton createRecord" type="button" data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}">
                             <i class="fa fa-plus"></i>
                             <span class="mx-2">{vtranslate('LBL_ADD',$MODULE_NAME)}</span>
-                            <span>{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</span>
+                            <span>{vtranslate($DETAIL_VIEW_WIDGET->getLabel(), $WIDGET_TRANSLATION_MODULE)}</span>
                         </button>
                     </div>
                 {/if}
@@ -50,7 +54,7 @@
                 <div class="widgetFilterProjectTask p-3 pb-0">
                     {assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance('ProjectTask')}
                     {assign var=PROGRESS_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField('projecttaskprogress')}
-                    {assign var=STATUS_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField('projecttaskstatus')}
+                    {assign var=STATUS_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField('projecttaskstatus')}modu
                     {if $PROGRESS_FIELD_MODEL->isViewableInDetailView()}
                         <div class="d-inline-block me-2">
                             {assign var=FIELD_INFO value=$PROGRESS_FIELD_MODEL->getFieldInfo()}

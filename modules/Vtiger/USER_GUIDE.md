@@ -1,5 +1,9 @@
 # Record actions
 
+Related-record widgets use the language of the related module for their title and add action. For example, the Appointments widget is shown with the translated Appointments label even when it appears on another module's record.
+
+When a record has no available summary widgets, the summary view shows empty widget columns without displaying an application error.
+
 Quick-preview actions apply to the displayed record, not the underlying screen. Deletion uses one confirmation and updates the source screen after success. Errors leave the preview open. See the Core user guide for the shared preview workflow.
 
 Record-header action icons show a label while the mouse is over them. The label disappears when the mouse leaves, including after clicking an action or cancelling its confirmation. The buttons also have accessible labels for assistive technology.
