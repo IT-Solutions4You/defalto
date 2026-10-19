@@ -27,7 +27,7 @@ The module is also the centre of the sales pipeline. An opportunity can be linke
 
 The standard stages describe the customer's buying process: **Prospecting**, **Qualification**, **Needs Analysis**, **Value Proposition**, **Identify Decision Makers**, **Perception Analysis**, **Proposal/Quotation**, **Negotiation/Review**, **Closed Won**, and **Closed Lost**. Your installation may contain additional or renamed picklist values.
 
-The **Probability** and **Weighted Revenue** help with forecasting. Weighted Revenue is based on the opportunity amount and probability, so keep both values current when the deal changes.
+The **Probability** and **Forecast Amount** help with forecasting. Forecast Amount is calculated automatically as the opportunity amount multiplied by its probability. It uses the opportunity's currency, so keep both the amount and probability current when the deal changes.
 
 ## Helpful tips
 
