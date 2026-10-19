@@ -4,7 +4,7 @@ Installer lets administrators browse extensions, install or update available pac
 
 ## Browse and install extensions
 
-The Modules list shows extensions published in the public download catalog. Licensed package information can unlock a catalog product, but it cannot add internal or local modules such as Tour or InventoryItem to the list. Local custom modules created with Module Builder are also not shown merely because they are installed. Catalog products such as Module Builder remain visible when their package requires a license. Each row shows the available version.
+The Modules list shows extensions published in the public download catalog. Licensed package information can unlock a catalog product, but it cannot add internal or local modules such as Tour or InventoryItem to the list. Local custom modules created with Module Builder are also not shown merely because they are installed. Catalog products such as Module Builder remain visible when their package requires a license. Each row shows the available version, while the installed version is read from the extension's base module file.
 
 - Public free extensions have an Install or Update button without requiring a license key.
 - The Install or Update button appears only for a module without an installed version or when a newer version is available. It stays hidden when the same or a newer version is already installed.

@@ -50,7 +50,7 @@ require_once 'includes/runtime/Cache.php';
  */
 class Users extends CRMEntity
 {
-    public string $moduleVersion = '1.5';
+    public string $moduleVersion = '1.6';
     public string $moduleName = 'Users';
     public int $ownedBy = 1;
     public int $isEntity = 0;
@@ -908,7 +908,9 @@ class Users extends CRMEntity
                 }
 
                 $fldvalue = from_html($fldvalue, ($insertion_mode == 'edit') ? true : false);
-                $fldvalue = $this->column_fields->getValueForSave($fieldname, $fldvalue);
+                if (method_exists($this->column_fields, 'getValueForSave')) {
+                    $fldvalue = $this->column_fields->getValueForSave($fieldname, $fldvalue);
+                }
             } else {
                 $fldvalue = '';
             }
@@ -1034,7 +1036,11 @@ class Users extends CRMEntity
 
             $fld_value = $adb->query_result($result[$tablename], 0, $fieldcolname);
             $rawFieldValue = $rawResult[$tablename][$fieldcolname] ?? null;
-            $this->column_fields->setRetrievedValue($fieldname, $fld_value, $rawFieldValue);
+            if (method_exists($this->column_fields, 'setRetrievedValue')) {
+                $this->column_fields->setRetrievedValue($fieldname, $fld_value, $rawFieldValue);
+            } else {
+                $this->column_fields[$fieldname] = $fld_value;
+            }
             $this->$fieldname = $fld_value;
         }
         $this->column_fields["record_id"] = $record;

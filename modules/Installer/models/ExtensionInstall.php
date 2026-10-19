@@ -158,11 +158,11 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             $instance->module = Vtiger_Module_Model::getInstance($module);
         }
 
-        if ($instance->module) {
-            $instance->set('version', $instance->module->get('version'));
-        }
-
         $instance->retrieveApiData();
+
+        if ($instance->module) {
+            $instance->set('version', $instance->getModuleFileVersion());
+        }
 
         return $instance;
     }
@@ -221,7 +221,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $instance = new self();
         $instance->setName($module->getName());
         $instance->module = $module;
-        $instance->set('version', $module->get('version'));
+        $instance->set('version', $instance->getModuleFileVersion());
 
         return $instance;
     }
@@ -281,6 +281,26 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
     public function getVersion(): string
     {
         return (string)$this->get('version');
+    }
+
+    public function getModuleFileVersion(): string
+    {
+        $moduleName = $this->getName();
+        self::validateModuleName($moduleName);
+        $moduleFile = 'modules/' . $moduleName . '/' . $moduleName . '.php';
+
+        if (!is_file($moduleFile)) {
+            return '';
+        }
+
+        $moduleSource = file_get_contents($moduleFile);
+
+        if (false === $moduleSource
+            || 1 !== preg_match('/\$moduleVersion\s*=\s*([\'\"])([^\'\"]+)\1\s*;/', $moduleSource, $matches)) {
+            return '';
+        }
+
+        return trim($matches[2]);
     }
 
     public function isInstallAvailable(): bool
@@ -448,7 +468,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             $module = $this->finalizeInstalledModule();
             $download->commit();
             $this->module = $module;
-            $this->set('version', $module->get('version'));
+            $this->set('version', $this->getModuleFileVersion());
 
             return $module;
         } catch (Throwable $throwable) {
@@ -562,7 +582,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         }
 
         $expectedVersion = $this->getUpdateVersion();
-        $installedVersion = (string)$module->get('version');
+        $installedVersion = $this->getModuleFileVersion();
 
         if ($expectedVersion !== '' && version_compare($installedVersion, $expectedVersion, '!=')) {
             throw new RuntimeException(
