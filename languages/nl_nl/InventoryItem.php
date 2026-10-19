@@ -34,6 +34,12 @@ $languageStrings = [
     'Unit' => 'Eenheid',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
+    'LBL_CONTINUE' => 'Doorgaan',
+    'LBL_CONVERSION_TITLE' => '%s aanmaken - items controleren',
+    'LBL_CONVERSION_DESCRIPTION' => 'Items van %2$s %1$s. Wijzig de hoeveelheid of de prijs, of verwijder items die niet gekopieerd moeten worden. Prijzen worden getoond in de valuta van het bronrecord.',
+    'LBL_CONVERSION_INVALID_ITEM' => 'Het item hoort niet bij het bronrecord.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Hoeveelheid en prijs moeten getallen zijn.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Er moet minstens één item overblijven.',
 ];
 
 $jsLanguageStrings = [

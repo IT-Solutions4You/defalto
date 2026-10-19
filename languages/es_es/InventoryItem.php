@@ -34,6 +34,12 @@ $languageStrings = [
     'Unit' => 'Unidad',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Secuencia',
+    'LBL_CONTINUE' => 'Continuar',
+    'LBL_CONVERSION_TITLE' => 'Crear %s - revisar artículos',
+    'LBL_CONVERSION_DESCRIPTION' => 'Artículos de %2$s %1$s. Cambie la cantidad o el precio, o elimine los artículos que no deban copiarse. Los precios se muestran en la moneda del registro de origen.',
+    'LBL_CONVERSION_INVALID_ITEM' => 'El artículo no pertenece al registro de origen.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'La cantidad y el precio deben ser números.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Debe quedar al menos un artículo.',
 ];
 
 $jsLanguageStrings = [

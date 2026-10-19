@@ -48,6 +48,12 @@ $languageStrings = [
     'Price Book' => 'Price Book',
     'LBL_MARGIN_PCT' => 'Margin %',
     'LBL_MARGIN_AMOUNT' => 'Margin Amount',
+    'LBL_CONTINUE' => 'Weiter',
+    'LBL_CONVERSION_TITLE' => '%s erstellen - Positionen prüfen',
+    'LBL_CONVERSION_DESCRIPTION' => 'Positionen von %2$s %1$s. Ändern Sie Menge oder Preis oder entfernen Sie Positionen, die nicht kopiert werden sollen. Die Preise werden in der Währung des Quelldatensatzes angezeigt.',
+    'LBL_CONVERSION_INVALID_ITEM' => 'Die Position gehört nicht zum Quelldatensatz.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Menge und Preis müssen Zahlen sein.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Mindestens eine Position muss erhalten bleiben.',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Fehler beim Speichern der Produktzeile',
