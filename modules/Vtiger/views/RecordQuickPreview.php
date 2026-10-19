@@ -55,6 +55,8 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStrucure->getStructure());
+        $viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
+        $viewer->assign('REQUEST_INSTANCE', $request);
         $viewer->assign('$SOCIAL_ENABLED', false);
         $viewer->assign('LIST_PREVIEW', true);
         $pageNumber = 1;

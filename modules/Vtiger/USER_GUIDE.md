@@ -6,6 +6,8 @@ When a record has no available summary widgets, the summary view shows empty wid
 
 Quick-preview actions apply to the displayed record, not the underlying screen. Deletion uses one confirmation and updates the source screen after success. Errors leave the preview open. See the Core user guide for the shared preview workflow.
 
+Editable fields in the quick-preview header show the same edit controls as the record detail header. Use the pencil, checkbox switch, or Assigned To selector to update the displayed record without leaving the list. Read-only fields and fields without edit permission remain unchanged.
+
 Record-header action icons show a label while the mouse is over them. The label disappears when the mouse leaves, including after clicking an action or cancelling its confirmation. The buttons also have accessible labels for assistive technology.
 
 # Dropdown fields
