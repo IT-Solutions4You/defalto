@@ -30,7 +30,7 @@
  */
 class Quotes extends CRMEntity
 {
-    public string $moduleVersion = '1.1';
+    public string $moduleVersion = '1.2';
     public string $moduleName = 'Quotes';
     public string $parentName = 'SALES';
 

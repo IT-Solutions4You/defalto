@@ -55,6 +55,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
         $this->updateHistory();
         $this->updateComments();
         $this->registerModifiers();
+        $this->registerConversions();
     }
 
     public function deleteCustomLinks(): void
@@ -627,6 +628,15 @@ class InventoryItem_Install_Model extends Core_Install_Model
         foreach ($this->defaultSupportedModules as $moduleName) {
             InventoryItem_Utils_Helper::registerInventoryModule($moduleName);
         }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    protected function registerConversions(): void
+    {
+        InventoryItem_Conversion_Model::registerDefaultConversions();
     }
 
     /**

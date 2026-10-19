@@ -55,6 +55,12 @@ $languageStrings = [
     'Parent' => 'Nadradený záznam',
     'Discount Type' => 'Typ zľavy',
     'Price Book' => 'Cenník',
+    'LBL_CONTINUE' => 'Pokračovať',
+    'LBL_CONVERSION_TITLE' => 'Vytvoriť %s - kontrola položiek',
+    'LBL_CONVERSION_DESCRIPTION' => 'Položky záznamu %2$s %1$s. Upravte množstvo alebo cenu, prípadne odstráňte položky, ktoré sa nemajú skopírovať. Ceny sú v mene zdrojového záznamu.',
+    'LBL_CONVERSION_INVALID_ITEM' => 'Položka nepatrí k zdrojovému záznamu.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Množstvo a cena musia byť čísla.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Musí zostať aspoň jedna položka.',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Chyba pri ukladaní položky',

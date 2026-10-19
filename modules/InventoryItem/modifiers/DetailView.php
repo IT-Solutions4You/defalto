@@ -139,6 +139,7 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
             'modules.InventoryItem.resources.InventoryItemDetail',
             'modules.Vtiger.resources.Popup',
             'modules.InventoryItem.resources.ItemsPopup',
+            'modules.InventoryItem.resources.Conversion',
         ];
         $jsFileNames = array_merge($jsFileNames, $myJsFileNames);
     }

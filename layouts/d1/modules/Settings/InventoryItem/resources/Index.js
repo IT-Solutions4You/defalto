@@ -13,6 +13,8 @@ Settings_Vtiger_Index_Js("Settings_InventoryItem_Index_Js", {}, {
         this._super();
         this.makeColumnListSortable();
         this.registerModuleChange();
+        this.registerConversionsSave();
+        this.registerConversionMapping();
     },
 
     makeColumnListSortable: function () {
@@ -37,6 +39,103 @@ Settings_Vtiger_Index_Js("Settings_InventoryItem_Index_Js", {}, {
 
         moduleElement.on('change', function () {
             window.location.href = 'index.php?module=InventoryItem&parent=Settings&view=Index&selectedModule=' + moduleElement.val();
+        });
+    },
+
+    registerConversionMapping: function () {
+        const self = this;
+
+        jQuery('#conversionsForm').on('click', '.editConversionMapping', function (e) {
+            const params = {
+                module: 'InventoryItem',
+                parent: 'Settings',
+                view: 'ConversionMapping',
+                conversion: jQuery(e.currentTarget).data('conversionId')
+            };
+
+            app.helper.showProgress();
+            app.request.post({data: params}).then(function (error, data) {
+                app.helper.hideProgress();
+
+                if (error) {
+                    app.helper.showErrorNotification({message: error.message});
+
+                    return;
+                }
+
+                app.helper.showModal(data, {
+                    cb: function (modal) {
+                        self.registerConversionMappingEvents(modal);
+                    }
+                });
+            });
+        });
+    },
+
+    registerConversionMappingEvents: function (modal) {
+        const form = jQuery('#conversionMappingForm', modal),
+            rows = jQuery('.conversionMappingRows', form);
+
+        form.on('click', '.addConversionMappingRow', function () {
+            rows.append(jQuery('.conversionMappingRowTemplate', form).html());
+        });
+
+        form.on('click', '.removeConversionMappingRow', function (e) {
+            jQuery(e.currentTarget).closest('tr').remove();
+        });
+
+        form.on('submit', function (e) {
+            e.preventDefault();
+
+            const data = {
+                module: 'InventoryItem',
+                parent: 'Settings',
+                action: 'ConversionMappingSave',
+                conversion: jQuery('input[name="conversion"]', form).val(),
+                rows: []
+            };
+
+            jQuery('.conversionMappingRow', rows).each(function (index, row) {
+                const target = jQuery('.conversionMappingTarget', row).val();
+
+                if (target) {
+                    data.rows.push({target: target, source: jQuery('.conversionMappingSource', row).val()});
+                }
+            });
+
+            app.helper.showProgress();
+            app.request.post({data: data}).then(function (error) {
+                app.helper.hideProgress();
+
+                if (error) {
+                    app.helper.showErrorNotification({message: error.message});
+
+                    return;
+                }
+
+                app.helper.hideModal();
+                app.helper.showSuccessNotification({message: app.vtranslate('JS_CONVERSIONS_SAVED')});
+            });
+        });
+    },
+
+    registerConversionsSave: function () {
+        const form = jQuery('#conversionsForm');
+
+        form.on('submit', function (e) {
+            e.preventDefault();
+            app.helper.showProgress();
+            app.request.post({data: form.serializeFormData()}).then(function (error) {
+                app.helper.hideProgress();
+
+                if (error) {
+                    app.helper.showErrorNotification({message: error.message});
+
+                    return;
+                }
+
+                app.helper.showSuccessNotification({message: app.vtranslate('JS_CONVERSIONS_SAVED')});
+            });
         });
     },
 });

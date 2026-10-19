@@ -45,10 +45,11 @@ class Core_Base_Mapping extends Vtiger_Base_Model
     }
 
     /**
-     * Executes mapping in three steps:
+     * Executes mapping in four steps:
      * 1. Set all fields with the same name in both modules
      * 2. Try to find the relational field based on vtiger_fieldmodulerel table (uitype 10)
      * 3. Set fields based on the static::$mapping array
+     * 4. Set fields based on the mapping configured by an administrator for the conversion, which also decides about the fields it excludes from copying
      * In all cases checks the static::$excludedFields
      *
      * @return void
@@ -58,9 +59,10 @@ class Core_Base_Mapping extends Vtiger_Base_Model
         $entity = $this->sourceRecordModel->getEntity();
         $fieldNames = $entity->column_fields->getColumnFieldNames();
         $targetFieldNames = $this->recordModel->getEntity()->column_fields->getColumnFieldNames();
+        $configuredMapping = $this->getConfiguredMapping();
 
         foreach ($fieldNames as $fieldName) {
-            if (in_array($fieldName, static::$excludedFields) || !in_array($fieldName, $targetFieldNames)) {
+            if (in_array($fieldName, static::$excludedFields) || !in_array($fieldName, $targetFieldNames) || isset($configuredMapping[$fieldName])) {
                 continue;
             }
 
@@ -74,17 +76,36 @@ class Core_Base_Mapping extends Vtiger_Base_Model
         if ($db->num_rows($res)) {
             $row = $db->fetchByAssoc($res);
 
-            if (!in_array($row['fieldname'], static::$excludedFields)) {
+            if (!in_array($row['fieldname'], static::$excludedFields) && !isset($configuredMapping[$row['fieldname']])) {
                 $this->recordModel->set($row['fieldname'], $this->sourceRecordModel->getId());
             }
         }
 
         foreach (static::$mapping as $targetFieldName => $sourceFieldName) {
-            if (in_array($targetFieldName, static::$excludedFields)) {
+            if (in_array($targetFieldName, static::$excludedFields) || isset($configuredMapping[$targetFieldName])) {
                 continue;
             }
 
             $this->recordModel->set($targetFieldName, $this->sourceRecordModel->get($sourceFieldName));
         }
+
+        foreach ($configuredMapping as $targetFieldName => $sourceFieldName) {
+            if ('' === $sourceFieldName || in_array($targetFieldName, static::$excludedFields)) {
+                continue;
+            }
+
+            $this->recordModel->set($targetFieldName, $this->sourceRecordModel->get($sourceFieldName));
+        }
+    }
+
+    /**
+     * Returns the mapping configured for the conversion of the source record to the target record.
+     *
+     * @return array [targetFieldName => sourceFieldName], an empty sourceFieldName means that the target field is not copied
+     * @throws Exception
+     */
+    protected function getConfiguredMapping(): array
+    {
+        return InventoryItem_ConversionMapping_Model::getMapping($this->sourceRecordModel->getModuleName(), $this->recordModel->getModuleName());
     }
 }

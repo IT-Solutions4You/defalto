@@ -10,4 +10,20 @@
 
 trait InventoryItem_DetailView_Trait
 {
+    /**
+     * Returns the url of the link which creates the target record from the displayed record.
+     * The url opens the item review modal when the conversion is configured so.
+     *
+     * @param string $targetModule
+     * @param string $createUrl create view url of the target record
+     *
+     * @return string|false false when the conversion action is disabled
+     * @throws Exception
+     */
+    protected function getConversionLinkUrl(string $targetModule, string $createUrl): string|false
+    {
+        $recordModel = $this->getRecord();
+
+        return InventoryItem_Conversion_Model::getLinkUrl($recordModel->getModuleName(), $targetModule, (int)$recordModel->getId(), $createUrl);
+    }
 }

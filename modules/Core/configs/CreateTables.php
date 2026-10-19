@@ -27,6 +27,8 @@ class Core_CreateTables_Config
         'Settings_Vtiger_MenuItem_Model',
         'Settings_Vtiger_Menu_Model',
         'Core_Modifiers_Model',
+        'InventoryItem_Conversion_Model',
+        'InventoryItem_ConversionMapping_Model',
         'CustomView_Record_Model',
         'Settings_LayoutEditor_RelatedListSettings_Model',
         'Settings_LayoutEditor_PopupSettings_Model',
