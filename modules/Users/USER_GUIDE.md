@@ -6,4 +6,6 @@ Open Settings and select Users to review the user list or edit an account. Chang
 
 Automated processes and server-side integrations may load and save user records. Text in unchanged fields keeps its original accented characters, punctuation, and currency symbols during those saves.
 
+User detail and preference pages remain accessible while a system update is being completed, including when the Users module files arrive before the matching shared application files.
+
 Use the signature editor for formatted email signatures. Account passwords and access keys remain managed by their dedicated security controls.
