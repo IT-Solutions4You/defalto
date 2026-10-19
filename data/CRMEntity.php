@@ -415,7 +415,9 @@ class CRMEntity extends CRMExtension
         $this->column_fields['label'] = $label;
 
         if ($this->mode == 'edit') {
-            $description_val = from_html($this->column_fields['description'], ($this->mode == 'edit') ? true : false);
+            $description = $this->column_fields['description'];
+            $description_val = from_html($description, ($this->mode == 'edit') ? true : false);
+            $description_val = $this->column_fields->getValueForSave('description', $description_val);
 
             $tabid = getTabid($module);
             $modified_date_var = $adb->formatDate($date_var, true);
@@ -855,6 +857,8 @@ class CRMEntity extends CRMExtension
                 if ($uitype != 33 && $uitype != 8) {
                     $fldvalue = from_html($fldvalue, ($insertion_mode == 'edit') ? true : false);
                 }
+
+                $fldvalue = $this->column_fields->getValueForSave($fieldname, $fldvalue);
             } else {
                 $fldvalue = '';
             }
@@ -1080,6 +1084,8 @@ class CRMEntity extends CRMExtension
                 throw new Exception($app_strings['LBL_RECORD_NOT_FOUND'], -1);
             } else {
                 $resultrow = $adb->query_result_rowdata($result);
+                $rawResultRow = $adb->raw_query_result_rowdata($result);
+
                 if (!$allowDeleted) {
                     if (!empty($resultrow['deleted'])) {
                         throw new Exception($app_strings['LBL_RECORD_DELETE'], 1);
@@ -1088,12 +1094,15 @@ class CRMEntity extends CRMExtension
 
                 foreach ($cachedModuleFields as $fieldinfo) {
                     $fieldvalue = '';
+                    $rawFieldValue = '';
                     $fieldkey = $this->createColumnAliasForField($fieldinfo);
                     //Note : value is retrieved with a tablename+fieldname as we are using alias while building query
                     if (isset($resultrow[$fieldkey])) {
                         $fieldvalue = $resultrow[$fieldkey];
+                        $rawFieldValue = $rawResultRow[$fieldkey];
                     }
-                    $this->column_fields[$fieldinfo['fieldname']] = $fieldvalue;
+
+                    $this->column_fields->setRetrievedValue($fieldinfo['fieldname'], $fieldvalue, $rawFieldValue);
                 }
 
                 $this->column_fields['label'] = !empty($resultrow['label']) ? $resultrow['label'] : Vtiger_Record_Model::generateLabel(
@@ -3184,6 +3193,8 @@ class TrackableObject implements ArrayAccess, IteratorAggregate
     private $trackingEnabled = true;
     private $tracking;
     protected $changed;
+    private array $retrievedEncodedValues = [];
+    private array $retrievedRawValues = [];
 
     function __construct($value = [])
     {
@@ -3216,11 +3227,34 @@ class TrackableObject implements ArrayAccess, IteratorAggregate
     public function offsetUnset($key): void
     {
         unset($this->storage[$key]);
+        unset($this->retrievedEncodedValues[$key], $this->retrievedRawValues[$key]);
     }
 
     public function offsetGet(mixed $key): mixed
     {
         return isset($this->storage[$key]) || array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
+    }
+
+    public function setRetrievedValue($key, $value, $rawValue): void
+    {
+        $this->offsetSet($key, $value);
+
+        if ($value !== $rawValue) {
+            $this->retrievedEncodedValues[$key] = $value;
+            $this->retrievedRawValues[$key] = $rawValue;
+        } else {
+            unset($this->retrievedEncodedValues[$key], $this->retrievedRawValues[$key]);
+        }
+    }
+
+    public function getValueForSave($key, $value)
+    {
+        if (array_key_exists($key, $this->retrievedRawValues)
+            && $this->offsetGet($key) === $this->retrievedEncodedValues[$key]) {
+            return $this->retrievedRawValues[$key];
+        }
+
+        return $value;
     }
 
     public function getIterator(): Traversable
