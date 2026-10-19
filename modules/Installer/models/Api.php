@@ -111,18 +111,15 @@ class Installer_Api_Model extends Vtiger_Net_Client
             $licensedExtensions = self::transformExtensionResponse($response);
 
             foreach ($licensedExtensions as $moduleName => $extensionInfo) {
+                if (!isset($extensions[$moduleName])) {
+                    continue;
+                }
+
                 if (!empty($extensions[$moduleName]['installer_public_download'])) {
                     continue;
                 }
 
                 if (!$license->hasExtensionEntitlement($moduleName) || !self::hasExtensionPackage($extensionInfo)) {
-                    if (!isset($extensions[$moduleName])) {
-                        $extensions[$moduleName] = [
-                            'label' => (string)($extensionInfo['label'] ?? $moduleName),
-                            'update_version' => (string)$extensionInfo['update_version'],
-                        ];
-                    }
-
                     continue;
                 }
 

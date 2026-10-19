@@ -55,7 +55,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         $extensions = [];
 
         foreach (self::getAll() as $moduleName => $extension) {
-            if ($extension->isVisibleInInstaller()) {
+            if ($extension->isAvailableInCatalog()) {
                 $extensions[$moduleName] = $extension;
             }
         }
@@ -88,9 +88,9 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
      */
     public static function getApiInfo()
     {
-        if (2 !== ($_SESSION['Installer_ExtensionCatalogVersion'] ?? null)) {
+        if (3 !== ($_SESSION['Installer_ExtensionCatalogVersion'] ?? null)) {
             self::clearCache();
-            $_SESSION['Installer_ExtensionCatalogVersion'] = 2;
+            $_SESSION['Installer_ExtensionCatalogVersion'] = 3;
         }
 
         if (!array_key_exists('Installer_ExtensionInstall', $_SESSION)) {
@@ -358,13 +358,9 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         return is_dir('modules/' . $moduleName) || is_dir('modules/Settings/' . $moduleName);
     }
 
-    public function isVisibleInInstaller(): bool
+    public function isAvailableInCatalog(): bool
     {
-        if (!empty($this->getApiData())) {
-            return true;
-        }
-
-        return null !== $this->getModule() && !$this->isCoreModule();
+        return !empty($this->getApiData());
     }
 
     public function getDownloadLabel(): string
