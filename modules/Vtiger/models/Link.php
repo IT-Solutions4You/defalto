@@ -90,6 +90,19 @@ class Vtiger_Link_Model extends Vtiger_Link
         return $this->linklabel;
     }
 
+    public function getTranslatedLabel(string $moduleName): string
+    {
+        $label = $this->getLabel();
+        $translationModule = (string)$this->get('linkName') ?: $moduleName;
+        $translatedLabel = vtranslate($label, $translationModule);
+
+        if ($translatedLabel === $label && $translationModule !== $moduleName) {
+            return vtranslate($label, $moduleName);
+        }
+
+        return $translatedLabel;
+    }
+
     /**
      * Function to get the link type
      * @return <String>

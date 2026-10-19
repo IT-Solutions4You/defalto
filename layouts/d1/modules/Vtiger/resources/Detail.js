@@ -3281,12 +3281,13 @@ Vtiger.Class("Vtiger_Detail_Js", {
         });
     },
     loadAssignedUsers(searchElement) {
-        let params = {
-            module: app.getModuleName(),
-            view: 'DetailAjax',
-            mode: 'searchAssignedUsers',
-            search: searchElement.val()
-        };
+        let form = searchElement.closest('form'),
+            params = {
+                module: form.find('[name="module"]').val() || this.getModuleName(),
+                view: 'DetailAjax',
+                mode: 'searchAssignedUsers',
+                search: searchElement.val()
+            };
 
         app.request.post({data: params}).then(function (error, data) {
             if (!error) {
@@ -3320,9 +3321,10 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
     saveBootstrapSwitch(element) {
         let message = app.vtranslate('JS_RECORD_UPDATED'),
+            form = element.closest('form'),
             params = {
-                record: app.getRecordId(),
-                module: app.getModuleName(),
+                record: form.find('[name="record"]').val() || this.getRecordId(),
+                module: form.find('[name="module"]').val() || this.getModuleName(),
                 action: 'SaveAjax',
                 value: element.is(':checked') ? 1 : 0,
                 field: element.attr('name'),
