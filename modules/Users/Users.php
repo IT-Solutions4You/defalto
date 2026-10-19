@@ -50,7 +50,7 @@ require_once 'includes/runtime/Cache.php';
  */
 class Users extends CRMEntity
 {
-    public string $moduleVersion = '1.4';
+    public string $moduleVersion = '1.5';
     public string $moduleName = 'Users';
     public int $ownedBy = 1;
     public int $isEntity = 0;
@@ -906,7 +906,9 @@ class Users extends CRMEntity
                     $fldvalue = $this->column_fields[$fieldname];
                     $fldvalue = stripslashes($fldvalue);
                 }
+
                 $fldvalue = from_html($fldvalue, ($insertion_mode == 'edit') ? true : false);
+                $fldvalue = $this->column_fields->getValueForSave($fieldname, $fldvalue);
             } else {
                 $fldvalue = '';
             }
@@ -1012,9 +1014,14 @@ class Users extends CRMEntity
         }
 
         $result = [];
+        $rawResult = [];
         foreach ($this->tab_name_index as $table_name => $index) {
             $result[$table_name] = $adb->pquery("select * from " . $table_name . " where " . $index . "=?", [$record]);
+            $rawResult[$table_name] = $adb->num_rows($result[$table_name]) > 0
+                ? $adb->raw_query_result_rowdata($result[$table_name])
+                : [];
         }
+
         $tabid = getTabid($module);
         // Not a good approach to get all the fields if not required(May leads to Performance issue)
         $sql1 = "select columnname, tablename, fieldname from vtiger_field where tabid=? and vtiger_field.presence in (0,2)";
@@ -1026,7 +1033,8 @@ class Users extends CRMEntity
             $fieldname = $adb->query_result($result1, $i, "fieldname");
 
             $fld_value = $adb->query_result($result[$tablename], 0, $fieldcolname);
-            $this->column_fields[$fieldname] = $fld_value;
+            $rawFieldValue = $rawResult[$tablename][$fieldcolname] ?? null;
+            $this->column_fields->setRetrievedValue($fieldname, $fld_value, $rawFieldValue);
             $this->$fieldname = $fld_value;
         }
         $this->column_fields["record_id"] = $record;

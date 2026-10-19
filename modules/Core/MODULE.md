@@ -1,5 +1,12 @@
 # Core UI ownership
 
+## Entity persistence encoding
+
+- `PearDatabase::query_result()` and `query_result_rowdata()` return HTML-encoded values. `CRMEntity::retrieve_entity_info()` keeps that public read contract while registering the corresponding raw database value in `TrackableObject` when encoding changed it.
+- `TrackableObject::getValueForSave()` returns the registered raw value only while the current field still exactly matches its originally retrieved encoded value. Explicitly changed values continue through the normal field conversion path.
+- Both ordinary entity-table writes and the always-updated `vtiger_crmentity.description` use this persistence value. Keep this boundary intact so a server-side retrieve-and-save cycle cannot convert characters to named HTML entities or double-encode existing data.
+- Validate an existing encoding-sensitive record with `php tests/integration/EntityHtmlPersistenceTest.php --module=Accounts --record=<id>`. The CLI test exercises the persistence boundary inside a verified transaction and always rolls it back.
+
 ## Shared quick preview
 
 - Core owns modal-scoped initialization and record actions in `layouts/d1/modules/Core/resources/QuickPreview.js` (`Vtiger_QuickPreview_Js`, following the Core resource naming convention). It extends Index to reuse navigation and inventory template events. Never load this resource globally: declare modules.Core.resources.QuickPreview last in getQuickPreviewHeaderScripts(), including overrides such as Products. The preview process only assigns that complete script list.

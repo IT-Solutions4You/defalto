@@ -1,5 +1,9 @@
 # List filters
 
+## Server-side record updates
+
+Background workflows, imports, integrations, scheduled tasks, and custom scripts can load and save records without changing their text. Accented characters, typographic punctuation, and currency symbols in unchanged fields are preserved during these operations.
+
 ## Record quick preview
 
 Open a record's eye icon or supported reference link to inspect it without leaving the current screen. Record actions apply to the record shown in the preview, even when the underlying page belongs to another module. Existing record permissions still apply.
