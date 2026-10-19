@@ -1,6 +1,6 @@
 # Summary widgets
 
-- `SummaryViewWidget.tpl` translates a widget label in the module named by the widget's `linkName`; widgets without a related-module owner fall back to the current record module. Keep the heading and the add-action label on this same translation boundary so related widgets such as Appointments are not rendered with their technical labels.
+- `Vtiger_Link_Model::getTranslatedLabel()` first translates a widget label in the module named by the link's `linkName`; links without a related-module owner use the supplied source record module. When the related module does not define the label, it falls back to the source module because custom widget labels are registered there. `SummaryViewWidget.tpl` consumes this resolved label for both the heading and add action.
 - `SummaryViewWidgets.tpl` treats a missing or empty `DETAILVIEWWIDGET` link group as a valid empty summary layout. Guard the collection before iterating because `getDetailViewLinks()` does not guarantee a key for link types without available links.
 
 # Shared image validation

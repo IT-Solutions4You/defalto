@@ -1,6 +1,6 @@
 # Record actions
 
-Related-record widgets use the language of the related module for their title and add action. For example, the Appointments widget is shown with the translated Appointments label even when it appears on another module's record.
+Related-record widgets use the language of the related module for their title and add action. If a custom widget label is defined only by the displayed record's module, that translation is used instead, so users do not see a technical label. For example, the Appointments widget still uses the translated Appointments label even when it appears on another module's record.
 
 When a record has no available summary widgets, the summary view shows empty widget columns without displaying an application error.
 
