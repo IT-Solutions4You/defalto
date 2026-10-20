@@ -28,7 +28,12 @@ class Settings_ModuleManager_Extension_Model extends Vtiger_Base_Model
 
     public static function getUploadDirectory($isChild = false)
     {
-        $uploadDir = 'test/vtlib';
+        $uploadDir = 'cache/installer/uploads';
+
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+            throw new RuntimeException('Unable to create module package upload directory');
+        }
+
         if ($isChild) {
             $uploadDir = '../' . $uploadDir;
         }

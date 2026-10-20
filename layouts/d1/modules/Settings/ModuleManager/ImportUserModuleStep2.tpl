@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-	<div class="px-4 pb-4" id="importModules">
+	<div class="px-4 pb-4" id="importModules" data-import-url="{$MODULEIMPORT_NEW_URL}">
 		<div class="bg-body rounded">
 			<div>
 				<div id="vtlib_modulemanager_import_div">
@@ -38,35 +38,21 @@
 							</h4>
 							<div>
 								<p>
-									<small>{vtranslate('LBL_REQ_CRM_VERSION', $QUALIFIED_MODULE)} : {$MODULEIMPORT_DEP_VTVERSION}</small>
+									<small>{vtranslate('LBL_PACKAGE_VERSION', $QUALIFIED_MODULE)}: {$MODULEIMPORT_VERSION}</small>
+									{if $MODULEIMPORT_DEP_VTVERSION}
+										<br><small>{vtranslate('LBL_REQ_CRM_VERSION', $QUALIFIED_MODULE)}: {$MODULEIMPORT_DEP_VTVERSION}</small>
+									{/if}
 								</p>
 							</div>
 							<div>
 								{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
 									{if $MODULEIMPORT_EXISTS eq 'true'}
 										<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
-										<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
-										<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
 									{else}
 										<span class="alert alert-info">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</span>
 									{/if}
 								{else}
-									{assign var="need_license_agreement" value="false"}
-									{if $MODULEIMPORT_LICENSE}
-										{assign var="need_license_agreement" value="true"}
-										<p>{vtranslate('LBL_LICENSE', $QUALIFIED_MODULE)}</p>
-										<div class="py-2">
-											<textarea readonly="" rows="15" class="form-control">{$MODULEIMPORT_LICENSE}</textarea>
-										</div>
-									{/if}
-									{if $need_license_agreement eq 'true'}
-										<div class="py-2">
-											<input type="checkbox" class="acceptLicense form-check-input"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
-										</div>
-									{/if}
 									<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
-									<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
-									<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
 								{/if}
 							</div>
 						</div>
@@ -84,12 +70,16 @@
 								<button class="btn btn-primary active finishButton" type="submit">
 									<strong>{vtranslate('LBL_FINISH', $QUALIFIED_MODULE)}</strong>
 								</button>
-							{elseif $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
-								<button class="btn btn-primary active updateModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}>
+							{elseif $MODULEIMPORT_EXISTS eq 'true'}
+								<button class="btn btn-primary active updateModule" name="saveButton">
 									<span>{vtranslate('LBL_UPDATE_NOW', $QUALIFIED_MODULE)}</span>
 								</button>
+							{elseif $MODULEIMPORT_DIR_EXISTS eq 'true'}
+								<button class="btn btn-primary active finishButton" type="submit">
+									<strong>{vtranslate('LBL_FINISH', $QUALIFIED_MODULE)}</strong>
+								</button>
 							{else}
-								<button class="btn btn-primary active importModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}>
+								<button class="btn btn-primary active importModule" name="saveButton">
 									<strong>{vtranslate('LBL_IMPORT_NOW', $QUALIFIED_MODULE)}</strong>
 								</button>
 							{/if}

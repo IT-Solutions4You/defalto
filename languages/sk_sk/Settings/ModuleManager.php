@@ -53,6 +53,8 @@ $languageStrings = [
     'LBL_IMPORT_MODULE_FROM_ZIP' => 'Inštalovať zo .zip súboru',
     'LBL_UPDATE_NOW' => 'Aktualizujte teraz',
     'LBL_IMPORT_NOW' => 'Importovať teraz',
+    'LBL_PACKAGE_VERSION' => 'Verzia balíka',
+    'LBL_PACKAGE_STRUCTURE_REQUIREMENT' => 'ZIP balík musí používať adresárovú štruktúru Defalta. Inštalujú sa iba adresáre modules, layouts a languages; cron súbory aj voliteľný manifest.xml patria do adresára modulu.',
     'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Upozornenie -  Inštalácia nie je bezpečná</b><br>Táto funkctionalita bola sprístupnená pre vývojárov, aby mohli testovať nové moduly. Ak inštalujete zo súboru od tretej strany, prosím pokračujte len ak dôverujete vydávateľovi. Cudzie moduly môžu obsahovať bezpečnostné chyby a prepisovanie systémových súborov môže ohrozovať Váš CRM systém.Modul, ktorý sa chystáte nainštalovať, nebol kontrolovaný spoločnosťou Defalto.',
     'LBL_IMPORT_MODULE_FROM_FILE' => 'Inštalovať zo súboru',
 ];
@@ -67,4 +69,8 @@ $jsLanguageStrings = [
     'JS_IMPORTED_MODULE' => 'modul bol úspešne importovaný.',
     'JS_UPDATE_SUCCESSFULL' => 'Aktualizácia bola úspešná',
     'JS_UPDATED_MODULE' => 'modul bol úspešne aktualizovaný',
+    'JS_PACKAGE_INSTALL_FAILED' => 'Inštalácia balíka zlyhala',
+    'JS_PACKAGE_INSTALL_ERROR_GUIDANCE' => 'Ak viete uvedený problém opraviť, odstráňte jeho príčinu, zavrite toto okno a inštaláciu zopakujte. Ak je balík chybný alebo problém pretrváva, oznámte nižšie uvedenú chybu vydavateľovi balíka. Môžete tiež vybrať iný balík na import.',
+    'JS_ERROR_DETAILS' => 'Podrobnosti chyby',
+    'JS_IMPORT_ANOTHER_PACKAGE' => 'Importovať iný balík',
 ];

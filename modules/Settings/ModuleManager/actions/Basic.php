@@ -31,6 +31,7 @@ class Settings_ModuleManager_Basic_Action extends Settings_Vtiger_IndexAjax_View
     function process(Vtiger_Request $request)
     {
         $mode = $request->getMode();
+
         if (!empty($mode)) {
             echo $this->invokeExposedMethod($mode, $request);
 
@@ -42,7 +43,6 @@ class Settings_ModuleManager_Basic_Action extends Settings_Vtiger_IndexAjax_View
     {
         $moduleName = $request->get('forModule');
         $updateStatus = $request->get('updateStatus');
-
         $moduleManagerModel = new Settings_ModuleManager_Module_Model();
 
         if ($updateStatus == 'true') {
@@ -50,62 +50,41 @@ class Settings_ModuleManager_Basic_Action extends Settings_Vtiger_IndexAjax_View
         } else {
             $moduleManagerModel->disableModule($moduleName);
         }
+
         $response = new Vtiger_Response();
         $response->emit();
     }
 
     public function importUserModuleStep3(Vtiger_Request $request)
     {
-        $importModuleName = $request->get('module_import_name');
-        $uploadFile = $request->get('module_import_file');
-        $uploadDir = Settings_ModuleManager_Extension_Model::getUploadDirectory();
-        $uploadFileName = "$uploadDir/$uploadFile";
-        checkFileAccess($uploadFileName);
-
-        $importType = $request->get('module_import_type');
-        if (strtolower($importType) == 'language') {
-            $package = new Vtiger_Language();
-        } elseif (strtolower($importType) == 'layout') {
-            $package = new Vtiger_Layout();
-        } else {
-            $package = new Vtiger_Package();
-        }
-
-        $package->import($uploadFileName);
-        checkFileAccessForDeletion($uploadFileName);
-        unlink($uploadFileName);
-
-        $result = ['success' => true, 'importModuleName' => $importModuleName];
-        $response = new Vtiger_Response();
-        $response->setResult($result);
-        $response->emit();
+        $this->installUserModulePackage($request);
     }
 
     public function updateUserModuleStep3(Vtiger_Request $request)
     {
-        $importModuleName = $request->get('module_import_name');
-        $uploadFile = $request->get('module_import_file');
+        $this->installUserModulePackage($request);
+    }
+
+    protected function installUserModulePackage(Vtiger_Request $request): void
+    {
+        $uploadFile = (string)$request->get('module_import_file');
+
+        if (!preg_match('/^usermodule_[a-f0-9]{24}\.zip$/', $uploadFile)) {
+            throw new InvalidArgumentException('Invalid module package file name');
+        }
+
         $uploadDir = Settings_ModuleManager_Extension_Model::getUploadDirectory();
         $uploadFileName = "$uploadDir/$uploadFile";
         checkFileAccess($uploadFileName);
 
-        $importType = $request->get('module_import_type');
-        if (strtolower($importType) == 'language') {
-            $package = new Vtiger_Language();
-        } elseif (strtolower($importType) == 'layout') {
-            $package = new Vtiger_Layout();
-        } else {
-            $package = new Vtiger_Package();
-        }
+        $package = Installer_ModulePackage_Model::getInstance($uploadFileName);
+        $module = $package->install();
+        $importModuleName = $module->getName();
 
-        if (strtolower($importType) == 'language' || strtolower($importType) == 'layout') {
-            $package->import($uploadFileName);
-        } else {
-            $package->update(Vtiger_Module::getInstance($importModuleName), $uploadFileName);
+        if (is_file($uploadFileName)) {
+            checkFileAccessForDeletion($uploadFileName);
+            unlink($uploadFileName);
         }
-
-        checkFileAccessForDeletion($uploadFileName);
-        unlink($uploadFileName);
 
         $result = ['success' => true, 'importModuleName' => $importModuleName];
         $response = new Vtiger_Response();
