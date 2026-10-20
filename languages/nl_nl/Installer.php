@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'E-mail',
     'LBL_LOGIN' => 'Inloggen',
     'LBL_INSTALLATION_LOG' => 'Installatielogboek',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'De extensie wordt gedownload en geïnstalleerd...',
     'LBL_INSTALLATION_FAILED' => 'Installatie mislukt',
     'LBL_OPEN_MODULE' => 'Module openen',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Succesvolle installatie',

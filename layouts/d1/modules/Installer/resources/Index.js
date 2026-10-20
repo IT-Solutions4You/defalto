@@ -344,41 +344,64 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                 return;
             }
 
-            app.helper.showConfirmationBox({message: app.vtranslate('JS_CONFIRM_DOWNLOAD')}).then(function () {
-                button.data('operationPending', true).prop('disabled', true);
+            button.data('operationPending', true).prop('disabled', true);
 
-                const params = {
-                    module: 'Installer',
-                    view: 'IndexAjax',
-                    mode: 'extensionModal',
-                    version: version
-                };
+            const params = {
+                module: 'Installer',
+                view: 'IndexAjax',
+                mode: 'extensionModal',
+                version: version
+            };
 
-                app.request.post({data: params}).then(function (error, data) {
-                    if (error) {
-                        button.data('operationPending', false).prop('disabled', false);
+            app.request.post({data: params}).then(function (error, data) {
+                if (error) {
+                    button.data('operationPending', false).prop('disabled', false);
 
-                        return;
-                    }
+                    return;
+                }
 
-                    app.helper.showModal(data, {
-                        cb: function (container) {
-                            const downloadLogElement = container.find('[data-download-log]'),
-                                params = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
+                app.helper.showModal(data, {
+                    cb: function (container) {
+                        container.on('click', '.extensionInstallStart', function () {
+                            const startButton = $(this),
+                                downloadLogElement = container.find('[data-download-log]'),
+                                installParams = app.convertUrlToDataParams(downloadLogElement.attr('data-download-log'));
 
-                            app.request.post({data: params}).then(function (error, data) {
-                                if (error) {
-                                    const errorMessage = error.message || app.vtranslate('JS_INSTALLATION_FAILED');
+                            if (startButton.data('operationPending')) {
+                                return;
+                            }
 
+                            startButton.data('operationPending', true).prop('disabled', true);
+                            startButton.addClass('hide');
+                            container.find('[data-bs-dismiss="modal"]').addClass('hide');
+                            container.find('.extensionChangelog').addClass('hide');
+                            container.find('.extensionInstallProgress').removeClass('hide');
+
+                            app.request.post({data: installParams}).then(function (installError, installData) {
+                                const progressBar = container.find('.progress-bar'),
+                                    statusElement = container.find('[data-install-status]'),
+                                    spinner = container.find('.extensionInstallSpinner');
+
+                                progressBar.removeClass('progress-bar-animated');
+                                spinner.addClass('hide');
+
+                                if (installError) {
+                                    const errorMessage = installError.message || app.vtranslate('JS_INSTALLATION_FAILED');
+
+                                    progressBar.removeClass('bg-primary').addClass('bg-danger');
+                                    statusElement.text(app.vtranslate('JS_INSTALLATION_FAILED'));
                                     downloadLogElement.empty().append(
                                         $('<div class="alert alert-danger"></div>').text(errorMessage)
                                     );
-                                    container.find('.extensionInstallClose').removeClass('hide');
+                                    container.find('.extensionInstallLogDetails').prop('open', true);
+                                    container.find('[data-bs-dismiss="modal"]').removeClass('hide');
 
                                     return;
                                 }
 
-                                downloadLogElement.html(data);
+                                progressBar.removeClass('bg-primary').addClass('bg-success');
+                                statusElement.text(app.vtranslate('JS_INSTALLED'));
+                                downloadLogElement.html(installData);
 
                                 const result = downloadLogElement.find('.installerExtensionResult');
 
@@ -387,26 +410,28 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                                     container.find('.extensionInstallFinish')
                                         .attr('href', result.data('redirect'))
                                         .removeClass('hide');
-                                    container.find('.extensionInstallClose').addClass('hide');
-                                }
-
-                                container.find('.modal-body').animate({scrollTop: downloadLogElement.height()});
-                            });
-
-                            container.on('click', '.extensionInstallFinish', function () {
-                                container.data('openInstalledModule', true);
-                            });
-
-                            container.on('hidden.bs.modal', function () {
-                                if (container.data('installComplete') && !container.data('openInstalledModule')) {
-                                    // The module/menu/resource state changed and cannot be synchronized safely in place.
-                                    window.location.reload();
-                                } else if (!container.data('installComplete')) {
-                                    button.data('operationPending', false).prop('disabled', false);
+                                } else {
+                                    progressBar.removeClass('bg-success').addClass('bg-danger');
+                                    statusElement.text(app.vtranslate('JS_INSTALLATION_FAILED'));
+                                    container.find('.extensionInstallLogDetails').prop('open', true);
+                                    container.find('[data-bs-dismiss="modal"]').removeClass('hide');
                                 }
                             });
-                        }
-                    });
+                        });
+
+                        container.on('click', '.extensionInstallFinish', function () {
+                            container.data('openInstalledModule', true);
+                        });
+
+                        container.on('hidden.bs.modal', function () {
+                            if (container.data('installComplete') && !container.data('openInstalledModule')) {
+                                // The module/menu/resource state changed and cannot be synchronized safely in place.
+                                window.location.reload();
+                            } else if (!container.data('installComplete')) {
+                                button.data('operationPending', false).prop('disabled', false);
+                            }
+                        });
+                    }
                 });
             });
         })

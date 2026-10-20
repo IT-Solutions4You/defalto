@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'E-posta',
     'LBL_LOGIN' => 'Giriş yap',
     'LBL_INSTALLATION_LOG' => 'Kurulum Günlüğü',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Eklenti indiriliyor ve kuruluyor...',
     'LBL_INSTALLATION_FAILED' => 'Kurulum Başarısız',
     'LBL_OPEN_MODULE' => 'Modülü aç',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Başarılı Kurulum',

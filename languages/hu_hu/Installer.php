@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'E-mail',
     'LBL_LOGIN' => 'Bejelentkezés',
     'LBL_INSTALLATION_LOG' => 'Telepítési napló',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'A bővítmény letöltése és telepítése folyamatban van...',
     'LBL_INSTALLATION_FAILED' => 'A telepítés sikertelen',
     'LBL_OPEN_MODULE' => 'Modul megnyitása',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Sikeres telepítés',

@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'E-post',
     'LBL_LOGIN' => 'Logga in',
     'LBL_INSTALLATION_LOG' => 'Installationslogg',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Tillägget laddas ner och installeras...',
     'LBL_INSTALLATION_FAILED' => 'Installationen misslyckades',
     'LBL_OPEN_MODULE' => 'Öppna modulen',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Lyckad installation',

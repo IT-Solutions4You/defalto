@@ -22,6 +22,7 @@ $languageStrings = [
     'LBL_BUY' => 'Koupit',
     'LBL_LOGIN' => 'Přihlásit se',
     'LBL_INSTALLATION_LOG' => 'Protokol instalace',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Probíhá stahování a instalace rozšíření...',
     'LBL_INSTALLATION_FAILED' => 'Instalace selhala',
     'LBL_OPEN_MODULE' => 'Otevřít modul',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Instalace byla úspěšná',

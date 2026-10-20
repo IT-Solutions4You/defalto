@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'Correo electrónico',
     'LBL_LOGIN' => 'Iniciar sesión',
     'LBL_INSTALLATION_LOG' => 'Registro de instalación',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'La extensión se está descargando e instalando...',
     'LBL_INSTALLATION_FAILED' => 'Instalación fallida',
     'LBL_OPEN_MODULE' => 'Abrir módulo',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Instalación exitosa',

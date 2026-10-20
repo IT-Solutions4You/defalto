@@ -94,6 +94,7 @@ $languageStrings = [
     'LBL_INSTALLATION_FAILED' => 'Installation fehlgeschlagen',
     'LBL_OPEN_MODULE' => 'Modul öffnen',
     'LBL_INSTALLATION_LOG' => 'Installationsprotokoll',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Die Erweiterung wird heruntergeladen und installiert...',
     'LBL_INSTALLED' => 'Installiert',
     'LBL_INSTALLED_AND_AVAILABLE_MODULES' => 'Installierte und verfügbare Module',
     'LBL_INSTALLED_MODULES' => 'Installierte Module',

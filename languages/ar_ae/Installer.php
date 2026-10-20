@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'البريد الإلكتروني',
     'LBL_LOGIN' => 'تسجيل الدخول',
     'LBL_INSTALLATION_LOG' => 'سجل التثبيت',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'جارٍ تنزيل الإضافة وتثبيتها...',
     'LBL_INSTALLATION_FAILED' => 'فشل التثبيت',
     'LBL_OPEN_MODULE' => 'فتح الوحدة النمطية',
     'LBL_SUCCESSFULL_INSTALLATION' => 'تم التثبيت بنجاح',

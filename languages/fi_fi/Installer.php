@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'Sähköposti',
     'LBL_LOGIN' => 'Kirjaudu sisään',
     'LBL_INSTALLATION_LOG' => 'Asennusloki',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Laajennusta ladataan ja asennetaan...',
     'LBL_INSTALLATION_FAILED' => 'Asennus epäonnistui',
     'LBL_OPEN_MODULE' => 'Avaa moduuli',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Onnistunut asennus',

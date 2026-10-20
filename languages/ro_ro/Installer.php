@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'Email',
     'LBL_LOGIN' => 'Autentificare',
     'LBL_INSTALLATION_LOG' => 'Jurnal Instalare',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Extensia este descărcată și instalată...',
     'LBL_INSTALLATION_FAILED' => 'Instalare Eșuată',
     'LBL_OPEN_MODULE' => 'Deschide modul',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Instalare reușită',

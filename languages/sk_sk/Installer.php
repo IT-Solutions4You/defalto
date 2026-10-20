@@ -17,6 +17,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'Email',
     'LBL_LOGIN' => 'Prihlásiť sa',
     'LBL_INSTALLATION_LOG' => 'Protokol inštalácie',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Rozšírenie sa sťahuje a inštaluje...',
     'LBL_INSTALLATION_FAILED' => 'Inštalácia zlyhala',
     'LBL_OPEN_MODULE' => 'Otvoriť modul',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Inštalácia bola úspešná',

@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_EMAIL' => 'Электронная почта',
     'LBL_LOGIN' => 'Вход',
     'LBL_INSTALLATION_LOG' => 'Журнал установки',
+    'LBL_INSTALLATION_IN_PROGRESS' => 'Расширение загружается и устанавливается...',
     'LBL_INSTALLATION_FAILED' => 'Установка не удалась',
     'LBL_OPEN_MODULE' => 'Открыть модуль',
     'LBL_SUCCESSFULL_INSTALLATION' => 'Успешная установка',
