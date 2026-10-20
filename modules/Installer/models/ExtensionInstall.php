@@ -414,13 +414,13 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             'index.php',
             'extension-' . $moduleName
         );
-        $download->setAllowedRoots(['modules', 'layouts', 'languages', 'cron']);
+        $download->setAllowedRoots(['modules', 'layouts', 'languages']);
+        $download->setAllowedModuleName($moduleName);
         $requiredWritablePaths = [
             'cache',
             'modules',
             'layouts',
             'languages',
-            'cron',
             'test/templates_c',
         ];
 
@@ -447,6 +447,8 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
         try {
             $download->downloadAndExport();
+            $this->validateRequiredPackageFiles($download);
+            $this->validateModuleManifest($download);
             $installClass = $moduleName . '_Install_Model';
 
             if (!class_exists($installClass)) {
@@ -554,6 +556,43 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
         if (!empty($moduleFocus->isEntity) && empty($moduleFocus->table_name)) {
             throw new RuntimeException('Extension entity module has no base table');
+        }
+    }
+
+    protected function validateModuleManifest(Installer_Download_Model $download): void
+    {
+        $moduleName = $this->getName();
+        $manifestFile = 'modules/' . $moduleName . '/manifest.xml';
+
+        if (!$download->hasCopiedFile($manifestFile)) {
+            return;
+        }
+
+        $manifestSource = file_get_contents($manifestFile);
+
+        if (false === $manifestSource) {
+            throw new RuntimeException('Unable to read extension manifest: ' . $manifestFile);
+        }
+
+        Installer_ModulePackage_Model::validateManifestSource(
+            $manifestSource,
+            $moduleName,
+            $this->getModuleFileVersion()
+        );
+    }
+
+    protected function validateRequiredPackageFiles(Installer_Download_Model $download): void
+    {
+        $moduleName = $this->getName();
+        $requiredFiles = [
+            'modules/' . $moduleName . '/' . $moduleName . '.php',
+            'modules/' . $moduleName . '/models/Install.php',
+        ];
+
+        foreach ($requiredFiles as $requiredFile) {
+            if (!$download->hasCopiedFile($requiredFile)) {
+                throw new RuntimeException('Extension package is missing required file: ' . $requiredFile);
+            }
         }
     }
 

@@ -20,3 +20,5 @@ Add each license key in the Licenses section. Multiple product licenses can coex
 The System section shows Defalto version information without Membership. Protected one-click system updates require active Membership.
 
 Installed extensions may provide Settings links for requirements, license details, and uninstalling. Uninstalling a custom extension removes its module data and files after confirmation, so make a backup first.
+
+Extension packages use the Defalto application structure. Installable files are limited to the `modules`, `layouts`, and `languages` directories and must belong to the packaged module. An optional package manifest belongs at `modules/<Module>/manifest.xml`; when present, its module, version, and compatibility information are validated. Cron handlers belong inside `modules/<Module>/cron`; a package cannot install files into the application's root `cron` directory.

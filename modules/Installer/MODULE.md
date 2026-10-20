@@ -3,7 +3,7 @@
 ## Purpose and Ownership
 
 - Treat this file as durable, verified design memory for `modules/Installer` and its D1 layout assets. Update it when Installer behavior or invariants change; do not append task history or speculative notes.
-- Keep membership and product-license state, activation rules, entitlement selection, API communication, licensed-user counting, update metadata, package installation, Installer notifications, and Installer requirement diagnostics owned by this module.
+- Keep membership and product-license state, activation rules, entitlement selection, API communication, licensed-user counting, update metadata, package installation, Installer notifications, and Installer requirement diagnostics owned by this module. `Installer_ModulePackage_Model` also owns the validated local module-package flow used by Settings Module Manager.
 - Keep reusable module installation lifecycle behavior in `Core_Install_Model`. The initial `Install` module may collect license keys, but it must delegate activation to `Installer_License_Model` and must not write `df_licenses` directly.
 - Keep purchase redirects owned by `modules/Core/views/Redirect.php`; Installer renders only the branding returned by `Installer_SystemInstall_Model::getMembershipBranding()`.
 - Keep database access in Installer models. Views and actions validate requests, select models, and render or return responses without embedding SQL.
@@ -53,15 +53,17 @@
 - Show every API catalog extension, including products whose package requires a license and is not currently available. Do not list local custom modules, including modules created through Module Builder, merely because they are installed. Resolve catalog names against installed module records instead of treating clean module placeholders as installed modules.
 - Offer install/update actions for public packages or protected packages whose originating license is currently valid and explicitly entitles that module. Show the download-unavailable explanation for other catalog entries. Session catalog format version 3 invalidates catalogs that allowed protected responses to introduce non-public entries.
 - `Installer_ExtensionInstall_Model::isInstallAvailable()` controls the catalog button: a downloadable package must have no installed version or a strictly newer available version. Equal or older catalog versions hide the button without presenting a license error for an otherwise downloadable package.
-- Install extension packages only under the allowed roots `modules`, `layouts`, `languages`, and `cron`. Require the standard writable paths and, for a new module, the module metadata and privilege paths needed by the install lifecycle.
+- Install extension packages only under the allowed roots `modules`, `layouts`, and `languages`. Every package path must belong to the installed module. Cron handlers are module files under `modules/<Module>/cron`; extension packages must never contain a root `cron` directory. Require the standard writable paths and, for a new module, the module metadata and privilege paths needed by the install lifecycle.
 - Require `<Module>_Install_Model`, validate entity-module table metadata, and use the Core `postinstall` or `postupdate` lifecycle. Preserve and restore an existing module's sharing permission and regenerate module metadata through the existing Core mechanism.
 - Before commit, verify that the module exists and is active, its installed version matches the package metadata, and its default URL is usable. Clear extension metadata after successful installation.
 - If any later step fails, roll back copied files, restore sharing state where possible, restore database error settings, and rethrow the original failure with any rollback problem logged separately.
+- For manually uploaded module packages, derive the module name and version from `modules/<Module>/<Module>.php`, require `modules/<Module>/models/Install.php`, and accept the application directory structure either at the ZIP root or below one wrapper directory. `modules/<Module>/manifest.xml` is optional; when supplied, require its name and version to match the module file and enforce its minimum Defalto version. Do not trust the module name, type, or version sent back by the browser.
+- Let manual package errors propagate unchanged to the central WebUI handler. `Installer_ModulePackage_Model` owns lifecycle cleanup and rolls back uncommitted files without catching or replacing the original error.
 
 ## Package Safety and Recovery
 
 - Use `Installer_Download_Model` for every system or extension package. Preserve its isolated `cache/installer` workspace, package lock, HTTP(S)-only URL validation, TLS peer verification, redirect limit, timeouts, ZIP signature check, 200 MiB download limit, and optional SHA-256 verification.
-- Use `Installer_ZipArchive_Model` for extraction. Preserve the 10,000-entry and 200 MiB uncompressed limits, allowed-root enforcement, duplicate-target detection, unsafe path rejection, destination containment checks, protected file/folder skip lists, staging, backups, commit, and rollback.
+- Use `Installer_ZipArchive_Model` for extraction. Preserve the 10,000-entry and 200 MiB uncompressed limits, allowed-root and module-owned-path enforcement, duplicate-target detection, unsafe path rejection, destination containment checks, protected file/folder skip lists, staging, backups, commit, and rollback.
 - Do not broaden allowed roots, writable paths, or protected-file exceptions without tracing both system and extension update behavior and adding focused regression coverage.
 - Keep progress and diagnostic logs free of raw license keys, credentials, unsafe markup, and attacker-controlled unescaped values.
 
