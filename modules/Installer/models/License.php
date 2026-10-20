@@ -178,6 +178,15 @@ class Installer_License_Model extends Core_DatabaseData_Model
         return (string)($this->getInfo('item_name') ?: 'Defalto');
     }
 
+    public function getMaskedName(): string
+    {
+        $licenseKey = $this->getName();
+        $visibleLength = min(4, strlen($licenseKey));
+        $suffix = substr($licenseKey, -$visibleLength);
+
+        return trim('•••• •••• •••• ' . $suffix);
+    }
+
     public function getUsersLimit(): int
     {
         $limit = $this->getInfo('user_limit');
@@ -194,6 +203,26 @@ class Installer_License_Model extends Core_DatabaseData_Model
     public function getDisplayUsersLimit(): string
     {
         return $this->getUsersLimit() > 0 ? (string)$this->getUsersLimit() : vtranslate('Unlimited', 'Installer');
+    }
+
+    public function isUserUsageApplicable(): bool
+    {
+        return $this->isMembershipLicense();
+    }
+
+    public function isUsersLimitAvailable(): bool
+    {
+        return null !== $this->getInfo('user_limit') || null !== $this->getInfo('item_user_limit');
+    }
+
+    public function getAvailableSeats(): int
+    {
+        return max(0, $this->getUsersLimit() - $this->getUsersCount());
+    }
+
+    public function getExceededUsersCount(): int
+    {
+        return max(0, $this->getUsersCount() - $this->getUsersLimit());
     }
 
     public function getUsersCount(): int
@@ -318,6 +347,23 @@ class Installer_License_Model extends Core_DatabaseData_Model
         }
 
         return $this->getExpireDate() < date('Y-m-d H:i:s');
+    }
+
+    public function getDisplayStatus(): string
+    {
+        if ($this->isValidLicense()) {
+            return 'active';
+        }
+
+        if ($this->isExpired()) {
+            return 'expired';
+        }
+
+        if ('connection_error' === $this->getErrorCode()) {
+            return 'verification_unavailable';
+        }
+
+        return 'inactive';
     }
 
     public function isUserLimitReached(): bool

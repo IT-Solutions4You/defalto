@@ -11,3 +11,8 @@
 .licenseHelpStep[open] .licenseHelpChevron {
     transform: rotate(180deg);
 }
+
+.installerClipboardInput {
+    position: fixed;
+    left: -9999px;
+}

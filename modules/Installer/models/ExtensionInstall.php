@@ -65,12 +65,11 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
     public function getLabel(): string
     {
-        $version = $this->getVersion();
         $module = $this->getName();
         $translate = vtranslate($module, $module);
         $translate = str_replace(['ITS4You', '4You'], ['', ''], $translate);
 
-        return $translate . ($version ? ' v' . $version : '');
+        return $translate;
     }
 
     /**
@@ -283,6 +282,52 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         return (string)$this->get('version');
     }
 
+    public function isInstalled(): bool
+    {
+        return '' !== $this->getVersion();
+    }
+
+    public function hasAvailableUpdate(): bool
+    {
+        return $this->isInstalled()
+            && '' !== $this->getUpdateVersion()
+            && version_compare($this->getUpdateVersion(), $this->getVersion(), '>');
+    }
+
+    public function getInstallerStatus(): string
+    {
+        if (!$this->isInstalled()) {
+            return $this->hasDownloadUrl() ? 'not_installed' : 'unavailable';
+        }
+
+        if ($this->hasAvailableUpdate()) {
+            return $this->hasDownloadUrl() ? 'update_available' : 'unavailable';
+        }
+
+        return 'up_to_date';
+    }
+
+    public static function getInstallerModuleCounts(array $extensions): array
+    {
+        $counts = [
+            'all' => count($extensions),
+            'updates' => 0,
+            'not_installed' => 0,
+        ];
+
+        foreach ($extensions as $extension) {
+            if ($extension->hasAvailableUpdate()) {
+                ++$counts['updates'];
+            }
+
+            if (!$extension->isInstalled()) {
+                ++$counts['not_installed'];
+            }
+        }
+
+        return $counts;
+    }
+
     public function getModuleFileVersion(): string
     {
         $moduleName = $this->getName();
@@ -385,7 +430,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
     public function getDownloadLabel(): string
     {
-        if (!vtlib_isModuleActive($this->getName())) {
+        if (!$this->isInstalled()) {
             return 'LBL_INSTALL';
         }
 
