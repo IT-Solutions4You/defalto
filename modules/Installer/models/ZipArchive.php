@@ -127,6 +127,80 @@ class Installer_ZipArchive_Model extends ZipArchive
         throw new RuntimeException('ZIP entry is missing: ' . $this->escapeLogValue($relativePath));
     }
 
+    /**
+     * Validate every package file without extracting it into the application.
+     *
+     * @return array<string>
+     */
+    public function validatePackage(string $zipSubDir): array
+    {
+        if ($this->numFiles > self::MAX_FILES) {
+            throw new RuntimeException('ZIP contains too many entries');
+        }
+
+        $zipSubDir = trim(str_replace('\\', '/', $zipSubDir), '/');
+        $prefix = '' === $zipSubDir ? '' : $zipSubDir . '/';
+        $paths = [];
+        $pathKeys = [];
+        $totalSize = 0;
+
+        for ($index = 0; $index < $this->numFiles; $index++) {
+            $filename = $this->getNameIndex($index);
+
+            if (!is_string($filename) || '' === $filename || str_contains($filename, "\0")) {
+                throw new RuntimeException('ZIP contains an invalid entry name');
+            }
+
+            $normalizedFilename = str_replace('\\', '/', $filename);
+
+            if ('' !== $prefix && !str_starts_with($normalizedFilename, $prefix)) {
+                continue;
+            }
+
+            $relativePath = '' === $prefix ? $normalizedFilename : substr($normalizedFilename, strlen($prefix));
+
+            if ('' === $relativePath || str_ends_with($relativePath, '/')) {
+                continue;
+            }
+
+            $relativePath = $this->validateRelativePath($relativePath);
+
+            if (!$this->isAllowedRoot($relativePath)) {
+                throw new RuntimeException('ZIP entry is outside allowed package roots: '
+                    . $this->escapeLogValue($relativePath));
+            }
+
+            if ('' !== $this->allowedModuleName && !$this->isAllowedModulePath($relativePath)) {
+                throw new RuntimeException('ZIP entry is outside the module package structure: '
+                    . $this->escapeLogValue($relativePath));
+            }
+
+            $pathKey = '\\' === DIRECTORY_SEPARATOR ? strtolower($relativePath) : $relativePath;
+
+            if (isset($pathKeys[$pathKey])) {
+                throw new RuntimeException('ZIP contains a duplicate target path: '
+                    . $this->escapeLogValue($relativePath));
+            }
+
+            $stat = $this->statIndex($index);
+
+            if (false === $stat || !isset($stat['size'])) {
+                throw new RuntimeException('Unable to inspect ZIP entry: ' . $this->escapeLogValue($relativePath));
+            }
+
+            $totalSize += (int)($stat['size'] ?? 0);
+            $this->validateUncompressedSize($totalSize);
+            $pathKeys[$pathKey] = true;
+            $paths[] = $relativePath;
+        }
+
+        if (!$paths) {
+            throw new RuntimeException('ZIP package did not contain installable files');
+        }
+
+        return $paths;
+    }
+
     public function resolveSourceFolder(string $expectedFolder): string
     {
         $expectedFolder = trim(str_replace('\\', '/', $expectedFolder), '/');

@@ -13,7 +13,7 @@ Licensed package information can unlock a catalog product, but it cannot add int
 - Paid extensions require an active license that includes the particular module. A Membership license does not automatically unlock every extension.
 - When a catalog package cannot be downloaded, its row remains visible with a download-unavailable message.
 
-Use Search for updates to refresh the catalog after new extensions or versions are published. Before installing, complete the backup and requirements confirmations in the installation dialog. Installer refreshes package availability before starting the installation.
+Use Search for updates to refresh the catalog after new extensions or versions are published. Selecting Install or Update first downloads and validates the package without changing application files. The confirmation dialog shows customer-facing changes for up to the latest three packaged versions. Review them and select Install or Update in the dialog to continue. During installation, the extension name, target version, spinner, status, and progress indicator stay visible while the detailed technical log remains available in a collapsed section. Installer refreshes package availability before starting the installation.
 
 ## Licenses and maintenance
 
@@ -30,3 +30,5 @@ The compact System section shows the installed Defalto version, update state, Me
 Installed extensions may provide Settings links for requirements, license details, and uninstalling. Uninstalling a custom extension removes its module data and files after confirmation, so make a backup first.
 
 Extension packages use the Defalto application structure. Installable files are limited to the `modules`, `layouts`, and `languages` directories and must belong to the packaged module. An optional package manifest belongs at `modules/<Module>/manifest.xml`; when present, its module, version, and compatibility information are validated. Cron handlers belong inside `modules/<Module>/cron`; a package cannot install files into the application's root `cron` directory.
+
+An extension package can include `modules/<Module>/CHANGELOG.md`. Its newest version must match the packaged module version. If a legacy package has no changelog, Installer clearly indicates that no changelog is available and still allows installation.

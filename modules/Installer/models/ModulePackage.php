@@ -15,6 +15,7 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
     protected string $moduleName = '';
     protected string $packageVersion = '';
     protected string $requiredVersion = '';
+    protected array $changelog = [];
     protected ?Installer_ZipArchive_Model $archive = null;
     protected string $workspace = '';
     protected mixed $lockHandle = null;
@@ -63,6 +64,14 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
     public function getRequiredVersion(): string
     {
         return $this->requiredVersion;
+    }
+
+    /**
+     * @return array<int, array{version: string, date: string, changes: array<string>}>
+     */
+    public function getChangelog(): array
+    {
+        return $this->changelog;
     }
 
     public function isUpdate(): bool
@@ -179,6 +188,7 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
         Installer_ExtensionInstall_Model::validateModuleName($this->moduleName);
         $installModelPath = 'modules/' . $this->moduleName . '/models/Install.php';
         $manifestPath = 'modules/' . $this->moduleName . '/manifest.xml';
+        $changelogPath = 'modules/' . $this->moduleName . '/CHANGELOG.md';
 
         if (!in_array($installModelPath, $packagePaths, true)) {
             throw new RuntimeException('ZIP is missing the module install model: ' . $installModelPath);
@@ -186,6 +196,7 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
 
         $this->archive->setAllowedRoots(['modules', 'layouts', 'languages']);
         $this->archive->setAllowedModuleName($this->moduleName);
+        $packagePaths = $this->archive->validatePackage($this->sourceFolder);
         $this->validatePackagePaths($packagePaths);
         $moduleSource = $this->archive->getFileContent(
             $this->sourceFolder,
@@ -204,6 +215,11 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
                 $this->moduleName,
                 $this->packageVersion
             );
+        }
+
+        if (in_array($changelogPath, $packagePaths, true)) {
+            $changelogSource = $this->archive->getFileContent($this->sourceFolder, $changelogPath);
+            $this->changelog = Installer_Changelog_Model::getEntries($changelogSource, $this->packageVersion);
         }
 
         $this->archive->close();
@@ -288,7 +304,7 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
         }
     }
 
-    protected static function getVersionFromSource(string $source): string
+    public static function getVersionFromSource(string $source): string
     {
         if (1 !== preg_match('/\$moduleVersion\s*=\s*([\'\"])([^\'\"]+)\1\s*;/', $source, $matches)) {
             return '';
