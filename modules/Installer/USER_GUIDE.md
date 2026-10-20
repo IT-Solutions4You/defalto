@@ -17,6 +17,10 @@ Use Search for updates to refresh the catalog after new extensions or versions a
 
 Add each license key in the Licenses section. Multiple product licenses can coexist. Use Check license to refresh their status; the information icon shows errors and the modules included in each license. Correct any reported issue and reactivate the license when required.
 
+If activation fails, the license dialog keeps your entered key and shows the error with numbered steps tailored to the cause. The most relevant check is expanded first; select another step to read its details. Follow the steps for occupied activations, an invalid or expired key, user limits, connection problems, or incomplete license data, then retry activation. Contact support only if the recommended checks do not resolve the problem. Include the product, system URL, Installer version, error, and checks already performed; do not include the full license key.
+
+Installer interface messages, license statuses, update checks, and installation confirmations are localized for every language distributed with the system.
+
 The System section shows Defalto version information without Membership. Protected one-click system updates require active Membership.
 
 Installed extensions may provide Settings links for requirements, license details, and uninstalling. Uninstalling a custom extension removes its module data and files after confirmation, so make a backup first.

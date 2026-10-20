@@ -12,6 +12,7 @@
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
 - When adding a new custom framework component that could belong to either Vtiger or Core, create it under `modules/Core` with a `Core_...` class name. Do not add new custom framework components under `modules/Vtiger`.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
+- Whenever adding, changing, or removing a user-facing language key, update it in every locale directory present under `languages/` in the same task, creating the module language file when it does not yet exist. Keep both `$languageStrings` and `$jsLanguageStrings` key sets aligned across every `languages/<locale>/<Module>.php` file, translate the values instead of copying the English text unless the value is intentionally language-neutral, and verify that no locale directory is missing the file or retaining missing or stale keys. Shared labels owned by a central module such as Core may remain in that module's language files and must not be duplicated locally.
 - Keep all instructions and example text in `AGENTS.md` and `MODULE.md` in English. Translate user-facing confirmations at response time to the language used by the user in the current request.
 - Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
 - Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.

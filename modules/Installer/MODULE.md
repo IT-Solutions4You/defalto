@@ -27,6 +27,8 @@
 - Keep the non-forced license check debounce and per-request/process locking. Clear the cached license collection and Installer system/extension metadata when license state changes.
 - Use `Installer_Cache_Model` for request-local license collection and ID hydration caches. Invalidate the affected license entry and collection after persistence, and clear all Installer runtime caches when license state changes.
 - In license rows, keep the details icon after the action buttons and right-aligned. Render it as a borderless icon, green without an error and red with an error. Its dropdown must show the last successful check, either the actual error or the successful activation message, and all entitled modules; retain a minimum width of `30vw` with a viewport-safe maximum.
+- `Installer_License_Model::getErrorHelp()` owns ordered, localized troubleshooting steps. Failed activation responses return these steps for the existing license modal; render response strings as text, retain the entered key, and place support last. Opening the modal may display a stored error but must not trigger a license request. Unknown error codes use a translated inactive message and generic troubleshooting.
+- Preserve the activation response `help` field as an array of plain descriptions for older loaded clients. Return titled step objects separately in `helpSteps`; the current renderer prefers that field and also accepts legacy text arrays. Do not change the type of an existing response field when extending troubleshooting presentation.
 
 ## API and Metadata Boundaries
 
@@ -78,8 +80,10 @@
 ## Frontend and Languages
 
 - Keep Installer templates in `layouts/d1/modules/Installer` and module assets in `layouts/d1/modules/Installer/resources`.
+- Keep the license field unboxed and vertically stacked above a bordered warning alert. Troubleshooting uses numbered native details with localized titles and descriptions; expand only the first step initially. Rank steps by relevance to the returned error, with retry and support last. Preserve matching server-rendered and AJAX markup.
 - Load `resources/Index.js` through `Installer_Index_View::getHeaderScripts()` using `modules.Installer.resources.Index`. Load `resources/Index.css` through the owning view's CSS path; do not add inline style blocks to templates.
 - Keep user-facing labels in `languages/<locale>/Installer.php`. Templates must translate labels rather than hardcode localized copy.
+- Keep the Installer PHP and JavaScript language-key sets aligned across every locale directory under `languages`, creating `Installer.php` when a locale does not yet provide it. Shared Core labels may remain in the central Core language files.
 - A full page reload after license activation/deletion or completed extension installation is intentional only where license, menu, module, or resource state cannot be synchronized safely in place. Prefer targeted UI updates for smaller AJAX state changes.
 
 ## Validation

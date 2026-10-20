@@ -523,7 +523,36 @@ class Installer_License_Model extends Core_DatabaseData_Model
             return '';
         }
 
-        return vtranslate('LBL_LICENSE_ERROR_' . strtoupper($error), 'Installer');
+        $label = 'LBL_LICENSE_ERROR_' . strtoupper($error);
+        $message = vtranslate($label, 'Installer');
+
+        return $message === $label ? vtranslate('LBL_LICENSE_NOT_ACTIVATED', 'Installer') : $message;
+    }
+
+    public function getErrorHelp(): array
+    {
+        $error = $this->isUserLimitReached() ? self::USER_LIMIT_EXCEEDED : $this->getErrorCode();
+        $stepsByError = [
+            'no_activations_left' => ['ACTIVATIONS', 'MIGRATION', 'RELEASE', 'UPDATE'],
+            'invalid_license' => ['KEY', 'UPDATE'],
+            'expired_license' => ['EXPIRED', 'KEY', 'UPDATE'],
+            self::USER_LIMIT_EXCEEDED => ['USERS', 'UPDATE'],
+            'invalid_user_count' => ['USER_COUNT', 'UPDATE'],
+            Installer_Api_Model::CONNECTION_ERROR => ['CONNECTION', 'UPDATE'],
+            'missing_expiration' => ['CONTRACT', 'UPDATE'],
+            'user_limit_missing' => ['CONTRACT', 'UPDATE'],
+            'invalid_request' => ['UPDATE', 'CONNECTION', 'KEY'],
+            'invalid_action' => ['UPDATE', 'KEY'],
+        ];
+        $stepNames = array_merge($stepsByError[$error] ?? ['KEY', 'CONNECTION', 'UPDATE'], ['RETRY', 'SUPPORT']);
+
+        return array_map(
+            static fn (string $step): array => [
+                'title' => vtranslate('LBL_LICENSE_HELP_' . $step . '_TITLE', 'Installer'),
+                'description' => vtranslate('LBL_LICENSE_HELP_' . $step, 'Installer'),
+            ],
+            $stepNames
+        );
     }
 
     public function getDisplayLastSuccessfulCheck(): string

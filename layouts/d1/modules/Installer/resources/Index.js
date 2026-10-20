@@ -140,25 +140,63 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         });
     },
     registerEditLicenseSubmit() {
+        const self = this;
+
         $('#editLicenseForm').on('submit', function (e) {
+            const form = $(this),
+                button = form.find('[type="submit"]');
+
             e.preventDefault();
 
-            app.helper.showProgress();
-            app.request.post({data: $(this).serializeFormData()}).then(function (error, data) {
-                app.helper.hideProgress();
+            if (button.prop('disabled')) {
+                return;
+            }
 
-                if(!error) {
-                    if('activated' === data['status']) {
+            button.prop('disabled', true);
+            app.helper.showProgress();
+            app.request.post({data: form.serializeFormData()}).then(function (error, data) {
+                app.helper.hideProgress();
+                button.prop('disabled', false);
+
+                if (!error) {
+                    if ('activated' === data['status']) {
                         app.helper.hideModal();
                         app.helper.showSuccessNotification({message: data['message']});
                         // License status controls system and extension sections, so the complete view must be rebuilt.
                         window.location.reload();
                     } else {
-                        app.helper.showErrorNotification({message: data['message']});
+                        self.showLicenseErrorHelp(form, data);
                     }
                 }
-            })
+            });
         });
+    },
+    showLicenseErrorHelp(form, data) {
+        const panel = form.find('.licenseErrorHelp'),
+            steps = panel.find('.licenseErrorSteps'),
+            helpSteps = data.helpSteps || data.help || [];
+
+        panel.find('.licenseErrorMessage').text(data.message);
+        steps.empty();
+
+        helpSteps.forEach(function (step, index) {
+            const title = typeof step === 'string' ? step : step.title,
+                description = typeof step === 'string' ? '' : step.description,
+                item = $('<li class="mb-2"></li>').appendTo(steps),
+                details = $('<details class="licenseHelpStep py-1"></details>').prop('open', index === 0).appendTo(item),
+                summary = $('<summary class="d-flex align-items-center gap-3 py-2"></summary>').appendTo(details);
+
+            $('<span class="badge rounded-pill"></span>')
+                .addClass(index === 0 ? 'bg-primary' : 'bg-light text-secondary')
+                .text(index + 1).appendTo(summary);
+            $('<span class="fw-semibold"></span>').text(title).appendTo(summary);
+            $('<i class="licenseHelpChevron fa-solid fa-chevron-down ms-auto text-secondary" aria-hidden="true"></i>').appendTo(summary);
+            $('<p class="text-secondary mt-2 mb-2"></p>').text(description).appendTo(details);
+        });
+
+        panel.removeClass('d-none');
+        panel[0].focus();
+        panel[0].scrollIntoView({block: 'nearest', behavior: 'smooth'});
     },
     registerDownloadSystem() {
         const self = this;

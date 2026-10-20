@@ -61,8 +61,16 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
             $message = $license->getErrorMessage();
         }
 
+        $helpSteps = 'activated' === $status ? [] : $license->getErrorHelp();
         $response = new Vtiger_Response();
-        $response->setResult(['success' => true, 'status' => $status, 'message' => $message]);
+        $response->setResult([
+            'success' => true,
+            'status' => $status,
+            'message' => $message,
+            // Keep the original text-array contract for pages with an already loaded script.
+            'help' => array_column($helpSteps, 'description'),
+            'helpSteps' => $helpSteps,
+        ]);
         $response->emit();
     }
 
