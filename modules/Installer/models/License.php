@@ -540,7 +540,11 @@ class Installer_License_Model extends Core_DatabaseData_Model
      */
     public function saveConnectionError(): void
     {
-        $this->saveError(Installer_Api_Model::CONNECTION_ERROR);
+        $info = $this->getInfo();
+        $info['last_error'] = Installer_Api_Model::CONNECTION_ERROR;
+        $info['last_attempt_at'] = date('Y-m-d H:i:s');
+        $this->setInfo($info);
+        $this->save();
     }
 
     /**
@@ -693,8 +697,6 @@ class Installer_License_Model extends Core_DatabaseData_Model
         if (Installer_Api_Model::isConnectionError($response)) {
             $info['last_response'] = self::getResponseLogData($response);
             $info['last_error'] = Installer_Api_Model::CONNECTION_ERROR;
-            $info['local_active'] = false;
-            $info['users_valid'] = false;
             $this->setInfo($info);
 
             return;
