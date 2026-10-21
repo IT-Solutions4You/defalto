@@ -13,6 +13,10 @@
             <div class="d-flex justify-content-between pb-3">
                 <div class="fw-bold text-truncate">{$MAILBOX->username()}</div>
                 <div class="d-flex">
+                    {if $SHOW_PRO_BUTTON}
+                        <input type="hidden" id="showMailManagerLicenseAlert" value="0">
+                        <button class="btn btn-outline-primary fw-bold me-2 mmProButton" title="{vtranslate('LBL_PRO_BUTTON_TITLE', $MODULE)}">Pro</button>
+                    {/if}
                     <button class="btn btn-outline-secondary mailbox_refresh me-2" title="{vtranslate('LBL_Refresh', $MODULE)}">
                         <i class="fa fa-refresh"></i>
                     </button>

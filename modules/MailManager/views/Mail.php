@@ -193,7 +193,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View
                 header("Content-type: application/octet-stream");
                 header("Pragma: public");
                 header("Cache-Control: private");
-                header("Content-Disposition: attachment; filename=\"$attachmentName\"");
+                header(MailManager_Utils_Helper::getAttachmentDispositionHeader($attachmentName));
                 echo $attachmentData;
             } else {
                 header("Content-Disposition: attachment; filename=INVALIDFILE");
@@ -208,10 +208,20 @@ class MailManager_Mail_View extends MailManager_Abstract_View
     }
 
     /**
-     * @inheritDoc
+     * Operations that change the mailbox (flags, moving, deleting) require a POST
+     * request with a valid CSRF token; reading operations require read access only.
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return bool
+     * @throws Exception
      */
     public function validateRequest(Vtiger_Request $request): bool
     {
+        if (in_array($this->getOperationArg($request), ['mark', 'move', 'delete'], true)) {
+            return $request->validateWriteAccess();
+        }
+
         return $request->validateReadAccess();
     }
 }

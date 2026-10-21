@@ -1,0 +1,220 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* Wizard step indicator (approved screen 02 — numbered circles, green active) */
+.its4you-wizard-steps {
+    margin: 4px 0 24px;
+}
+
+.its4you-step {
+    display: inline-block;
+    color: var(--bs-secondary-color);
+    margin-right: 34px;
+}
+
+.its4you-step .its4you-step-no {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 50%;
+    background: rgb(var(--bs-secondary-bg-rgb));
+    color: var(--bs-secondary-color);
+    text-align: center;
+    font-weight: 700;
+    margin-right: 7px;
+}
+
+.its4you-step.active {
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+.its4you-step.active .its4you-step-no {
+    background: var(--bs-primary-color);
+    color: #fff;
+}
+
+.its4you-step.done .its4you-step-no {
+    background: #dff0d8;
+    color: var(--dt-dark-green-color);
+}
+
+.its4you-muted {
+    color: var(--bs-secondary-color);
+    font-weight: 400;
+}
+
+/* Read-only inputs must be visibly non-editable */
+.its4you-mm-wizard input[readonly] {
+    background: rgb(var(--bs-secondary-bg-rgb));
+    color: var(--bs-secondary-color);
+    cursor: not-allowed;
+    border-color: var(--bs-border-color);
+}
+
+.its4you-hint {
+    color: var(--bs-secondary-color);
+    font-size: .875em;
+    margin-top: .25rem;
+}
+
+/* Provider cards */
+.its4you-provider-cards {
+    display: flex;
+    gap: 14px;
+}
+
+.its4you-provider-card {
+    flex: 1;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    padding: 14px;
+    text-align: center;
+    cursor: pointer;
+    background: #fff;
+}
+
+.its4you-provider-card:hover {
+    border-color: var(--bs-border-color);
+}
+
+.its4you-provider-card.selected {
+    border: 2px solid var(--bs-primary-color);
+    padding: 13px;
+    background: #f9fdf9;
+}
+
+.its4you-provider-card .fa {
+    font-size: 22px;
+    color: var(--bs-secondary-color);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.its4you-provider-card b {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.its4you-provider-card span {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+/* Step 2 — OAuth application panel */
+.its4you-oauth-box {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    max-width: 780px;
+}
+
+.its4you-oauth-head {
+    background: rgb(var(--bs-secondary-bg-rgb));
+    border-bottom: 1px solid var(--bs-border-color);
+    padding: 8px 14px;
+    font-weight: 700;
+}
+
+.its4you-oauth-head .label {
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+.its4you-oauth-body {
+    padding: 14px;
+}
+
+.its4you-guide {
+    margin: 0 0 14px;
+    padding-left: 20px;
+    color: var(--bs-body-color);
+}
+
+.its4you-guide li {
+    margin-bottom: 4px;
+}
+
+.its4you-copy-row {
+    display: flex;
+    gap: 6px;
+}
+
+.its4you-copy-row .its4you-redirect-uri {
+    background: rgb(var(--bs-secondary-bg-rgb));
+    color: var(--bs-secondary-color);
+}
+
+.its4you-port-row {
+    display: flex;
+    gap: 10px;
+}
+
+.its4you-port-row .its4you-imap-port {
+    width: 90px;
+}
+
+.its4you-port-row .its4you-imap-encryption {
+    width: 180px;
+}
+
+.its4you-conn-status,
+.its4you-conn-error {
+    max-width: 460px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding: 9px 13px;
+}
+
+.its4you-folders-scroll {
+    max-width: 380px;
+    margin-bottom: 4px;
+}
+
+.its4you-folders-table {
+    margin-bottom: 0;
+}
+
+.its4you-folders-table td {
+    padding: 5px 10px;
+}
+
+.its4you-folders-table label {
+    font-weight: 400;
+    margin: 0;
+    cursor: pointer;
+}
+
+.its4you-folder-count {
+    text-align: right;
+    color: var(--bs-secondary-color);
+    width: 80px;
+}
+
+.its4you-folder-icon {
+    color: #c9a54a;
+}
+
+.its4you-folder-toggle {
+    display: inline-block;
+    width: 14px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--bs-secondary-color);
+    font-size: 1rem;
+}
+
+.its4you-toggle-spacer {
+    display: inline-block;
+    width: 14px;
+}
+
+.its4you-shared-with {
+    width: 100%;
+}

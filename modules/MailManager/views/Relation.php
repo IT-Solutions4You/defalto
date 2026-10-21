@@ -85,7 +85,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View
         $linkedTo = null;
 
         if (!empty($msgUid)) {
-            $linkedTo = MailManager_Relate_Action::associatedLink($msgUid);
+            $linkedTo = MailManager_Relate_Model::associatedLink($msgUid);
         }
 
         $folderName = $request->get('_folder');
@@ -127,7 +127,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View
         $folder = $connector->getFolder($folderName);
         $mail = $connector->getMail($folder, $uid);
 
-        MailManager_Relate_Action::associate($mail, $linkTo);
+        MailManager_Relate_Model::associate($mail, $linkTo);
 
         $response->setResult(['success' => true]);
 
@@ -158,9 +158,10 @@ class MailManager_Relation_View extends MailManager_Abstract_View
         $mail = $connector->getMail($folder, $uid);
         $isSentFolder = $mail->getFrom()[0] == $currentUserModel->get('email1') || $folder->isSentFolder();
         $formData = $this->processFormData($mail, $isSentFolder);
-        $linkedTo = MailManager_Relate_Action::getSalesEntityInfo($parent);
-        $referenceFields = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule];
-        $referenceFieldName = $referenceFields[$linkedTo['module']];
+        $linkedTo = MailManager_Relate_Model::getSalesEntityInfo($parent);
+        // modules without a mapping (Appointments) fill their references below
+        $referenceFields = MailManager_Message_Model::RELATIONS_MAPPING[$linkModule] ?? [];
+        $referenceFieldName = $referenceFields[$linkedTo['module'] ?? ''] ?? '';
 
         switch ($linkModule) {
             case 'HelpDesk' :
@@ -179,9 +180,16 @@ class MailManager_Relation_View extends MailManager_Abstract_View
 
                 $formData['description'] = Core_CKEditor_UIType::transformEditViewDisplayValue($mail->getBody(false));
                 break;
+            case MailManager_Appointment_Helper::MODULE :
+                // the organization / record / person of the linked record — the
+                // date and time default to now in the user's time zone (QuickCreate)
+                $formData = array_merge($formData, MailManager_Appointment_Helper::getReferenceValues((int)$parent));
+                // the description is a text field — the readable text of the mail
+                $formData['description'] = MailManager_Appointment_Helper::getDescription($mail);
+                break;
         }
 
-        $contactRecordId = $formData[$referenceFields['Contacts']];
+        $contactRecordId = isset($referenceFields['Contacts']) ? ($formData[$referenceFields['Contacts']] ?? 0) : 0;
 
         if ($contactRecordId && isRecordExists($contactRecordId)) {
             $contactRecordModel = Vtiger_Record_Model::getInstanceById($contactRecordId, 'Contacts');
@@ -248,7 +256,11 @@ class MailManager_Relation_View extends MailManager_Abstract_View
             $mail = new MailManager_Message_Model();
         }
 
-        $linkedTo = MailManager_Relate_Action::getSalesEntityInfo($parent);
+        if (MailManager_Appointment_Helper::MODULE === $linkModule) {
+            return $this->createAppointment($request, $response, $mail, (int)$parent);
+        }
+
+        $linkedTo = MailManager_Relate_Model::getSalesEntityInfo($parent);
         $recordModel = Vtiger_Record_Model::getCleanInstance($linkModule);
         $fields = $recordModel->getModule()->getFields();
 
@@ -298,7 +310,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View
             if (!empty($linkTo)) {
                 $mail->setAttachmentRelationIds($recordModel->getId());
 
-                MailManager_Relate_Action::associate($mail, $linkTo, (int)$parent);
+                MailManager_Relate_Model::associate($mail, $linkTo, (int)$parent);
             }
 
             $response->setResult(['ui' => '', 'success' => true]);
@@ -306,6 +318,37 @@ class MailManager_Relation_View extends MailManager_Abstract_View
             $response->setResult(['ui' => '', 'error' => $e, 'title' => $e->getMessage(), 'message' => $e->getDuplicationMessage()]);
         } catch (Exception $e) {
             $response->setResult(['ui' => '', 'error' => $e]);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Saves an Appointment from the QuickCreate form of a mail through the
+     * Appointments save action — it turns the user's date, time and time zone
+     * into the stored value and handles the invitees and the recurrence — then
+     * fills its references from the linked record and links the mail to it.
+     *
+     * @param Vtiger_Request            $request  the posted QuickCreate form
+     * @param Vtiger_Response           $response
+     * @param MailManager_Message_Model $mail     the mail the appointment is made from
+     * @param int                       $parentId the record the mail is linked to, 0 = none
+     *
+     * @return Vtiger_Response
+     */
+    protected function createAppointment(Vtiger_Request $request, $response, MailManager_Message_Model $mail, int $parentId)
+    {
+        if (!Users_Privileges_Model::isPermitted(MailManager_Appointment_Helper::MODULE, 'CreateView')) {
+            $response->setResult(['ui' => '', 'error' => vtranslate('LBL_OPERATION_NOT_PERMITTED', $request->getModule())]);
+
+            return $response;
+        }
+
+        try {
+            MailManager_Appointment_Helper::createFromMail($request->getAll(), $mail, $parentId);
+            $response->setResult(['ui' => '', 'success' => true]);
+        } catch (Exception $e) {
+            $response->setResult(['ui' => '', 'error' => $e->getMessage()]);
         }
 
         return $response;
@@ -453,7 +496,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View
      */
     public function linkToAvailableActions()
     {
-        $moduleListForLinkTo = ['ITS4YouEmails', 'ModComments', 'HelpDesk', 'Potentials'];
+        $moduleListForLinkTo = ['ITS4YouEmails', 'ModComments', 'HelpDesk', 'Potentials', MailManager_Appointment_Helper::MODULE];
 
         foreach ($moduleListForLinkTo as $module) {
             if (MailManager::checkModuleWriteAccessForCurrentUser($module)) {

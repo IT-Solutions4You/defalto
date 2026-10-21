@@ -39,9 +39,47 @@ class MailManager_Folder_Model
         $this->setBoxFolder($mBoxFolder);
     }
 
+    /**
+     * Returns the display label of the folder: its full path, so nested folders with
+     * the same name (Archives/2026, Projects/2026) stay distinguishable.
+     *
+     * @return string
+     */
     public function getLabel()
     {
-        return $this->mName;
+        return (string)$this->mName;
+    }
+
+    /**
+     * Returns true for the INBOX folder itself (not for its subfolders).
+     *
+     * @return bool
+     */
+    public function isInboxFolder(): bool
+    {
+        return 0 === strcasecmp((string)$this->mName, 'INBOX');
+    }
+
+    /**
+     * Returns true for a top-level trash folder (name contains "trash").
+     *
+     * @return bool
+     */
+    public function isTrashFolder(): bool
+    {
+        return false !== stripos((string)$this->mName, 'trash') && !$this->isNestedFolder();
+    }
+
+    /**
+     * Returns true when the folder is a subfolder of another folder.
+     *
+     * @return bool
+     */
+    public function isNestedFolder(): bool
+    {
+        $boxFolder = $this->mBoxFolder;
+
+        return $boxFolder && $boxFolder->name !== $boxFolder->full_name;
     }
 
     public function getName()
@@ -59,15 +97,37 @@ class MailManager_Folder_Model
         $this->mPath = $value;
     }
 
+    /**
+     * Returns true when this folder is the sent folder configured in the mailbox settings.
+     * The setting may hold the folder path or, for older settings, only the folder name.
+     *
+     * @return bool
+     */
     public function isSentFolder()
     {
-        $mailBoxModel = MailManager_Mailbox_Model::getActiveInstance();
-        $folderName = $mailBoxModel->getFolder();
-        if ($this->mName == $folderName) {
-            return true;
+        $folderName = (string)self::getSentFolderSetting();
+
+        if ('' === $folderName) {
+            return false;
         }
 
-        return false;
+        return $this->mName === $folderName || ($this->mBoxFolder && $this->mBoxFolder->name === $folderName);
+    }
+
+    /**
+     * Returns the sent folder configured for the current user's mailbox, loaded once per request.
+     *
+     * @return string
+     */
+    public static function getSentFolderSetting(): string
+    {
+        static $sentFolder = null;
+
+        if (null === $sentFolder) {
+            $sentFolder = (string)MailManager_Mailbox_Model::getActiveInstance()->getFolder();
+        }
+
+        return $sentFolder;
     }
 
     public function setName($name)
@@ -114,9 +174,15 @@ class MailManager_Folder_Model
         return $this->mPageEnd;
     }
 
+    /**
+     * Computes the first and last mail number of the current page and returns the
+     * "start - end of total" text; the numbering starts at 1.
+     *
+     * @return string
+     */
     public function pageInfo()
     {
-        $this->startCount = max(1, ($this->mPageCurrent - 1) * $this->mPageLimit);
+        $this->startCount = min(($this->mPageCurrent - 1) * $this->mPageLimit + 1, $this->mCount);
         $this->endCount = min($this->mPageCurrent * $this->mPageLimit, $this->mCount);
 
         return sprintf("%s - %s of %s", $this->startCount, $this->endCount, $this->mCount);
@@ -127,14 +193,24 @@ class MailManager_Folder_Model
         return $this->mPageCurrent + $offset;
     }
 
+    /**
+     * Returns true when another page follows the current one.
+     *
+     * @return bool
+     */
     public function hasNextPage()
     {
-        return $this->endCount !== $this->mCount;
+        return $this->endCount < $this->mCount;
     }
 
+    /**
+     * Returns true when the current page is not the first one.
+     *
+     * @return bool
+     */
     public function hasPrevPage()
     {
-        return $this->startCount !== 1;
+        return $this->mPageCurrent > 1;
     }
 
     public function count()
@@ -175,10 +251,31 @@ class MailManager_Folder_Model
     public function getBoxFolder($mBox): Webklex\PHPIMAP\Folder|null
     {
         if (empty($this->mBoxFolder)) {
-            $this->setBoxFolder($mBox->getFolder($this->getName()));
+            $this->setBoxFolder($this->retrieveBoxFolder($mBox));
         }
 
         return $this->mBoxFolder;
+    }
+
+    /**
+     * Looks the folder up on the server by its full path first and falls back to the
+     * plain folder name (older settings and links store only the name).
+     *
+     * @param \Webklex\PHPIMAP\Client $mBox
+     *
+     * @return \Webklex\PHPIMAP\Folder|null
+     */
+    public function retrieveBoxFolder($mBox): Webklex\PHPIMAP\Folder|null
+    {
+        $name = (string)$this->getName();
+
+        foreach ($mBox->getFolders(false) as $folder) {
+            if ($folder->full_name === $name) {
+                return $folder;
+            }
+        }
+
+        return $mBox->getFolderByName($name, true);
     }
 
     public function setBoxFolder(Webklex\PHPIMAP\Folder|null $value): void

@@ -1,0 +1,47 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* AI settings of Mail Manager Pro (AISettings.tpl) */
+.its4you-ai-settings .its4you-ai-select {
+    max-width: 300px;
+}
+
+.its4you-ai-settings .its4you-ai-page-size {
+    max-width: 120px;
+}
+
+.its4you-ai-settings .its4you-ai-triage-mode {
+    width: 160px;
+}
+
+.its4you-ai-settings .its4you-ai-limit {
+    width: 80px;
+}
+
+.its4you-ai-settings .its4you-ai-features td {
+    vertical-align: top;
+}
+
+.its4you-ai-settings .its4you-ai-features .its4you-feature-toggle {
+    width: 190px;
+}
+
+.its4you-ai-settings textarea[name="ai_priority_rules"] {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* knowledge files (MailManager/Pro/partials/KnowledgeFiles.tpl) */
+.its4you-knowledge-table .its4you-knowledge-actions {
+    width: 70px;
+}
+
+.its4you-knowledge-table .its4you-knowledge-state {
+    width: 200px;
+}

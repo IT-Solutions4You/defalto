@@ -1,0 +1,134 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* Email labels editor — admin AI settings and My Settings */
+.its4you-label-editor .its4you-label-chip,
+.its4you-label-rules .its4you-label-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: .875rem;
+    font-weight: 600;
+    color: var(--bs-body-color);
+}
+
+.its4you-label-editor .its4you-active-check,
+.its4you-label-rules .its4you-active-check {
+    color: var(--dt-dark-green-color);
+}
+
+.its4you-label-editor .its4you-muted,
+.its4you-label-rules .its4you-muted {
+    color: var(--bs-secondary-color);
+    font-weight: 400;
+}
+
+/* the table header in the skin's secondary background */
+.its4you-label-editor .its4you-labels-table th,
+.its4you-label-rules .its4you-labels-table th {
+    background: var(--bs-tertiary-bg, rgb(var(--bs-secondary-bg-rgb)));
+}
+
+.its4you-label-rules-title {
+    margin: 28px 0 6px;
+    font-weight: 600;
+}
+
+.its4you-label-modal .its4you-form-row-check input[type="checkbox"] {
+    margin: 2px 0 0;
+    vertical-align: top;
+}
+
+.its4you-label-modal .its4you-hint {
+    color: var(--bs-secondary-color);
+    font-size: .875em;
+    margin-top: .25rem;
+}
+
+/* Flat color picker inside the modal */
+.its4you-label-modal .colorPicker {
+    position: relative;
+    min-height: 180px;
+}
+
+/* Color palette — the Defalto colors (Label model) in rows of five: light, base, dark */
+.its4you-label-modal .its4you-color-swatches {
+    display: grid;
+    grid-template-columns: repeat(5, 2.5rem);
+    gap: .375rem;
+}
+
+.its4you-label-modal .its4you-color-swatch {
+    height: 1.75rem;
+    border-radius: var(--bs-border-radius);
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    cursor: pointer;
+}
+
+.its4you-label-modal .its4you-color-swatch:hover,
+.its4you-label-modal .its4you-color-swatch.selected {
+    box-shadow: 0 0 0 2px var(--bs-primary-color);
+}
+
+/* the AI description is a few sentences — the skin squeezes a textarea
+   .inputElement to one line */
+.its4you-label-modal textarea[name="ai_description"] {
+    height: auto;
+    min-height: 84px;
+    resize: vertical;
+}
+
+/* preview of the label under the palette */
+.its4you-label-modal .its4you-label-preview {
+    margin-top: 10px;
+}
+
+.its4you-label-modal .its4you-label-preview .its4you-hint {
+    color: var(--bs-secondary-color);
+    font-size: .875em;
+    margin-top: .25rem;
+}
+
+.its4you-label-modal .its4you-label-preview-chip {
+    font-size: .875rem;
+    padding: 2px 10px;
+}
+
+/* fixed column widths of the labels and label rules tables */
+.its4you-labels-table .its4you-w-60 {
+    width: 60px;
+}
+
+.its4you-labels-table .its4you-w-80 {
+    width: 80px;
+}
+
+.its4you-labels-table .its4you-w-90 {
+    width: 90px;
+}
+
+.its4you-labels-table .its4you-w-140 {
+    width: 140px;
+}
+
+.its4you-labels-table .its4you-w-150 {
+    width: 150px;
+}
+
+.its4you-labels-table .its4you-w-160 {
+    width: 160px;
+}
+
+.its4you-labels-table .its4you-w-200 {
+    width: 200px;
+}
+
+.its4you-label-modal .its4you-mw-240 {
+    max-width: 240px;
+}

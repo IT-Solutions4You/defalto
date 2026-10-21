@@ -27,6 +27,7 @@
                                 <select id="serverType" class="select2 col-lg-9">
                                     <option></option>
                                     <option value='gmail' {if $SERVERNAME eq 'gmail'} selected {/if}>{vtranslate('JSLBL_Gmail',$MODULE)}</option>
+                                    <option value='office365' {if $SERVERNAME eq 'office365'} selected {/if}>{vtranslate('JSLBL_Office365',$MODULE)}</option>
                                     <option value='yahoo' {if $SERVERNAME eq 'yahoo'} selected {/if}>{vtranslate('JSLBL_Yahoo',$MODULE)}</option>
                                     <option value='fastmail' {if $SERVERNAME eq 'fastmail'} selected {/if}>{vtranslate('JSLBL_Fastmail',$MODULE)}</option>
                                     <option value='other' {if $SERVERNAME eq 'other'} selected {/if}>{vtranslate('JSLBL_Other',$MODULE)}</option>
@@ -63,7 +64,7 @@
                                 </label>
                             </div>
                             <div class="fieldValue col-lg">
-                                <input name="_mbox_pwd" class="inputElement form-control" id="_mbox_pwd" value="{$MAILBOX->password()}" type="password" placeholder="{vtranslate('LBL_Account_Password',$MODULE)}">
+                                <input name="_mbox_pwd" class="inputElement form-control" id="_mbox_pwd" value="{$MAILBOX->getPasswordPlaceholder()}" type="password" placeholder="{vtranslate('LBL_Account_Password',$MODULE)}">
                             </div>
                         </div>
                         <div class="row py-2 oauth2_settings {if !$MAILBOX->isOAuth()}hide{/if}">

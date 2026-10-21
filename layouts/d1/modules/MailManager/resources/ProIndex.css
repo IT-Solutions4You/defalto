@@ -1,0 +1,3107 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* Empty state */
+.its4you-mm-empty {
+    margin: 80px auto;
+    max-width: 420px;
+}
+
+.its4you-mm-empty-icon i {
+    font-size: 56px;
+    color: var(--bs-border-color);
+    margin-bottom: 16px;
+}
+
+/* ---- Inbox layout: sidebar | thread list | conversation ---- */
+.its4you-inbox {
+    display: flex;
+    align-items: stretch;
+    height: calc(100vh - 105px);
+    background: var(--bs-body-bg);
+    font-size: .875rem;
+}
+
+.its4you-muted {
+    color: var(--bs-secondary-color);
+}
+
+/* Sidebar */
+.its4you-inbox-sidebar {
+    width: 210px;
+    flex: none;
+    border-right: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    padding: 12px 6px 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.its4you-inbox-sidebar > .its4you-sidebar-group {
+    flex: none;
+}
+
+/* Settings gear pinned to the sidebar bottom (Slack/VS Code placement).
+   STICKY, not margin:auto — a sidebar full of folders would push a plain
+   footer below the scroll fold and the gear would seem missing */
+.its4you-sidebar-footer {
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+    background: rgb(var(--bs-secondary-bg-rgb));
+    /* the same inset as the folder items (Workspace, folders) above */
+    padding: 10px 8px 12px;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.its4you-my-settings-link {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-my-settings-link:hover {
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+/* My Settings inside the inbox (ProSettingsPane.js) — the list and the
+   conversation give way, the sidebar stays */
+.its4you-settings-pane {
+    display: none;
+}
+
+.its4you-inbox.its4you-settings-open .its4you-inbox-list,
+.its4you-inbox.its4you-settings-open .its4you-list-resizer,
+.its4you-inbox.its4you-settings-open .its4you-inbox-conversation {
+    display: none;
+}
+
+.its4you-inbox.its4you-settings-open .its4you-settings-pane {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 15px 20px 0;
+    background: var(--bs-body-bg);
+}
+
+/* the Workspace digest (I19, ProWorkspaceDigest.js) — in the place of the list and the
+   conversation like My Settings */
+.its4you-digest-pane {
+    display: none;
+}
+
+.its4you-inbox.its4you-digest-open .its4you-inbox-list,
+.its4you-inbox.its4you-digest-open .its4you-list-resizer,
+.its4you-inbox.its4you-digest-open .its4you-inbox-conversation,
+.its4you-inbox.its4you-digest-open .its4you-settings-pane {
+    display: none;
+}
+
+.its4you-inbox.its4you-digest-open .its4you-digest-pane {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 15px 20px;
+    background: var(--bs-body-bg);
+}
+
+.its4you-digest-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 3px;
+    color: var(--bs-body-color);
+    cursor: pointer;
+}
+
+.its4you-digest-item:hover {
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-digest-item.active {
+    background: var(--dt-light-blue-color);
+    color: var(--bs-primary-color);
+    font-weight: 600;
+}
+
+.its4you-digest-item.active .fa-clipboard-list {
+    color: inherit;
+}
+
+/* the digest shows — no folder or filter is where the user is */
+.its4you-digest-open .its4you-folder-item.active,
+.its4you-digest-open .its4you-filter-item.active {
+    background: none;
+    color: inherit;
+    font-weight: inherit;
+}
+
+.its4you-digest-summary {
+    margin-bottom: 16px;
+}
+
+.its4you-digest-section {
+    margin-bottom: 20px;
+}
+
+.its4you-digest-section-title {
+    display: flex;
+    align-items: center;
+    padding-bottom: 6px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.its4you-digest-row {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 3px;
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.its4you-digest-row:hover {
+    background: rgb(var(--bs-secondary-bg-rgb));
+    color: var(--bs-body-color);
+}
+
+.its4you-digest-row-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+}
+
+.its4you-digest-unread .its4you-digest-subject {
+    font-weight: 600;
+}
+
+.its4you-digest-mailbox {
+    font-weight: normal;
+}
+
+.its4you-digest-contact {
+    font-weight: 600;
+}
+
+.its4you-digest-subject {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-digest-date {
+    margin-left: auto;
+    font-size: .875rem;
+    white-space: nowrap;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-digest-date.text-danger {
+    color: var(--bs-danger) !important;
+}
+
+.its4you-digest-line {
+    padding-top: 2px;
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-digest-line-pending {
+    font-style: italic;
+}
+
+.its4you-digest-empty {
+    padding: 6px 8px;
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-digest-record-icon {
+    display: inline-flex;
+    width: 20px;
+    justify-content: center;
+}
+
+/* the core footer — fixed to the window bottom like on the core settings
+   pages (Company Details…). There it runs under the whole window; here it
+   starts where the settings area does, the sidebar stays free. The left edge
+   is measured (trackSettingsPaneLeft); until then the application bar (42px,
+   the core footer counts with it too) plus the sidebar's width applies */
+.its4you-settings-pane .modal-overlay-footer {
+    left: var(--its4you-settings-left, 252px);
+    /* on the bottom edge of the settings area — the page footer under it
+       ("Powered by vtiger…") stays visible */
+    bottom: var(--its4you-settings-bottom, 28px);
+    border-left: 0;
+    margin: 0;
+    text-align: center;
+}
+
+/* room for the fixed footer under the last field */
+.its4you-inbox.its4you-settings-open .its4you-settings-pane {
+    padding-bottom: 80px;
+}
+
+/* the tabs of My Settings — a fixed layer above the link (ProThreadList.js),
+   the scrolling sidebar would cut it off */
+.its4you-my-settings-menu {
+    min-width: 180px;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.its4you-my-settings-menu > li > a {
+    padding: 5px 12px;
+}
+
+/* MySettings page — Learning tab (label rules + spam senders), the grey header of the admin ones */
+.its4you-my-learning .its4you-labels-table th {
+    background: rgb(var(--bs-secondary-bg-rgb)) !important;
+    /* the table is full width — the headers fit on one line */
+    white-space: nowrap;
+}
+
+/* the label rules open the tab — no gap above their title */
+.its4you-my-learning .its4you-label-rules .its4you-label-rules-title {
+    margin-top: 0;
+}
+
+/* My Settings open in the main area — no folder / filter of the sidebar
+   is the place the user is in; the highlight returns with the mail */
+.its4you-settings-open .its4you-folder-item.active,
+.its4you-settings-open .its4you-filter-item.active {
+    background: none;
+    color: inherit;
+    font-weight: inherit;
+}
+
+/* MySettings page — Sharing tab (deputies of the personal mailbox) */
+.its4you-sharing-add {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.its4you-sharing-add .its4you-sharing-user {
+    width: 280px;
+}
+
+.its4you-sharing-add .its4you-sharing-until {
+    width: 200px;
+}
+
+.its4you-sharing .its4you-labels-table th {
+    background: rgb(var(--bs-secondary-bg-rgb)) !important;
+}
+
+/* the admin's mailbox detail — a read-only value next to a form label */
+.its4you-my-settings .its4you-form-text {
+    padding-top: 6px;
+}
+
+/* the first label table opens the tab — no gap above its title */
+.its4you-my-labels:first-child .its4you-label-rules-title {
+    margin-top: 0;
+}
+
+/* MySettings page — a tab ends where the row of tabs ends (the width is
+   measured by ProMySettingsPanel.js alignToTabs), its Save / Back footer with
+   it; only Learning and the activity history take the whole page */
+/* MySettings page — collapsible folder tree */
+.its4you-my-folders {
+    max-height: 360px;
+    overflow-y: auto;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    padding: 8px 10px;
+    background: var(--bs-body-bg);
+    max-width: 480px;
+}
+
+.its4you-my-folder-row {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.its4you-my-folder-row label {
+    font-weight: 400;
+    margin: 0;
+    cursor: pointer;
+}
+
+.its4you-my-folder-toggle,
+.its4you-my-toggle-spacer {
+    display: inline-block;
+    width: 14px;
+    text-align: center;
+}
+
+.its4you-my-folder-toggle {
+    cursor: pointer;
+    color: var(--bs-secondary-color);
+    font-size: 1rem;
+}
+
+.its4you-my-folder-icon {
+    color: var(--dt-yellow-color);
+}
+
+.its4you-sidebar-group {
+    margin-bottom: 18px;
+}
+
+.its4you-sidebar-title {
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--bs-secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+}
+
+.its4you-folder-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.its4you-folder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 3px;
+    color: var(--bs-body-color);
+    cursor: pointer;
+}
+
+.its4you-folder-item:hover {
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-folder-item.active {
+    background: var(--dt-light-blue-color);
+    color: var(--bs-primary-color);
+    font-weight: 600;
+}
+
+.its4you-folder-unscanned {
+    color: var(--bs-secondary-color);
+}
+
+/* icon of a sidebar folder — the system ones their own, the rest a folder */
+.its4you-folder-icon {
+    flex: none;
+    width: 16px;
+    margin-right: 5px;
+    text-align: center;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-folder-item.active .its4you-folder-icon {
+    color: inherit;
+}
+
+.its4you-folder-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Mailbox switcher — account card (name + address) with the mailbox list */
+.its4you-mailbox-dd {
+    position: relative;
+}
+
+.its4you-mailbox-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
+.its4you-mailbox-card:hover,
+.its4you-mailbox-card.show {
+    border-color: var(--bs-border-color);
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.its4you-mailbox-icon {
+    flex: none;
+    width: 16px;
+    text-align: center;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-mailbox-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.its4you-mailbox-name,
+.its4you-mailbox-email {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.its4you-mailbox-name {
+    font-weight: 600;
+    font-size: .875rem;
+}
+
+.its4you-mailbox-email {
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-mailbox-caret {
+    flex: none;
+    color: var(--bs-secondary-color);
+}
+
+/* the sidebar scrolls (overflow-y) and would cut the list off — the list
+   opens as a fixed layer under the card (ProThreadList.js), as wide as its
+   names need, at least as wide as the card */
+.its4you-mailbox-menu {
+    width: auto;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.its4you-mailbox-menu > li > a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    white-space: normal;
+}
+
+.its4you-mailbox-menu .dropdown-item.active,
+.its4you-mailbox-menu .dropdown-item.active:hover {
+    background: var(--dt-light-blue-color);
+    color: var(--bs-body-color);
+}
+
+.its4you-mailbox-menu .its4you-mailbox-name,
+.its4you-mailbox-menu .its4you-mailbox-email {
+    overflow: visible;
+}
+
+.its4you-folder-unread {
+    background: var(--bs-primary-color);
+    color: #fff;
+    border-radius: 9px;
+    padding: 1px 7px;
+    font-size: .75rem;
+    font-weight: 700;
+    margin-left: 6px;
+}
+
+/* The inbox panels scroll themselves — the PAGE never should; the vtiger
+   footer below the container otherwise forces a stray window scrollbar
+   (this stylesheet loads only on the Mail Manager page) */
+body {
+    overflow-y: hidden;
+}
+
+/* Thread list */
+.its4you-inbox-list {
+    width: 420px;
+    flex: none;
+    border-right: 1px solid var(--bs-border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.its4you-list-search {
+    position: relative;
+    flex: none;
+    border-bottom: 1px solid var(--bs-border-color);
+    padding: 6px 10px;
+}
+
+.its4you-list-search .fa-search {
+    position: absolute;
+    left: 20px;
+    top: 13px;
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-search-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 3px;
+    padding: 5px 26px;
+    font-size: .875rem;
+}
+
+.its4you-search-clear {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    color: var(--bs-secondary-color);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.its4you-search-clear:hover {
+    color: var(--bs-secondary-color);
+}
+
+.its4you-list-tabs {
+    display: flex;
+    /* the tabs wrap onto a second row in a narrow list — never a scrollbar */
+    flex-wrap: wrap;
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+    flex: none;
+}
+
+.its4you-list-tab {
+    padding: .5rem .75rem;
+    color: var(--bs-secondary-color);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+
+.its4you-list-tab:hover {
+    color: var(--bs-primary-color);
+}
+
+.its4you-list-tab.active {
+    color: var(--bs-primary-color);
+    font-weight: 600;
+    border-bottom-color: var(--bs-primary-color);
+}
+
+.its4you-thread-list {
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Labels & priority */
+.its4you-label-chip {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--bs-body-color);
+    vertical-align: 1px;
+}
+
+.its4you-priority {
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.its4you-priority-urgent { color: var(--dt-red-color); }
+.its4you-priority-high { color: var(--dt-yellow-color); }
+.its4you-priority-normal { color: var(--bs-primary-color); }
+.its4you-priority-low { color: var(--bs-secondary-color); }
+.its4you-priority-none { color: var(--bs-border-color); }
+
+/* a high / urgent conversation in the list — the flag leads the subject,
+   the subject takes the colour (the orange of the flag is too light to read) */
+.its4you-inbox .its4you-thread-row .its4you-thread-subject.its4you-thread-subject-urgent {
+    color: var(--dt-dark-red-color);
+    font-weight: 600;
+}
+
+.its4you-inbox .its4you-thread-row .its4you-thread-subject.its4you-thread-subject-high {
+    color: var(--bs-warning-text-emphasis);
+    font-weight: 600;
+}
+
+/* unread stays the boldest */
+.its4you-inbox .its4you-thread-row.unread .its4you-thread-subject.its4you-thread-subject-urgent,
+.its4you-inbox .its4you-thread-row.unread .its4you-thread-subject.its4you-thread-subject-high {
+    font-weight: 700;
+}
+
+.its4you-subject-flag {
+    margin-right: 5px;
+}
+
+/* the priority of the conversation head is a dropdown like its label */
+.its4you-priority-edit,
+.its4you-priority-edit:hover,
+.its4you-priority-edit:focus,
+.its4you-state-edit,
+.its4you-state-edit:hover,
+.its4you-state-edit:focus {
+    text-decoration: none;
+}
+
+.its4you-state-dd .dropdown-menu {
+    min-width: 140px;
+}
+
+.its4you-state-dd .dropdown-menu a {
+    padding: 5px 12px;
+}
+
+/* Conversation header teamwork controls */
+/* module icon of the driving record in front of the subject (vicon font,
+   a custom module's initials or its PNG) */
+.its4you-subject-icon {
+    margin-right: 6px;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-subject-icon [class^="vicon-"],
+.its4you-subject-icon .custom-module {
+    font-size: 18px;
+    vertical-align: -2px;
+}
+
+.its4you-subject-icon img {
+    height: 18px;
+    vertical-align: -3px;
+}
+
+.its4you-conversation-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* a conversation filed elsewhere with new mail in the Inbox */
+.its4you-split-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: var(--dt-light-yellow-color);
+    border: 1px solid var(--dt-yellow-color);
+    border-radius: 4px;
+    font-size: .875rem;
+    color: var(--bs-warning-text-emphasis);
+}
+
+.its4you-split-notice > span {
+    flex: 1;
+}
+
+.its4you-split-folder {
+    margin-top: 2px;
+}
+
+.its4you-head-sep {
+    color: var(--bs-border-color);
+}
+
+/* Delete is a regular toolbar button now; red accent on hover only */
+.its4you-thread-delete:hover {
+    color: var(--dt-dark-red-color);
+    border-color: var(--dt-red-color);
+}
+
+.its4you-assign-select,
+.its4you-status-select {
+    font-size: .875rem;
+    padding: 2px 4px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 3px;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
+.its4you-thread-row {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--bs-border-color);
+    cursor: pointer;
+}
+
+.its4you-thread-row:hover {
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-thread-row.selected {
+    background: var(--dt-light-blue-color);
+    border-left: 3px solid var(--bs-primary-color);
+    padding-left: 9px;
+}
+
+.its4you-thread-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.its4you-thread-from {
+    color: var(--bs-body-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-thread-row.unread .its4you-thread-from,
+.its4you-thread-row.unread .its4you-thread-subject {
+    font-weight: 700;
+    color: var(--bs-body-color);
+}
+
+.its4you-thread-time {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    flex: none;
+    margin-left: 8px;
+}
+
+.its4you-thread-subject {
+    margin: 2px 0;
+    color: var(--bs-body-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-thread-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.its4you-thread-snippet {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-thread-meta {
+    flex: none;
+    margin-left: 8px;
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-thread-count {
+    background: rgb(var(--bs-secondary-bg-rgb));
+    border-radius: 8px;
+    padding: 1px 6px;
+    font-weight: 700;
+}
+
+/* Folder of a conversation — list (mixed views) and conversation head */
+.its4you-folder-chip {
+    display: inline-block;
+    padding: 0 6px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 3px;
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    white-space: nowrap;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.its4you-folder-chip .fa-folder {
+    color: var(--dt-yellow-color);
+}
+
+a.its4you-folder-chip {
+    max-width: none;
+}
+
+a.its4you-folder-chip:hover {
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+    text-decoration: none;
+}
+
+.its4you-search-server-hint {
+    margin-top: 4px;
+    font-size: .875rem;
+}
+
+.its4you-thread-list-empty {
+    padding: 40px 20px;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-load-more-wrap {
+    padding: 10px;
+}
+
+/* Conversation */
+.its4you-inbox-conversation {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.its4you-conversation-content {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.its4you-conversation-empty {
+    margin-top: 120px;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-conversation-empty i {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.its4you-conversation-head {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.its4you-conversation-subject {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bs-body-color);
+    /* room between the subject and the label / status row */
+    margin-bottom: 8px;
+}
+
+.its4you-conversation-meta {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    margin-top: 2px;
+}
+
+.its4you-conversation-body {
+    padding: 12px 16px;
+}
+
+.its4you-message {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: var(--bs-body-bg);
+}
+
+/* Own messages: Gmail-style — the direction icon does the talking,
+   only a faint background tint helps when skimming a long thread */
+.its4you-message-out {
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-message-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 8px;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--bs-border-color);
+    font-size: .875rem;
+}
+
+.its4you-message-collapsed .its4you-message-body,
+.its4you-message-collapsed .its4you-message-attachments {
+    display: none;
+}
+
+.its4you-message-collapsed .its4you-message-head {
+    border-bottom: 0;
+    cursor: pointer;
+    opacity: 0.75;
+}
+
+.its4you-message-collapsed .its4you-message-head:hover {
+    opacity: 1;
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-message-body {
+    padding: 4px 8px;
+}
+
+.its4you-message-frame {
+    width: 100%;
+    border: 0;
+    min-height: 60px;
+    background: var(--bs-body-bg);
+    overflow: hidden;
+}
+
+.its4you-message-plain {
+    border: 0;
+    background: transparent;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: inherit;
+    font-size: .875rem;
+    color: var(--bs-body-color);
+    margin: 6px 4px;
+}
+
+.its4you-message-attachments {
+    padding: 8px 12px;
+    border-top: 1px dashed var(--bs-border-color);
+}
+
+.its4you-attachment-chip {
+    display: inline-block;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 3px;
+    padding: 3px 9px;
+    font-size: .875rem;
+    background: rgb(var(--bs-secondary-bg-rgb));
+    color: var(--bs-body-color);
+    margin: 2px 6px 2px 0;
+}
+
+a.its4you-attachment-chip:hover {
+    border-color: var(--bs-primary-color);
+    color: var(--bs-primary-color);
+    text-decoration: none;
+}
+
+/* Attachment preview (images, PDF) */
+.its4you-preview-body {
+    height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.its4you-preview-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Reply bar + composer */
+.its4you-replybar {
+    padding: 10px 16px;
+    border-top: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+}
+
+/* Composer — large centered popup; the overlay stays inside the module
+   container so the delegated handlers keep working */
+/* Bootstrap-modal anchoring: the popup always starts near the TOP (header
+   with the close cross immediately visible) and grows downwards — the
+   CKEditor initializes async and would push a centered popup off-screen;
+   the overlay scrolls whatever does not fit */
+.its4you-composer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(20, 20, 30, 0.4);
+    /* above the vtiger chrome (skin tops out at 2000) but below the
+       CKEditor dialogs (~10010) so the editor link dialog stays usable */
+    z-index: 9000;
+    overflow-y: auto;
+    /* no bottom padding — the sticky footer must sit flush with the
+       viewport edge, content would show through underneath otherwise */
+    padding: 24px 16px 0;
+}
+
+.its4you-composer {
+    /* wide enough for the CKEditor toolbar to wrap into two rows */
+    width: 1150px;
+    max-width: 96vw;
+    margin: 0 auto 24px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 6px;
+    background: var(--bs-body-bg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    /* anchor for the auto-draft loading cover */
+    position: relative;
+}
+
+.its4you-composer-head {
+    border-radius: var(--bs-border-radius) var(--bs-border-radius) 0 0;
+}
+
+/* Subject links to the driving record — looks like the plain subject,
+   reveals itself on hover */
+.its4you-subject-link {
+    color: inherit;
+}
+
+.its4you-subject-link:hover {
+    color: var(--bs-primary-color);
+    text-decoration: underline !important;
+}
+
+/* Draft marker + continue button in the conversation message head */
+.its4you-draft-chip {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 7px;
+    border-radius: 3px;
+    background: var(--dt-light-yellow-color);
+    border: 1px solid var(--dt-yellow-color);
+    color: var(--bs-warning-text-emphasis);
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.its4you-edit-draft {
+    margin-left: 6px;
+}
+
+/* Read-only preview of the original mail below the editor — rendered in a
+   sandboxed frame, untouched by CKEditor */
+.its4you-composer-quote {
+    margin: 0 12px 10px;
+    border: 1px solid var(--bs-border-color);
+    border-left: 3px solid var(--bs-border-color);
+    border-radius: 4px;
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-composer-quote-head {
+    padding: 6px 10px;
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.its4you-composer-quote .its4you-message-frame {
+    width: 100%;
+    border: 0;
+    min-height: 60px;
+    background: var(--bs-body-bg);
+}
+
+.its4you-composer-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--bs-border-color);
+    padding: 5px 12px;
+}
+
+.its4you-composer-row label {
+    width: 60px;
+    margin: 0;
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+    flex: none;
+}
+
+.its4you-composer-row .inputElement {
+    flex: 1;
+}
+
+/* To field — select2 recipient picker blends into the borderless row */
+.its4you-composer-row .select2-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.its4you-composer-row .select2-container-multi .select2-choices {
+    border: 0;
+    box-shadow: none;
+    background: none;
+    min-height: 28px;
+    padding: 0;
+}
+
+.its4you-composer-row .select2-container-multi .select2-search-field input {
+    padding: 5px 6px;
+    height: auto;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--bs-body-color);
+}
+
+/* picked recipient tokens */
+.its4you-composer-row .select2-container-multi .select2-choices li.select2-search-choice {
+    margin: 4px 5px 3px 0;
+    padding: 3px 6px 3px 19px;
+    background: var(--dt-light-blue-color);
+    border-color: var(--bs-border-color);
+    box-shadow: none;
+    color: var(--bs-primary-color);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.its4you-recipient-token-mail {
+    margin-left: 5px;
+    color: var(--bs-secondary-color);
+}
+
+/* dropdown: module groups, addresses, messages */
+.its4you-recipient-drop {
+    border-color: var(--bs-border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.its4you-recipient-drop .select2-results {
+    max-height: 320px;
+    padding: 0;
+    margin: 4px 0;
+}
+
+.its4you-recipient-drop .select2-results .select2-result-with-children > .select2-result-label {
+    padding: 6px 8px 3px;
+    background: none;
+    cursor: default;
+}
+
+.its4you-recipient-group {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+}
+
+/* module icon in the group header and in the picked token — the vt-icons
+   glyphs render huge by default, keep them at text size */
+.its4you-recipient-group > i,
+.its4you-recipient-group > img,
+.its4you-recipient-token > i,
+.its4you-recipient-token > img,
+.its4you-recipient-token > .custom-module {
+    margin-right: 5px;
+}
+
+/* muted in the dropdown header, token blue next to the record name */
+.its4you-recipient-group > i {
+    color: var(--bs-secondary-color);
+}
+
+.its4you-recipient-token > i,
+.its4you-recipient-token > .custom-module {
+    color: inherit;
+}
+
+.its4you-recipient-group > i,
+.its4you-recipient-token > i {
+    font-size: .875rem;
+    line-height: 1;
+    vertical-align: baseline;
+}
+
+.its4you-recipient-token > img,
+.its4you-recipient-group > img {
+    width: 11px;
+    height: 11px;
+    vertical-align: -1px;
+}
+
+.its4you-recipient-token > .custom-module {
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.its4you-recipient-drop .select2-result-sub > li > .select2-result-label {
+    padding: 5px 10px 5px 16px;
+}
+
+.its4you-recipient-mail {
+    display: block;
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-recipient-drop .select2-highlighted .its4you-recipient-mail {
+    color: #dbe8f7;
+}
+
+.its4you-recipient-drop .select2-no-results,
+.its4you-recipient-drop .select2-searching,
+.its4you-recipient-drop .select2-selection-limit {
+    background: var(--bs-body-bg);
+    color: var(--bs-secondary-color);
+    padding: 8px 10px;
+}
+
+/* Files picked for sending — no label, the row starts with the button */
+.its4you-composer-files {
+    flex: 1;
+    min-width: 0;
+    padding: 3px 0;
+}
+
+.its4you-attach-list {
+    margin-left: 10px;
+}
+
+/* same 13px as the recipient tokens in the To row */
+.its4you-attach-chip {
+    display: inline-block;
+    margin: 2px 6px 2px 0;
+    padding: 3px 8px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 3px;
+    background: rgb(var(--bs-secondary-bg-rgb));
+    font-size: 1rem;
+    line-height: 1.4;
+    color: var(--bs-body-color);
+}
+
+.its4you-attach-btn {
+    font-size: 1rem;
+    padding: 3px 9px;
+}
+
+.its4you-attach-size {
+    color: var(--bs-secondary-color);
+}
+
+.its4you-attach-remove {
+    margin-left: 6px;
+    color: var(--bs-secondary-color);
+    text-decoration: none;
+}
+
+.its4you-attach-remove:hover {
+    color: var(--dt-dark-red-color);
+}
+
+/* over the size limit — the send is refused, say so before the click */
+.its4you-attach-over .its4you-attach-chip {
+    border-color: var(--dt-red-color);
+    background: var(--dt-light-red-color);
+    color: var(--dt-dark-red-color);
+}
+
+.its4you-composer-attachments {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--bs-border-color);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+}
+
+.its4you-composer-attachment {
+    font-weight: 400;
+    margin: 0;
+    font-size: .875rem;
+    color: var(--bs-body-color);
+    cursor: pointer;
+}
+
+.its4you-composer-body {
+    padding: 8px 12px;
+}
+
+/* Workspace — the virtual work view above the folder tree; the Digest under it the same way */
+.its4you-workspace-item .fa-briefcase,
+.its4you-digest-item .fa-clipboard-list {
+    color: var(--bs-secondary-color);
+}
+
+/* left-aligned like the folders: the name fills the row, the badge stays right */
+.its4you-workspace-item .its4you-folder-name,
+.its4you-digest-item .its4you-folder-name {
+    flex: 1;
+    margin-left: 4px;
+}
+
+/* Auto-draft loader — a ticket-linked reply starts generating on open.
+   Full cover over the composer: the intermediate "AI is writing" step is
+   unmissable, the form reveals itself once the draft is in */
+.its4you-ai-generating {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* top, not centre — below the editor the quoted original makes the
+       composer tall, a centred spinner sat far below the visible part */
+    justify-content: flex-start;
+    padding-top: 160px;
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 6px;
+    color: var(--bs-primary-color);
+    font-size: 16px;
+}
+
+.its4you-ai-generating .fa-spinner {
+    font-size: 30px;
+    margin-bottom: 14px;
+}
+
+.its4you-ai-generating .its4you-ai-skip {
+    margin-top: 18px;
+    font-size: .875rem;
+}
+
+/* Sticky footer — Send/Cancel stay visible while the long reply or the
+   quoted original scrolls (the overlay is the scroll container) */
+.its4you-composer-toolbar {
+    position: sticky;
+    bottom: 0;
+    padding: 10px 12px;
+    border-top: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    border-radius: 0 0 6px 6px;
+    z-index: 5;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Why the mail did not go out — the bar above the composer buttons and the
+   fields to fix (ProComposer.js showComposerError) */
+.its4you-composer-error {
+    order: -1;
+}
+
+.its4you-composer-invalid > label {
+    color: var(--bs-danger);
+}
+
+.its4you-composer-invalid .select2-container,
+.its4you-composer-invalid > .form-control,
+.its4you-composer-body.its4you-composer-invalid {
+    box-shadow: inset 0 -2px 0 var(--bs-danger);
+}
+
+/* The composer overlay (9000) stands above the core's z-index counter
+   (app.helper.getZIndex() from 1051): what the core opens while the composer is
+   open — a confirmation box, a modal and its backdrop, a notification — would
+   be shown behind it. Only while a composer is open in this module. */
+body:has(> .its4you-composer-overlay:not(.hide)) > .modal-backdrop {
+    z-index: 9100 !important;
+}
+
+body:has(> .its4you-composer-overlay:not(.hide)) > .modal {
+    z-index: 9200 !important;
+}
+
+body:has(> .its4you-composer-overlay) > [data-notify="container"] {
+    z-index: 9600 !important;
+}
+
+/* CRM side panel */
+.its4you-inbox-conversation {
+    flex-direction: row;
+}
+
+.its4you-conversation-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.its4you-crm-rail {
+    width: 300px;
+    flex: none;
+    border-left: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    overflow-y: auto;
+}
+
+.its4you-crm-rail-head {
+    padding: 12px;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--bs-secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.its4you-crm-rail-body {
+    padding: 10px 12px;
+}
+
+.its4you-crm-section {
+    margin-bottom: 16px;
+}
+
+.its4you-crm-title {
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--bs-secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+}
+
+.its4you-crm-card {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Driving-record quick actions — one comment / event / task button row */
+/* the quick-create of a record made from a mail — wide enough for its text */
+.modal-dialog.its4you-qc-wide {
+    width: 1150px;
+    max-width: 94vw;
+}
+
+/* no "Go to full form" for a record made from a mail — saved by the core
+   edit view it would never get linked to the conversation */
+.modal-dialog.its4you-qc-wide #goToFullForm {
+    display: none !important;
+}
+
+/* its height is set to the window (fitQuickCreateHeight) */
+.modal-dialog.its4you-qc-wide .modal-body {
+    max-height: none !important;
+}
+
+/* the mail's text in a plain text area — the tall window has room to read it */
+.modal-dialog.its4you-qc-wide #QuickCreate textarea.inputElement {
+    min-height: 320px;
+}
+
+/* Project picker — the create-task sub-step under the Create New dropdown */
+.its4you-crm-project-box {
+    margin-top: 8px;
+}
+
+.its4you-crm-project-box .its4you-crm-project-select {
+    margin-bottom: 6px;
+}
+
+.its4you-crm-project-box .its4you-crm-project-cancel {
+    margin-left: 12px;
+}
+
+.myModal .its4you-crm-comment-text {
+    width: 100%;
+    resize: vertical;
+    font-size: 1rem;
+    /* the vtiger skin fixes .inputElement to one line — rows alone is ignored */
+    height: auto;
+    min-height: 340px;
+}
+
+.its4you-crm-comment-buttons {
+    margin-top: 4px;
+}
+
+.its4you-crm-comment-buttons .its4you-crm-comment-cancel {
+    margin-left: 8px;
+    font-size: .875rem;
+}
+
+/* the name line — the module icon small before the record name */
+.its4you-crm-card-name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+}
+
+.its4you-crm-card-icon {
+    flex: none;
+    color: var(--bs-secondary-color);
+    font-size: 12px;
+    line-height: 1;
+}
+
+.its4you-crm-card-icon i {
+    font-size: inherit;
+}
+
+.its4you-crm-card-icon img {
+    width: 14px;
+    height: 14px;
+}
+
+.its4you-crm-card-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.its4you-crm-card-name > a {
+    display: block;
+    min-width: 0;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-crm-card-summary {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* a card with details is tall — the unlink cross stays at its top */
+.its4you-crm-card-detailed {
+    align-items: flex-start;
+}
+
+/* key + summary fields of a case record — the label above its value */
+.its4you-crm-card-details {
+    margin-top: 8px;
+}
+
+.its4you-crm-card-detail {
+    margin-bottom: 6px;
+}
+
+.its4you-crm-card-detail:last-child {
+    margin-bottom: 0;
+}
+
+.its4you-crm-card-detail-label {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    line-height: 1.3;
+}
+
+.its4you-crm-card-detail-value {
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.its4you-crm-link {
+    flex: none;
+}
+
+.its4you-crm-unlink,
+.its4you-crm-dismiss {
+    color: var(--bs-secondary-color);
+    flex: none;
+}
+
+.its4you-crm-unlink:hover,
+.its4you-crm-dismiss:hover {
+    color: var(--dt-dark-red-color);
+}
+
+.its4you-crm-empty {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    padding: 8px 0;
+}
+
+/* the Create / Link menus: Bootstrap buttons of their natural width in one row
+   (.its4you-crm-actions); the menus open over the page (fixed, see ProCrmPanel.js) */
+.its4you-crm-menu .dropdown-menu {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* why the Add menu offers nothing yet */
+.its4you-crm-add-hint {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    padding-top: 4px;
+}
+
+/* an existing record offered as the next step in the suggestion card */
+.its4you-ai-linkstep {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+}
+
+.its4you-ai-linkstep .its4you-crm-dismiss {
+    color: var(--bs-secondary-color);
+}
+
+/* "Only records of <organization>" filter line of the Link Existing menu */
+.its4you-crm-pick-group .dropdown-menu > li.its4you-crm-pick-scope {
+    padding: 6px 12px 8px;
+    border-bottom: 1px solid var(--bs-border-color);
+    margin-bottom: 4px;
+}
+
+.its4you-crm-pick-group .dropdown-menu > li.its4you-crm-pick-scope label {
+    font-weight: normal;
+    font-size: .875rem;
+    margin: 0;
+    cursor: pointer;
+}
+
+/* the tick box sits on the text's middle line — its default top margin and
+   baseline alignment left it higher than the text, tight under the menu edge */
+.its4you-crm-pick-group .dropdown-menu > li.its4you-crm-pick-scope input[type="checkbox"] {
+    margin-top: 0;
+    vertical-align: middle;
+}
+
+.its4you-crm-create-icon {
+    display: inline-block;
+    width: 22px;
+    text-align: center;
+    margin-right: 4px;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-crm-create-icon [class^="vicon-"] {
+    font-size: 1rem;
+    vertical-align: -2px;
+}
+
+/* AI suggestion card in the CRM rail (approved mockup screen 07) */
+.its4you-ai-suggestion {
+    display: block;
+    background: var(--dt-light-blue-color);
+    border: 1px solid var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+.its4you-ai-suggestion-title {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bs-primary-color);
+    margin-bottom: 5px;
+}
+
+.its4you-ai-suggestion-text {
+    margin-bottom: 8px;
+}
+
+/* The AI card renders inside the rail partial (single data flow) but is
+   DISPLAYED as a full-width banner under the AI summary — JS clones it into
+   the slot, the rail original stays hidden */
+.its4you-crm-rail .its4you-ai-suggestion-section {
+    display: none;
+}
+
+.its4you-ai-suggestion-slot {
+    margin: 10px 16px 0;
+}
+
+.its4you-ai-suggestion-slot:empty {
+    margin: 0;
+}
+
+.its4you-ai-suggestion-slot .its4you-crm-section {
+    margin: 0;
+}
+
+.its4you-ai-suggestion-slot .its4you-ai-suggestion {
+    margin-bottom: 0;
+}
+
+/* Extra editable rows injected into the core QuickCreate modal — prefill
+   fields (signature address/phone…) the QC layout does not render */
+.its4you-qc-extra {
+    margin: 12px 15px 0;
+    padding: 10px 12px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    background: var(--dt-light-blue-color);
+}
+
+.its4you-qc-extra-title {
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bs-primary-color);
+    margin-bottom: 6px;
+}
+
+.its4you-qc-extra-row {
+    display: inline-block;
+    width: 48%;
+    margin: 0 1% 8px 0;
+    vertical-align: top;
+}
+
+.its4you-qc-extra-row label {
+    display: block;
+    margin: 0 0 2px;
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+    font-size: .875rem;
+}
+
+.its4you-qc-extra-row input {
+    width: 100%;
+}
+
+/* a relation the form sets — shown by name, not editable here */
+.its4you-qc-extra-static {
+    padding: 6px 0;
+    font-weight: 600;
+}
+
+/* Text-area fields (description…) span the full modal width */
+.its4you-qc-extra-row:has(textarea) {
+    display: block;
+    width: 98%;
+}
+
+.its4you-qc-extra-row textarea {
+    width: 100%;
+    resize: vertical;
+    /* the skin pins textarea.inputElement to a single-row height — mail
+       bodies need room (~5 rows) */
+    height: auto;
+    min-height: 110px;
+}
+
+/* the assigned user closes the card on the right */
+.its4you-crm-card-owner {
+    text-align: right;
+}
+
+/* how a card came to the conversation — linked automatically, mail logged on it */
+.its4you-crm-card-origin,
+.its4you-crm-card-origin .fa-check {
+    color: var(--dt-dark-green-color);
+}
+
+/* by what it was linked — on hover */
+.its4you-crm-card-origin[title] {
+    cursor: help;
+}
+
+.its4you-ai-suggestion-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.its4you-triage-dismiss {
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+    flex: none;
+}
+
+/* Mockup buttons are softly rounded — applies to every button in the module
+   (the todc theme ships square .btn corners) */
+.its4you-mailmanager .btn {
+    border-radius: 6px;
+}
+
+/* Compose row (mockup: solid green block button + sync button beside it) */
+.its4you-compose-row {
+    display: flex;
+    gap: 6px;
+}
+
+.its4you-compose {
+    display: block;
+    flex: 1;
+    text-align: center;
+    font-weight: 600;
+    padding: 7px 12px;
+}
+
+.its4you-compose-row .its4you-refresh {
+    flex: none;
+}
+
+/* Folder tree — collapsed subfolders with a caret toggle */
+.its4you-folder-caret {
+    width: 8px;
+    flex: none;
+    text-align: center;
+    color: var(--bs-secondary-color);
+    cursor: pointer;
+    margin-right: 1px;
+}
+
+.its4you-folder-caret:hover {
+    color: var(--bs-body-color);
+}
+
+.its4you-folder-caret-spacer {
+    width: 9px;
+    flex: none;
+}
+
+.its4you-folder-item .its4you-folder-name {
+    flex: 1;
+}
+
+/* Thread list column resizer */
+.its4you-list-resizer {
+    width: 5px;
+    flex: none;
+    cursor: col-resize;
+    background: transparent;
+    border-right: 1px solid var(--bs-border-color);
+    margin-left: -1px;
+}
+
+.its4you-list-resizer:hover {
+    background: var(--dt-light-blue-color);
+}
+
+.its4you-resizing {
+    user-select: none;
+}
+
+.its4you-resizing iframe {
+    pointer-events: none;
+}
+
+/* Thread row tag line (label, flag, count, paperclip, assignee) */
+.its4you-thread-tags {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 5px;
+}
+
+.its4you-thread-tags .its4you-thread-count,
+.its4you-thread-clip {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-thread-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--bs-primary-color);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    margin-left: auto;
+    flex: none;
+}
+
+/* Clickable label in the conversation head */
+.its4you-label-dd .dropdown-menu {
+    min-width: 140px;
+}
+
+.its4you-label-dd .dropdown-menu a {
+    padding: 5px 12px;
+}
+
+.its4you-label-edit {
+    color: inherit;
+    text-decoration: none;
+}
+
+.its4you-label-caret {
+    color: var(--bs-secondary-color);
+    margin-left: 2px;
+}
+
+.its4you-label-chip-empty {
+    background: rgb(var(--bs-secondary-bg-rgb));
+    border: 1px dashed var(--bs-border-color);
+    color: var(--bs-secondary-color);
+}
+
+/* Message heads toggle their body — always show the pointer */
+.its4you-message-head {
+    cursor: pointer;
+}
+
+/* Conversation action toolbar (reply group left, mailbox actions right) */
+.its4you-conversation-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 9px;
+}
+
+/* icons only — move / archive / delete always, the rest where the toolbar
+   does not fit the column; the texts are in the tooltips */
+.its4you-conversation-toolbar .its4you-btn-icon .its4you-btn-text,
+.its4you-conversation-toolbar.its4you-toolbar-compact .its4you-btn-text {
+    display: none;
+}
+
+.its4you-conversation-toolbar .its4you-btn-icon {
+    min-width: 34px;
+}
+
+.its4you-conversation-toolbar.its4you-toolbar-compact .btn {
+    min-width: 34px;
+}
+
+.its4you-toolbar-spacer {
+    flex: 1;
+}
+
+.its4you-move-menu {
+    max-height: 320px;
+    overflow-y: auto;
+    min-width: 200px;
+}
+
+.its4you-move-search {
+    padding: 4px 8px;
+}
+
+.its4you-move-search input {
+    width: 100%;
+}
+
+.its4you-move-menu a {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    color: var(--bs-body-color);
+}
+
+.its4you-move-menu .fa-folder {
+    color: var(--bs-secondary-color);
+    margin-right: 4px;
+}
+
+/* AI summary box above the messages (approved mockup screen 08) */
+.its4you-ai-summary {
+    position: relative;
+    margin: 10px 16px 0;
+    padding: 9px 30px 9px 13px;
+    border-radius: 4px;
+    background: var(--dt-light-blue-color);
+    border: 1px solid var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+.its4you-ai-summary b {
+    color: var(--bs-primary-color);
+}
+
+.its4you-ai-summary-text {
+    white-space: pre-line;
+}
+
+.its4you-ai-summary-close {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    color: var(--bs-secondary-color);
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.its4you-ai-summary-close:hover {
+    color: var(--bs-primary-color);
+}
+
+/* AI draft controls in the composer toolbar */
+
+/* Leading message icon (inbound / reply / forward) — fixed width aligns names */
+.its4you-msg-icon {
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    color: var(--bs-secondary-color);
+    margin-right: 3px;
+}
+
+/* copy recipients — own line under the sender, aligned with the name */
+.its4you-message-cc {
+    display: block;
+    margin: 2px 0 0 19px;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-message-cc-label {
+    color: var(--bs-body-color);
+}
+
+.its4you-message-out .its4you-msg-icon {
+    color: var(--bs-secondary-color);
+}
+
+/* Row hover quick actions — replace the timestamp while hovering */
+.its4you-row-actions {
+    display: none;
+    flex: none;
+    margin-left: 8px;
+    gap: 10px;
+}
+
+.its4you-thread-row:hover .its4you-row-actions {
+    display: inline-flex;
+}
+
+.its4you-thread-row:hover .its4you-thread-time {
+    display: none;
+}
+
+.its4you-row-action {
+    color: var(--bs-secondary-color);
+    padding: 0 2px;
+    font-size: 1rem;
+}
+
+.its4you-row-action[data-action="spam"]:hover {
+    color: var(--dt-yellow-color);
+}
+
+.its4you-row-action[data-action="delete"]:hover {
+    color: var(--dt-dark-red-color);
+}
+
+/* Sidebar label / priority filter items (mirror the folder item look) */
+.its4you-filter-item,
+.its4you-scheduled-open {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 3px;
+    color: var(--bs-body-color);
+    cursor: pointer;
+}
+
+.its4you-filter-item:hover,
+.its4you-scheduled-open:hover {
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-filter-item.active {
+    background: var(--dt-light-blue-color);
+    color: var(--bs-primary-color);
+    font-weight: 600;
+}
+
+.its4you-filter-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* unread conversations under a label / priority — the folders' badge */
+.its4you-filter-count {
+    background: var(--bs-primary-color);
+    color: #fff;
+    border-radius: 9px;
+    padding: 1px 7px;
+    font-size: .75rem;
+    font-weight: 700;
+    margin-left: 6px;
+    flex: none;
+}
+
+.its4you-label-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: 0;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Teamwork status at a glance */
+.its4you-status-chip {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-size: .75rem;
+    font-weight: 600;
+}
+
+/* module icon in the driving record chip of the thread list (vicon font,
+   a custom module's initials or its PNG) */
+.its4you-status-chip [class^="vicon-"],
+.its4you-status-chip .custom-module {
+    font-size: .875rem;
+    vertical-align: -1px;
+}
+
+.its4you-status-chip img {
+    height: 12px;
+    vertical-align: -2px;
+}
+
+.its4you-status-chip-progress {
+    background: var(--dt-light-yellow-color);
+    color: var(--bs-warning-text-emphasis);
+    border: 1px solid var(--dt-light-yellow-color);
+}
+
+.its4you-status-chip-done {
+    background: var(--dt-light-green-color);
+    color: var(--dt-dark-green-color);
+    border: 1px solid var(--bs-border-color);
+}
+
+a.its4you-status-chip {
+    text-decoration: none;
+}
+
+
+a.its4you-status-chip:hover {
+    text-decoration: underline;
+}
+
+.its4you-record-owner {
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+/* Bulk selection — a tick on every row and the bar with the master tick
+   and the bulk actions above the list */
+.its4you-thread-check {
+    margin: 0 6px 0 0 !important;
+    vertical-align: -2px;
+}
+
+/* a ticked row — the blue of the active folder in the sidebar */
+.its4you-thread-row.its4you-thread-checked,
+.its4you-thread-row.its4you-thread-checked:hover {
+    background: var(--dt-light-blue-color);
+}
+
+/* kind of the newest message — right after the tick, before the sender */
+.its4you-thread-kind {
+    display: inline-block;
+    width: 16px;
+    margin-right: 4px;
+    text-align: center;
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-bulk-bar {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 12px;
+    border-bottom: 1px solid var(--bs-border-color);
+    font-size: .875rem;
+    /* a narrow list breaks the actions onto a second line instead of cutting them */
+    flex-wrap: wrap;
+    row-gap: 4px;
+}
+
+/* the bulk actions — icons only, grouped (moves | read | properties) */
+.its4you-bulk-actions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.its4you-bulk-actions .btn {
+    min-width: 26px;
+}
+
+.its4you-bulk-sep {
+    width: 1px;
+    height: 16px;
+    margin: 0 3px;
+    background: rgb(var(--bs-secondary-bg-rgb));
+}
+
+.its4you-bulk-all-label {
+    margin: 0;
+    font-weight: normal;
+    color: var(--bs-body-color);
+    cursor: pointer;
+}
+
+.its4you-bulk-all-label input {
+    margin: 0 !important;
+    vertical-align: -2px;
+}
+
+.its4you-bulk-count-wrap {
+    flex: 1;
+}
+
+.its4you-bulk-count,
+.its4you-bulk-count:hover,
+.its4you-bulk-count:focus {
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+/* "selected only" is on — the count is marked and the other rows leave */
+.its4you-bulk-count.active {
+    color: var(--bs-primary-color);
+    text-decoration: underline;
+}
+
+.its4you-only-checked .its4you-thread-row:not(.its4you-thread-checked),
+.its4you-only-checked .its4you-load-more-wrap {
+    display: none;
+}
+
+/* the subjects of a bulk "Undo" card are a list, not a headline */
+.its4you-undo-subject-small {
+    font-size: .875rem;
+    font-weight: normal;
+}
+
+/* "Undo" bar of a delete / move to Spam — bottom left, one card per
+   conversation (what happened, its subject and sender, the Undo button);
+   the line under a card runs out with its time */
+.its4you-undo-bar {
+    position: fixed;
+    left: 70px;
+    bottom: 40px;
+    /* above the composer overlay (9000), below the CKEditor dialogs */
+    z-index: 9500;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 420px;
+    max-width: calc(100vw - 100px);
+}
+
+.its4you-undo-item {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #2c3b49;
+    color: #fff;
+    padding: 14px 16px 16px;
+    border-radius: 4px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+.its4you-undo-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.its4you-undo-action {
+    font-size: .875rem;
+    color: #b8c4cf;
+}
+
+.its4you-undo-subject {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-undo-sender {
+    font-size: .875rem;
+    color: #b8c4cf;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-undo-link {
+    flex: none;
+}
+
+.its4you-undo-progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--dt-yellow-color);
+    transform-origin: left;
+    animation: its4you-undo-run linear forwards;
+}
+
+/* "moved automatically" card — light with the folder's colour on the left,
+   stays until closed; not to be taken for the dark "Undo" card */
+.its4you-auto-item {
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border: 1px solid var(--bs-border-color);
+    border-left: 4px solid var(--dt-yellow-color);
+    padding: 12px 34px 12px 14px;
+}
+
+.its4you-auto-item.its4you-auto-trash {
+    border-left-color: var(--dt-red-color);
+}
+
+.its4you-auto-item .its4you-undo-action {
+    color: var(--dt-yellow-color);
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.its4you-auto-item.its4you-auto-trash .its4you-undo-action {
+    color: var(--dt-dark-red-color);
+}
+
+.its4you-auto-item .its4you-undo-subject {
+    font-weight: normal;
+    font-size: .875rem;
+}
+
+.its4you-auto-item .its4you-undo-sender {
+    color: var(--bs-secondary-color);
+}
+
+.its4you-auto-open {
+    flex: none;
+}
+
+.its4you-auto-close,
+.its4you-auto-close:hover,
+.its4you-auto-close:focus {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    color: var(--bs-secondary-color);
+}
+
+@keyframes its4you-undo-run {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+/* Sorting queue — the modal of new mail waiting for the AI triage: one row
+   per conversation, on the right the label it got and where it was moved */
+.its4you-triage-status {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.its4you-triage-progress {
+    height: 8px;
+    margin-bottom: 12px;
+}
+
+.its4you-triage-rows {
+    max-height: 55vh;
+    overflow-y: auto;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 3px;
+}
+
+.its4you-triage-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.its4you-triage-row:last-child {
+    border-bottom: 0;
+}
+
+.its4you-triage-state {
+    flex: none;
+    width: 16px;
+    text-align: center;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-triage-state.its4you-triage-ok {
+    color: var(--dt-dark-green-color);
+}
+
+.its4you-triage-failed {
+    color: var(--dt-dark-red-color);
+}
+
+.its4you-triage-mail {
+    flex: 1;
+    min-width: 0;
+}
+
+.its4you-triage-subject,
+.its4you-triage-sender {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.its4you-triage-subject {
+    font-weight: 600;
+}
+
+.its4you-triage-open,
+.its4you-triage-open:focus {
+    color: inherit;
+}
+
+.its4you-triage-open:hover {
+    color: var(--bs-primary-color);
+    text-decoration: underline;
+}
+
+.its4you-triage-row:not(.its4you-triage-done) .its4you-triage-subject {
+    font-weight: normal;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-triage-sender {
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-triage-result {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 45%;
+}
+
+.its4you-triage-none {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-triage-moved {
+    font-size: .875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--dt-yellow-color);
+}
+
+.its4you-triage-moved.its4you-triage-moved-trash {
+    color: var(--dt-dark-red-color);
+}
+
+/* a failed row of the sorting queue says why */
+.its4you-triage-result.its4you-triage-result-failed {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+}
+
+.its4you-triage-error {
+    max-width: 100%;
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* "the AI provider refuses the account" window - credit used up, key rejected */
+.its4you-ai-block-modal .modal-title i {
+    color: var(--dt-yellow-color);
+}
+
+.its4you-ai-block-text {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.its4you-ai-block-detail {
+    margin-top: 12px;
+    padding: 8px 10px;
+    background: rgb(var(--bs-secondary-bg-rgb));
+    border-left: 3px solid var(--bs-border-color);
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    word-break: break-word;
+}
+
+
+/* Core record popup opened by "Link Existing" — its columns are the module's
+   key / summary fields (Layout Editor); a long text field among them (a
+   description) would stretch every row over the whole popup, so each cell
+   stays on one line and is cut with an ellipsis (the full text is in the
+   cell's title) */
+#popupPageContainer .listViewEntriesTable td.listViewEntryValue {
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#popupPageContainer .listViewEntriesTable td.listViewEntryValue br {
+    display: none;
+}
+
+#popupPageContainer .listViewEntriesTable td.listViewEntryValue div,
+#popupPageContainer .listViewEntriesTable td.listViewEntryValue p {
+    display: inline;
+}
+
+/* Composer — a ticket-linked reply as a mail or as a comment on the ticket.
+   The comment is plain text: no recipients, no subject, no draft, and the
+   editor without its formatting toolbar */
+.its4you-composer-channel-wrap {
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.its4you-composer-channel-wrap .its4you-composer-channel {
+    margin: 0;
+    padding: 0 12px;
+    border-bottom: 0;
+}
+
+.its4you-composer-channel .tab-item {
+    cursor: pointer;
+}
+
+.its4you-composer-comment-note {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.its4you-composer-comment-ticket {
+    margin-bottom: 4px;
+}
+
+.its4you-composer-comment-note .alert {
+    margin: 0 0 6px;
+    padding: 6px 10px;
+}
+
+.its4you-comment-private-label {
+    display: block;
+    font-weight: normal;
+    margin: 6px 0 0;
+    cursor: pointer;
+}
+
+.its4you-composer .its4you-composer-comment-only,
+.its4you-composer-as-comment .its4you-composer-mail-only,
+.its4you-composer-as-comment .cke_top {
+    display: none !important;
+}
+
+.its4you-composer-as-comment .its4you-composer-comment-only {
+    display: inline !important;
+}
+
+.its4you-composer-as-comment .its4you-composer-comment-note {
+    display: block !important;
+}
+
+/* My Settings — the common labels as the owner sets them up */
+.its4you-default-labels {
+    margin-top: 24px;
+}
+
+.its4you-default-labels .its4you-default-description {
+    width: 100%;
+    resize: vertical;
+}
+
+.its4you-default-labels .its4you-default-module {
+    width: 100%;
+}
+
+.its4you-default-customized {
+    font-size: .875rem;
+    margin-top: 3px;
+}
+
+/* recipient picker — a person opted out of mass mailing */
+.its4you-recipient-optout {
+    margin-left: 8px;
+    font-size: .875rem;
+    color: var(--bs-warning-text-emphasis);
+}
+
+/* Composer — "Cc" / "Bcc" links in the From row open the copy rows */
+.its4you-composer-copy-links {
+    flex: none;
+    margin-left: 12px;
+    white-space: nowrap;
+}
+
+.its4you-composer-copy-links .its4you-copy-link {
+    margin-left: 12px;
+    color: var(--bs-secondary-color);
+}
+
+.its4you-copy-row .its4you-copy-close {
+    flex: none;
+    margin-left: 8px;
+    color: var(--bs-secondary-color);
+    font-size: 18px;
+    line-height: 1;
+    text-decoration: none;
+}
+
+/* The conversation's own state (no driving record): open = waits for us,
+   waiting = we answered, done */
+.its4you-status-chip-open {
+    background: var(--dt-light-blue-color);
+    color: var(--bs-primary-color);
+    border: 1px solid var(--bs-primary-border-subtle);
+}
+
+/* the same look as a record in progress / a closed record */
+.its4you-status-chip-waiting {
+    background: var(--dt-light-yellow-color);
+    color: var(--bs-warning-text-emphasis);
+    border: 1px solid var(--dt-light-yellow-color);
+}
+
+.its4you-assign-dd > a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Workspace — a conversation of another mailbox the user works in */
+.its4you-mailbox-chip {
+    background: var(--dt-light-blue-color);
+    border-color: var(--bs-border-color);
+    color: var(--bs-primary-color);
+}
+
+/* Core quick-create opened from the mail — a text area carries the core
+   .inputElement class and with it the height of a one-line input: the
+   description prefilled from the mail showed a line and a half */
+#QuickCreate textarea.inputElement {
+    height: auto;
+    min-height: 100px;
+    width: 100%;
+    max-width: none;
+    resize: vertical;
+}
+
+/* knowledge files (partials/KnowledgeFiles.tpl) */
+.its4you-knowledge-table .its4you-knowledge-actions {
+    width: 70px;
+}
+
+.its4you-knowledge-table .its4you-knowledge-state {
+    width: 200px;
+}
+
+.its4you-knowledge-ready {
+    color: var(--dt-dark-green-color);
+}
+
+.its4you-knowledge-waiting {
+    color: var(--bs-secondary-color);
+}
+
+.its4you-knowledge-upload {
+    margin: 0;
+}
+
+/* what the last AI draft answered from */
+.its4you-ai-sources {
+    padding: 4px 12px;
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-ai-source {
+    color: var(--bs-body-color);
+}
+
+/* the checks of the last AI draft (I16) */
+.its4you-ai-check {
+    padding: 4px 12px;
+    font-size: .875rem;
+}
+
+.its4you-ai-check-unverified,
+.its4you-ai-check-suspicious {
+    color: var(--bs-warning-text-emphasis);
+}
+
+/* written by the backup AI provider (I17) */
+.its4you-ai-backup-badge {
+    margin-top: 4px;
+    color: var(--bs-secondary-color);
+    font-size: .8125rem;
+}
+
+/* a conversation whose mail tried to instruct the AI (I16) */
+.its4you-ai-suspicious {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    background: var(--bs-warning-bg-subtle);
+    color: var(--bs-warning-text-emphasis);
+    font-size: .8125rem;
+}
+
+.its4you-ai-suspicious-safe {
+    margin-left: 4px;
+    text-decoration: underline;
+    color: inherit;
+}
+
+/* translation of a received message — button in its head, tabs over the body */
+.its4you-translate {
+    /* the head spreads its parts apart — the button sits next to the time */
+    margin-left: auto;
+    margin-right: 12px;
+    font-size: .875rem;
+    color: var(--bs-primary-color);
+    white-space: nowrap;
+}
+
+.its4you-translate-tabs {
+    padding: 6px 12px 0;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.its4you-translate-tabs a {
+    display: inline-block;
+    padding: 4px 10px;
+    margin-bottom: -1px;
+    color: var(--bs-secondary-color);
+    border-bottom: 2px solid transparent;
+}
+
+.its4you-translate-tabs a.active {
+    color: var(--bs-body-color);
+    border-bottom-color: var(--bs-primary-color);
+}
+
+.its4you-translation-text {
+    padding: 12px 16px;
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+/* the right column: CRM | AI assistant */
+.its4you-rail-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.its4you-rail-tab {
+    flex: 1;
+    padding: 8px 10px;
+    text-align: center;
+    color: var(--bs-secondary-color);
+    border-bottom: 2px solid transparent;
+}
+
+.its4you-rail-tab:hover,
+.its4you-rail-tab:focus {
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+
+.its4you-rail-tab.active {
+    color: var(--bs-body-color);
+    font-weight: 600;
+    border-bottom-color: var(--bs-primary-color);
+}
+
+.its4you-assistant {
+    padding: 10px 12px 14px;
+}
+
+.its4you-assistant-hint {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+    margin-bottom: 8px;
+}
+
+.its4you-assistant-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.its4you-assistant-chip {
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: var(--dt-light-blue-color);
+    color: var(--bs-primary-color);
+    font-size: .875rem;
+}
+
+.its4you-assistant-chip:hover,
+.its4you-assistant-chip:focus {
+    background: var(--bs-primary-bg-subtle);
+    text-decoration: none;
+}
+
+.its4you-assistant-message {
+    margin-bottom: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: .875rem;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.its4you-assistant-user {
+    margin-left: 24px;
+    background: var(--dt-light-blue-color);
+    color: var(--bs-body-color);
+}
+
+.its4you-assistant-answer {
+    margin-right: 12px;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+}
+
+.its4you-assistant-thinking {
+    color: var(--bs-secondary-color);
+}
+
+.its4you-assistant-action {
+    margin: 6px 6px 0 0;
+}
+
+.its4you-assistant-input {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    margin-top: 6px;
+}
+
+.its4you-assistant-input textarea.inputElement {
+    flex: 1;
+    height: auto;
+    min-height: 54px;
+    resize: vertical;
+}
+
+.its4you-assistant-clear {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: .875rem;
+    color: var(--bs-secondary-color);
+}
+
+/* ---- Defalto d1 additions ---- */
+
+/* folder tree indentation (was an inline style) */
+.its4you-folder-item.its4you-folder-depth-0 {
+    padding-left: 2px;
+}
+
+.its4you-folder-item.its4you-folder-depth-1 {
+    padding-left: 11px;
+}
+
+.its4you-folder-item.its4you-folder-depth-2 {
+    padding-left: 20px;
+}
+
+.its4you-folder-item.its4you-folder-depth-3 {
+    padding-left: 29px;
+}
+
+.its4you-folder-item.its4you-folder-depth-4 {
+    padding-left: 38px;
+}
+
+.its4you-folder-item.its4you-folder-depth-5 {
+    padding-left: 47px;
+}
+
+.its4you-folder-item.its4you-folder-depth-6 {
+    padding-left: 56px;
+}
+
+.its4you-folder-item.its4you-folder-depth-7 {
+    padding-left: 65px;
+}
+
+.its4you-folder-item.its4you-folder-depth-8 {
+    padding-left: 74px;
+}
+
+/* folder indentation of the "Move to" menus */
+.its4you-move-menu .its4you-move-depth-0 {
+    padding-left: 12px;
+}
+
+.its4you-move-menu .its4you-move-depth-1 {
+    padding-left: 26px;
+}
+
+.its4you-move-menu .its4you-move-depth-2 {
+    padding-left: 40px;
+}
+
+.its4you-move-menu .its4you-move-depth-3 {
+    padding-left: 54px;
+}
+
+.its4you-move-menu .its4you-move-depth-4 {
+    padding-left: 68px;
+}
+
+.its4you-move-menu .its4you-move-depth-5 {
+    padding-left: 82px;
+}
+
+.its4you-move-menu .its4you-move-depth-6 {
+    padding-left: 96px;
+}
+
+.its4you-move-menu .its4you-move-depth-7 {
+    padding-left: 110px;
+}
+
+.its4you-move-menu .its4you-move-depth-8 {
+    padding-left: 124px;
+}
+
+/* remote content of a message is blocked until allowed (ProConversation.js) */
+.its4you-remote-blocked {
+    margin: 4px 12px;
+    font-size: .875rem;
+}
+
+.its4you-message-collapsed .its4you-remote-blocked {
+    display: none !important;
+}
+
+/* The composer is not a Bootstrap .modal — its header takes the Defalto modal header spacing */
+.its4you-composer-head.modal-header {
+    padding: 1rem;
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+}
+
+.its4you-composer-head .modal-title {
+    margin: 0;
+}
+
+/* My settings page — Defalto page padding around the header, the mailbox switch and the tabs */
+.its4you-my-settings {
+    padding: 0 1rem 1rem;
+}
+
+.its4you-my-settings > .editViewHeader {
+    margin: 0 -1rem 1rem;
+    padding-left: 1rem;
+}
+
+/* a reply of ours newer than the customer's message — a one-line bar above it (ConversationHelper) */
+.its4you-message-bar.its4you-message-collapsed {
+    margin-bottom: .375rem;
+    border-style: dashed;
+}
+
+.its4you-message-bar.its4you-message-collapsed .its4you-message-head {
+    padding: .3rem .75rem;
+}
+
+.its4you-message-bar.its4you-message-collapsed .its4you-message-head > span:first-child {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* the bar names who and what — the addresses show once it is opened */
+.its4you-message-bar.its4you-message-collapsed .its4you-message-head > span:first-child > .its4you-muted,
+.its4you-message-bar.its4you-message-collapsed .its4you-message-cc {
+    display: none;
+}
+
+.its4you-message-snippet {
+    color: var(--bs-secondary-color);
+    font-weight: normal;
+}
+
+.its4you-message-bar:not(.its4you-message-collapsed) .its4you-message-snippet {
+    display: none;
+}
+
+
+/* Drag & drop of conversations onto folders and labels */
+.its4you-drag-helper {
+    max-width: 280px;
+    padding: .375rem .75rem;
+    border-radius: var(--bs-border-radius);
+    background: var(--bs-primary-color);
+    color: var(--bs-white);
+    font-size: .875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: var(--bs-box-shadow-sm);
+}
+
+.its4you-dragging .its4you-folder-item,
+.its4you-dragging .its4you-filter-item[data-labelid] {
+    outline: 1px dashed var(--bs-border-color);
+    outline-offset: -1px;
+}
+
+.its4you-folder-item.its4you-drop-hover,
+.its4you-filter-item.its4you-drop-hover {
+    background: rgba(var(--bs-primary-rgb), .12);
+    outline-color: var(--bs-primary-color);
+}
+
+/* "Send later" in the composer, the scheduled list */
+.its4you-schedule-box .its4you-schedule-row {
+    margin-left: .5rem;
+}
+
+.its4you-scheduled-modal .its4you-scheduled-row:last-child {
+    border-bottom: 0 !important;
+}
+
+/* A narrower screen (≈1300 px with the CRM menu) leaves the conversation room to read */
+@media (max-width: 1440px) {
+    .its4you-inbox-sidebar {
+        width: 180px;
+    }
+
+    .its4you-inbox-list {
+        width: 340px;
+    }
+
+    .its4you-crm-rail {
+        width: 260px;
+    }
+
+    .its4you-list-tab {
+        padding: .5rem .55rem;
+    }
+}

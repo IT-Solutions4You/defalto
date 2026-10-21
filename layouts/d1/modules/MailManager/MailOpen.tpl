@@ -98,13 +98,13 @@
             </div>
         </div>
         <div class="text-end border-bottom pb-3">
-            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.replyEmail({$MAIL->getUid()},"MailManager");' title="{vtranslate('Reply', $MODULE)}">
+            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.replyEmail({$MAIL->getUid()},"MailManager",{$FOLDER->getName()|@json_encode|escape:'html'});' title="{vtranslate('LBL_MAIL_REPLY', $MODULE)}">
                 <i class="fa-solid fa-reply"></i>
             </span>
-            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.replyAllEmail({$MAIL->getUid()},"MailManager");' title="{vtranslate('Reply all', $MODULE)}">
+            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.replyAllEmail({$MAIL->getUid()},"MailManager",{$FOLDER->getName()|@json_encode|escape:'html'});' title="{vtranslate('LBL_MAIL_REPLY_ALL', $MODULE)}">
                 <i class="fa-solid fa-reply-all"></i>
             </span>
-            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.forwardEmail({$MAIL->getUid()},"MailManager");' title="{vtranslate('Forward', $MODULE)}">
+            <span class="btn btn-outline-secondary mmDetailAction me-2" onclick='javascript:ITS4YouEmails_MassEdit_Js.forwardEmail({$MAIL->getUid()},"MailManager",{$FOLDER->getName()|@json_encode|escape:'html'});' title="{vtranslate('LBL_MAIL_FORWARD', $MODULE)}">
                 <i class="fa-solid fa-reply fa-flip-horizontal"></i>
             </span>
             <span class="btn btn-outline-secondary mmDetailAction me-2" id="mmPrint" title="{vtranslate('LBL_Print', $MODULE)}">

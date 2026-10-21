@@ -51,7 +51,12 @@ class MailManager_Settings_View extends MailManager_MainUI_View
             $model->setServer($request->get('_mbox_server'));
             $model->setUsername($request->get('_mbox_user'));
             // MailManager_Request->get($key) is give urldecoded value which is replacing + with space
-            $model->setPassword($request->getRaw('_mbox_pwd'));
+            $password = $request->getRaw('_mbox_pwd');
+
+            if (!$model->isPasswordPlaceholder($password)) {
+                $model->setPassword($password);
+            }
+
             $model->setProtocol($request->get('_mbox_protocol', 'IMAP4'));
             $model->setSSLType($request->get('_mbox_ssltype', 'ssl'));
             $model->setCertValidate($request->get('_mbox_certvalidate', 'novalidate-cert'));

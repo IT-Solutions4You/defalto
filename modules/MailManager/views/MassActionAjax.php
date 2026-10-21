@@ -26,96 +26,37 @@ class MailManager_MassActionAjax_View extends Vtiger_MassActionAjax_View
         return [];
     }
 
+    /**
+     * The e-mail fields of the selected records for the compose dialog.
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return array module => record id => e-mail => field model
+     */
     protected function getEmailFieldsInfo(Vtiger_Request $request)
     {
-        $sourceModules = [];
         $linkToModule = $request->get('linktomodule');
-        if (!empty($linkToModule)) {
-            $selectedIds = $request->get('selected_ids');
-            foreach ($selectedIds as $id) {
-                if ($id) {
-                    $sourceModules[] = getSalesEntityType($id);
-                }
-            }
-        } else {
-            $sourceModules[] = $request->getModule();
-        }
-
-        $totalRecordCount = 0;
-
-        foreach ($sourceModules as $sourceModule) {
-            $emailFieldsInfo = [];
-            $moduleModel = Vtiger_Module_Model::getInstance($sourceModule);
-            $recipientPrefModel = Vtiger_RecipientPreference_Model::getInstance($sourceModule);
-
-            if ($recipientPrefModel) {
-                $recipientPrefs = $recipientPrefModel->getPreferences();
-            }
-            $moduleEmailPrefs = $recipientPrefs[$moduleModel->getId()];
-            $emailFields = $moduleModel->getFieldsByType('email');
-            $accesibleEmailFields = [];
-
-            foreach ($emailFields as $index => $emailField) {
-                $fieldName = $emailField->getName();
-                if ($emailField->isViewable()) {
-                    if ($moduleEmailPrefs && in_array($emailField->getId(), $moduleEmailPrefs)) {
-                        $emailField->set('isPreferred', true);
-                    }
-                    $accesibleEmailFields[$fieldName] = $emailField;
-                }
-            }
-
-            $emailFields = $accesibleEmailFields;
-            if (php7_count($emailFields) > 0) {
-                $recordIds = $this->getRecordsListFromRequest($request);
-                global $current_user;
-                $baseTableId = $moduleModel->get('basetableid');
-                $queryGen = new QueryGenerator($moduleModel->getName(), $current_user);
-                $selectFields = array_keys($emailFields);
-                array_push($selectFields, 'id');
-                $queryGen->setFields($selectFields);
-                $query = $queryGen->getQuery();
-                $query = $query . ' AND crmid IN (' . generateQuestionMarks($recordIds) . ')';
-                $emailOptout = $moduleModel->getField('emailoptout');
-                if ($emailOptout) {
-                    $query .= ' AND ' . $emailOptout->get('column') . ' = 0';
-                }
-
-                $db = PearDatabase::getInstance();
-                $result = $db->pquery($query, $recordIds);
-                $num_rows = $db->num_rows($result);
-
-                if ($num_rows > 0) {
-                    for ($i = 0; $i < $num_rows; $i++) {
-                        $emailFieldsList = [];
-                        foreach ($emailFields as $emailField) {
-                            $emailValue = $db->query_result($result, $i, $emailField->get('column'));
-                            if (!empty($emailValue)) {
-                                $emailFieldsList[$emailValue] = $emailField;
-                            }
-                        }
-                        if (!empty($emailFieldsList)) {
-                            $recordId = $db->query_result($result, $i, $baseTableId);
-                            $emailFieldsInfo[$moduleModel->getName()][$recordId] = $emailFieldsList;
-                        }
-                    }
-                }
-            }
-            $totalRecordCount = $totalRecordCount + php7_count($recordIds);
-        }
+        $sourceModules = MailManager_EmailFields_Model::getSourceModules(
+            !empty($linkToModule),
+            $request->get('selected_ids'),
+            $request->getModule()
+        );
+        $data = MailManager_EmailFields_Model::getEmailFieldsInfo($sourceModules, function () use ($request) {
+            return $this->getRecordsListFromRequest($request);
+        });
 
         $viewer = $this->getViewer($request);
-        $viewer->assign('RECORDS_COUNT', $totalRecordCount);
+        $viewer->assign('RECORDS_COUNT', $data['records_count']);
 
-        if ($recipientPrefModel && !empty($recipientPrefs)) {
+        if ($data['recipient_pref_enabled']) {
             $viewer->assign('RECIPIENT_PREF_ENABLED', true);
         }
 
-        $viewer->assign('EMAIL_FIELDS', $emailFields);
+        $viewer->assign('EMAIL_FIELDS', $data['email_fields']);
 
         $viewer->assign('PREF_NEED_TO_UPDATE', $this->isPreferencesNeedToBeUpdated($request));
 
-        return $emailFieldsInfo;
+        return $data['email_fields_info'];
     }
 
     function showComposeEmailForm(Vtiger_Request $request)

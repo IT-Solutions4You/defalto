@@ -11,7 +11,7 @@
     {assign var=TRASH_ADDED value=0}
     <ul class="nav nav-pills flex-column">
         {foreach item=FOLDER from=$FOLDERS}
-            {if stripos($FOLDER->getName(), 'inbox') !== false && $INBOX_ADDED == 0}
+            {if $FOLDER->isInboxFolder() && $INBOX_ADDED == 0}
                 {assign var=INBOX_ADDED value=1}
                 {assign var=INBOX_FOLDER value=$FOLDER->getName()}
                 <li class="tab-item nav-link fs-6 mm_folder mmMainFolder active d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->getName()}">
@@ -42,7 +42,7 @@
         {/foreach}
         
         {foreach item=FOLDER from=$FOLDERS}
-            {if stripos($FOLDER->getName(), 'trash') !== false && $TRASH_ADDED == 0}
+            {if $FOLDER->isTrashFolder() && $TRASH_ADDED == 0}
                 {assign var=TRASH_ADDED value=1}
                 {assign var=TRASH_FOLDER value=$FOLDER->getName()}
                 <li class="tab-item nav-link fs-6 mm_folder mm_folder mmMainFolder d-flex align-items-center justify-content-between cursorPointer" data-foldername="{$FOLDER->getName()}">
