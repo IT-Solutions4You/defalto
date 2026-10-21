@@ -178,6 +178,15 @@ class Installer_License_Model extends Core_DatabaseData_Model
         return (string)($this->getInfo('item_name') ?: 'Defalto');
     }
 
+    public function getMaskedName(): string
+    {
+        $licenseKey = $this->getName();
+        $visibleLength = min(4, strlen($licenseKey));
+        $suffix = substr($licenseKey, -$visibleLength);
+
+        return trim('•••• •••• •••• ' . $suffix);
+    }
+
     public function getUsersLimit(): int
     {
         $limit = $this->getInfo('user_limit');
@@ -194,6 +203,26 @@ class Installer_License_Model extends Core_DatabaseData_Model
     public function getDisplayUsersLimit(): string
     {
         return $this->getUsersLimit() > 0 ? (string)$this->getUsersLimit() : vtranslate('Unlimited', 'Installer');
+    }
+
+    public function isUserUsageApplicable(): bool
+    {
+        return $this->isMembershipLicense();
+    }
+
+    public function isUsersLimitAvailable(): bool
+    {
+        return null !== $this->getInfo('user_limit') || null !== $this->getInfo('item_user_limit');
+    }
+
+    public function getAvailableSeats(): int
+    {
+        return max(0, $this->getUsersLimit() - $this->getUsersCount());
+    }
+
+    public function getExceededUsersCount(): int
+    {
+        return max(0, $this->getUsersCount() - $this->getUsersLimit());
     }
 
     public function getUsersCount(): int
@@ -318,6 +347,23 @@ class Installer_License_Model extends Core_DatabaseData_Model
         }
 
         return $this->getExpireDate() < date('Y-m-d H:i:s');
+    }
+
+    public function getDisplayStatus(): string
+    {
+        if ($this->isValidLicense()) {
+            return 'active';
+        }
+
+        if ($this->isExpired()) {
+            return 'expired';
+        }
+
+        if ('connection_error' === $this->getErrorCode()) {
+            return 'verification_unavailable';
+        }
+
+        return 'inactive';
     }
 
     public function isUserLimitReached(): bool
@@ -494,7 +540,11 @@ class Installer_License_Model extends Core_DatabaseData_Model
      */
     public function saveConnectionError(): void
     {
-        $this->saveError(Installer_Api_Model::CONNECTION_ERROR);
+        $info = $this->getInfo();
+        $info['last_error'] = Installer_Api_Model::CONNECTION_ERROR;
+        $info['last_attempt_at'] = date('Y-m-d H:i:s');
+        $this->setInfo($info);
+        $this->save();
     }
 
     /**
@@ -523,7 +573,36 @@ class Installer_License_Model extends Core_DatabaseData_Model
             return '';
         }
 
-        return vtranslate('LBL_LICENSE_ERROR_' . strtoupper($error), 'Installer');
+        $label = 'LBL_LICENSE_ERROR_' . strtoupper($error);
+        $message = vtranslate($label, 'Installer');
+
+        return $message === $label ? vtranslate('LBL_LICENSE_NOT_ACTIVATED', 'Installer') : $message;
+    }
+
+    public function getErrorHelp(): array
+    {
+        $error = $this->isUserLimitReached() ? self::USER_LIMIT_EXCEEDED : $this->getErrorCode();
+        $stepsByError = [
+            'no_activations_left' => ['ACTIVATIONS', 'MIGRATION', 'RELEASE', 'UPDATE'],
+            'invalid_license' => ['KEY', 'UPDATE'],
+            'expired_license' => ['EXPIRED', 'KEY', 'UPDATE'],
+            self::USER_LIMIT_EXCEEDED => ['USERS', 'UPDATE'],
+            'invalid_user_count' => ['USER_COUNT', 'UPDATE'],
+            Installer_Api_Model::CONNECTION_ERROR => ['CONNECTION', 'UPDATE'],
+            'missing_expiration' => ['CONTRACT', 'UPDATE'],
+            'user_limit_missing' => ['CONTRACT', 'UPDATE'],
+            'invalid_request' => ['UPDATE', 'CONNECTION', 'KEY'],
+            'invalid_action' => ['UPDATE', 'KEY'],
+        ];
+        $stepNames = array_merge($stepsByError[$error] ?? ['KEY', 'CONNECTION', 'UPDATE'], ['RETRY', 'SUPPORT']);
+
+        return array_map(
+            static fn (string $step): array => [
+                'title' => vtranslate('LBL_LICENSE_HELP_' . $step . '_TITLE', 'Installer'),
+                'description' => vtranslate('LBL_LICENSE_HELP_' . $step, 'Installer'),
+            ],
+            $stepNames
+        );
     }
 
     public function getDisplayLastSuccessfulCheck(): string
@@ -618,8 +697,6 @@ class Installer_License_Model extends Core_DatabaseData_Model
         if (Installer_Api_Model::isConnectionError($response)) {
             $info['last_response'] = self::getResponseLogData($response);
             $info['last_error'] = Installer_Api_Model::CONNECTION_ERROR;
-            $info['local_active'] = false;
-            $info['users_valid'] = false;
             $this->setInfo($info);
 
             return;

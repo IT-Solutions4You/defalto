@@ -10,6 +10,7 @@
 
 - Accept installable files only below `modules`, `layouts`, and `languages`, either directly at the ZIP root or below one wrapper directory.
 - Derive exactly one module identity from `modules/<Module>/<Module>.php`. Require a declared `moduleVersion` and `modules/<Module>/models/Install.php`. `modules/<Module>/manifest.xml` is optional; when present, its name and version must match the module file and its minimum Defalto version is enforced.
+- Read an optional `modules/<Module>/CHANGELOG.md` from the validated ZIP, require its newest version heading to match the package version, and show at most its newest three versions on the confirmation screen. Keep legacy packages without a changelog installable.
 - Permit only paths owned by that module: its module and Settings directories, its layout module directories, and its locale language files.
 - Keep cron handlers under `modules/<Module>/cron`. Reject a root `cron` directory and every other application root.
 - Load and install an optional manifest only from `modules/<Module>/manifest.xml`. Never use a root manifest or use manifest data to remap package paths.

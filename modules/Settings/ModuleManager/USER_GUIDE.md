@@ -4,13 +4,15 @@ Module Manager lets an administrator enable or disable installed modules and ins
 
 ## Install from a ZIP file
 
-Open Module Manager, choose **Install from ZIP**, accept the warning, and select the package. The confirmation screen shows the detected module and package version. Module Manager chooses installation or update from the current module state; package identity is not taken from the file name.
+Open Module Manager, choose **Install from ZIP**, accept the warning, and select the package. The confirmation screen shows the detected module, package version, and up to the latest three customer-facing changelog versions read from the validated ZIP. Module Manager chooses installation or update from the current module state; package identity is not taken from the file name.
 
 The ZIP must follow the Defalto directory structure. It may contain only:
 
 - `modules/<Module>` and optional `modules/Settings/<Module>` files;
 - module resources below `layouts/<Layout>/modules/<Module>` or its Settings path;
 - module language files below `languages/<Locale>`.
+
+Add customer-facing release notes at `modules/<Module>/CHANGELOG.md`. Put the newest release first using `## <version> - YYYY-MM-DD`, followed by plain `- <change>` bullet points. The newest changelog version must match the package version. Legacy packages without this file remain installable but show that release notes are unavailable.
 
 Cron handlers belong below `modules/<Module>/cron`. Do not add a root `cron` directory. The package must include `modules/<Module>/<Module>.php`, a `moduleVersion`, and `modules/<Module>/models/Install.php`. An optional `modules/<Module>/manifest.xml` is used when present; its module name and version must match the module file. The structure may be at the ZIP root or inside one wrapper directory.
 

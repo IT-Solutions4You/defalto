@@ -44,6 +44,26 @@
 									{/if}
 								</p>
 							</div>
+							<div class="mb-3">
+								<h5>{vtranslate('LBL_CHANGELOG_INFORMATION', 'Installer')}</h5>
+								{if $MODULEIMPORT_CHANGELOG}
+									{foreach item=CHANGELOG_ENTRY from=$MODULEIMPORT_CHANGELOG name=moduleImportChangelog}
+										<section class="{if !$smarty.foreach.moduleImportChangelog.first}border-top pt-3{/if} mb-3">
+											<h6 class="d-flex align-items-center gap-2">
+												<span class="badge bg-primary">{$CHANGELOG_ENTRY.version|escape}</span>
+												{if $CHANGELOG_ENTRY.date}<span class="text-body-secondary">{$CHANGELOG_ENTRY.date|escape}</span>{/if}
+											</h6>
+											<ul class="mb-0">
+												{foreach item=CHANGE from=$CHANGELOG_ENTRY.changes}
+													<li>{$CHANGE|escape}</li>
+												{/foreach}
+											</ul>
+										</section>
+									{/foreach}
+								{else}
+									<div class="alert alert-warning mb-0">{vtranslate('LBL_MISSING_CHANGELOG', 'Installer')}</div>
+								{/if}
+							</div>
 							<div>
 								{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
 									{if $MODULEIMPORT_EXISTS eq 'true'}

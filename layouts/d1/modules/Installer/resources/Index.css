@@ -3,3 +3,16 @@
     min-width: 30vw;
     max-width: calc(100vw - 2rem);
 }
+
+.licenseHelpStep > summary {
+    cursor: pointer;
+}
+
+.licenseHelpStep[open] .licenseHelpChevron {
+    transform: rotate(180deg);
+}
+
+.installerClipboardInput {
+    position: fixed;
+    left: -9999px;
+}
