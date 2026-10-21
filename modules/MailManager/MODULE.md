@@ -151,3 +151,5 @@
 
 - MailManager upload actions use the shared `decideFilePath()` attachment directory. Saved-message attachment reads and cleanup resolve stored relative or absolute paths through `Core_Storage_Model::getFilePath()`.
 - `vtiger_mailmanager_mailattachments.path` follows the same physical storage policy as `vtiger_attachments.path`, while its table and message lifecycle remain owned by MailManager.
+- The cache rule of Basic is `MailManager_Message_Model::getAttachmentFilePath()` (folder + `<attachid>_<sanitized name>` through `Core_Storage_Model::getFilePath()`), used for reading, downloading and pruning.
+- Mail Manager Pro writes every file through `Core_Attachment_Model` (sent mail attachments `ProOutbox`, Documents from attachments `ProDocumentFiler`, filed e-mails `ProEmailFiler`, `Relate`) and the Basic upload through `decideFilePath()`; it reads Documents through `Core_Storage_Model::getAttachmentFilePath()` (CRM documents attached in the composer `ProOutgoingAttachment::collectDocumentAttachments()`, knowledge files `ProKnowledge`). Mail attachments of Pro are fetched from the IMAP server on demand and never stored as files.

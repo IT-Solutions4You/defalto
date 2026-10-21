@@ -728,10 +728,8 @@ class MailManager_ProKnowledge_Model
             return '';
         }
 
-        $stored = (string)($row['storedname'] ?? '') !== ''
-            ? $row['storedname']
-            : decode_html((string)$row['name']);
-        $path = $row['path'] . $row['attachmentsid'] . '_' . $stored;
+        // relative (storage/…) or an absolute $storage_directory outside the web root
+        $path = decode_html(Core_Storage_Model::getInstance()->getAttachmentFilePath($row));
         if (!is_file($path)) {
             return '';
         }

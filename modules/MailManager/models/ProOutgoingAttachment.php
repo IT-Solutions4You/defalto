@@ -125,8 +125,8 @@ class MailManager_ProOutgoingAttachment_Model
                 continue;
             }
 
-            $storedName = $file['storedname'] ?? $file['name'];
-            $path = decode_html($file['path'] . $file['attachmentsid'] . '_' . $storedName);
+            // relative (storage/…) or an absolute $storage_directory outside the web root
+            $path = decode_html(Core_Storage_Model::getInstance()->getAttachmentFilePath($file));
             $content = is_file($path) ? file_get_contents($path) : false;
 
             if (false === $content) {

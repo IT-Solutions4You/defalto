@@ -127,7 +127,11 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
      */
     public static function getAttachmentFilePath(string $path, int|string $attachmentId, string $name): string
     {
-        return $path . $attachmentId . '_' . sanitizeUploadFileName($name, vglobal('upload_badext'));
+        // a relative folder (storage/…) or an absolute $storage_directory outside the web root
+        return Core_Storage_Model::getInstance()->getFilePath(
+            $path,
+            $attachmentId . '_' . sanitizeUploadFileName($name, vglobal('upload_badext'))
+        );
     }
 
     /**
