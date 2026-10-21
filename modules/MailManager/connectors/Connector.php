@@ -110,7 +110,7 @@ class MailManager_Connector_Connector
         $password = $boxModel->password();
         $authentication = '';
 
-        if (str_contains($server, 'gmail.com')) {
+        if (Core_Auth_Model::isOAuthServer((string)$server)) {
             $authentication = 'oauth';
             $password = $boxModel->getClientAccessToken();
         }
@@ -194,8 +194,11 @@ class MailManager_Connector_Connector
     }
 
     /**
-     * Reads mail box folders
-     * @return array|bool|mixed
+     * Reads all mail box folders as a flat list, including parent folders that have
+     * children (for example INBOX with INBOX/Sent) and folders on any nesting level.
+     *
+     * @return MailManager_Folder_Model[]
+     * @throws Exception
      */
     public function getFolders()
     {
@@ -203,23 +206,13 @@ class MailManager_Connector_Connector
             return $this->mFolders;
         }
 
-        $result = $this->getBox()->getFolders();
         $folders = [];
 
-        foreach ($result as $row) {
-            if ($row->hasChildren()) {
-                foreach ($row->getChildren()->all() as $childRow) {
-                    $folderInstance = $this->getFolder($childRow->name, $childRow->path);
-                    $folderInstance->setBoxFolder($childRow);
+        foreach ($this->getBox()->getFolders(false) as $row) {
+            $folderInstance = $this->getFolder($row->full_name, $row->full_name);
+            $folderInstance->setBoxFolder($row);
 
-                    $folders[] = $folderInstance;
-                }
-            } else {
-                $folderInstance = $this->getFolder($row->name, $row->path);
-                $folderInstance->setBoxFolder($row);
-
-                $folders[] = $folderInstance;
-            }
+            $folders[] = $folderInstance;
         }
 
         $this->mFolders = $folders;
@@ -317,13 +310,36 @@ class MailManager_Connector_Connector
         $mails = [];
 
         foreach ($query->get() as $mBoxMessage) {
-            $message = MailManager_Message_Model::parseOverview($mBoxMessage, $folder, $this->getBox());
+            $mails[] = MailManager_Message_Model::parseOverview($mBoxMessage, $folder, $this->getBox());
+        }
 
-            array_unshift($mailIds, $message->getUid());
-            array_unshift($mails, $message);
+        usort($mails, [$this, 'compareMailsByDateDesc']);
+
+        foreach ($mails as $mail) {
+            $mailIds[] = $mail->getUid();
         }
 
         return [$mailIds, $mails];
+    }
+
+    /**
+     * Sort callback that orders mails of one page from the newest to the oldest date
+     * and keeps the server order (newer arrival first) for equal dates.
+     *
+     * @param MailManager_Message_Model $first
+     * @param MailManager_Message_Model $second
+     *
+     * @return int
+     */
+    public function compareMailsByDateDesc(MailManager_Message_Model $first, MailManager_Message_Model $second): int
+    {
+        $comparison = $second->getTimestamp() <=> $first->getTimestamp();
+
+        if (0 === $comparison) {
+            $comparison = (int)$second->getUid() <=> (int)$first->getUid();
+        }
+
+        return $comparison;
     }
 
     /**
@@ -458,7 +474,7 @@ class MailManager_Connector_Connector
         $mBoxFolder = $folder->getBoxFolder($this->getBox());
 
         if ($mBoxFolder) {
-            $query = $mBoxFolder->query()->setFetchOrderAsc()->setFetchBody(false)->where($query);
+            $query = $mBoxFolder->query()->setFetchOrderDesc()->setFetchBody(false)->where($query);
             $count = $query->count();
 
             [$mailIds, $mails] = $this->getMails($query, $folder, $page, $limit);

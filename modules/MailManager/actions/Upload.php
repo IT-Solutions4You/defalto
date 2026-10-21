@@ -23,97 +23,23 @@ class MailManager_UploadFileXHR extends qqUploadedFileXhr
 {
     /**
      * Create a Document
-     * @return array
-     * @global PearDataBase $db
-     * @global Users        $current_user
+     *
+     * @return array|false
+     * @throws Exception
      */
     public function createDocument()
     {
-        $db = PearDatabase::getInstance();
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-
-        if (!MailManager::checkModuleWriteAccessForCurrentUser('Documents')) {
-            $errorMessage = getTranslatedString('LBL_WRITE_ACCESS_FOR', $currentModule) . " " . getTranslatedString('Documents') . " " . getTranslatedString(
-                    'LBL_MODULE_DENIED',
-                    $currentModule
-                );
-
-            return ['success' => true, 'error' => $errorMessage];
-        }
-        require_once 'data/CRMEntity.php';
-        $document = CRMEntity::getInstance('Documents');
-
-        $attachid = $this->saveAttachment();
-
-        if ($attachid !== false) {
-            // Create document record
-            $document = new Documents();
-            $document->column_fields['notes_title'] = $this->getName();
-            $document->column_fields['filename'] = $this->getName();
-            $document->column_fields['filestatus'] = 1;
-            $document->column_fields['filelocationtype'] = 'I';
-            $document->column_fields['folderid'] = 1;
-            $document->column_fields['filesize'] = $this->getSize();
-            $document->column_fields['assigned_user_id'] = $currentUserModel->getId();
-            $document->save('Documents');
-
-            // Link file attached to document
-            $db->pquery(
-                "INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)",
-                [$document->id, $attachid]
-            );
-
-            return ['success' => true, 'docid' => $document->id, 'attachid' => $attachid];
-        }
-
-        return false;
+        return MailManager_Upload_Model::createDocument($this, null);
     }
 
     /**
      * Save an attachment
-     * @return Integer
-     * @global Array        $upload_badext
-     * @global Users        $current_user
-     * @global PearDataBase $db
+     *
+     * @return int|false
      */
     public function saveAttachment()
     {
-        $db = PearDatabase::getInstance();
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-
-        $uploadPath = decideFilePath();
-        $fileName = $this->getName();
-        if (!empty($fileName)) {
-            $attachid = $db->getUniqueId('vtiger_crmentity');
-
-            //sanitize the filename
-            $binFile = sanitizeUploadFileName($fileName, vglobal('upload_badext'));
-            $fileName = ltrim(basename(" " . $binFile));
-
-            $saveAttchment = $this->save($uploadPath . $attachid . "_" . $fileName);
-            if ($saveAttchment) {
-                $description = $fileName;
-                $date_var = $db->formatDate(date('YmdHis'), true);
-                $usetime = $db->formatDate($date_var, true);
-
-                $db->pquery(
-                    "INSERT INTO vtiger_crmentity(crmid, creator_user_id, assigned_user_id,
-				modifiedby, setype, description, createdtime, modifiedtime, presence, deleted)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [$attachid, $currentUserModel->getId(), $currentUserModel->getId(), $currentUserModel->getId(), "Documents Attachment", $description, $usetime, $usetime, 1, 0]
-                );
-
-                $mimetype = Settings_MailConverter_MailAttachmentMIME_Handler::detect($uploadPath . $attachid . "_" . $fileName);
-                $db->pquery(
-                    "INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, path=?",
-                    [$attachid, $fileName, $description, $mimetype, $uploadPath]
-                );
-
-                return $attachid;
-            }
-        }
-
-        return false;
+        return MailManager_Upload_Model::saveAttachment($this);
     }
 
     /**
@@ -161,97 +87,23 @@ class MailManager_UploadFileForm extends qqUploadedFileForm
 
     /**
      * Used to create Documents
-     * @global Users        $current_user
-     * @global PearDataBase $db
-     * @global String       $currentModule
+     *
+     * @return array|false
+     * @throws Exception
      */
     public function createDocument()
     {
-        $db = PearDatabase::getInstance();
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-
-        if (!MailManager::checkModuleWriteAccessForCurrentUser('Documents')) {
-            $errorMessage = getTranslatedString('LBL_WRITE_ACCESS_FOR', 'MailManager') . " " . getTranslatedString('Documents') . " " . getTranslatedString(
-                    'LBL_MODULE_DENIED',
-                    'MailManager'
-                );
-
-            return ['success' => true, 'error' => $errorMessage];
-        }
-        require_once 'data/CRMEntity.php';
-        $document = CRMEntity::getInstance('Documents');
-
-        $attachid = $this->saveAttachment();
-
-        if ($attachid !== false) {
-            // Create document record
-            $document = new Documents();
-            $document->column_fields['notes_title'] = $this->getName();
-            $document->column_fields['filename'] = $this->getName();
-            $document->column_fields['filestatus'] = 1;
-            $document->column_fields['filelocationtype'] = 'I';
-            $document->column_fields['folderid'] = 1;
-            $document->column_fields['filesize'] = $this->getSize();
-            $document->column_fields['assigned_user_id'] = $currentUserModel->getId();
-            $document->save('Documents');
-
-            // Link file attached to document
-            $db->pquery(
-                "INSERT INTO vtiger_seattachmentsrel(crmid, attachmentsid) VALUES(?,?)",
-                [$document->id, $attachid]
-            );
-
-            return ['success' => true, 'docid' => $document->id, 'attachid' => $attachid];
-        }
-
-        return false;
+        return MailManager_Upload_Model::createDocument($this, 'MailManager');
     }
 
     /**
      * Creates an Attachments
-     * @global PearDataBase $db
-     * @global Array        $upload_badext
-     * @global Users        $current_user
+     *
+     * @return int|false
      */
     public function saveAttachment()
     {
-        $db = PearDatabase::getInstance();
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-
-        $uploadPath = decideFilePath();
-        $fileName = $this->getName();
-        if (!empty($fileName)) {
-            $attachid = $db->getUniqueId('vtiger_crmentity');
-
-            //sanitize the filename
-            $binFile = sanitizeUploadFileName($fileName, vglobal('upload_badext'));
-            $fileName = ltrim(basename(" " . $binFile));
-
-            $saveAttachment = $this->save($uploadPath . $attachid . "_" . $fileName);
-            if ($saveAttachment) {
-                $description = $fileName;
-                $date_var = $db->formatDate(date('YmdHis'), true);
-                $usetime = $db->formatDate($date_var, true);
-
-                $db->pquery(
-                    "INSERT INTO vtiger_crmentity(crmid, creator_user_id, assigned_user_id,
-				modifiedby, setype, description, createdtime, modifiedtime, presence, deleted)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [$attachid, $currentUserModel->getId(), $currentUserModel->getId(), $currentUserModel->getId(), "Documents Attachment", $description, $usetime, $usetime, 1, 0]
-                );
-
-                $mimetype = Settings_MailConverter_MailAttachmentMIME_Handler::detect($uploadPath . $attachid . "_" . $fileName);
-
-                $db->pquery(
-                    "INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, path=?",
-                    [$attachid, $fileName, $description, $mimetype, $uploadPath]
-                );
-
-                return $attachid;
-            }
-        }
-
-        return false;
+        return MailManager_Upload_Model::saveAttachment($this);
     }
 }
 

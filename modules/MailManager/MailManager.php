@@ -51,12 +51,13 @@ class MailManager extends CRMExtension
             $searchFieldList = array_merge($referenceModuleEmailFields, $referenceModuleEntityFieldsArray);
             if (!empty($searchFieldList) && !empty($referenceModuleEmailFields)) {
                 $searchFieldListString = implode(',', $referenceModuleEmailFields);
+                $queryValue = MailManager_Utils_Helper::convertToQueryValue((string)$searchTerm);
                 $where = null;
                 for ($i = 0; $i < php7_count($searchFieldList); $i++) {
                     if ($i == php7_count($searchFieldList) - 1) {
-                        $where .= sprintf($searchFieldList[$i] . " like '%s'", $searchTerm);
+                        $where .= sprintf($searchFieldList[$i] . " like '%s'", $queryValue);
                     } else {
-                        $where .= sprintf($searchFieldList[$i] . " like '%s' or ", $searchTerm);
+                        $where .= sprintf($searchFieldList[$i] . " like '%s' or ", $queryValue);
                     }
                 }
                 if (!empty($where)) {
@@ -65,9 +66,9 @@ class MailManager extends CRMExtension
                 if ($referenceModule == 'Users' && !is_admin($user)) {
                     //Have to do seperate query since webservices will throw permission denied for users module for non admin users
                     global $adb;
-                    $where .= " AND vtiger_users.status='Active'";
-                    $query = "select $searchFieldListString,id from vtiger_users $where";
-                    $dbResult = $adb->pquery($query, []);
+                    $userConditions = implode(' or ', array_map(static fn(string $field): string => $field . ' like ?', $searchFieldList));
+                    $query = "select $searchFieldListString,id from vtiger_users WHERE ($userConditions) AND vtiger_users.status='Active'";
+                    $dbResult = $adb->pquery($query, array_fill(0, count($searchFieldList), (string)$searchTerm));
                     $num_rows = $adb->num_rows($dbResult);
                     $result = [];
                     for ($i = 0; $i < $num_rows; $i++) {

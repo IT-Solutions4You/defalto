@@ -1,0 +1,21 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
+{include file=vtemplate_path('partials/Topbar.tpl', $MODULE)}
+
+<div class="container-fluid app-nav">
+    <div class="row">
+        {include file="Pro/SidebarHeader.tpl"|vtemplate_path:$MODULE}
+        {include file="Pro/ModuleHeader.tpl"|vtemplate_path:$MODULE}
+    </div>
+</div>
+</nav>
+<div class="main-container container-fluid main-container-{$MODULE}">
+    <div class="row h-main">
+        <div class="col-lg px-0 bg-body mb-lg-4 mx-lg-4 rounded overflow-hidden mmProContainer">
+            <div id="listViewContent" class="listViewPageDiv content-area h-100">

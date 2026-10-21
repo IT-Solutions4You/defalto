@@ -148,6 +148,14 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
                     detailsElement.removeClass('hide');
                     oauth2Element.removeClass('hide');
                     break;
+                case 'office365':
+                    useServer = 'outlook.office365.com';
+                    useProtocol = 'IMAP4';
+                    useSSLType = 'ssl';
+                    useCert = 'novalidate-cert';
+                    detailsElement.removeClass('hide');
+                    oauth2Element.removeClass('hide');
+                    break;
                 case 'yahoo':
                     useServer = 'imap.mail.yahoo.com';
                     useProtocol = 'IMAP4';

@@ -1,0 +1,80 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* Activity history (Pro/partials/History.tpl) — My Settings and the admin's mailbox history */
+.its4you-history-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.its4you-history-toolbar .its4you-history-search {
+    flex: 1 1 auto;
+    max-width: 360px;
+}
+
+.its4you-history-toolbar .its4you-history-action {
+    flex: 0 0 auto;
+    width: 200px;
+}
+
+/* the table header in the skin's secondary background */
+.its4you-history-table th {
+    background: var(--bs-tertiary-bg, rgb(var(--bs-secondary-bg-rgb)));
+    white-space: nowrap;
+}
+
+.its4you-history-table .its4you-nowrap {
+    white-space: nowrap;
+}
+
+.its4you-history-table .its4you-muted {
+    color: var(--bs-secondary-color);
+}
+
+/* module icon of a linked record (vicon font, a custom module's initials
+   or its PNG) — the size of the row text */
+.its4you-history-table [class^="vicon-"],
+.its4you-history-table .custom-module {
+    font-size: 1rem;
+    color: var(--bs-secondary-color);
+    vertical-align: -1px;
+}
+
+.its4you-history-table td img {
+    height: 14px;
+    vertical-align: -2px;
+}
+
+/* date of the mail under its subject */
+.its4you-history-maildate {
+    color: var(--bs-secondary-color);
+    font-size: .875rem;
+}
+
+.its4you-module-settings .its4you-muted {
+    color: var(--bs-secondary-color);
+}
+
+/* fixed column widths of the history table */
+.its4you-history-table .its4you-w-130 {
+    width: 130px;
+}
+
+.its4you-history-table .its4you-w-150 {
+    width: 150px;
+}
+
+.its4you-history-table .its4you-w-160 {
+    width: 160px;
+}
+
+.its4you-history-table .its4you-w-200 {
+    width: 200px;
+}

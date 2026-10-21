@@ -50,6 +50,41 @@ class MailManager_Utils_Helper
         return false;
     }
 
+    /**
+     * Builds a safe Content-Disposition header for a downloaded attachment: control
+     * characters, quotes and path parts are removed and the UTF-8 name is sent per RFC 6266.
+     *
+     * @param string $fileName original attachment name
+     *
+     * @return string
+     */
+    public static function getAttachmentDispositionHeader(string $fileName): string
+    {
+        $fileName = basename(str_replace('\\', '/', $fileName));
+        $fileName = trim(preg_replace('/[\x00-\x1F\x7F"]+/u', '', $fileName) ?? '');
+
+        if ('' === $fileName) {
+            $fileName = 'attachment';
+        }
+
+        $asciiName = preg_replace('/[^\x20-\x7E]/', '_', $fileName);
+
+        return sprintf('Content-Disposition: attachment; filename="%s"; filename*=UTF-8\'\'%s', $asciiName, rawurlencode($fileName));
+    }
+
+    /**
+     * Removes characters that would break a value inside a quoted webservice (VTQL)
+     * query string or a LIKE pattern: single quotes and backslashes.
+     *
+     * @param string $value raw search value
+     *
+     * @return string
+     */
+    public static function convertToQueryValue(string $value): string
+    {
+        return str_replace(['\\', "'"], '', $value);
+    }
+
     public static function emitJSON($object)
     {
         Zend_Json::$useBuiltinEncoderDecoder = true;

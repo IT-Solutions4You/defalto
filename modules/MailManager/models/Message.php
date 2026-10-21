@@ -48,6 +48,16 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
     public array $displayedRecords = [];
 
     /**
+     * Returns the mail date as a Unix timestamp, used for sorting mail lists.
+     *
+     * @return int 0 when the mail has no parsed date
+     */
+    public function getTimestamp(): int
+    {
+        return $this->_date ?? 0;
+    }
+
+    /**
      * Clears the cache data
      *
      * @param Integer $waybacktime
@@ -94,19 +104,69 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
             [$currentUserModel->getId(), $waybacktime]
         );
 
-        for ($i = 0; $i < $db->num_rows($mailManagerAttachments); $i++) {
-            $atResultRow = $db->raw_query_result_rowdata($mailManagerAttachments, $i);
-
+        while ($atResultRow = $db->fetchByAssoc($mailManagerAttachments)) {
             $db->pquery("UPDATE vtiger_crmentity set deleted = 1 WHERE crmid = ?", [$atResultRow['attachid']]);
 
-            $filepath = Core_Storage_Model::getInstance()->getFilePath(
-                (string)$atResultRow['path'],
-                $atResultRow['attachid'] . '_' . $atResultRow['aname'],
-            );
+            $filepath = self::getAttachmentFilePath($atResultRow['path'], $atResultRow['attachid'], $atResultRow['aname']);
+
             if (file_exists($filepath)) {
                 unlink($filepath);
             }
         }
+    }
+
+    /**
+     * Returns the stored file path of a cached attachment; the same rule is used for
+     * reading, downloading and pruning the cache.
+     *
+     * @param string     $path         storage folder ending with a slash
+     * @param int|string $attachmentId attachment ID
+     * @param string     $name         stored attachment name
+     *
+     * @return string
+     */
+    public static function getAttachmentFilePath(string $path, int|string $attachmentId, string $name): string
+    {
+        // a relative folder (storage/…) or an absolute $storage_directory outside the web root
+        return Core_Storage_Model::getInstance()->getFilePath(
+            $path,
+            $attachmentId . '_' . sanitizeUploadFileName($name, vglobal('upload_badext'))
+        );
+    }
+
+    /**
+     * Returns the folder path used to scope cached rows of this mail; empty when the
+     * mail was created without a folder (for example from the e-mail composer).
+     *
+     * @return string
+     */
+    public function getCacheFolderName(): string
+    {
+        $folder = isset($this->mFolder) ? $this->mFolder : null;
+
+        return $folder ? (string)$folder->getName() : '';
+    }
+
+    /**
+     * Returns the search conditions that identify this mail in the cache tables:
+     * IMAP UIDs are unique only within one folder of one mailbox, so the rows are
+     * scoped by user and, when known, by folder.
+     *
+     * @return array
+     */
+    public function getCacheConditions(): array
+    {
+        $conditions = [
+            'userid' => Users_Record_Model::getCurrentUserModel()->getId(),
+            'muid'   => $this->getUid(),
+        ];
+        $folderName = $this->getCacheFolderName();
+
+        if ('' !== $folderName) {
+            $conditions['mfolder'] = $folderName;
+        }
+
+        return $conditions;
     }
 
     /**
@@ -121,9 +181,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
             return;
         }
 
-        $uid = $this->getUid();
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-        $data = $this->getRecordTable()->selectData([], ['userid' => $currentUserModel->getId(), 'muid' => $uid]);
+        $data = $this->getRecordTable()->selectData([], $this->getCacheConditions());
 
         if (!empty($data['muid'])) {
             $this->setFrom(Zend_Json::decode(decode_html($data['mfrom'])));
@@ -152,10 +210,9 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         }
 
         $db = PearDatabase::getInstance();
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $this->_attachments = [];
         $data = ['aname', 'attachid', 'path', 'cid'];
-        $search = ['userid' => $currentUserModel->getId(), 'muid' => $this->getUid()];
+        $search = $this->getCacheConditions();
 
         if (!empty($aName)) {
             $search['aname'] = $aName;
@@ -168,11 +225,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         $result = $this->getAttachmentTable()->selectResult($data, $search);
 
         while ($row = $db->fetchByAssoc($result)) {
-            $fileName = sanitizeUploadFileName($row['aname'], vglobal('upload_badext'));
-            $filePath = Core_Storage_Model::getInstance()->getFilePath(
-                (string)$row['path'],
-                $row['attachid'] . '_' . $fileName,
-            );
+            $filePath = self::getAttachmentFilePath($row['path'], $row['attachid'], $row['aname']);
             $fileSize = filesize($filePath);
             $fileContent = '';
 
@@ -213,7 +266,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
     public function saveRecordToDB(): void
     {
         $mUid = $this->getUid();
-        $record = $this->getRecordTable()->selectData(['muid'], ['muid' => $mUid]);
+        $record = $this->getRecordTable()->selectData(['muid'], $this->getCacheConditions());
 
         if (!empty($record['muid'])) {
             return;
@@ -230,7 +283,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
             'msubject'      => $this->_subject,
             'mbody'         => $this->_body,
             'lastsavedtime' => strtotime("now"),
-            'mfolder'       => $this->getFolderName(),
+            'mfolder'       => $this->getCacheFolderName(),
             'muniqueid'     => $this->getUniqueId(),
         ]);
     }
@@ -242,7 +295,8 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
     {
         $uid = $this->getUid();
         $currentUserId = Users_Record_Model::getCurrentUserModel()->getId();
-        $attachment = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $uid]);
+        $folderName = $this->getCacheFolderName();
+        $attachment = $this->getAttachmentTable()->selectData(['muid'], $this->getCacheConditions());
 
         if (!empty($attachment['muid'])) {
             return;
@@ -260,6 +314,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
                         'aname'         => $attachInfo['storedname'],
                         'path'          => $attachInfo['path'],
                         'lastsavedtime' => strtotime('now'),
+                        'mfolder'       => $folderName,
                     ]);
                     $this->_attachments[$index]['attachment_id'] = $attachInfo['attachmentsid'];
                     $this->_attachments[$index]['attachment_url'] = $this->getAttachmentUrl($attachInfo['attachmentsid'], $attachInfo['storedname']);
@@ -284,9 +339,10 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
                         'path'          => $attachInfo['path'],
                         'lastsavedtime' => strtotime('now'),
                         'cid'           => $info['cid'],
+                        'mfolder'       => $folderName,
                     ]);
-                    $this->_attachments[$index]['attachment_id'] = $attachInfo['attachmentsid'];
-                    $this->_attachments[$index]['attachment_url'] = $this->getAttachmentUrl($attachInfo['attachmentsid'], $attachInfo['storedname']);
+                    $this->_inline_attachments[$index]['attachment_id'] = $attachInfo['attachmentsid'];
+                    $this->_inline_attachments[$index]['attachment_url'] = $this->getAttachmentUrl($attachInfo['attachmentsid'], $attachInfo['storedname']);
                 } else {
                     unset($this->_inline_attachments[$index]);
                 }
@@ -676,7 +732,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
      */
     public function hasAttachments(): bool
     {
-        $data = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $this->getUid()]);
+        $data = $this->getAttachmentTable()->selectData(['muid'], $this->getCacheConditions());
 
         return !empty($data['muid']);
     }
@@ -744,7 +800,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         $whereClause = '';
         foreach ($describe['fields'] as $field) {
             if (strcasecmp($type, $field['type']['name']) === 0) {
-                $whereClause .= sprintf(" %s LIKE '%%%s%%' OR", $field['name'], $text);
+                $whereClause .= sprintf(" %s LIKE '%%%s%%' OR", $field['name'], MailManager_Utils_Helper::convertToQueryValue((string)$text));
             }
         }
 
@@ -841,7 +897,7 @@ class MailManager_Message_Model extends Settings_MailConverter_MailRecord_Handle
         $this->attachmentsAllowed = true;
 
         if (!empty($this->_attachments) || !empty($this->_inline_attachments)) {
-            $data = $this->getAttachmentTable()->selectData(['muid'], ['muid' => $this->getUid()]);
+            $data = $this->getAttachmentTable()->selectData(['muid'], $this->getCacheConditions());
             $this->attachmentsAllowed = !empty($data['muid']);
         }
 

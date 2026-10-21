@@ -10,7 +10,7 @@
 jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     documentClickEventRegistered: false,
     templateClickEventRegistered: false,
-    replyEmail(recordId, recordModule) {
+    replyEmail(recordId, recordModule, parentFolder = '') {
         let params = {
             module: 'ITS4YouEmails',
             view: 'ComposeEmail',
@@ -20,9 +20,13 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             parentModule: recordModule,
         };
 
+        if (parentFolder) {
+            params.parentFolder = parentFolder;
+        }
+
         this.composeEmail(params);
     },
-    replyAllEmail(recordId, recordModule) {
+    replyAllEmail(recordId, recordModule, parentFolder = '') {
         let params = {
             module: 'ITS4YouEmails',
             view: 'ComposeEmail',
@@ -32,9 +36,13 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             parentModule: recordModule,
         };
 
+        if (parentFolder) {
+            params.parentFolder = parentFolder;
+        }
+
         this.composeEmail(params);
     },
-    forwardEmail(recordId, recordModule) {
+    forwardEmail(recordId, recordModule, parentFolder = '') {
         let params = {
             module: 'ITS4YouEmails',
             view: 'ComposeEmail',
@@ -43,6 +51,10 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             parentRecord: recordId,
             parentModule: recordModule,
         };
+
+        if (parentFolder) {
+            params.parentFolder = parentFolder;
+        }
 
         this.composeEmail(params);
     },

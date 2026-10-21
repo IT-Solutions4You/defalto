@@ -41,10 +41,11 @@ class ITS4YouEmails_Tracker_Handler
             exit;
         }
 
-        $parentId = $data['parentId'];
+        // an e-mail without a related record (sent to an address unknown to the CRM) counts too
+        $parentId = (int)($data['parentId'] ?? 0);
         $recordId = $data['record'];
 
-        if ($recordId && $parentId && isRecordExists($recordId)) {
+        if ($recordId && isRecordExists($recordId)) {
             /** @var ITS4YouEmails_Record_Model $recordModel */
             $recordModel = ITS4YouEmails_Record_Model::getInstanceById($recordId);
             $recordModel->saveClickCount(intval($recordModel->get('click_count')) + 1);
@@ -67,9 +68,10 @@ class ITS4YouEmails_Tracker_Handler
     protected function openHandler($data = [])
     {
         $recordId = $data['record'];
-        $parentId = $data['parentId'];
+        // an e-mail without a related record (sent to an address unknown to the CRM) counts too
+        $parentId = (int)($data['parentId'] ?? 0);
 
-        if ($recordId && $parentId && isRecordExists($recordId)) {
+        if ($recordId && isRecordExists($recordId)) {
             if ($this->isTrackingAllowed()) {
                 Vtiger_ShortURL_Helper::sendTrackerImage();
                 exit;
@@ -78,7 +80,8 @@ class ITS4YouEmails_Tracker_Handler
             /** @var ITS4YouEmails_Record_Model $recordModel */
             $recordModel = ITS4YouEmails_Record_Model::getInstanceById($recordId);
 
-            if ($recordModel->isEmailOpenedRecently($_REQUEST['id'])) {
+            // the access rows keep the related record in record_id (saveAccess() below)
+            if ($recordModel->isEmailOpenedRecently($parentId)) {
                 Vtiger_ShortURL_Helper::sendTrackerImage();
                 exit;
             }

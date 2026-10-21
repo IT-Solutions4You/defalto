@@ -1,0 +1,23 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+/* todc bootstrap forces .table th to white — settings tables need the grey header */
+.its4you-module-settings table.table > thead > tr > th {
+    background: rgb(var(--bs-secondary-bg-rgb)) !important;
+}
+
+.its4you-muted {
+    color: var(--bs-secondary-color);
+}
+
+/* deputies of a personal mailbox under its owner (Owner / Access column) */
+.its4you-deputy {
+    margin-top: 3px;
+    white-space: nowrap;
+}

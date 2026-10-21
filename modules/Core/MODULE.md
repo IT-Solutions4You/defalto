@@ -122,3 +122,10 @@ Use the actual module name instead of `Example`. Unconfigured fields retain the 
 - Validate both adapters through real Smarty rendering, quoted values, source-module operators, owner values, Documents metadata and blank-row policy. Check workflow JS inheritance in a browser, including add/delete groups and rows, mixed connectors, serialization and trigger changes; load new classes with their actual parent and run PHP lint.
 
 - Related-block filters pass stored connectors unchanged to the Core query parser. Never infer the last group from a fixed key such as 2; empty and sparse groups are normalized at the shared query boundary.
+
+## OAuth mail providers
+
+- `Core_Auth_Model` owns OAuth for IMAP/SMTP. `getProviderNameByServer()` is the single server → provider rule (`gmail.com` → `Google`, `office365.com` → `Microsoft`); `isOAuthServer()` is used by Basic MailManager `Connector::connect()`, Mail Scanner `MailBox::connect()` and `ITS4YouEmails_Mailer_Model::getProviderByServer()`. Do not add new `str_contains($server, ...)` checks elsewhere.
+- `getProviderInstance()` returns `League\OAuth2\Client\Provider\Google` or, for Microsoft, a League `GenericProvider` with the Entra v2.0 endpoints (no extra Composer package). Tenant: `$microsoft_oauth_tenant` in `config.inc.php` (tenant ID or domain, required for single-tenant app registrations), default `common`. Scopes `offline_access`, `https://outlook.office.com/IMAP.AccessAsUser.All`, `https://outlook.office.com/SMTP.Send`.
+- Microsoft redirect URI is `<site_URL>/auth.php` without a query string (register exactly this in the app registration); Google keeps `auth.php?provider=Google`. `auth.php` reads the provider from the session.
+- Known limitation: refreshed access tokens are stored, rotated Microsoft refresh tokens are not (the stored one stays valid until its lifetime ends, then authorize again). Storing them needs a per-account update instead of the current update by `client_id`/`client_secret`.

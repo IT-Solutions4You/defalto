@@ -34,9 +34,50 @@ class MailManager_Mailbox_Model
     protected string $mClientToken = '';
     protected string $mProxy = '';
 
+    /**
+     * Value rendered in the password field instead of the stored password, so the
+     * decrypted password never reaches the HTML.
+     */
+    public const PASSWORD_PLACEHOLDER = '__mailmanager_stored_password__';
+
     public function exists()
     {
         return !empty($this->mId);
+    }
+
+    /**
+     * Returns the vtiger_mail_accounts ID of the loaded account (0 when none is loaded).
+     * Used by Mail Manager Pro to link the personal Pro mailbox to the Basic account.
+     *
+     * @return int
+     */
+    public function getAccountId(): int
+    {
+        return (int)$this->mId;
+    }
+
+    /**
+     * Returns the value for the password field of the settings form: a placeholder when
+     * a password is stored, otherwise an empty string.
+     *
+     * @return string
+     */
+    public function getPasswordPlaceholder(): string
+    {
+        return $this->exists() && !empty($this->mPassword) ? self::PASSWORD_PLACEHOLDER : '';
+    }
+
+    /**
+     * Returns true when the submitted password is the unchanged placeholder, meaning
+     * the stored password must be kept.
+     *
+     * @param string|null $password submitted value
+     *
+     * @return bool
+     */
+    public function isPasswordPlaceholder(?string $password): bool
+    {
+        return $this->exists() && self::PASSWORD_PLACEHOLDER === $password;
     }
 
     public function decrypt($value)
@@ -321,6 +362,8 @@ class MailManager_Mailbox_Model
     {
         if ($mServer == 'imap.gmail.com') {
             $mServerName = 'gmail';
+        } elseif ($mServer == 'outlook.office365.com') {
+            $mServerName = 'office365';
         } elseif ($mServer == 'imap.mail.yahoo.com') {
             $mServerName = 'yahoo';
         } elseif ($mServer == 'mail.messagingengine.com') {
