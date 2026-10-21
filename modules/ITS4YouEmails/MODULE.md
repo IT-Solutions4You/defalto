@@ -9,6 +9,7 @@
 - Validate automatic signature appending, composer insertion, both EMAILMaker passes, final HTML, plain alternative and CSS variants. Never send diagnostic mail without authorization; an isolated harness can exercise transformations with fixture data and a stubbed database.
 - SMTP OAuth (XOAUTH2) in `setSMTP()` works for every `Core_Auth_Model` provider (Google, Microsoft); the provider name comes from `Core_Auth_Model::getProviderNameByServer()`. Microsoft 365 outgoing server: `tls://smtp.office365.com:587`.
 - Runtime send flags (set with `set()`, never saved; absent by default so other callers are unchanged): `skip_save_email_to_sent_folder` skips the IMAP append to the Basic MailManager Sent folder; `skip_in_reply_to` (`isInReplyToSkipped()`) skips `retrieveInReplyTo()` because the caller (MailManager Pro replies) sets `In-Reply-To`/`References` on the mailer itself; `skip_smtp_retrieval` (`isSMTPRetrievalSkipped()`) keeps the SMTP server the caller set with `getMailer()->setSMTP()` (MailManager Pro shared mailboxes) instead of `retrieveSMTPById()`/`retrieveSMTPVtiger()`.
+- MailManager reply/reply all/forward (`MassEdit.js` `replyEmail()`/`replyAllEmail()`/`forwardEmail()` with the optional `parentFolder`) pass the IMAP folder; `ComposeEmail::retrieveEmailInfoFromMailManager()` sets it on `MailManager_Message_Model` and `Utils::getMailManagerAttachments()` filters by `mfolder`, because IMAP UIDs are unique only per folder. Requires the `mfolder` column of `vtiger_mailmanager_mailattachments` (MailManager T00-B).
 
 # Attachment storage
 
