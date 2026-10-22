@@ -62,6 +62,8 @@ $languageStrings = [
     'LBL_IMPORT_MODULE_FROM_ZIP' => 'Import Module from Zip',
     'LBL_UPDATE_NOW' => 'Update Now',
     'LBL_IMPORT_NOW' => 'Import Now',
+    'LBL_PACKAGE_VERSION' => 'Package version',
+    'LBL_PACKAGE_STRUCTURE_REQUIREMENT' => 'The ZIP package must use the Defalto directory structure. Only modules, layouts and languages are installed; cron files and an optional manifest.xml belong inside the module directory.',
     'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Disclaimer - Custom Files could put your CRM at risk</b> <br>  
 												 This functionality has been made available for Developers to test new modules.
 													If you are installing from a file provided 3rd party, please proceed only if you trust the publisher. Custom Modules could include security vulnerabilities and overwrite system files putting your CRM at risk. The module you are about to install has not been reviewed by Vtiger.',
@@ -77,4 +79,8 @@ $jsLanguageStrings = [
     'JS_IMPORTED_MODULE' => ' module was imported successfully.',
     'JS_UPDATE_SUCCESSFULL' => 'Update Successfull',
     'JS_UPDATED_MODULE' => 'module was updated successfully',
+    'JS_PACKAGE_INSTALL_FAILED' => 'Package installation failed',
+    'JS_PACKAGE_INSTALL_ERROR_GUIDANCE' => 'If you can correct the reported problem, fix it, close this window, and try the installation again. If the package is incorrect or the problem persists, report the error below to the package publisher. You can also choose another package to import.',
+    'JS_ERROR_DETAILS' => 'Error details',
+    'JS_IMPORT_ANOTHER_PACKAGE' => 'Import another package',
 ];

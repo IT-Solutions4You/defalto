@@ -185,44 +185,46 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         $viewer = $this->getViewer($request);
         $uploadDir = Settings_ModuleManager_Extension_Model::getUploadDirectory();
         $qualifiedModuleName = $request->getModule(false);
-        $uploadFile = 'usermodule_' . time() . '.zip';
+        $uploadFile = 'usermodule_' . bin2hex(random_bytes(12)) . '.zip';
         $uploadFileName = "$uploadDir/$uploadFile";
 
         checkFileAccess($uploadDir);
 
-        if (!move_uploaded_file($_FILES['moduleZip']['tmp_name'], $uploadFileName)) {
-            $viewer->assign('MODULEIMPORT_FAILED', true);
-        } else {
-            $package = new Vtiger_Package();
-            $importModuleName = $package->getModuleNameFromZip($uploadFileName);
-            $importModuleDepVtVersion = $package->getDependentVersion();
-
-            if ($importModuleName == null) {
-                $viewer->assign('MODULEIMPORT_FAILED', true);
-                $viewer->assign("MODULEIMPORT_FILE_INVALID", true);
-                checkFileAccessForDeletion($uploadFileName);
-                unlink($uploadFileName);
-            } else {
-                // We need these information to push for Update if module is detected to be present.
-                $moduleLicence = vtlib_purify($package->getLicense());
-
-                $viewer->assign("MODULEIMPORT_FILE", $uploadFile);
-                $viewer->assign("MODULEIMPORT_TYPE", $package->type());
-                $viewer->assign("MODULEIMPORT_NAME", $importModuleName);
-                $viewer->assign("MODULEIMPORT_DEP_VTVERSION", $importModuleDepVtVersion);
-                $viewer->assign("MODULEIMPORT_LICENSE", $moduleLicence);
-
-                if (!$package->isLanguageType() && !$package->isModuleBundle()) {
-                    $moduleInstance = Vtiger_Module::getInstance($importModuleName);
-                    $moduleimport_exists = ($moduleInstance) ? "true" : "false";
-                    $moduleimport_dir_name = "modules/$importModuleName";
-                    $moduleimport_dir_exists = (is_dir($moduleimport_dir_name) ? "true" : "false");
-                    $viewer->assign("MODULEIMPORT_EXISTS", $moduleimport_exists);
-                    $viewer->assign("MODULEIMPORT_DIR", $moduleimport_dir_name);
-                    $viewer->assign("MODULEIMPORT_DIR_EXISTS", $moduleimport_dir_exists);
-                }
-            }
+        if (!isset($_FILES['moduleZip'])) {
+            throw new RuntimeException('Module package upload is missing');
         }
+
+        if (UPLOAD_ERR_OK !== (int)$_FILES['moduleZip']['error']) {
+            throw new RuntimeException('Module package upload failed with code '
+                . (int)$_FILES['moduleZip']['error']);
+        }
+
+        if ((int)$_FILES['moduleZip']['size'] > Installer_Download_Model::MAX_DOWNLOAD_SIZE) {
+            throw new RuntimeException('Module package exceeds the maximum allowed size');
+        }
+
+        if (!move_uploaded_file($_FILES['moduleZip']['tmp_name'], $uploadFileName)) {
+            throw new RuntimeException('Unable to store the uploaded module package');
+        }
+
+        $package = Installer_ModulePackage_Model::getInstance($uploadFileName);
+        $importModuleName = $package->getModuleName();
+        $moduleInstance = Vtiger_Module_Model::getInstance($importModuleName);
+        $moduleDirectory = "modules/$importModuleName";
+
+        if ($moduleInstance) {
+            $package->validateInstallation();
+        }
+
+        $viewer->assign('MODULEIMPORT_FILE', $uploadFile);
+        $viewer->assign('MODULEIMPORT_NAME', $importModuleName);
+        $viewer->assign('MODULEIMPORT_VERSION', $package->getPackageVersion());
+        $viewer->assign('MODULEIMPORT_DEP_VTVERSION', $package->getRequiredVersion());
+        $viewer->assign('MODULEIMPORT_CHANGELOG', $package->getChangelog());
+        $viewer->assign('MODULEIMPORT_EXISTS', $moduleInstance ? 'true' : 'false');
+        $viewer->assign('MODULEIMPORT_DIR', $moduleDirectory);
+        $viewer->assign('MODULEIMPORT_DIR_EXISTS', is_dir($moduleDirectory) ? 'true' : 'false');
+        $viewer->assign('MODULEIMPORT_NEW_URL', Settings_ModuleManager_Module_Model::getUserModuleFileImportUrl());
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'importUserModuleStep2', $request->getModule(), $viewer, $request);
 
@@ -234,6 +236,10 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
      */
     public function validateRequest(Vtiger_Request $request): bool
     {
+        if ('importUserModuleStep2' === $request->getMode()) {
+            return $request->validateWriteAccess();
+        }
+
         return $request->validateReadAccess();
     }
 }

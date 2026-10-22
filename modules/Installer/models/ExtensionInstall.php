@@ -65,12 +65,11 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
     public function getLabel(): string
     {
-        $version = $this->getVersion();
         $module = $this->getName();
         $translate = vtranslate($module, $module);
         $translate = str_replace(['ITS4You', '4You'], ['', ''], $translate);
 
-        return $translate . ($version ? ' v' . $version : '');
+        return $translate;
     }
 
     /**
@@ -283,6 +282,52 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         return (string)$this->get('version');
     }
 
+    public function isInstalled(): bool
+    {
+        return '' !== $this->getVersion();
+    }
+
+    public function hasAvailableUpdate(): bool
+    {
+        return $this->isInstalled()
+            && '' !== $this->getUpdateVersion()
+            && version_compare($this->getUpdateVersion(), $this->getVersion(), '>');
+    }
+
+    public function getInstallerStatus(): string
+    {
+        if (!$this->isInstalled()) {
+            return $this->hasDownloadUrl() ? 'not_installed' : 'unavailable';
+        }
+
+        if ($this->hasAvailableUpdate()) {
+            return $this->hasDownloadUrl() ? 'update_available' : 'unavailable';
+        }
+
+        return 'up_to_date';
+    }
+
+    public static function getInstallerModuleCounts(array $extensions): array
+    {
+        $counts = [
+            'all' => count($extensions),
+            'updates' => 0,
+            'not_installed' => 0,
+        ];
+
+        foreach ($extensions as $extension) {
+            if ($extension->hasAvailableUpdate()) {
+                ++$counts['updates'];
+            }
+
+            if (!$extension->isInstalled()) {
+                ++$counts['not_installed'];
+            }
+        }
+
+        return $counts;
+    }
+
     public function getModuleFileVersion(): string
     {
         $moduleName = $this->getName();
@@ -385,11 +430,70 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
     public function getDownloadLabel(): string
     {
-        if (!vtlib_isModuleActive($this->getName())) {
+        if (!$this->isInstalled()) {
             return 'LBL_INSTALL';
         }
 
         return 'LBL_UPDATE';
+    }
+
+    /**
+     * Download and validate the package used by the confirmation screen.
+     *
+     * @return array<int, array{version: string, date: string, changes: array<string>}>
+     */
+    public function getChangelogPreview(): array
+    {
+        if (!$this->hasDownloadUrl()) {
+            throw new RuntimeException(vtranslate('LBL_LICENSE_DOWNLOAD_UNAVAILABLE', 'Installer'));
+        }
+
+        $moduleName = $this->getName();
+        $moduleFile = 'modules/' . $moduleName . '/' . $moduleName . '.php';
+        $installFile = 'modules/' . $moduleName . '/models/Install.php';
+        $manifestFile = 'modules/' . $moduleName . '/manifest.xml';
+        $changelogFile = $this->getChangelogPath();
+        $package = $this->getDownloadModel()->inspectPackage([
+            $moduleFile,
+            $installFile,
+            $manifestFile,
+            $changelogFile,
+        ]);
+
+        foreach ([$moduleFile, $installFile] as $requiredFile) {
+            if (!in_array($requiredFile, $package['paths'], true)) {
+                throw new RuntimeException('Extension package is missing required file: ' . $requiredFile);
+            }
+        }
+
+        $packageVersion = Installer_ModulePackage_Model::getVersionFromSource(
+            (string)$package['contents'][$moduleFile]
+        );
+
+        if ('' === $packageVersion) {
+            throw new RuntimeException('Extension package has no valid moduleVersion');
+        }
+
+        $expectedVersion = $this->getUpdateVersion();
+
+        if ('' !== $expectedVersion && version_compare($packageVersion, $expectedVersion, '!=')) {
+            throw new RuntimeException('Extension package version does not match catalog version: '
+                . $packageVersion . ' != ' . $expectedVersion);
+        }
+
+        if (isset($package['contents'][$manifestFile])) {
+            Installer_ModulePackage_Model::validateManifestSource(
+                $package['contents'][$manifestFile],
+                $moduleName,
+                $packageVersion
+            );
+        }
+
+        if (!isset($package['contents'][$changelogFile])) {
+            return [];
+        }
+
+        return Installer_Changelog_Model::getEntries($package['contents'][$changelogFile], $packageVersion);
     }
 
     /**
@@ -408,19 +512,12 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         }
 
         $isNewModule = !$this->getModule();
-        $download = Installer_Download_Model::getInstance(
-            (string)$this->get('download-url'),
-            (string)$this->get('download-folder'),
-            'index.php',
-            'extension-' . $moduleName
-        );
-        $download->setAllowedRoots(['modules', 'layouts', 'languages', 'cron']);
+        $download = $this->getDownloadModel();
         $requiredWritablePaths = [
             'cache',
             'modules',
             'layouts',
             'languages',
-            'cron',
             'test/templates_c',
         ];
 
@@ -434,12 +531,6 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
         $download->setRequiredWritablePaths($requiredWritablePaths);
 
-        $checksum = $this->getPackageChecksum();
-
-        if ($checksum !== '') {
-            $download->setExpectedChecksum($checksum);
-        }
-
         $database = PearDatabase::getInstance();
         $previousDieOnError = $database->dieOnError;
         $sharingPermission = $isNewModule ? null : $this->getCurrentSharingPermission();
@@ -447,6 +538,9 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
         try {
             $download->downloadAndExport();
+            $this->validateRequiredPackageFiles($download);
+            $this->validateModuleManifest($download);
+            $this->validateModuleChangelog($download);
             $installClass = $moduleName . '_Install_Model';
 
             if (!class_exists($installClass)) {
@@ -519,6 +613,30 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
         return $checksum;
     }
 
+    protected function getDownloadModel(): Installer_Download_Model
+    {
+        $download = Installer_Download_Model::getInstance(
+            (string)$this->get('download-url'),
+            (string)$this->get('download-folder'),
+            'index.php',
+            'extension-' . $this->getName()
+        );
+        $download->setAllowedRoots(['modules', 'layouts', 'languages']);
+        $download->setAllowedModuleName($this->getName());
+        $checksum = $this->getPackageChecksum();
+
+        if ('' !== $checksum) {
+            $download->setExpectedChecksum($checksum);
+        }
+
+        return $download;
+    }
+
+    protected function getChangelogPath(): string
+    {
+        return 'modules/' . $this->getName() . '/CHANGELOG.md';
+    }
+
     protected function getCurrentSharingPermission(): ?int
     {
         $sharingModule = Settings_SharingAccess_Module_Model::getInstance($this->getName());
@@ -554,6 +672,60 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
         if (!empty($moduleFocus->isEntity) && empty($moduleFocus->table_name)) {
             throw new RuntimeException('Extension entity module has no base table');
+        }
+    }
+
+    protected function validateModuleManifest(Installer_Download_Model $download): void
+    {
+        $moduleName = $this->getName();
+        $manifestFile = 'modules/' . $moduleName . '/manifest.xml';
+
+        if (!$download->hasCopiedFile($manifestFile)) {
+            return;
+        }
+
+        $manifestSource = file_get_contents($manifestFile);
+
+        if (false === $manifestSource) {
+            throw new RuntimeException('Unable to read extension manifest: ' . $manifestFile);
+        }
+
+        Installer_ModulePackage_Model::validateManifestSource(
+            $manifestSource,
+            $moduleName,
+            $this->getModuleFileVersion()
+        );
+    }
+
+    protected function validateModuleChangelog(Installer_Download_Model $download): void
+    {
+        $changelogFile = $this->getChangelogPath();
+
+        if (!$download->hasCopiedFile($changelogFile)) {
+            return;
+        }
+
+        $source = file_get_contents($changelogFile);
+
+        if (false === $source) {
+            throw new RuntimeException('Unable to read extension changelog: ' . $changelogFile);
+        }
+
+        Installer_Changelog_Model::getEntries($source, $this->getModuleFileVersion());
+    }
+
+    protected function validateRequiredPackageFiles(Installer_Download_Model $download): void
+    {
+        $moduleName = $this->getName();
+        $requiredFiles = [
+            'modules/' . $moduleName . '/' . $moduleName . '.php',
+            'modules/' . $moduleName . '/models/Install.php',
+        ];
+
+        foreach ($requiredFiles as $requiredFile) {
+            if (!$download->hasCopiedFile($requiredFile)) {
+                throw new RuntimeException('Extension package is missing required file: ' . $requiredFile);
+            }
         }
     }
 

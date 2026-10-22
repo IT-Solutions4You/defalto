@@ -12,7 +12,7 @@ class Installer_ZipArchive_Model extends ZipArchive
     public const MAX_FILES = 10000;
     public const MAX_UNCOMPRESSED_SIZE = 209715200;
 
-    public static array $skipFiles = ['.env', 'config.inc.php', 'composer.lock', 'index.php', 'install.php', 'manifest.xml', 'parent_tabdata.php', 'tabdata.php', 'update.php', 'vtigercron.sh'];
+    public static array $skipFiles = ['.env', 'config.inc.php', 'composer.lock', 'index.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'update.php', 'vtigercron.sh'];
     public static array $skipFolders = [
         'user_privileges',
         'manifest',
@@ -32,6 +32,7 @@ class Installer_ZipArchive_Model extends ZipArchive
     protected array $backups = [];
     protected array $newFiles = [];
     protected array $createdDirectories = [];
+    protected string $allowedModuleName = '';
 
     public function setAllowedRoots(array $roots): void
     {
@@ -39,6 +40,165 @@ class Installer_ZipArchive_Model extends ZipArchive
             static fn($root) => trim(str_replace('\\', '/', (string)$root), '/'),
             $roots
         ))));
+    }
+
+    public function setAllowedModuleName(string $moduleName): void
+    {
+        if (!preg_match('/^[A-Za-z][A-Za-z0-9_]*$/', $moduleName)) {
+            throw new InvalidArgumentException('Invalid package module name');
+        }
+
+        $this->allowedModuleName = $moduleName;
+    }
+
+    public function isAllowedPackagePath(string $relativePath): bool
+    {
+        $relativePath = $this->validateRelativePath(str_replace('\\', '/', $relativePath));
+
+        return $this->isAllowedRoot($relativePath)
+            && ($this->allowedModuleName === '' || $this->isAllowedModulePath($relativePath));
+    }
+
+    /**
+     * Return normalized file paths below a package source directory.
+     * Directory entries are omitted; every returned path is safe and relative.
+     *
+     * @return array<string>
+     */
+    public function getRelativeFilePaths(string $zipSubDir = ''): array
+    {
+        if ($this->numFiles > self::MAX_FILES) {
+            throw new RuntimeException('ZIP contains too many entries');
+        }
+
+        $zipSubDir = trim(str_replace('\\', '/', $zipSubDir), '/');
+        $prefix = $zipSubDir === '' ? '' : $zipSubDir . '/';
+        $paths = [];
+
+        for ($index = 0; $index < $this->numFiles; $index++) {
+            $filename = $this->getNameIndex($index);
+
+            if (!is_string($filename) || $filename === '' || str_contains($filename, "\0")) {
+                throw new RuntimeException('ZIP contains an invalid entry name');
+            }
+
+            $normalizedFilename = str_replace('\\', '/', $filename);
+
+            if (str_ends_with($normalizedFilename, '/')) {
+                continue;
+            }
+
+            $normalizedFilename = $this->validateRelativePath($normalizedFilename);
+
+            if ($prefix !== '' && !str_starts_with($normalizedFilename, $prefix)) {
+                continue;
+            }
+
+            $relativePath = $prefix === '' ? $normalizedFilename : substr($normalizedFilename, strlen($prefix));
+
+            if ($relativePath !== '') {
+                $paths[] = $this->validateRelativePath($relativePath);
+            }
+        }
+
+        return $paths;
+    }
+
+    public function getFileContent(string $zipSubDir, string $relativePath): string
+    {
+        $zipSubDir = trim(str_replace('\\', '/', $zipSubDir), '/');
+        $relativePath = $this->validateRelativePath(str_replace('\\', '/', $relativePath));
+        $expectedPath = $zipSubDir === '' ? $relativePath : $zipSubDir . '/' . $relativePath;
+
+        for ($index = 0; $index < $this->numFiles; $index++) {
+            $filename = $this->getNameIndex($index);
+
+            if (is_string($filename) && str_replace('\\', '/', $filename) === $expectedPath) {
+                $content = $this->getFromIndex($index);
+
+                if (false === $content) {
+                    throw new RuntimeException('Unable to read ZIP entry: ' . $this->escapeLogValue($relativePath));
+                }
+
+                return $content;
+            }
+        }
+
+        throw new RuntimeException('ZIP entry is missing: ' . $this->escapeLogValue($relativePath));
+    }
+
+    /**
+     * Validate every package file without extracting it into the application.
+     *
+     * @return array<string>
+     */
+    public function validatePackage(string $zipSubDir): array
+    {
+        if ($this->numFiles > self::MAX_FILES) {
+            throw new RuntimeException('ZIP contains too many entries');
+        }
+
+        $zipSubDir = trim(str_replace('\\', '/', $zipSubDir), '/');
+        $prefix = '' === $zipSubDir ? '' : $zipSubDir . '/';
+        $paths = [];
+        $pathKeys = [];
+        $totalSize = 0;
+
+        for ($index = 0; $index < $this->numFiles; $index++) {
+            $filename = $this->getNameIndex($index);
+
+            if (!is_string($filename) || '' === $filename || str_contains($filename, "\0")) {
+                throw new RuntimeException('ZIP contains an invalid entry name');
+            }
+
+            $normalizedFilename = str_replace('\\', '/', $filename);
+
+            if ('' !== $prefix && !str_starts_with($normalizedFilename, $prefix)) {
+                continue;
+            }
+
+            $relativePath = '' === $prefix ? $normalizedFilename : substr($normalizedFilename, strlen($prefix));
+
+            if ('' === $relativePath || str_ends_with($relativePath, '/')) {
+                continue;
+            }
+
+            $relativePath = $this->validateRelativePath($relativePath);
+
+            if (!$this->isAllowedRoot($relativePath)) {
+                throw new RuntimeException('ZIP entry is outside allowed package roots: '
+                    . $this->escapeLogValue($relativePath));
+            }
+
+            if ('' !== $this->allowedModuleName && !$this->isAllowedModulePath($relativePath)) {
+                throw new RuntimeException('ZIP entry is outside the module package structure: '
+                    . $this->escapeLogValue($relativePath));
+            }
+
+            $pathKey = '\\' === DIRECTORY_SEPARATOR ? strtolower($relativePath) : $relativePath;
+
+            if (isset($pathKeys[$pathKey])) {
+                throw new RuntimeException('ZIP contains a duplicate target path: '
+                    . $this->escapeLogValue($relativePath));
+            }
+
+            $stat = $this->statIndex($index);
+
+            if (false === $stat || !isset($stat['size'])) {
+                throw new RuntimeException('Unable to inspect ZIP entry: ' . $this->escapeLogValue($relativePath));
+            }
+
+            $totalSize += (int)($stat['size'] ?? 0);
+            $this->validateUncompressedSize($totalSize);
+            $pathKeys[$pathKey] = true;
+            $paths[] = $relativePath;
+        }
+
+        if (!$paths) {
+            throw new RuntimeException('ZIP package did not contain installable files');
+        }
+
+        return $paths;
     }
 
     public function resolveSourceFolder(string $expectedFolder): string
@@ -143,6 +303,11 @@ class Installer_ZipArchive_Model extends ZipArchive
 
                 if (!$this->isAllowedRoot($relativePath)) {
                     throw new RuntimeException('ZIP entry is outside allowed package roots: ' . $this->escapeLogValue($relativePath));
+                }
+
+                if ($this->allowedModuleName !== '' && !$this->isAllowedModulePath($relativePath)) {
+                    throw new RuntimeException('ZIP entry is outside the module package structure: '
+                        . $this->escapeLogValue($relativePath));
                 }
 
                 $pathKey = DIRECTORY_SEPARATOR === '\\' ? strtolower($relativePath) : $relativePath;
@@ -284,8 +449,33 @@ class Installer_ZipArchive_Model extends ZipArchive
         return false;
     }
 
+    protected function isAllowedModulePath(string $relativePath): bool
+    {
+        $moduleName = preg_quote($this->allowedModuleName, '/');
+        $patterns = [
+            '/^modules\/' . $moduleName . '\//',
+            '/^modules\/Settings\/' . $moduleName . '\//',
+            '/^layouts\/[^\/]+\/modules\/' . $moduleName . '\//',
+            '/^layouts\/[^\/]+\/modules\/Settings\/' . $moduleName . '\//',
+            '/^languages\/[^\/]+\/' . $moduleName . '\.php$/',
+            '/^languages\/[^\/]+\/Settings\/' . $moduleName . '\.php$/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $relativePath)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected function shouldSkip(string $relativePath): bool
     {
+        if ('manifest.xml' === $relativePath) {
+            return true;
+        }
+
         foreach (self::$skipFolders as $skipFolder) {
             $skipFolder = trim(str_replace('\\', '/', $skipFolder), '/');
 

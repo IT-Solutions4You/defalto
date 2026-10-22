@@ -62,9 +62,15 @@ class Installer_Index_View extends Vtiger_Index_View
             $license->check(false);
         }
 
+        $systemModels = Installer_SystemInstall_Model::getAll();
+        $extensions = Installer_ExtensionInstall_Model::getInstallerModules();
+
         $viewer = $this->getViewer($request);
-        $viewer->assign('LICENSE_MODELS', $licenses);
-        $viewer->assign('LICENSE_MODEL', Installer_License_Model::getMembershipLicense());
+        $viewer->assign('LICENSE_MODELS', $licenses)
+            ->assign('LICENSE_MODEL', Installer_License_Model::getMembershipLicense())
+            ->assign('SYSTEM_MODELS', $systemModels)
+            ->assign('EXTENSION_MODELS', $extensions)
+            ->assign('EXTENSION_COUNTS', Installer_ExtensionInstall_Model::getInstallerModuleCounts($extensions));
         $viewer->view('Index.tpl', $moduleName);
     }
 
