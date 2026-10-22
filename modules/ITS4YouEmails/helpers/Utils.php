@@ -246,18 +246,29 @@ class ITS4YouEmails_Utils_Helper
     }
 
     /**
-     * @param object $recordModel
+     * Returns the cached MailManager attachments of a mail; IMAP UIDs are unique only within
+     * one folder, so the lookup is scoped by the folder when it is known.
+     *
+     * @param object $recordModel MailManager_Message_Model
+     * @param string $folderName  MailManager folder of the mail, empty when unknown
      *
      * @return array
      */
-    public static function getMailManagerAttachments(object $recordModel): array
+    public static function getMailManagerAttachments(object $recordModel, string $folderName = ''): array
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $sql = 'SELECT vtiger_attachments.* FROM vtiger_mailmanager_mailattachments 
     		INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid=vtiger_mailmanager_mailattachments.attachid
     		WHERE muid=? AND userid=? AND cid IS NULL';
+        $params = [$recordModel->getUid(), $currentUser->getId()];
+
+        if ('' !== $folderName) {
+            $sql .= ' AND mfolder=?';
+            $params[] = $folderName;
+        }
+
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery($sql, [$recordModel->getUid(), $currentUser->getId()]);
+        $result = $adb->pquery($sql, $params);
 
         $attachments = [];
 
