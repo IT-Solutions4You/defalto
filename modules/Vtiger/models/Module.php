@@ -715,12 +715,16 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $popupSettingsModel = Settings_LayoutEditor_PopupSettings_Model::getInstance();
         $popupSettingsModel->set('moduleName', $this->getName());
         $settings = $popupSettingsModel->getSettings();
+        $moduleFields = $this->getFields();
+        $columns = array_values(array_filter((array)$settings['columnslist'], function ($fieldName) use ($moduleFields) {
+            return is_string($fieldName) && isset($moduleFields[$fieldName]);
+        }));
 
-        if (empty($settings['columnslist'])) {
+        if (empty($columns)) {
             return $this->getNameFields();
         }
 
-        return $settings['columnslist'];
+        return $columns;
     }
 
     /**

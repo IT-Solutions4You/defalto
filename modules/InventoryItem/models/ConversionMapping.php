@@ -135,7 +135,76 @@ class InventoryItem_ConversionMapping_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * Replaces the mapping of the conversion. Rows with unknown fields and duplicated target fields are dropped.
+     * Fields with the same group hold values of the same kind. Text, numeric and reference fields are grouped, other fields are grouped by their data type.
+     *
+     * @param Vtiger_Field_Model $fieldModel
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function getCompatibilityGroup(Vtiger_Field_Model $fieldModel): string
+    {
+        $dataType = (string)$fieldModel->getFieldDataType();
+
+        return match ($dataType) {
+            'string', 'text', 'CKEditor', 'salutation' => 'text',
+            'integer', 'double', 'currency', 'percentage' => 'number',
+            default => $dataType,
+        };
+    }
+
+    /**
+     * A value of the source field can be copied to the target field when both hold the same kind of value.
+     * Reference fields have to point to at least one common module. Simple values can be copied to a text field.
+     *
+     * @param Vtiger_Field_Model $sourceField
+     * @param Vtiger_Field_Model $targetField
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public static function isCompatibleField(Vtiger_Field_Model $sourceField, Vtiger_Field_Model $targetField): bool
+    {
+        $sourceGroup = self::getCompatibilityGroup($sourceField);
+        $targetGroup = self::getCompatibilityGroup($targetField);
+
+        if ('reference' === $sourceGroup && 'reference' === $targetGroup) {
+            return [] !== array_intersect((array)$sourceField->getReferenceList(), (array)$targetField->getReferenceList());
+        }
+
+        if ($sourceGroup === $targetGroup) {
+            return true;
+        }
+
+        return 'text' === $targetGroup && in_array($sourceGroup, ['picklist', 'email', 'phone', 'url', 'skype', 'number'], true);
+    }
+
+    /**
+     * @param array $sourceFields Vtiger_Field_Model[] indexed by the field name
+     * @param array $targetFields Vtiger_Field_Model[] indexed by the field name
+     *
+     * @return array [sourceField => [compatible targetField, ...]]
+     * @throws Exception
+     */
+    public static function getCompatibleTargets(array $sourceFields, array $targetFields): array
+    {
+        $compatible = [];
+
+        foreach ($sourceFields as $sourceName => $sourceField) {
+            $compatible[$sourceName] = [];
+
+            foreach ($targetFields as $targetName => $targetField) {
+                if (self::isCompatibleField($sourceField, $targetField)) {
+                    $compatible[$sourceName][] = $targetName;
+                }
+            }
+        }
+
+        return $compatible;
+    }
+
+    /**
+     * Replaces the mapping of the conversion. Rows with unknown or incompatible fields and duplicated target fields are dropped.
      *
      * @param InventoryItem_Conversion_Model $conversion
      * @param array                          $rows [['target' => string, 'source' => string], ...]
@@ -158,6 +227,10 @@ class InventoryItem_ConversionMapping_Model extends Core_DatabaseData_Model
             $sourceField = (string)($row['source'] ?? '');
 
             if (!isset($targetFields[$targetField]) || isset($saved[$targetField]) || ('' !== $sourceField && !isset($sourceFields[$sourceField]))) {
+                continue;
+            }
+
+            if ('' !== $sourceField && !self::isCompatibleField($sourceFields[$sourceField], $targetFields[$targetField])) {
                 continue;
             }
 

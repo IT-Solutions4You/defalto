@@ -9,7 +9,7 @@
 {strip}
     <div class="modal-dialog modal-lg conversionMappingModal">
         <div class="modal-content">
-            <form id="conversionMappingForm" method="post" action="javascript:void(0);">
+            <form id="conversionMappingForm" method="post" action="javascript:void(0);" data-compatible-targets="{Vtiger_Util_Helper::toSafeHTML($COMPATIBLE_TARGETS)}">
                 <input type="hidden" name="module" value="InventoryItem">
                 <input type="hidden" name="parent" value="Settings">
                 <input type="hidden" name="action" value="ConversionMappingSave">
@@ -20,8 +20,9 @@
                     <table class="table table-sm align-middle">
                         <thead>
                             <tr>
-                                <th style="width: 45%">{vtranslate('LBL_CONVERSION_MAPPING_TARGET', $QUALIFIED_MODULE, $TARGET_LABEL)}</th>
                                 <th style="width: 45%">{vtranslate('LBL_CONVERSION_MAPPING_SOURCE', $QUALIFIED_MODULE, $SOURCE_LABEL)}</th>
+                                <th></th>
+                                <th style="width: 45%">{vtranslate('LBL_CONVERSION_MAPPING_TARGET', $QUALIFIED_MODULE, $TARGET_LABEL)}</th>
                                 <th></th>
                             </tr>
                         </thead>

@@ -37,14 +37,28 @@ class InventoryItem_ConversionModal_View extends Vtiger_IndexAjax_View
 
         $conversion->checkAccess($sourceRecord);
 
-        // A repeated or canceled conversion must not reuse the values of the previous attempt.
-        InventoryItem_Conversion_Model::clearStoredItems($targetModule, $sourceRecord);
-
         $sourceRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecord, $sourceModule);
         $currencyInfo = Vtiger_Functions::getCurrencyInfo($sourceRecordModel->get('currency_id'));
-        $items = array_filter(InventoryItem_Utils_Helper::fetchItems($sourceRecord), static function (array $item): bool {
-            return 'Text' !== $item['entityType'];
-        });
+        $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+        $items = [];
+
+        foreach (InventoryItem_Utils_Helper::fetchItems($sourceRecord) as $item) {
+            if ('Text' === $item['entityType']) {
+                continue;
+            }
+
+            // The same format as the item edit form uses: the decimals of the settings and the dot as a decimal separator.
+            $item['quantity'] = number_format((float)$item['quantity'], $decimals['quantity'] ?? 2, '.', '');
+            $item['price'] = number_format((float)$item['price'], $decimals['price'] ?? 2, '.', '');
+            $items[] = $item;
+        }
+
+        $fieldModels = $this->getHeaderFieldModels($conversion, $sourceRecordModel);
+        $fieldsInfo = [];
+
+        foreach ($fieldModels as $fieldName => $fieldModel) {
+            $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
+        }
 
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE_NAME', 'InventoryItem')
@@ -57,7 +71,9 @@ class InventoryItem_ConversionModal_View extends Vtiger_IndexAjax_View
             ->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol'])
             ->assign('EDITABLE_COLUMNS', array_intersect(InventoryItem_Conversion_Model::SUPPORTED_COLUMNS, $conversion->getEditableColumns()))
             ->assign('INVENTORY_ITEMS', $items)
-            ->assign('HEADER_FIELD_MODELS', $this->getHeaderFieldModels($conversion, $sourceRecordModel))
+            ->assign('HEADER_FIELD_MODELS', $fieldModels)
+            ->assign('FIELDS_INFO', json_encode($fieldsInfo))
+            ->assign('SCRIPTS', $this->getHeaderScripts($request))
             ->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
@@ -67,6 +83,7 @@ class InventoryItem_ConversionModal_View extends Vtiger_IndexAjax_View
 
     /**
      * Returns the fields of the target record which the user can change in the modal, filled in the same way as the create view of the target record fills them.
+     * These are the fields selected in the settings and all mandatory fields.
      *
      * @param InventoryItem_Conversion_Model $conversion
      * @param Vtiger_Record_Model            $sourceRecordModel
@@ -77,11 +94,6 @@ class InventoryItem_ConversionModal_View extends Vtiger_IndexAjax_View
     protected function getHeaderFieldModels(InventoryItem_Conversion_Model $conversion, Vtiger_Record_Model $sourceRecordModel): array
     {
         $headerFieldNames = $conversion->getHeaderFields();
-
-        if (empty($headerFieldNames)) {
-            return [];
-        }
-
         $targetRecordModel = Vtiger_Record_Model::getCleanInstance($conversion->get('target_module'));
 
         Core_Base_Mapping::getInstance($targetRecordModel, $sourceRecordModel)->mapFields();
@@ -91,12 +103,26 @@ class InventoryItem_ConversionModal_View extends Vtiger_IndexAjax_View
 
         foreach ($structure as $blockFields) {
             foreach ($blockFields as $fieldName => $fieldModel) {
-                if (in_array($fieldName, $headerFieldNames, true) && InventoryItem_Conversion_Model::isSelectableHeaderField($fieldModel)) {
+                $isSelected = in_array($fieldName, $headerFieldNames, true) && InventoryItem_Conversion_Model::isSelectableHeaderField($fieldModel);
+
+                if ($isSelected || InventoryItem_Conversion_Model::isMandatoryModalField($fieldModel)) {
                     $fieldModels[$fieldName] = $fieldModel;
                 }
             }
         }
 
         return $fieldModels;
+    }
+
+    /**
+     * The generic edit script registers the reference, owner and picklist events of the fields. The module edit scripts handle the line items and must not run in the modal.
+     *
+     * @inheritDoc
+     */
+    public function getHeaderScripts(Vtiger_Request $request): array
+    {
+        $jsFileNames = ['modules.Vtiger.resources.Edit'];
+
+        return array_merge($this->checkAndConvertJsScripts($jsFileNames), $this->getBlockUiTypeScripts((string)$request->get('targetModule')));
     }
 }

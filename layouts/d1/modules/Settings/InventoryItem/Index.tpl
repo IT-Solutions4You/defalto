@@ -130,7 +130,6 @@
                                     <thead>
                                         <tr>
                                             <th>{vtranslate('LBL_CONVERSION', $QUALIFIED_MODULE)}</th>
-                                            <th class="text-center">{vtranslate('LBL_CONVERSION_SHOW_ACTION', $QUALIFIED_MODULE)}</th>
                                             <th class="text-center">{vtranslate('LBL_CONVERSION_USE_MODAL', $QUALIFIED_MODULE)}</th>
                                             <th>{vtranslate('LBL_CONVERSION_ITEM_COLUMNS', $QUALIFIED_MODULE)}</th>
                                             <th>{vtranslate('LBL_CONVERSION_HEADER_FIELDS', $QUALIFIED_MODULE)}</th>
@@ -143,9 +142,6 @@
                                                 <td>
                                                     <strong>{$CONVERSION.sourceLabel}</strong> <i class="fa fa-arrow-right mx-1 text-secondary"></i> <strong>{$CONVERSION.targetLabel}</strong>
                                                     <input type="hidden" name="conversions[{$CONVERSION.id}][id]" value="{$CONVERSION.id}">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="checkbox" class="form-check-input conversionEnabled" name="conversions[{$CONVERSION.id}][enabled]" value="1" {if $CONVERSION.enabled}checked{/if}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="checkbox" class="form-check-input conversionUseModal" name="conversions[{$CONVERSION.id}][use_modal]" value="1" {if $CONVERSION.useModal}checked{/if}>
@@ -169,7 +165,7 @@
                                                 </td>
                                             </tr>
                                         {foreachelse}
-                                            <tr><td colspan="6"class="text-secondary">{vtranslate('LBL_NO_CONVERSIONS', $QUALIFIED_MODULE)}</td></tr>
+                                            <tr><td colspan="5" class="text-secondary">{vtranslate('LBL_NO_CONVERSIONS', $QUALIFIED_MODULE)}</td></tr>
                                         {/foreach}
                                     </tbody>
                                 </table>

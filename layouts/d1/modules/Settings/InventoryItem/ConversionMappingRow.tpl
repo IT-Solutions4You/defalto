@@ -9,18 +9,19 @@
 {strip}
     <tr class="conversionMappingRow">
         <td>
-            <select class="form-select form-select-sm conversionMappingTarget" data-name="target">
-                <option value="">{vtranslate('LBL_SELECT_OPTION', $QUALIFIED_MODULE)}</option>
-                {foreach key=FIELD_NAME item=FIELD_LABEL from=$TARGET_FIELD_OPTIONS}
-                    <option value="{$FIELD_NAME}" {if $FIELD_NAME eq $TARGET_FIELD}selected{/if}>{$FIELD_LABEL}</option>
-                {/foreach}
-            </select>
-        </td>
-        <td>
             <select class="form-select form-select-sm conversionMappingSource" data-name="source">
                 <option value="">{vtranslate('LBL_CONVERSION_MAPPING_NOT_COPIED', $QUALIFIED_MODULE)}</option>
                 {foreach key=FIELD_NAME item=FIELD_LABEL from=$SOURCE_FIELD_OPTIONS}
                     <option value="{$FIELD_NAME}" {if $FIELD_NAME eq $SOURCE_FIELD}selected{/if}>{$FIELD_LABEL}</option>
+                {/foreach}
+            </select>
+        </td>
+        <td class="text-center text-secondary"><i class="fa fa-arrow-right"></i></td>
+        <td>
+            <select class="form-select form-select-sm conversionMappingTarget" data-name="target">
+                <option value="">{vtranslate('LBL_SELECT_OPTION', $QUALIFIED_MODULE)}</option>
+                {foreach key=FIELD_NAME item=FIELD_LABEL from=$TARGET_FIELD_OPTIONS}
+                    <option value="{$FIELD_NAME}" {if $FIELD_NAME eq $TARGET_FIELD}selected{/if}>{$FIELD_LABEL}</option>
                 {/foreach}
             </select>
         </td>

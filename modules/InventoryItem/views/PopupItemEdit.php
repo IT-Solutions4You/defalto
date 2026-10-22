@@ -243,6 +243,7 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             }
         }
 
+        $row['unit'] = InventoryItem_Utils_Helper::getUnitLabel((string)$row['unit'], (string)$row['entityType']);
         $row['taxes'] = InventoryItem_TaxesForItem_Model::fetchTaxes((int)$row['inventoryitemid'], (int)$row['productid'], (int)$row['parentid']);
 
         foreach ($row['taxes'] as $taxData) {

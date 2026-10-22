@@ -72,12 +72,59 @@ Settings_Vtiger_Index_Js("Settings_InventoryItem_Index_Js", {}, {
         });
     },
 
+    /**
+     * Offers only the target fields which are compatible with the source field of the row.
+     *
+     * @param {jQuery} row
+     * @param {Object} compatibleTargets [sourceField => [targetField, ...]]
+     */
+    filterConversionMappingTargets: function (row, compatibleTargets) {
+        const source = jQuery('.conversionMappingSource', row).val(),
+            targetSelect = jQuery('.conversionMappingTarget', row);
+
+        targetSelect.find('option[value!=""]').each(function (index, option) {
+            const allowed = !source || (compatibleTargets[source] || []).indexOf(option.value) !== -1;
+
+            jQuery(option).prop('disabled', !allowed).toggleClass('d-none', !allowed);
+        });
+
+        if (targetSelect.find('option:selected').prop('disabled')) {
+            targetSelect.val('').trigger('change');
+        }
+    },
+
+    /**
+     * Shows the select boxes of a mapping row as select2. Target options which are not compatible with the source field are hidden.
+     *
+     * @param {jQuery} row
+     */
+    registerConversionMappingSelects: function (row) {
+        vtUtils.showSelect2ElementView(jQuery('select', row), {
+            width: '100%',
+            templateResult: function (option) {
+                return option.disabled ? null : option.text;
+            }
+        });
+    },
+
     registerConversionMappingEvents: function (modal) {
-        const form = jQuery('#conversionMappingForm', modal),
-            rows = jQuery('.conversionMappingRows', form);
+        const self = this,
+            form = jQuery('#conversionMappingForm', modal),
+            rows = jQuery('.conversionMappingRows', form),
+            compatibleTargets = JSON.parse(form.attr('data-compatible-targets') || '{}');
 
         form.on('click', '.addConversionMappingRow', function () {
             rows.append(jQuery('.conversionMappingRowTemplate', form).html());
+            self.registerConversionMappingSelects(rows.children().last());
+        });
+
+        form.on('change', '.conversionMappingSource', function (e) {
+            self.filterConversionMappingTargets(jQuery(e.currentTarget).closest('tr'), compatibleTargets);
+        });
+
+        jQuery('.conversionMappingRow', rows).each(function (index, row) {
+            self.filterConversionMappingTargets(jQuery(row), compatibleTargets);
+            self.registerConversionMappingSelects(jQuery(row));
         });
 
         form.on('click', '.removeConversionMappingRow', function (e) {

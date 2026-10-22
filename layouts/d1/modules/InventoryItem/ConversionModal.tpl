@@ -6,38 +6,54 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  *}
+{* modules/InventoryItem/views/ConversionModal.php *}
 {strip}
+    {foreach key=index item=jsModel from=$SCRIPTS}
+        <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
+    {/foreach}
+
     <div class="modal-dialog modal-xl inventoryItemConversionModal">
         <div class="modal-content">
-            <form id="inventoryItemConversionForm" class="form-horizontal" method="post" action="javascript:void(0);">
+            <form id="inventoryItemConversionForm" class="form-horizontal recordEditView" name="inventoryItemConversion" method="post" action="javascript:void(0);" data-fields-info="{Vtiger_Util_Helper::toSafeHTML($FIELDS_INFO)}">
+                <input type="hidden" name="module" value="InventoryItem"/>
+                <input type="hidden" name="action" value="ConversionSave"/>
                 <input type="hidden" name="sourceModule" value="{$SOURCE_MODULE}"/>
                 <input type="hidden" name="sourceRecord" value="{$SOURCE_RECORD}"/>
                 <input type="hidden" name="targetModule" value="{$TARGET_MODULE}"/>
-                {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=vtranslate('LBL_CONVERSION_TITLE', $MODULE, vtranslate($TARGET_MODULE, $TARGET_MODULE))}
+                {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=vtranslate('LBL_CONVERSION_TITLE', $MODULE)}
                 <div class="modal-body">
                     <p class="text-secondary">
                         {vtranslate('LBL_CONVERSION_DESCRIPTION', $MODULE, $SOURCE_RECORD_NAME, vtranslate($SOURCE_MODULE, $SOURCE_MODULE))}
                         <span class="ms-1">({$CURRENCY_NAME} {$CURRENCY_SYMBOL})</span>
                     </p>
                     {if !empty($HEADER_FIELD_MODELS)}
-                        <div class="row conversionHeader mb-3">
-                            {foreach key=FIELD_NAME item=FIELD_MODEL from=$HEADER_FIELD_MODELS}
-                                <div class="col-lg-6 mb-2">
-                                    <div class="fieldLabel mb-1">{vtranslate($FIELD_MODEL->get('label'), $TARGET_MODULE)}</div>
-                                    <div class="fieldValue">
-                                        {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(), $TARGET_MODULE) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$TARGET_MODULE MODULE_NAME=$TARGET_MODULE RECORD=''}
+                        <div class="massEditTable container-fluid conversionHeader mb-3">
+                            <div class="row">
+                                {foreach key=FIELD_NAME item=FIELD_MODEL from=$HEADER_FIELD_MODELS}
+                                    <div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
+                                        <div class="row">
+                                            <div class="fieldLabel col-lg-12 pb-2 text-secondary">
+                                                <span>{vtranslate($FIELD_MODEL->get('label'), $TARGET_MODULE)}</span>
+                                                {if $FIELD_MODEL->isMandatory() eq true}
+                                                    <span class="text-danger ms-2">*</span>
+                                                {/if}
+                                            </div>
+                                            <div class="fieldValue col-lg-12">
+                                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(), $TARGET_MODULE) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$TARGET_MODULE MODULE_NAME=$TARGET_MODULE RECORD=''}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            {/foreach}
+                                {/foreach}
+                            </div>
                         </div>
                     {/if}
                     <div class="table-responsive">
-                        <table class="table table-sm align-middle conversionItemsTable">
+                        <table class="table table-sm table-borderless table-hover align-middle conversionItemsTable">
                             <thead>
-                                <tr>
+                                <tr class="bg-body-secondary text-secondary">
                                     <th>{vtranslate('LBL_ITEM_NAME', $MODULE)}</th>
                                     <th class="text-end">{vtranslate('Quantity', $MODULE)}</th>
-                                    <th>{vtranslate('Unit', $MODULE)}</th>
+                                    <th></th>
                                     <th class="text-end">{vtranslate('Price', $MODULE)}</th>
                                     <th class="text-end">{vtranslate('Discount', $MODULE)}</th>
                                     <th class="text-end">{vtranslate('Tax', $MODULE)}</th>
@@ -48,20 +64,20 @@
                                 {foreach item=ITEM from=$INVENTORY_ITEMS}
                                     {assign var=ITEM_ID value=$ITEM.inventoryitemid}
                                     <tr class="conversionItem" data-item-id="{$ITEM_ID}">
-                                        <td>{$ITEM.item_text}</td>
-                                        <td class="text-end">
+                                        <td class="font-bold">{$ITEM.item_text}</td>
+                                        <td class="text-end conversionQuantity">
                                             {if in_array('quantity', $EDITABLE_COLUMNS)}
                                                 <input type="text" name="items[{$ITEM_ID}][quantity]" value="{$ITEM.quantity}"
-                                                       class="form-control form-control-sm text-end replaceCommaWithDot allowOnlyNumbers conversionValue"/>
+                                                       class="inputElement form-control text-end ms-auto replaceCommaWithDot allowOnlyNumbers conversionValue"/>
                                             {else}
                                                 {$ITEM.quantity}
                                             {/if}
                                         </td>
-                                        <td>{$ITEM.unit}</td>
-                                        <td class="text-end">
+                                        <td class="text-start text-secondary conversionUnit">{$ITEM.unit_display}</td>
+                                        <td class="text-end conversionPrice">
                                             {if in_array('price', $EDITABLE_COLUMNS)}
                                                 <input type="text" name="items[{$ITEM_ID}][price]" value="{$ITEM.price}"
-                                                       class="form-control form-control-sm text-end replaceCommaWithDot allowOnlyNumbers conversionValue"/>
+                                                       class="inputElement form-control text-end ms-auto replaceCommaWithDot allowOnlyNumbers conversionValue"/>
                                             {else}
                                                 {$ITEM.price}
                                             {/if}
@@ -78,13 +94,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <div class="container-fluid">
+                    <div class="container-fluid p-0">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-auto col-lg-6">
                                 <a href="#" class="btn btn-primary cancelLink" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                             </div>
-                            <div class="col-6 text-end">
-                                <button type="submit" class="btn btn-primary active conversionContinue"><strong>{vtranslate('LBL_CONTINUE', $MODULE)}</strong></button>
+                            <div class="ms-auto col-auto col-lg-6 text-end">
+                                <button type="submit" class="btn btn-primary active conversionSave" name="saveButton"><strong>{vtranslate('LBL_SAVE', $MODULE)}</strong></button>
                             </div>
                         </div>
                     </div>

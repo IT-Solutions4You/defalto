@@ -29,11 +29,14 @@ class Settings_InventoryItem_ConversionMapping_View extends Settings_Vtiger_Inde
         $sourceFieldOptions = [];
         $targetFieldOptions = [];
 
-        foreach (InventoryItem_ConversionMapping_Model::getSourceFields($sourceModule) as $fieldName => $fieldModel) {
+        $sourceFields = InventoryItem_ConversionMapping_Model::getSourceFields($sourceModule);
+        $targetFields = InventoryItem_ConversionMapping_Model::getTargetFields($targetModule);
+
+        foreach ($sourceFields as $fieldName => $fieldModel) {
             $sourceFieldOptions[$fieldName] = vtranslate($fieldModel->get('label'), $sourceModule);
         }
 
-        foreach (InventoryItem_ConversionMapping_Model::getTargetFields($targetModule) as $fieldName => $fieldModel) {
+        foreach ($targetFields as $fieldName => $fieldModel) {
             $targetFieldOptions[$fieldName] = vtranslate($fieldModel->get('label'), $targetModule);
         }
 
@@ -44,6 +47,7 @@ class Settings_InventoryItem_ConversionMapping_View extends Settings_Vtiger_Inde
             ->assign('TARGET_LABEL', vtranslate($targetModule, $targetModule))
             ->assign('SOURCE_FIELD_OPTIONS', $sourceFieldOptions)
             ->assign('TARGET_FIELD_OPTIONS', $targetFieldOptions)
+            ->assign('COMPATIBLE_TARGETS', json_encode(InventoryItem_ConversionMapping_Model::getCompatibleTargets($sourceFields, $targetFields)))
             ->assign('MAPPING', InventoryItem_ConversionMapping_Model::getConversionMapping($conversion->getId()));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);

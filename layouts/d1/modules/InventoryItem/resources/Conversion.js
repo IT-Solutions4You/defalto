@@ -10,14 +10,13 @@
 /** @var InventoryItem_Conversion_Js */
 Vtiger.Class("InventoryItem_Conversion_Js", {
     /**
-     * Opens the item review modal. The edit view of the target record opens after the reviewed items are stored on the server.
+     * Opens the item review modal. The target record is created directly from the modal.
      *
      * @param {string} sourceModule
      * @param {string} targetModule
      * @param {number} sourceRecord
-     * @param {string} editUrl url of the create view of the target record
      */
-    showModal: function (sourceModule, targetModule, sourceRecord, editUrl) {
+    showModal: function (sourceModule, targetModule, sourceRecord) {
         const params = {
             module: "InventoryItem",
             view: "ConversionModal",
@@ -37,16 +36,52 @@ Vtiger.Class("InventoryItem_Conversion_Js", {
             }
 
             app.helper.showModal(data, {
+                backdrop: "static",
                 cb: function (modal) {
-                    vtUtils.applyFieldElementsView(modal);
-                    InventoryItem_Conversion_Js.registerModalEvents(modal, editUrl);
+                    const form = jQuery("#inventoryItemConversionForm", modal);
+
+                    if (typeof Vtiger_Edit_Js !== "undefined") {
+                        new Vtiger_Edit_Js().registerBasicEvents(form);
+                    }
+
+                    vtUtils.applyFieldElementsView(form);
+                    InventoryItem_Conversion_Js.registerModalEvents(form);
                 }
             });
         });
     },
 
-    registerModalEvents: function (modal, editUrl) {
-        const form = jQuery("#inventoryItemConversionForm", modal);
+    /**
+     * Builds the metadata which the form validator uses to find the mandatory fields.
+     *
+     * @param {Object} fieldsInfo
+     *
+     * @return {Object}
+     */
+    getValidationMeta: function (fieldsInfo) {
+        return {
+            field: {
+                get: function (name, property) {
+                    if (name && property === undefined) {
+                        return fieldsInfo[name];
+                    }
+
+                    if (name && property) {
+                        return fieldsInfo[name][property];
+                    }
+                },
+                isMandatory: function (name) {
+                    return fieldsInfo[name] ? fieldsInfo[name].mandatory : false;
+                },
+                getType: function (name) {
+                    return fieldsInfo[name] ? fieldsInfo[name].type : false;
+                }
+            }
+        };
+    },
+
+    registerModalEvents: function (form) {
+        const saveButton = jQuery("button[name='saveButton']", form);
 
         form.on("change", ".conversionRemove", function (e) {
             const row = jQuery(e.currentTarget).closest("tr");
@@ -55,27 +90,30 @@ Vtiger.Class("InventoryItem_Conversion_Js", {
             jQuery(".conversionValue", row).prop("disabled", e.currentTarget.checked);
         });
 
-        form.on("submit", function (e) {
-            e.preventDefault();
-
-            const data = form.serializeFormData(),
-                headerParams = jQuery.param(jQuery(".conversionHeader :input", form).serializeArray());
-
-            data.module = "InventoryItem";
-            data.action = "ConversionStore";
-
-            app.helper.showProgress();
-            app.request.post({data: data}).then(function (error) {
-                if (error) {
-                    app.helper.hideProgress();
-                    app.helper.showErrorNotification({message: error.message});
-
-                    return;
+        form.vtValidate({
+            submitHandler: function (formElement) {
+                if (this.numberOfInvalids() > 0) {
+                    return false;
                 }
 
-                // Full page navigation is required: the target record is created in its own edit view.
-                window.location.href = editUrl + (editUrl.indexOf("?") === -1 ? "?" : "&") + "conversionModal=1" + (headerParams ? "&" + headerParams : "");
-            });
+                const data = jQuery(formElement).serializeFormData();
+
+                saveButton.attr("disabled", "disabled");
+                app.helper.showProgress();
+                app.request.post({data: data}).then(function (error, result) {
+                    if (error) {
+                        app.helper.hideProgress();
+                        saveButton.removeAttr("disabled");
+                        app.helper.showErrorNotification({message: error.message});
+
+                        return;
+                    }
+
+                    // The detail view of the new record is a different page, so a full navigation is required.
+                    window.location.href = result.url;
+                });
+            },
+            validationMeta: InventoryItem_Conversion_Js.getValidationMeta(JSON.parse(form.attr("data-fields-info") || "{}"))
         });
     }
 }, {});

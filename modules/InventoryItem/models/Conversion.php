@@ -57,7 +57,7 @@ class InventoryItem_Conversion_Model extends Core_DatabaseData_Model
             ->createColumn('source_tabid', 'int(19) NOT NULL')
             ->createColumn('target_tabid', 'int(19) NOT NULL')
             ->createColumn('enabled', 'tinyint(1) NOT NULL DEFAULT 1')
-            ->createColumn('use_modal', 'tinyint(1) NOT NULL DEFAULT 0')
+            ->createColumn('use_modal', 'tinyint(1) NOT NULL DEFAULT 1')
             ->createColumn('columns', 'varchar(500) DEFAULT NULL')
             ->createColumn('header_fields', 'varchar(500) DEFAULT NULL')
             ->createKey('UNIQUE INDEX IF NOT EXISTS `conversion_modules_idx` (`source_tabid`, `target_tabid`)')
@@ -110,7 +110,7 @@ class InventoryItem_Conversion_Model extends Core_DatabaseData_Model
             'source_tabid' => $sourceTabId,
             'target_tabid' => $targetTabId,
             'enabled'      => (int)($options['enabled'] ?? true),
-            'use_modal'    => (int)($options['use_modal'] ?? false),
+            'use_modal'    => (int)($options['use_modal'] ?? true),
             'columns'      => implode(',', $options['columns'] ?? self::DEFAULT_COLUMNS),
             'header_fields' => implode(',', $options['header_fields'] ?? []),
         ]);
@@ -385,9 +385,26 @@ class InventoryItem_Conversion_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Mandatory fields of the target module are always offered in the modal, so the record can be saved without opening its edit view.
+     * Item totals, special and file fields are never offered.
+     *
+     * @param Vtiger_Field_Model $fieldModel
+     *
+     * @return bool
+     */
+    public static function isMandatoryModalField(Vtiger_Field_Model $fieldModel): bool
+    {
+        return $fieldModel->isEditable()
+            && $fieldModel->isMandatory()
+            && 1 === (int)$fieldModel->get('displaytype')
+            && !self::isCalculatedHeaderField($fieldModel->getName())
+            && !in_array((int)$fieldModel->get('uitype'), [28, 69, 83], true);
+    }
+
+    /**
      * Saves the settings of the conversion. Unsupported columns and fields are dropped.
      *
-     * @param array $settings enabled, use_modal, columns (string[]), header_fields (string[])
+     * @param array $settings use_modal, columns (string[]), header_fields (string[])
      *
      * @return void
      * @throws Exception
@@ -398,7 +415,6 @@ class InventoryItem_Conversion_Model extends Core_DatabaseData_Model
         $headerFields = array_values(array_intersect((array)($settings['header_fields'] ?? []), array_keys(self::getSelectableHeaderFields((string)$this->get('target_module')))));
 
         $this->getConversionsTable()->updateData([
-            'enabled'       => (int)!empty($settings['enabled']),
             'use_modal'     => (int)!empty($settings['use_modal']),
             'columns'       => implode(',', $columns),
             'header_fields' => implode(',', $headerFields),
@@ -436,11 +452,10 @@ class InventoryItem_Conversion_Model extends Core_DatabaseData_Model
         $flags = JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_TAG;
 
         return sprintf(
-            'javascript:InventoryItem_Conversion_Js.showModal(%s,%s,%d,%s)',
+            'javascript:InventoryItem_Conversion_Js.showModal(%s,%s,%d)',
             json_encode($sourceModule, $flags),
             json_encode($targetModule, $flags),
             $sourceRecord,
-            json_encode($createUrl, $flags),
         );
     }
 

@@ -15,12 +15,6 @@ class InventoryItem_EditView_Modifier implements Core_Modifier_Interface
      */
     public function modifyProcess(Vtiger_Viewer $viewer, Vtiger_Request $request): void
     {
-        $sourceRecord = (int)$request->get('sourceRecord');
-
-        // Items reviewed in the conversion modal are valid only for the edit view opened right after the modal.
-        if ($sourceRecord && !$request->get('conversionModal')) {
-            InventoryItem_Conversion_Model::clearStoredItems($request->getModule(), $sourceRecord);
-        }
     }
 
     /**
