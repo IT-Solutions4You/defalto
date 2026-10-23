@@ -306,7 +306,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         $EMAILMakerFieldsModel = new EMAILMaker_Fields_Model();
 
-        foreach ($EMAILMakerFieldsModel->getInventoryItemsBlockFields() as $viewer_key => $pbFields) {
+        foreach ($EMAILMakerFieldsModel->getInventoryItemsBlockFields($select_module) as $viewer_key => $pbFields) {
             $viewer->assign($viewer_key, $pbFields);
         }
 

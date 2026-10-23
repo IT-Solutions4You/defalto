@@ -1,5 +1,22 @@
 # Core UI ownership
 
+## Inventory item block templates
+
+- `Core_InventoryItemsBlock_Model` owns product-block templates in `df_inventoryitems_block`; do not use the generic related-block table or model for their list, edit, or delete lifecycle.
+- Management screens may be hosted by another module such as PDFMaker. In that flow, the request `module` is the UI host and `source_module` is the inventory module persisted with the template.
+- `$IB_INVENTORYITEM_SEQUENCE$` is the physical document-line sequence. `$PS_ROW_NO$` counts only rows with a product/service and resets for each rendered block; `$PS_ROW_TYPE$` identifies `Products`, `Services`, or `Text`.
+
+## Product-block compatibility routes
+
+- `ProductBlocks` opens `Core_InventoryItemsBlock_View`; `EditProductBlock` maps legacy `tplid` links to the same shared editor.
+- EMAILMaker, PDFMaker, and PDFMaker Pro use `df_inventoryitems_block` as the single template store. The old module-specific product-block tables are legacy data only and are not used by the runtime editor.
+- Rows with an empty `module` are global templates and are offered for every inventory module. Module-specific rows remain restricted to their source module.
+- `Core_TemplateFields_Helper::getInventoryItemsBlockFields()` passes the selected inventory module to `getAllOptions()` so template editors receive global rows plus rows for that module only.
+- `Core_InventoryItemsBlock_Model::createTables()` inserts the two global InventoryItem starter templates only when `df_inventoryitems_block` has no rows. Never overwrite or append defaults to a populated table.
+- Creating a template while the manager filter is set to All persists a global row with an empty `module`; selecting an inventory module creates a module-specific row.
+- CRM Settings exposes the shared manager through the Inventory menu at `index.php?module=Core&view=ProductBlocks`; the settings-menu registration remains owned by `Settings_Vtiger_MenuItem_Model`.
+- Core-hosted inventory-block management requires an administrator and uses the basic application page lifecycle because Core is a framework owner rather than a permission-bearing CRM entity module. It supplies an explicit breadcrumb label and URL; the shared Topbar must tolerate technical modules without a `Vtiger_Module_Model`. Module-hosted routes retain their normal module permission checks and index lifecycle.
+
 ## Entity persistence encoding
 
 - `PearDatabase::query_result()` and `query_result_rowdata()` return HTML-encoded values. `CRMEntity::retrieve_entity_info()` keeps that public read contract while registering the corresponding raw database value in `TrackableObject` when encoding changed it.

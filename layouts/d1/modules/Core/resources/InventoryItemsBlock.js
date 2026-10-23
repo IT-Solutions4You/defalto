@@ -10,11 +10,15 @@
 Vtiger_RelatedBlock_Js('Vtiger_InventoryItemsBlock_Js', {}, {
     advancedFilter: false,
     registerEvents() {
-        this.registerCKEditor();
-        this.registerSortableRelatedFields();
-        this.registerSubmit();
-        this.registerColumnsChange();
-        vtUtils.registerNumberFormating(this.getForm());
+        if (this.getForm().length) {
+            this.registerCKEditor();
+            this.registerSortableRelatedFields();
+            this.registerSubmit();
+            this.registerColumnsChange();
+            vtUtils.registerNumberFormating(this.getForm());
+        }
+
+        this.registerListEvents();
     },
     getEditUrl() {
         const self = this,
@@ -41,6 +45,45 @@ Vtiger_RelatedBlock_Js('Vtiger_InventoryItemsBlock_Js', {}, {
 
         self.getForm().on('submit', function (e) {
             return true;
+        });
+    },
+    registerListEvents() {
+        const self = this,
+            container = self.getContainer();
+
+        container.on('change', '.inventoryBlockModule', function () {
+            const sourceModule = $(this).val(),
+                listUrl = $(this).data('list-url');
+
+            window.location.href = listUrl + (sourceModule ? '&source_module=' + encodeURIComponent(sourceModule) : '');
+        });
+
+        container.on('click', '.createInventoryBlock', function () {
+            const sourceModule = container.find('.inventoryBlockModule').val();
+
+            if (sourceModule) {
+                window.location.href = $(this).data('create-url') + '&source_module=' + encodeURIComponent(sourceModule);
+            }
+        });
+
+        container.on('click', '.deleteInventoryBlock', function () {
+            const button = $(this);
+
+            app.helper.showConfirmationBox({message: button.data('message')}).then(function () {
+                const params = {
+                    module: button.data('module'),
+                    view: 'InventoryItemsBlock',
+                    mode: 'delete',
+                    record: button.data('record'),
+                };
+
+                app.request.post({data: params}).then(function (error, response) {
+                    if (!error && response && response.success) {
+                        button.closest('tr').remove();
+                        app.helper.showSuccessNotification({message: button.data('success')});
+                    }
+                });
+            });
         });
     },
     createTable(module, fields) {

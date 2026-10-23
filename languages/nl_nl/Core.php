@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Productbloksjablonen',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Beheer productbloksjablonen voor voorraadregels.',
     'LBL_CONDITION' => 'Voorwaarde',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Postcodes beschikbaar',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Adresveld-toewijzing',

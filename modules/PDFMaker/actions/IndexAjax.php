@@ -16,7 +16,7 @@ class PDFMaker_IndexAjax_Action extends Core_Controller_Action
     {
         parent::__construct();
 
-        $Methods = ['SaveProductBlock', 'deleteProductBlocks', 'downloadMPDF', 'downloadFile', 'installExtension', 'getModuleFields', 'getPreviewContent'];
+        $Methods = ['downloadMPDF', 'downloadFile', 'installExtension', 'getModuleFields', 'getPreviewContent'];
 
         foreach ($Methods as $method) {
             $this->exposeMethod($method);
