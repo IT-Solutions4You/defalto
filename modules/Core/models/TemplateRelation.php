@@ -13,14 +13,20 @@
  * another module in an order — EMAIL Maker templates to PDF Maker templates now, later
  * PDF Maker and links of templates to contacts or other modules. Templates are not CRM
  * records, and vtiger_crmentityrel is looked up by id without the module in the core, so
- * every query here names both modules.
+ * every lookup here names both modules. All reads and writes go through Core_DatabaseData_Model.
  */
 class Core_TemplateRelation_Model extends Core_DatabaseData_Model
 {
-    public const TABLE = 'df_template_rel';
-
-    protected string $table = self::TABLE;
+    protected string $table = 'df_template_rel';
     protected string $tableId = 'id';
+
+    /**
+     * @return self
+     */
+    public static function getInstance(): self
+    {
+        return new self();
+    }
 
     /**
      * @return self table accessor of df_template_rel
@@ -54,9 +60,9 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
     /**
      * @return bool the table exists (until the system update created it nothing is related)
      */
-    public static function isInstalled(): bool
+    public function isInstalled(): bool
     {
-        return Vtiger_Utils::CheckTable(self::TABLE);
+        return Vtiger_Utils::CheckTable($this->table);
     }
 
     /**
@@ -64,27 +70,40 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
      * @param int[]  $recordIds     templates
      * @param string $relatedModule module of the related records
      *
-     * @return array record id => related record ids in their order (one query)
+     * @return array record id => related record ids in their order
+     * @throws Exception
      */
-    public static function getRelatedIds(string $module, array $recordIds, string $relatedModule): array
+    public function getRelatedIds(string $module, array $recordIds, string $relatedModule): array
     {
-        $recordIds = array_values(array_unique(array_filter(array_map('intval', $recordIds))));
+        $recordIds = self::getIds($recordIds);
 
-        if (!$recordIds || !self::isInstalled()) {
+        if (!$recordIds || !$this->isInstalled()) {
             return [];
         }
 
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery(
-            'SELECT record_id, related_record_id FROM ' . self::TABLE . '
-             WHERE module = ? AND related_module = ? AND record_id IN (' . generateQuestionMarks($recordIds) . ')
-             ORDER BY record_id, sequence, id',
-            array_merge([$module, $relatedModule], $recordIds)
-        );
+        $table = $this->getTemplateRelationTable();
         $related = [];
 
-        while ($row = $adb->fetchByAssoc($result, -1, false)) {
-            $related[(int)$row['record_id']][] = (int)$row['related_record_id'];
+        foreach ($recordIds as $recordId) {
+            $result = $table->selectResult(
+                ['related_record_id', 'sequence', $this->tableId],
+                ['module' => $module, 'record_id' => $recordId, 'related_module' => $relatedModule]
+            );
+            $rows = [];
+
+            while ($row = $table->getDB()->fetchByAssoc($result, -1, false)) {
+                $rows[] = $row;
+            }
+
+            if (!$rows) {
+                continue;
+            }
+
+            // the order of the relations: their sequence, then the order they were stored in
+            usort($rows, function ($a, $b) {
+                return [(int)$a['sequence'], (int)$a[$this->tableId]] <=> [(int)$b['sequence'], (int)$b[$this->tableId]];
+            });
+            $related[$recordId] = array_map('intval', array_column($rows, 'related_record_id'));
         }
 
         return $related;
@@ -99,21 +118,18 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
      * @param int[]  $relatedRecordIds in their order
      *
      * @return void
+     * @throws Exception
      */
-    public static function saveRelated(string $module, int $recordId, string $relatedModule, array $relatedRecordIds): void
+    public function saveRelated(string $module, int $recordId, string $relatedModule, array $relatedRecordIds): void
     {
-        if (!$recordId || !self::isInstalled()) {
+        if (!$recordId || !$this->isInstalled()) {
             return;
         }
 
-        $adb = PearDatabase::getInstance();
-        $adb->pquery(
-            'DELETE FROM ' . self::TABLE . ' WHERE module = ? AND record_id = ? AND related_module = ?',
-            [$module, $recordId, $relatedModule]
-        );
-        $table = (new self())->getTemplateRelationTable();
+        $table = $this->getTemplateRelationTable();
+        $table->deleteData(['module' => $module, 'record_id' => $recordId, 'related_module' => $relatedModule]);
 
-        foreach (array_values(array_unique(array_filter(array_map('intval', $relatedRecordIds)))) as $index => $relatedRecordId) {
+        foreach (self::getIds($relatedRecordIds) as $index => $relatedRecordId) {
             $table->insertData([
                 'record_id' => $recordId,
                 'module' => $module,
@@ -131,10 +147,11 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
      * @param int[]  $recordIds
      *
      * @return void
+     * @throws Exception
      */
-    public static function deleteByRecord(string $module, array $recordIds): void
+    public function deleteByRecord(string $module, array $recordIds): void
     {
-        self::deleteBy('module', 'record_id', $module, $recordIds);
+        $this->deleteBy('module', 'record_id', $module, $recordIds);
     }
 
     /**
@@ -144,10 +161,26 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
      * @param int[]  $relatedRecordIds
      *
      * @return void
+     * @throws Exception
      */
-    public static function deleteByRelated(string $relatedModule, array $relatedRecordIds): void
+    public function deleteByRelated(string $relatedModule, array $relatedRecordIds): void
     {
-        self::deleteBy('related_module', 'related_record_id', $relatedModule, $relatedRecordIds);
+        $this->deleteBy('related_module', 'related_record_id', $relatedModule, $relatedRecordIds);
+    }
+
+    /**
+     * Deletes every relation of all templates of a module (the module's own "delete all").
+     *
+     * @param string $module
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function deleteByModule(string $module): void
+    {
+        if ($this->isInstalled()) {
+            $this->getTemplateRelationTable()->deleteData(['module' => $module]);
+        }
     }
 
     /**
@@ -157,32 +190,30 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
      * @param int[]  $ids
      *
      * @return void
+     * @throws Exception
      */
-    private static function deleteBy(string $moduleColumn, string $idColumn, string $module, array $ids): void
+    private function deleteBy(string $moduleColumn, string $idColumn, string $module, array $ids): void
     {
-        $ids = array_values(array_filter(array_map('intval', $ids)));
+        $ids = self::getIds($ids);
 
-        if (!$ids || !self::isInstalled()) {
+        if (!$ids || !$this->isInstalled()) {
             return;
         }
 
-        PearDatabase::getInstance()->pquery(
-            'DELETE FROM ' . self::TABLE . ' WHERE ' . $moduleColumn . ' = ? AND ' . $idColumn . ' IN (' . generateQuestionMarks($ids) . ')',
-            array_merge([$module], $ids)
-        );
+        $table = $this->getTemplateRelationTable();
+
+        foreach ($ids as $id) {
+            $table->deleteData([$moduleColumn => $module, $idColumn => $id]);
+        }
     }
 
     /**
-     * Deletes every relation of all templates of a module (the module's own "delete all").
+     * @param array $ids
      *
-     * @param string $module
-     *
-     * @return void
+     * @return int[] positive integer ids, each once, in their order
      */
-    public static function deleteByModule(string $module): void
+    private static function getIds(array $ids): array
     {
-        if (self::isInstalled()) {
-            PearDatabase::getInstance()->pquery('DELETE FROM ' . self::TABLE . ' WHERE module = ?', [$module]);
-        }
+        return array_values(array_unique(array_filter(array_map('intval', $ids))));
     }
 }

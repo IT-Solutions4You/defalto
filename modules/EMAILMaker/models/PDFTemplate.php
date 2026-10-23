@@ -27,7 +27,7 @@ class EMAILMaker_PDFTemplate_Model
      */
     public static function isAvailable(): bool
     {
-        return EMAILMaker_Module_Model::isPDFMakerInstalled() && Core_TemplateRelation_Model::isInstalled();
+        return EMAILMaker_Module_Model::isPDFMakerInstalled() && Core_TemplateRelation_Model::getInstance()->isInstalled();
     }
 
     /**
@@ -83,7 +83,7 @@ class EMAILMaker_PDFTemplate_Model
      */
     public static function getLinkedIds(array $templateIds): array
     {
-        return Core_TemplateRelation_Model::getRelatedIds(self::MODULE, $templateIds, self::RELATED_MODULE);
+        return Core_TemplateRelation_Model::getInstance()->getRelatedIds(self::MODULE, $templateIds, self::RELATED_MODULE);
     }
 
     /**
@@ -154,7 +154,7 @@ class EMAILMaker_PDFTemplate_Model
             return isset($available[$pdfTemplateId]);
         })));
 
-        Core_TemplateRelation_Model::saveRelated(self::MODULE, $templateId, self::RELATED_MODULE, $pdfTemplateIds);
+        Core_TemplateRelation_Model::getInstance()->saveRelated(self::MODULE, $templateId, self::RELATED_MODULE, $pdfTemplateIds);
     }
 
     /**
@@ -164,7 +164,7 @@ class EMAILMaker_PDFTemplate_Model
      */
     public static function deleteLinks(array $templateIds): void
     {
-        Core_TemplateRelation_Model::deleteByRecord(self::MODULE, $templateIds);
+        Core_TemplateRelation_Model::getInstance()->deleteByRecord(self::MODULE, $templateIds);
     }
 
     /**
@@ -174,7 +174,7 @@ class EMAILMaker_PDFTemplate_Model
      */
     public static function deleteAllLinks(): void
     {
-        Core_TemplateRelation_Model::deleteByModule(self::MODULE);
+        Core_TemplateRelation_Model::getInstance()->deleteByModule(self::MODULE);
     }
 
     /**
