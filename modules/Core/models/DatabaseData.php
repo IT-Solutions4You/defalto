@@ -92,7 +92,14 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         $params = [];
 
         foreach ($search as $value) {
-            foreach ((array)$value as $item) {
+            // only an array is a list of values — null, an object or a string stays one parameter
+            if (!is_array($value)) {
+                $params[] = $value;
+
+                continue;
+            }
+
+            foreach ($value as $item) {
                 $params[] = $item;
             }
         }
