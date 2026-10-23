@@ -13,7 +13,8 @@
  * another module in an order — EMAIL Maker templates to PDF Maker templates now, later
  * PDF Maker and links of templates to contacts or other modules. Templates are not CRM
  * records, and vtiger_crmentityrel is looked up by id without the module in the core, so
- * every lookup here names both modules. All reads and writes go through Core_DatabaseData_Model.
+ * every lookup here names both modules. All reads and writes go through Core_DatabaseData_Model
+ * (a list of ids as an IN condition).
  */
 class Core_TemplateRelation_Model extends Core_DatabaseData_Model
 {
@@ -82,29 +83,28 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
         }
 
         $table = $this->getTemplateRelationTable();
+        $result = $table->selectResult(
+            ['record_id', 'related_record_id', 'sequence', $this->tableId],
+            ['module' => $module, 'record_id' => $recordIds, 'related_module' => $relatedModule]
+        );
+        $rows = [];
+
+        while ($row = $table->getDB()->fetchByAssoc($result, -1, false)) {
+            $rows[] = $row;
+        }
+
+        // the order of the relations: their sequence, then the order they were stored in
+        usort($rows, function ($a, $b) {
+            return [(int)$a['sequence'], (int)$a[$this->tableId]] <=> [(int)$b['sequence'], (int)$b[$this->tableId]];
+        });
         $related = [];
 
-        foreach ($recordIds as $recordId) {
-            $result = $table->selectResult(
-                ['related_record_id', 'sequence', $this->tableId],
-                ['module' => $module, 'record_id' => $recordId, 'related_module' => $relatedModule]
-            );
-            $rows = [];
-
-            while ($row = $table->getDB()->fetchByAssoc($result, -1, false)) {
-                $rows[] = $row;
-            }
-
-            if (!$rows) {
-                continue;
-            }
-
-            // the order of the relations: their sequence, then the order they were stored in
-            usort($rows, function ($a, $b) {
-                return [(int)$a['sequence'], (int)$a[$this->tableId]] <=> [(int)$b['sequence'], (int)$b[$this->tableId]];
-            });
-            $related[$recordId] = array_map('intval', array_column($rows, 'related_record_id'));
+        foreach ($rows as $row) {
+            $related[(int)$row['record_id']][] = (int)$row['related_record_id'];
         }
+
+        // the templates in the order they were asked for
+        $related = array_replace(array_intersect_key(array_flip($recordIds), $related), $related);
 
         return $related;
     }
@@ -200,11 +200,7 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
             return;
         }
 
-        $table = $this->getTemplateRelationTable();
-
-        foreach ($ids as $id) {
-            $table->deleteData([$moduleColumn => $module, $idColumn => $id]);
-        }
+        $this->getTemplateRelationTable()->deleteData([$moduleColumn => $module, $idColumn => $ids]);
     }
 
     /**
