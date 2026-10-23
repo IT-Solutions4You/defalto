@@ -22,3 +22,7 @@ Notes:
 - Choosing another e-mail template replaces the PDFs the previous one brought; PDFs you added yourself stay.
 - When you start the e-mail from PDF Maker with chosen PDFs, that choice is kept.
 - When PDF Maker is not active, the field and the preselection are not shown.
+
+# Sending options
+
+The **Sending options** tab of a template holds what is sent together with the e-mail: the PDF Maker templates (when PDF Maker is active), **Load related documents** and **Related documents by folder** (the folders the related documents are taken from).

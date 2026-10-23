@@ -37,7 +37,7 @@
                 <li class="detailviewTab nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#editTabSettings" aria-expanded="false"><strong>{vtranslate('LBL_SETTINGS_TAB',$MODULE)}</strong></a>
                 </li>
-                {if $THEME_MODE neq "true" && $PDF_TEMPLATE_DATA.available}
+                {if $THEME_MODE neq "true"}
                     <li class="detailviewTab nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#editTabSendingOptions" aria-expanded="false"><strong>{vtranslate('LBL_SENDING_OPTIONS',$MODULE)}</strong></a>
                     </li>
@@ -59,7 +59,7 @@
                                 {include file='tabs/Labels.tpl'|@vtemplate_path:$MODULE}
                                 {include file='tabs/ProductBlock.tpl'|@vtemplate_path:$MODULE}
                                 {include file='tabs/Settings.tpl'|@vtemplate_path:$MODULE}
-                                {if $THEME_MODE neq "true" && $PDF_TEMPLATE_DATA.available}
+                                {if $THEME_MODE neq "true"}
                                     {include file='tabs/SendingOptions.tpl'|@vtemplate_path:$MODULE}
                                 {/if}
                                 {include file='tabs/Sharing.tpl'|@vtemplate_path:$MODULE}
