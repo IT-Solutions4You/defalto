@@ -23,7 +23,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     protected array $columns = [];
 
     /**
-     * @param $search column => value, or an array of values (IN; an empty array matches nothing)
+     * @param $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return mixed
      * @throws Exception
@@ -42,9 +42,10 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param $table
-     * @param $search column => value, or an array of values (IN; an empty array matches nothing)
+     * @param $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return string
+     * @throws Exception for an empty array of values in $search
      */
     public function getDeleteQuery($table, $search): string
     {
@@ -57,13 +58,14 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     }
 
     /**
-     * The WHERE condition of a search: a scalar value is `column=?`, an array of values is
-     * `column IN (?,…)`. An empty array matches no row (`0=1`) — a select returns nothing and a
-     * delete or update changes nothing, never the whole table.
+     * The WHERE condition of a search: a value that is not an array is `column=?`, an array of
+     * values is `column IN (?,…)`. An empty array is badly prepared data — the query is not built
+     * and never runs; the caller handles an empty list itself.
      *
      * @param array $search column => value or array of values
      *
      * @return string the conditions joined with AND
+     * @throws Exception for an empty array of values
      */
     public function getSearchCondition(array $search): string
     {
@@ -73,7 +75,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
             if (!is_array($value)) {
                 $conditions[] = $column . '=?';
             } elseif (empty($value)) {
-                $conditions[] = '0=1';
+                throw new Exception('Empty list of values for column ' . $column . ' in the search');
             } else {
                 $conditions[] = $column . ' IN (' . generateQuestionMarks($value) . ')';
             }
@@ -147,9 +149,10 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     /**
      * @param string $table
      * @param array  $data
-     * @param array  $search column => value, or an array of values (IN; an empty array matches nothing)
+     * @param array  $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return string
+     * @throws Exception for an empty array of values in $search
      */
     public function getSelectQuery(string $table, array $data = [], array $search = []): string
     {
@@ -164,9 +167,10 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     /**
      * @param string $table
      * @param array  $data
-     * @param array  $search column => value, or an array of values (IN; an empty array matches nothing)
+     * @param array  $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return string
+     * @throws Exception for an empty array of values in $search
      */
     public function getUpdateQuery(string $table, array $data, array $search): string
     {
@@ -224,7 +228,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param array $data
-     * @param array $search column => value, or an array of values (IN; an empty array matches nothing)
+     * @param array $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return array|null
      * @throws Exception
@@ -263,7 +267,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param array $data
-     * @param array $search column => value, or an array of values (IN; an empty array matches nothing)
+     * @param array $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return bool
      * @throws Exception
