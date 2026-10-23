@@ -1,5 +1,11 @@
 # Core UI ownership
 
+## Inventory item block templates
+
+- `Core_InventoryItemsBlock_Model` owns product-block templates in `df_inventoryitems_block`; do not use the generic related-block table or model for their list, edit, or delete lifecycle.
+- Management screens may be hosted by another module such as PDFMaker. In that flow, the request `module` is the UI host and `source_module` is the inventory module persisted with the template.
+- `$IB_INVENTORYITEM_SEQUENCE$` is the physical document-line sequence. `$PS_ROW_NO$` counts only rows with a product/service and resets for each rendered block; `$PS_ROW_TYPE$` identifies `Products`, `Services`, or `Text`.
+
 ## Entity persistence encoding
 
 - `PearDatabase::query_result()` and `query_result_rowdata()` return HTML-encoded values. `CRMEntity::retrieve_entity_info()` keeps that public read contract while registering the corresponding raw database value in `TrackableObject` when encoding changed it.

@@ -28,6 +28,7 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
      */
     protected array $requiredFields = ['id', 'item_text', 'parentid', 'productid'];
     protected array $skippedFields = ['margin', 'margin_amount', 'margin_combined'];
+    protected int $productRowNumber = 0;
 
     public function getArticleOptions(): array
     {
@@ -96,7 +97,28 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
         $instance->retrieveDataById();
         $instance->decodeData();
 
+        if (!empty($instance->get('module'))) {
+            $instance->set('module_name', $instance->get('module'));
+        }
+
         return $instance;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getAll(string $moduleName = ''): array
+    {
+        $table = (new self())->getInventoryItemBlockTable();
+        $search = empty($moduleName) ? [] : ['module' => $moduleName];
+        $result = $table->selectResult(['id', 'module'], $search);
+        $instances = [];
+
+        while ($row = $table->getDB()->fetchByAssoc($result)) {
+            $instances[] = self::getInstanceById($row['id'], $row['module']);
+        }
+
+        return $instances;
     }
 
     /**
@@ -187,6 +209,13 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
         $values = parent::getVariableValues($recordModel);
         $recordId = (int)$recordModel->get('productid');
         $inventoryItemId = (int)$recordModel->get('id');
+        $rowType = 'Text';
+
+        if (!empty($recordId)) {
+            $rowType = 'Products';
+            $this->productRowNumber++;
+        }
+
         $fields = [
             'Products' => [
                 'fields' => (array)$this->get('product_fields'),
@@ -200,7 +229,11 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
 
         if (!empty($recordId) && isRecordExists($recordId)) {
             $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-            $fields[$recordModel->getModuleName()]['record'] = $recordModel;
+            $rowType = $recordModel->getModuleName();
+
+            if (isset($fields[$rowType])) {
+                $fields[$rowType]['record'] = $recordModel;
+            }
         }
 
         foreach ($fields as $moduleName => $fieldInfo) {
@@ -222,8 +255,20 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
         $values['$PS_DESCRIPTION$'] = $recordModel->getDescription();
         $values['$PS_CODE$'] = $recordModel->get('serial_no') ?: $recordModel->get('servicecode');
         $values['$PS_IMAGE$'] = '$RECORD_IMAGE_' . $inventoryItemId . '$';
+        $values['$PS_ROW_NO$'] = empty($recordId) ? '' : $this->productRowNumber;
+        $values['$PS_ROW_TYPE$'] = $rowType;
 
         return $values;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function replaceRecords(string $content): string
+    {
+        $this->productRowNumber = 0;
+
+        return parent::replaceRecords($content);
     }
 
     public function getSorting(): string
@@ -261,6 +306,16 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
     public function getCreateViewUrl(): string
     {
         return 'index.php?module=' . $this->get('module_name') . '&view=InventoryItemsBlock&mode=edit';
+    }
+
+    public function getManagementEditViewUrl(string $moduleName): string
+    {
+        return sprintf(
+            'index.php?module=%s&view=InventoryItemsBlock&mode=edit&source_module=%s&record=%d',
+            $moduleName,
+            $this->getModuleName(),
+            $this->getId(),
+        );
     }
 
     public function getRelatedModuleName(): string
@@ -328,7 +383,7 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
      */
     public function getInventoryItemBlockTable(): self
     {
-        return $this->getTable('df_inventoryitems_block', 'id');
+        return $this->getTable($this->table, $this->tableId);
     }
 
     public function getProductVariableOptions(): array
@@ -359,8 +414,12 @@ class Core_InventoryItemsBlock_Model extends Core_RelatedBlock_Model
             ],
         ];
         $options = array_merge_recursive($this->getVariableOptionsForModule('InventoryItem'), $customOptions);
+        $options = $this->translateOptions($options);
+        $customInformationLabel = vtranslate('LBL_CUSTOM_INFORMATION', $this->variableLabelModule);
+        $options[$customInformationLabel]['PS_ROW_NO'] = vtranslate('Sequence', 'InventoryItem');
+        $options[$customInformationLabel]['PS_ROW_TYPE'] = vtranslate('LBL_TYPE', 'Core');
 
-        return $this->translateOptions($options);
+        return $options;
     }
 
     public function getVariableOptionsForModule(string $moduleName): array

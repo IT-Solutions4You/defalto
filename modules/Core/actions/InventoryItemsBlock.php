@@ -16,17 +16,24 @@ class Core_InventoryItemsBlock_Action extends Core_RelatedBlock_Action
     public function process(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
+        $sourceModule = $request->get('source_module') ?: $moduleName;
         $recordId = $request->getRecord();
 
         if ($recordId) {
-            $instance = Core_InventoryItemsBlock_Model::getInstanceById($recordId, $moduleName);
+            $instance = Core_InventoryItemsBlock_Model::getInstanceById($recordId, $sourceModule);
         } else {
-            $instance = Core_InventoryItemsBlock_Model::getInstance($moduleName);
+            $instance = Core_InventoryItemsBlock_Model::getInstance($sourceModule);
         }
 
         $instance->retrieveFromRequest($request);
         $instance->save();
 
-        header('location:' . $instance->getEditViewUrl());
+        if ($moduleName === $sourceModule) {
+            $redirectUrl = $instance->getEditViewUrl();
+        } else {
+            $redirectUrl = $instance->getManagementEditViewUrl($moduleName);
+        }
+
+        header('location:' . $redirectUrl);
     }
 }
