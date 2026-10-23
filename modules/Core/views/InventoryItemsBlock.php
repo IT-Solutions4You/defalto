@@ -11,6 +11,60 @@
 class Core_InventoryItemsBlock_View extends Core_RelatedBlock_View
 {
     /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        if ('Core' !== $request->getModule()) {
+            return parent::checkPermission($request);
+        }
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        if (!$currentUser || !$currentUser->isAdminUser()) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
+    {
+        if ('Core' === $request->getModule()) {
+            Vtiger_Basic_View::preProcess($request, false);
+
+            $viewer = $this->getViewer($request);
+            $viewer->assign('MODULE_BREADCRUMB_LABEL', vtranslate('LBL_PRODUCTBLOCKTPL', 'Core'));
+            $viewer->assign('MODULE_BREADCRUMB_URL', 'index.php?module=Core&view=ProductBlocks');
+
+            if ($display) {
+                $this->preProcessDisplay($request);
+            }
+
+            return;
+        }
+
+        parent::preProcess($request, $display);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function postProcess(Vtiger_Request $request): void
+    {
+        if ('Core' === $request->getModule()) {
+            Vtiger_Basic_View::postProcess($request);
+
+            return;
+        }
+
+        parent::postProcess($request);
+    }
+
+    /**
      * @throws Exception
      */
     public function list(Vtiger_Request $request): void
@@ -38,8 +92,12 @@ class Core_InventoryItemsBlock_View extends Core_RelatedBlock_View
     public function edit(Vtiger_Request $request): void
     {
         $moduleName = $request->getModule();
-        $sourceModule = $request->get('source_module') ?: $moduleName;
+        $sourceModule = $request->get('source_module');
         $recordId = $request->get('record');
+
+        if (empty($sourceModule) && in_array($moduleName, InventoryItem_Utils_Helper::getInventoryItemModules())) {
+            $sourceModule = $moduleName;
+        }
 
         if (!empty($recordId)) {
             $relatedBlock = Core_InventoryItemsBlock_Model::getInstanceById($recordId, $sourceModule);

@@ -23,10 +23,10 @@
                     </select>
                 </div>
                 <div class="col-lg-auto pb-3">
-                    <button type="button" class="btn btn-outline-secondary createInventoryBlock" data-create-url="index.php?module={$MANAGEMENT_MODULE}&view=InventoryItemsBlock&mode=edit" {if empty($SOURCE_MODULE)}disabled="disabled"{/if}>
+                    <a class="btn btn-outline-secondary createInventoryBlock" href="index.php?module={$MANAGEMENT_MODULE}&view=InventoryItemsBlock&mode=edit{if !empty($SOURCE_MODULE)}&source_module={$SOURCE_MODULE}{/if}" data-create-url="index.php?module={$MANAGEMENT_MODULE}&view=InventoryItemsBlock&mode=edit">
                         <i class="bi bi-plus-lg"></i>
                         <span class="ms-2">{vtranslate('LBL_CREATE', 'Core')}</span>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -50,7 +50,13 @@
                             </button>
                         </td>
                         <td>{$INVENTORY_BLOCK_MODEL->getName()}</td>
-                        <td>{vtranslate($INVENTORY_BLOCK_MODEL->getModuleName(), $INVENTORY_BLOCK_MODEL->getModuleName())}</td>
+                        <td>
+                            {if $INVENTORY_BLOCK_MODEL->getModuleName()}
+                                {vtranslate($INVENTORY_BLOCK_MODEL->getModuleName(), $INVENTORY_BLOCK_MODEL->getModuleName())}
+                            {else}
+                                {vtranslate('LBL_ALL', 'Core')}
+                            {/if}
+                        </td>
                     </tr>
                 {/foreach}
             </tbody>

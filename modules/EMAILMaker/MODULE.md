@@ -6,6 +6,12 @@
 - `getContent()` decodes entities on the combined subject/body and replaces nonbreaking-space entities with ordinary spaces. It calls `handleRowbreak()` even without rowbreak tokens; that parser pass is not a general newline-to-br conversion. Explicit paragraphs, breaks and CSS in the template remain relevant to spacing.
 - Validate formatting through both EMAILMaker passes, modern and legacy signature variables, inline styles, encoded literal text, and the final ITS4YouEmails mailer body. Isolated method execution is not evidence of the exact HTML delivered by a configured workflow.
 
+# Product block management
+
+- `EMAILMaker_ProductBlocks_View` is only a compatibility route adapter for the Core Inventory Items Block manager.
+- Product-block templates are shared with PDFMaker and PDFMaker Pro in `df_inventoryitems_block`. The legacy `vtiger_emakertemplates_productbloc_tpl` table is not used by the runtime editor.
+- Global rows with an empty module are available to every supported inventory document module. Core installs two functional global starter templates only when the shared table is empty.
+
 # Display conditions
 
 - `EMAILMaker_FilterRecordStructure_Model` uses `Core_FilterEditor_Model::getConditionBlocks()` for source and referenced modules. Ordinary blocks keep their configured order, while the block named `LBL_ITEM_DETAILS` is presented last. This changes only display-condition field ordering.

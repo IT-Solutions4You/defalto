@@ -42,8 +42,18 @@
                     {elseif $MODULE}
                         {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
                         {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
-                        {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $MODULE)}
-                        {assign var=CUSTOM_VIEW_URL value=$MODULE_MODEL->getCustomViewUrl($SELECTED_MENU_CATEGORY)}
+                        {if isset($MODULE_BREADCRUMB_LABEL) && $MODULE_BREADCRUMB_LABEL}
+                            {assign var=SINGLE_MODULE_LABEL value=$MODULE_BREADCRUMB_LABEL}
+                        {else}
+                            {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $MODULE)}
+                        {/if}
+                        {if isset($MODULE_BREADCRUMB_URL) && $MODULE_BREADCRUMB_URL}
+                            {assign var=CUSTOM_VIEW_URL value=$MODULE_BREADCRUMB_URL}
+                        {elseif $MODULE_MODEL}
+                            {assign var=CUSTOM_VIEW_URL value=$MODULE_MODEL->getCustomViewUrl($SELECTED_MENU_CATEGORY)}
+                        {else}
+                            {assign var=CUSTOM_VIEW_URL value='index.php'}
+                        {/if}
                         {if $REQUEST_INSTANCE.view eq 'List'}
                             {assign var=SINGLE_MODULE_LABEL value=vtranslate($MODULE, $MODULE)}
                         {/if}
