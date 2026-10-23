@@ -14,3 +14,8 @@
 
 - Browser-visible user, contact, product, record and company attachment images use `Core_Storage_Model::getAttachmentPublicUrl()` rather than exposing `vtiger_attachments.path`. This keeps templates compatible with attachment storage outside the web directory.
 - PDFMaker keeps using resolved physical paths for local PDF rendering; do not replace those paths with browser URLs without validating the PDF renderer.
+
+# Template detail icons
+
+- `EMAILMaker_EMAILMaker_Model::GetDetailViewData()` (default for DetailView / ListView) and the permission-denied box (`denied.gif`) take their icons through `vimage_path()` (`layouts/d1/skins/images/Enable.png`, `Disable.png`, `denied.gif`), the same as PDFMaker. The former `layouts/vlayout/...` paths do not exist in Defalto.
+- `layouts/d1/modules/EMAILMaker/unsubscribeinfo/info_en_us.tpl` still points to `layouts/vlayout/modules/EMAILMaker/images/unsubscribe_email_*.jpg`; those images exist nowhere and the template is not loaded by any code.
