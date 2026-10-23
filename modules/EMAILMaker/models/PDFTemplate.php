@@ -22,9 +22,6 @@ class EMAILMaker_PDFTemplate_Model
     public const MODULE = 'EMAILMaker';
     public const RELATED_MODULE = 'PDFMaker';
 
-    /** The table of the first version, moved to df_template_rel by its migration */
-    private const LEGACY_TABLE = 'vtiger_emakertemplates_pdftemplates';
-
     /**
      * @return bool PDF Maker is installed, active and offers its templates
      */
@@ -178,27 +175,6 @@ class EMAILMaker_PDFTemplate_Model
     public static function deleteAllLinks(): void
     {
         Core_TemplateRelation_Model::deleteByModule(self::MODULE);
-    }
-
-    /**
-     * Moves the links of the first version (vtiger_emakertemplates_pdftemplates) to
-     * df_template_rel in the same order and drops the old table; for the migration, idempotent.
-     *
-     * @return void
-     */
-    public static function moveLegacyLinks(): void
-    {
-        if (!Vtiger_Utils::CheckTable(self::LEGACY_TABLE) || !Core_TemplateRelation_Model::isInstalled()) {
-            return;
-        }
-
-        $adb = PearDatabase::getInstance();
-        $adb->pquery(
-            'INSERT IGNORE INTO ' . Core_TemplateRelation_Model::TABLE . ' (record_id, module, related_record_id, related_module, sequence)
-             SELECT templateid, ?, pdftemplateid, ?, sequence FROM ' . self::LEGACY_TABLE,
-            [self::MODULE, self::RELATED_MODULE]
-        );
-        $adb->pquery('DROP TABLE ' . self::LEGACY_TABLE, []);
     }
 
     /**

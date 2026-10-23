@@ -31,7 +31,8 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * Creates the table; idempotent.
+     * Creates the table; idempotent. Listed in Core_CreateTables_Config, so the core install
+     * and the system update (Install_Utils_Model::installTables()) run it.
      *
      * @return void
      * @throws Exception
@@ -51,7 +52,7 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * @return bool the table exists (before its migration ran nothing is related)
+     * @return bool the table exists (until the system update created it nothing is related)
      */
     public static function isInstalled(): bool
     {
