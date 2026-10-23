@@ -7,3 +7,18 @@ When selecting a field for a display condition on an inventory document, the mai
 # Attachment images
 
 Images inserted from CRM records remain available when the physical attachment directory is outside the public web directory. Templates reference them through the CRM attachment endpoint instead of exposing the server filesystem path.
+
+# PDF attachments from PDF Maker
+
+When PDF Maker is installed and active, an e-mail template can bring its PDF documents along.
+
+1. Open the e-mail template for editing. On the **Sending options** tab choose one or more **PDF Maker templates** of the template's module (only active templates you may use are offered). Drag them to set their order.
+2. Save. The template detail lists them in the **Sending options** block.
+3. When you send an e-mail from a record and choose this template (or it is your default), the **PDF templates** block opens with these PDFs already selected. You can remove them, add others, pick the PDF language or merge them into one file as before.
+
+Notes:
+
+- A PDF template that was deleted, switched off or that you are not allowed to use is skipped; the e-mail is still sent.
+- Choosing another e-mail template replaces the PDFs the previous one brought; PDFs you added yourself stay.
+- When you start the e-mail from PDF Maker with chosen PDFs, that choice is kept.
+- When PDF Maker is not active, the field and the preselection are not shown.

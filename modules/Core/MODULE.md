@@ -122,3 +122,9 @@ Use the actual module name instead of `Example`. Unconfigured fields retain the 
 - Validate both adapters through real Smarty rendering, quoted values, source-module operators, owner values, Documents metadata and blank-row policy. Check workflow JS inheritance in a browser, including add/delete groups and rows, mixed connectors, serialization and trigger changes; load new classes with their actual parent and run PHP lint.
 
 - Related-block filters pass stored connectors unchanged to the Core query parser. Never infer the last group from a fixed key such as 2; empty and sparse groups are normalized at the shared query boundary.
+
+# Template relations
+
+- `Core_TemplateRelation_Model` owns `df_template_rel` (id, record_id, module, related_record_id, related_module, sequence; UNIQUE module+record_id+related_module+related_record_id, KEY module+record_id, KEY related_module+related_record_id): links of templates, which are not CRM records, to records of another module in an order. Agreed with the core maintainer instead of `vtiger_crmentityrel`, which the core looks up by id without the module (CRMEntity, Vtiger_Record_Model, Webservices utils, ITS4YouEmails, Core_RelatedBlock_Model).
+- Every method names both modules: `getRelatedIds()`, `saveRelated()` (replaces one related module of a template, `sequence` from 1), `deleteByRecord()`, `deleteByRelated()`, `deleteByModule()`; `createTables()` is idempotent (migration `20261023120000`).
+- Users: EMAIL Maker → PDF Maker templates (`EMAILMaker_PDFTemplate_Model`); planned: PDF Maker and links of templates to contacts and other modules.
