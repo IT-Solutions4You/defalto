@@ -536,8 +536,8 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 
     public function GetDetailViewData($templateid, $skipperrmisions = false)
     {
-        $no_img = '&nbsp;<img src="layouts/vlayout/skins/images/no.gif" alt="no" />';
-        $yes_img = '&nbsp;<img src="layouts/vlayout/skins/images/Enable.png" alt="yes" />';
+        $no_img = '&nbsp;<img src="' . vimage_path('Disable.png') . '" alt="no" />';
+        $yes_img = '&nbsp;<img src="' . vimage_path('Enable.png') . '" alt="yes" />';
         $result = $this->db->pquery("SELECT * FROM vtiger_emakertemplates WHERE templateid=? AND deleted = '0'", [$templateid]);
         $emailtemplateResult = $this->db->fetch_array($result);
         if (!$skipperrmisions) {
@@ -611,7 +611,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         $output .= "<div style='border: 3px solid rgb(153, 153, 153); background-color: rgb(255, 255, 255); width: 55%; position: relative; z-index: 10000000;'>
       		<table border='0' cellpadding='5' cellspacing='0' width='98%'>
       		<tbody><tr>
-      		<td rowspan='2' width='11%'><img src='layouts/vlayout/skins/images/denied.gif'></td>
+      		<td rowspan='2' width='11%'><img src='" . vimage_path('denied.gif') . "'></td>
       		<td style='border-bottom: 1px solid rgb(204, 204, 204);' nowrap='nowrap' width='70%'><span class='genHeaderSmall'>" . vtranslate("LBL_PERMISSION", "EMAILMaker") . "</span></td>
       		</tr>
       		<tr>
