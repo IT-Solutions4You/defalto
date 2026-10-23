@@ -13,8 +13,8 @@
  * another module in an order — EMAIL Maker templates to PDF Maker templates now, later
  * PDF Maker and links of templates to contacts or other modules. Templates are not CRM
  * records, and vtiger_crmentityrel is looked up by id without the module in the core, so
- * every lookup here names both modules. All reads and writes go through Core_DatabaseData_Model
- * (a list of ids as an IN condition).
+ * every lookup here names both modules. Writes and deletes go through Core_DatabaseData_Model (a list
+ * of ids as an IN condition); the ordered read is one query of its own.
  */
 class Core_TemplateRelation_Model extends Core_DatabaseData_Model
 {
@@ -82,29 +82,18 @@ class Core_TemplateRelation_Model extends Core_DatabaseData_Model
             return [];
         }
 
-        $table = $this->getTemplateRelationTable();
-        $result = $table->selectResult(
-            ['record_id', 'related_record_id', 'sequence', $this->tableId],
-            ['module' => $module, 'record_id' => $recordIds, 'related_module' => $relatedModule]
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery(
+            'SELECT record_id, related_record_id FROM ' . $this->table . '
+             WHERE module = ? AND related_module = ? AND record_id IN (' . generateQuestionMarks($recordIds) . ')
+             ORDER BY sequence, ' . $this->tableId,
+            array_merge([$module, $relatedModule], $recordIds)
         );
-        $rows = [];
-
-        while ($row = $table->getDB()->fetchByAssoc($result, -1, false)) {
-            $rows[] = $row;
-        }
-
-        // the order of the relations: their sequence, then the order they were stored in
-        usort($rows, function ($a, $b) {
-            return [(int)$a['sequence'], (int)$a[$this->tableId]] <=> [(int)$b['sequence'], (int)$b[$this->tableId]];
-        });
         $related = [];
 
-        foreach ($rows as $row) {
+        while ($row = $adb->fetchByAssoc($result, -1, false)) {
             $related[(int)$row['record_id']][] = (int)$row['related_record_id'];
         }
-
-        // the templates in the order they were asked for
-        $related = array_replace(array_intersect_key(array_flip($recordIds), $related), $related);
 
         return $related;
     }
