@@ -35,6 +35,7 @@ class Core_CreateTables_Config
         'Core_Country_Model',
         'Settings_PostalCodes_Record_Model',
         'Settings_Country_AddressMap_Model',
+        'Core_TemplateRelation_Model',
     ];
 
     public static function getAll(): array

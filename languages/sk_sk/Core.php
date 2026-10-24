@@ -9,6 +9,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Predlohy produktových blokov',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Spravujte predlohy produktových blokov pre skladové položky.',
     'LBL_SAVED_LIST_FILTER_NOTICE' => 'Tento zoznam už používa uložené podmienky. Vymazanie dodatočných filtrov ich neodstráni.',
     'LBL_EDIT_SAVED_LIST_FILTER' => 'Upraviť uložené podmienky',
     'LBL_CLEAR_ADDITIONAL_FILTERS' => 'Vymazať dodatočné filtre',

@@ -42,6 +42,7 @@ class EMAILMaker_MassDelete_Action extends Vtiger_MassDelete_Action
                         $this->DieDuePermission();
                     }
                     $adb->pquery("UPDATE vtiger_emakertemplates SET deleted = ? WHERE templateid=?", ['1', $templateid]);
+                    EMAILMaker_PDFTemplate_Model::deleteLinks([(int)$templateid]);
                 }
             }
         }

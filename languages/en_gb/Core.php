@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Product block templates',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Manage product block templates for inventory items.',
     'LBL_CONDITION' => 'Condition',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Postal codes available',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Address field mapping',

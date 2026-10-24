@@ -555,6 +555,9 @@ $languageStrings = [
     'LBL_LOAD_RELATED_DOCUMENTS' => 'Related documents load',
     'LBL_RELATED_DOCUMENTS_BY_FOLDER' => 'Related documents by folders',
     'LBL_VARIABLE_PRODUCTCODE' => 'Product / Service code',
+    'LBL_PDF_TEMPLATES' => 'PDF Maker templates',
+    'LBL_PDF_TEMPLATES_HINT' => 'Sent as PDF attachments with this e-mail: the send window preselects them, and the user can remove them or add others. Only active templates of the same module are offered.',
+    'LBL_SENDING_OPTIONS' => 'Sending options',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Missing mndatory fields:',

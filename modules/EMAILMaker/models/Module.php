@@ -51,12 +51,14 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $recordId = $recordModel->getId();
         $db = PearDatabase::getInstance();
         $db->pquery('DELETE FROM vtiger_emakertemplates WHERE templateid = ? ', [$recordId]);
+        EMAILMaker_PDFTemplate_Model::deleteLinks([(int)$recordId]);
     }
 
     public function deleteAllRecords()
     {
         $db = PearDatabase::getInstance();
         $db->pquery('DELETE FROM vtiger_emakertemplates', []);
+        EMAILMaker_PDFTemplate_Model::deleteAllLinks();
     }
 
     public function getAllModuleEmailTemplateFields()
