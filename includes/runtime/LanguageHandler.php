@@ -432,6 +432,7 @@ function vtranslate($key, $moduleName = '')
 function vJSTranslate($key, $moduleName = '')
 {
     $args = func_get_args();
+    array_unshift($args, Vtiger_Language_Handler::getLanguage());
 
     return call_user_func_array(array('Vtiger_Language_Handler', 'getJSTranslatedString'), $args);
 }

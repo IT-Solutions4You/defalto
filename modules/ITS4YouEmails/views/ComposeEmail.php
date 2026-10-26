@@ -916,8 +916,14 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
     {
         $mode = $request->get('mode');
 
+        $folderName = (string)$request->get('parentFolder');
         $recordModel = new MailManager_Message_Model();
         $recordModel->setUid($recordId);
+
+        if ('' !== $folderName) {
+            $recordModel->setFolder(new MailManager_Folder_Model($folderName));
+        }
+
         $recordModel->retrieveRecordFromDB();
         $subject = ITS4YouEmails_Record_Model::getSubjectForMode($recordModel->getSubject(), $mode);
 
@@ -947,7 +953,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
         $request->set('subject', $subject);
         $request->set('body', $recordModel->getBody());
-        $request->set('attachments', ITS4YouEmails_Utils_Helper::getMailManagerAttachments($recordModel));
+        $request->set('attachments', ITS4YouEmails_Utils_Helper::getMailManagerAttachments($recordModel, $folderName));
 
         if ('Reply' === $mode || 'ReplyAll' === $mode) {
             $emailAddressRecord = !empty($sourceId) ? $sourceId : 'email';

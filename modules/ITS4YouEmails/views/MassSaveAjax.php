@@ -171,6 +171,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             $this->retrieveDocumentsFromExistingAttachments();
         }
 
+        $attachmentModel = ITS4YouEmails_Attachment_Model::getInstance($this->moduleName);
+        $this->documentsIds = $attachmentModel->validateDocumentIds((array)$this->documentsIds);
+        $this->existingAttachments = $attachmentModel->retrieveAccessibleAttachments((array)$this->existingAttachments);
+
         $this->retrieveDocumentsFromFiles();
         $this->retrieveDocumentsFromSavedAttachments();
     }
@@ -179,8 +183,9 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     {
         if (is_array($this->existingAttachments)) {
             foreach ($this->existingAttachments as $index => $existingAttachInfo) {
-                $existingAttachInfo['tmp_name'] = $existingAttachInfo['name'];
-                $this->existingAttachments[$index] = $existingAttachInfo;
+                if (!is_array($existingAttachInfo)) {
+                    throw new Exception('Attachment is not accessible');
+                }
 
                 if (array_key_exists('docid', $existingAttachInfo)) {
                     $this->documentsIds[] = $existingAttachInfo['docid'];
@@ -261,22 +266,14 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         global $upload_badext;
 
         if (is_array($this->existingAttachments)) {
-            foreach ($this->existingAttachments as $existingAttachInfo) {
-                $fileName = $existingAttachInfo['attachment'];
-                $filePath = $existingAttachInfo['path'];
-                $fileId = $existingAttachInfo['fileid'];
-                $oldFileName = $existingAttachInfo['storedname'] ?? $fileName;
-
-                if (!empty ($fileId)) {
-                    $oldFileName = $existingAttachInfo['fileid'] . '_' . $oldFileName;
-                }
-
-                $oldFilePath = Core_Storage_Model::getInstance()->getFilePath($filePath, $oldFileName);
+            foreach ($this->existingAttachments as $sourceAttachment) {
+                $fileName = $sourceAttachment['name'];
+                $oldFilePath = Core_Storage_Model::getInstance()->getAttachmentFilePath($sourceAttachment);
 
                 $attachmentId = $this->db->getUniqueID('vtiger_crmentity');
                 $binFile = sanitizeUploadFileName($fileName, $upload_badext);
                 $fileName = ltrim(basename(' ' . $binFile));
-                $filetype = $existingAttachInfo['type'];
+                $filetype = $sourceAttachment['type'];
                 $upload_file_path = decideFilePath();
                 $newFilePath = $upload_file_path . $attachmentId . '_' . $binFile;
                 $isSavedFile = copy($oldFilePath, $newFilePath);

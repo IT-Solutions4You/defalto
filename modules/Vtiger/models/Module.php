@@ -1405,18 +1405,26 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $sharingAccessModel = Settings_SharingAccess_Module_Model::getInstance($this->getName());
         $ownerSql = '';
-        $params = [];
+
+        if (!empty($owner)) {
+            $owner = filter_var($owner, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+            if ($owner === false) {
+                throw new Exception('Invalid dashboard owner.');
+            }
+        }
 
         if (!empty($owner) && $currentUserModel->isAdminUser()) {//If admin user, then allow users data
             $ownerSql = ' assigned_user_id = ' . $owner;
-            $params[] = $owner;
         } elseif (!empty($owner)) {//If not admin user, then check sharing access for that module
             if ($sharingAccessModel->isPrivate()) {
                 $subordinateUserModels = $currentUserModel->getSubordinateUsers();
                 $subordinateUsers = [];
+
                 foreach ($subordinateUserModels as $id => $name) {
                     $subordinateUsers[] = $id;
                 }
+
                 if (in_array($owner, $subordinateUsers)) {
                     $ownerSql = ' assigned_user_id = ' . $owner;
                 } else {
@@ -1430,8 +1438,8 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                 $subordinateUserModels = $currentUserModel->getSubordinateUsers();
                 foreach ($subordinateUserModels as $id => $name) {
                     $subordinateUsers[] = $id;
-                    $params[] = $id;
                 }
+
                 if ($subordinateUsers) {
                     array_push($subordinateUsers, $currentUserModel->getId());
                     $ownerSql = ' assigned_user_id IN (' . implode(',', $subordinateUsers) . ')';

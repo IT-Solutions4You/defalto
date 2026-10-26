@@ -1,5 +1,9 @@
 # List filters
 
+## Translated validation messages
+
+Server-side validation messages intended for JavaScript are displayed in the current user's language, including module-specific messages from MailManager and Users.
+
 ## Product block templates
 
 Administrators can open CRM Settings, choose Product block templates in the Inventory section, and manage the shared templates through Core. The list shows the inventory module for every template and supports creating, editing, and deleting templates.

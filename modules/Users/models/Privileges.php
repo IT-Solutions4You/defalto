@@ -23,6 +23,30 @@
 {
 
     /**
+     * Rebuild privilege and sharing files for every active user.
+     */
+    public static function recalculateSharingRules(): void
+    {
+        global $log;
+        $log->debug('Entering Users_Privileges_Model::recalculateSharingRules() method ...');
+
+        require_once 'modules/Users/CreateUserPrivilegeFile.php';
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            "SELECT id FROM vtiger_users WHERE deleted = 0 AND status = 'Active'",
+            []
+        );
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $userId = (int)$row['id'];
+            createUserPrivilegesfile($userId);
+            createUserSharingPrivilegesfile($userId);
+        }
+
+        $log->debug('Exiting Users_Privileges_Model::recalculateSharingRules() method ...');
+    }
+
+    /**
      * Function to get the Global Read Permission for the user
      * @return <Number> 0/1
      */
@@ -183,22 +207,327 @@
     }
 
     /**
-     * Function to check permission for a Module/Action/Record
+     * Check whether the current user may perform an action.
      *
-     * @param <String> $moduleName
-     * @param <String> $actionName
-     * @param <Number> $record
-     *
-     * @return Boolean
+     * @param string     $moduleName
+     * @param string     $actionName
+     * @param int|string $record
      */
-    public static function isPermitted($moduleName, $actionName, $record = false)
+    public static function isPermitted($moduleName, $actionName, $record = false): bool
     {
-        $permission = isPermitted($moduleName, $actionName, $record);
-        if ($permission == 'yes') {
-            return true;
+        return self::getPermission($moduleName, $actionName, $record) === 'yes';
+    }
+
+    /**
+     * Resolve the current user's module, action, record ownership, and sharing permission.
+     *
+     * @param string     $module
+     * @param string     $actionname
+     * @param int|string $record_id
+     */
+    public static function getPermission($module, $actionname, $record_id = ''): string
+    {
+        $is_admin = null;
+        $current_user_groups = null;
+        $profileTabsPermission = [];
+        $profileGlobalPermission = [];
+        $profileActionPermission = [];
+        $defaultOrgSharingPermission = [];
+        $sharingPermission = 'no';
+
+        if (!Core_Readonly_Model::isPermitted((string)$module, (int)$record_id, $actionname)) {
+            return 'no';
         }
 
-        return false;
+        global $log;
+        $log->debug("Entering isPermitted(" . $module . "," . $actionname . "," . $record_id . ") method ...");
+
+        global $adb;
+        global $current_user;
+        global $seclog;
+        require('user_privileges/user_privileges_' . $current_user->id . '.php');
+        require('user_privileges/sharing_privileges_' . $current_user->id . '.php');
+        $permission = "no";
+        $parenttab = isset($_REQUEST['parenttab']) ? $_REQUEST['parenttab'] : null;
+        if (($module == 'Users' || $module == 'Home' || $module == 'uploads') && $parenttab != 'Settings') {
+            //These modules dont have security right now
+            $permission = "yes";
+            $log->debug("Exiting isPermitted method ...");
+
+            return $permission;
+        }
+
+        //Checking the Access for the Settings Module
+        if ($module == 'Settings' || $module == 'Administration' || $module == 'System' || $parenttab == 'Settings') {
+            if (!$is_admin) {
+                $permission = "no";
+            } else {
+                $permission = "yes";
+            }
+            $log->debug("Exiting isPermitted method ...");
+
+            return $permission;
+        }
+
+        //Retreiving the Tabid and Action Id
+        $tabid = getTabid($module);
+        $actionid = getActionid($actionname);
+        $checkModule = $module;
+
+        if (vtlib_isModuleActive($checkModule)) {
+            //Checking whether the user is admin
+            if ($is_admin) {
+                $permission = "yes";
+                $log->debug("Exiting isPermitted method ...");
+
+                return $permission;
+            }
+
+            if ('' != $record_id) {
+                $result = $adb->pquery(
+                    'SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?',
+                    [$current_user->id]
+                );
+                $parentRole = $adb->query_result($result, 0, 'parentrole');
+                $parentRoleArr = explode('::', $parentRole);
+
+                foreach ($parentRoleArr as $key => $value) {
+                    $parentRoleArr[$key] = '\'' . $value . '\'';
+                }
+
+                $parentRole = implode(',', $parentRoleArr);
+
+                $query = 'SELECT crmid,type FROM its4you_sharing_users WHERE userid=? AND crmid = ?';
+                $params = [$current_user->id, $record_id];
+
+                if (($current_user_groups === null ? 0 : count($current_user_groups)) > 0) {
+                    $query .= ' UNION
+                            SELECT crmid,type FROM its4you_sharing_groups WHERE groupid in (' . implode(',', $current_user_groups) . ') AND crmid = ?';
+                    $params[] = $record_id;
+                }
+
+                $companyId = [];
+
+                if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
+                    $companyId = array_keys(ITS4YouMultiCompany_Module_Model::getCompaniesList());
+                }
+
+                $query .= ' UNION
+                          SELECT crmid,type FROM its4you_sharing_roles
+                              INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=its4you_sharing_roles.roleid AND userid= ? AND crmid = ?
+                          UNION
+                          SELECT crmid,type FROM its4you_sharing_rolessubroles
+                          INNER JOIN vtiger_role ON vtiger_role.roleid=its4you_sharing_rolessubroles.roleid
+                          WHERE its4you_sharing_rolessubroles.roleid IN (' . $parentRole . ')
+                          AND vtiger_role.parentrole LIKE CONCAT(\'%\', its4you_sharing_rolessubroles.roleid, \'%\') AND crmid = ?
+                          ';
+                array_push($params, $current_user->id, $record_id, $record_id);
+
+                if (!empty($companyId)) {
+                    $query .= ' UNION
+                            SELECT crmid,type FROM its4you_sharing_multicompany WHERE companyid in(' . implode(',', $companyId) . ')
+                            AND crmid = ?
+                            ';
+                    $params[] = $record_id;
+                }
+
+                $result = $adb->pquery($query, $params);
+
+                if ($adb->num_rows($result)) {
+                    $i = 0;
+
+                    while ($type = $adb->query_result($result, $i, 'type')) {
+                        $i++;
+
+                        if (4 == $actionid) {
+                            $sharingPermission = 'yes';
+                        } elseif (2 == $type && (1 == $actionid || 0 == $actionid)) {
+                            $sharingPermission = 'yes';
+                        }
+                    }
+                }
+            }
+
+            //If no actionid, then allow action is vtiger_tab permission is available
+            if ($actionid === '') {
+                if ($profileTabsPermission[$tabid] == 0) {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+                } else {
+                    $permission = "no";
+                }
+
+                return returnPermission($permission, $sharingPermission);
+            }
+
+            $action = getActionname($actionid);
+            //Checking for view all permission
+            if ($profileGlobalPermission[1] == 0 || $profileGlobalPermission[2] == 0) {
+                if ($actionid == 3 || $actionid == 4) {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+            }
+            //Checking for edit all permission
+            if ($profileGlobalPermission[2] == 0) {
+                if ($actionid == 3 || $actionid == 4 || $actionid == 0 || $actionid == 1) {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+            }
+            //Checking for vtiger_tab permission
+            if ($profileTabsPermission[$tabid] != 0) {
+                $permission = "no";
+                $log->debug("Exiting isPermitted method ...");
+
+                return returnPermission($permission, $sharingPermission);
+            }
+            //Checking for Action Permission
+            $actionPermission = $profileActionPermission[$tabid][$actionid] ?? '';
+            if ($actionPermission === '') {
+                $permission = "yes";
+                $log->debug("Exiting isPermitted method ...");
+
+                return returnPermission($permission, $sharingPermission);
+            }
+
+            if ($actionPermission != 0) {
+                $permission = "no";
+                $log->debug("Exiting isPermitted method ...");
+
+                return returnPermission($permission, $sharingPermission);
+            }
+            //Checking and returning true if recorid is null
+            if ($record_id == '') {
+                $permission = "yes";
+                $log->debug("Exiting isPermitted method ...");
+
+                return returnPermission($permission, $sharingPermission);
+            }
+
+            //If modules is Products,Vendors,Faq,PriceBook then no sharing
+            if ($record_id != '') {
+                if (getTabOwnedBy($module) == 1) {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+            }
+
+            //Retreiving the RecordOwnerId
+            $recOwnType = '';
+            $recOwnId = '';
+            $recordOwnerArr = getRecordOwnerId($record_id);
+            if (empty($recordOwnerArr)) {
+                $groupId = getRecordGroupId($record_id);
+                $recordOwnerArr['Groups'] = $groupId;
+            }
+
+            foreach ($recordOwnerArr as $type => $id) {
+                $recOwnType = $type;
+                $recOwnId = $id;
+            }
+            //Retreiving the default Organisation sharing Access
+            $others_permission_id = $defaultOrgSharingPermission[$tabid];
+
+            if ($recOwnType == 'Users') {
+                //Checking if the Record Owner is the current User
+                if ($current_user->id == $recOwnId) {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+                //Checking if the Record Owner is the Subordinate User
+                foreach ($subordinate_roles_users as $roleid => $userids) {
+                    if (in_array($recOwnId, $userids)) {
+                        $permission = 'yes';
+                        $log->debug("Exiting isPermitted method ...");
+
+                        return returnPermission($permission, $sharingPermission);
+                    }
+                }
+            } elseif ($recOwnType == 'Groups') {
+                //Checking if the record owner is the current user's group
+                if (in_array($recOwnId, $current_user_groups)) {
+                    $permission = 'yes';
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+            }
+
+            //Checking for Default Org Sharing permission
+            if ($others_permission_id == 0) {
+                if ($actionid == 1 || $actionid == 0) {
+                    $permission = isReadWritePermittedBySharing($module, $tabid, $actionid, $record_id);
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                } elseif ($actionid == 2) {
+                    $permission = "no";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                } else {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+            } elseif ($others_permission_id == 1) {
+                if ($actionid == 2) {
+                    $permission = "no";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                } else {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+            } elseif ($others_permission_id == 2) {
+                $permission = "yes";
+                $log->debug("Exiting isPermitted method ...");
+
+                return returnPermission($permission, $sharingPermission);
+            } elseif ($others_permission_id == 3) {
+                if ($actionid == 3 || $actionid == 4) {
+                    $permission = isReadPermittedBySharing($module, $tabid, $actionid, $record_id);
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                } elseif ($actionid == 0 || $actionid == 1) {
+                    $permission = isReadWritePermittedBySharing($module, $tabid, $actionid, $record_id);
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                } elseif ($actionid == 2) {
+                    $permission = "no";
+
+                    return $permission;
+                } else {
+                    $permission = "yes";
+                    $log->debug("Exiting isPermitted method ...");
+
+                    return returnPermission($permission, $sharingPermission);
+                }
+            } else {
+                $permission = "yes";
+            }
+        } else {
+            $permission = "no";
+        }
+
+        $log->debug("Exiting isPermitted method ...");
+
+        return returnPermission($permission, $sharingPermission);
     }
 
     /**
