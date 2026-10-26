@@ -17,6 +17,13 @@
 - `SaveItemsBlockDetail` runs only the methods listed in `$allowedModes`; never dispatch the `mode` request value to an arbitrary method.
 - The detail items block gets `ITEMS_EDITABLE` from the detail modifier and renders `data-items-readonly`; `InventoryItemDetail.js` then hides or disables the editing controls. This is convenience only, the server check is authoritative.
 
+# Parent record permissions
+
+- Items are separate `InventoryItem` records whose own permissions know nothing about the parent document (read-only flag, sharing rules, profile). Every client entry point that changes items checks `EditView` of the parent through `InventoryItem_ParentEntity_Model::requireEditableParent()` in `checkPermission()`: `SaveFromPopup` (`source_record`), `SaveItemsBlockDetail` (`for_record`), `DeleteProductLine` and `SortLineItems` (parent of each item, resolved by `InventoryItem_Module_Model::fetchParentIds()`) and the `PopupItemEdit` view (`source_record`). A new entry point that writes items must do the same.
+- An existing item sent with a request must belong to the parent record the request is authorized for (`requireItemsOfParent()`); an id that is not an item is refused.
+- `SaveItemsBlockDetail` runs only the methods listed in `$allowedModes`; never dispatch the `mode` request value to an arbitrary method.
+- The detail items block gets `ITEMS_EDITABLE` from the detail modifier and renders `data-items-readonly`; `InventoryItemDetail.js` then hides or disables the editing controls. This is convenience only, the server check is authoritative.
+
 # Items widget in the summary
 
 - The summary widget (`InventoryItem_Widget_View::showItems`, `ItemsWidget.tpl`) is registered with `headerActions=1` in `InventoryItem_Install_Model::$registerSummaryWidgets`; `updateSummaryWidgets()` rewrites the stored link URL on install and module update. `Vtiger_DetailView_Model` sets `headerActionsModule` from it and the shared `SummaryViewWidget.tpl` includes `SummaryWidgetHeaderActions.tpl` of that module.
