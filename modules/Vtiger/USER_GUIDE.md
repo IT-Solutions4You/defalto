@@ -18,6 +18,10 @@ Searchable dropdowns, including Assigned To, hide already selected values from t
 
 Column settings allow more than 15 fields with no maximum count. Add the fields you need, arrange their order, and save. At least one field must remain selected.
 
+# Mass-email recipient fields
+
+When starting a mass email, choose which available email fields should receive the message. If you enable the option to remember the selection, the same recipient fields are restored for that module the next time you open the dialog. Preferences are saved separately for each user and source module, and resetting the selection removes the saved preference.
+
 Advanced search starts with one condition row after a module is selected. Choose a field, comparison and value; use Add condition or Group to expand the search. Selecting another module starts with a fresh condition row for that module.
 
 For inventory documents, condition field lists show the main record blocks first and the Item Details fields last. The record edit and detail screens retain their normal layout.

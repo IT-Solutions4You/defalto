@@ -7,6 +7,12 @@
 
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades. They delegate statically to `Core_ImageValidation_Helper`; keep validation logic out of this legacy utility.
 
+# Mass-email recipient preferences
+
+- `Vtiger_RecipientPreference_Model` owns per-user, per-source-module recipient field preferences in `vtiger_emails_recipientprefs`. MailManager and module mass-email views consume this shared model rather than owning preference persistence.
+- The model follows `Core_DatabaseData_Model`: `$table`, `$tableId`, and `$columns` are instance metadata, and `getRecipientPreferenceTable()` is the named CRUD boundary. Its `save()` and `delete()` overrides retain the parent's `void` contract; database failures propagate to the central WebUI exception handler.
+- Validate class loading, preference retrieval, insert, update, and reset; then open a mass-email recipient-field dialog and confirm that the saved selection is restored.
+
 # CRM Settings menu
 
 - `Settings_Vtiger_MenuItem_Model::$defaultMenuItemLinks` owns the standard CRM Settings items. The Inventory section links Product block templates to the Core-owned `index.php?module=Core&view=ProductBlocks` manager.
