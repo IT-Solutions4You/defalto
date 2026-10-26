@@ -3,6 +3,7 @@
 - `InitSchema_Model::registerTrashWorkflowTask()` registers only VTTrashTask through the task registry. Initial workflow setup and migration `20260915120000` share this idempotent method. It does not register events, change queue schema, activate workflows, or delete records.
 
 - `Install_Utils_Model::installTables()` dispatches schema creation to module install models. `migrateTablesData()` is the module data migration dispatcher invoked by `Migration_Index_View::migrateData()`.
+- Module tables can be installed before the default profiles exist. After profile creation, `Install_Utils_Model::initProfileModulePermissions()` idempotently adds only missing `vtiger_profile2tab` rows and standard entity-action rows; migrations reuse it before rebuilding user privileges.
 - The dispatcher invokes only the module-specific `migrate()`. Modules owning workflow defaults explicitly call the inherited `migrateWorkflowConditions()` from that method; workflow regeneration is not a global dispatcher hook. Ordinary workflow installation skips existing definitions.
 - Initial license activation remains delegated by `saveInstallerLicenses()` to Installer-owned activation; Install must not persist license state directly.
 - Validate dispatcher changes with PHP lint and manual checks of module migration ordering and idempotence; workflow migration must preserve modern conditions, task definitions, status, scheduling, and creation metadata.
