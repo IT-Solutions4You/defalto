@@ -1,14 +1,14 @@
 # Inventory Items
 
-Inventory items represent product and service lines used in inventory documents. When a selected product has an image, the inventory editor displays it through the CRM attachment endpoint, including when physical attachment storage is outside the public web directory.
+Inventory items are the product and service lines of inventory documents (Quotes, Sales Orders, Invoices and similar). When a selected product has an image, the item editor displays it.
 
 ## Read-only documents
 
 When a document is read-only (or you are not allowed to edit it), its items are locked as well. The items block shows the lines and totals, but you cannot add, edit, duplicate, delete or reorder lines, nor change the overall discount, adjustment, price book, currency or region.
 
-## Read-only documents
+## Unit price permissions
 
-When a document is read-only (or you are not allowed to edit it), its items are locked as well. The items block shows the lines and totals, but you cannot add, edit, duplicate, delete or reorder lines, nor change the overall discount, adjustment, price book, currency or region.
+If your profile may only view the unit price, the price of a selected product is filled in automatically and cannot be changed. A product without a catalogue price (price on request) still lets you enter a price.
 
 ## Adding items from the summary
 

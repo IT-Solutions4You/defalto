@@ -1,21 +1,25 @@
 # Workflows
 
-Workflows run configured actions when records meet the selected trigger and conditions. Open a workflow to review its name, description, execution settings, conditions and actions before saving changes.
+Workflows run configured actions when records meet the selected trigger and conditions. Open a workflow to review its name, description, execution settings, conditions and actions before saving. Conditions decide which records qualify; actions decide what happens to those records or to related records.
 
-The condition editor organizes rules into numbered groups, like saved lists. Choose AND or OR beside each condition to connect it to the next condition, and use the connector between groups to connect whole groups. The last condition has no connector. AND takes precedence over OR: A OR B AND C means A OR (B AND C). Use separate groups when you need (A OR B) AND C. Saving and reopening preserves these choices. The same grouping applies to record-triggered and scheduled workflows; change comparisons still require a record save and are skipped during scheduled selection.
+## Conditions
 
-The editor shares its layout and controls with saved-list filters. Use Add condition with the plus icon to add a blank rule to the current group, then choose its field. Workflow comparisons and expressions remain available for the fields that support them. Use the matching Group button with the plus icon to add another group, and the trash icon beside a condition to remove that rule. Any group after the first can be removed using the trash button beside its title. These buttons and the spacing of condition rows match the saved-list condition editor. The value control fills the available width, with the trash button at the right edge. Select a field and comparison; enter a value when the comparison requires one. Event comparisons such as a comment being added may not need a value.
+The condition editor works like the saved-list filter editor. Use Add condition to add a blank rule to a group and choose its field, comparison and value. Use Group to add another group, and the trash buttons to remove a rule or a group other than the first. Some comparisons, such as "is empty" or "has changed", need no value. For inventory documents, the main record blocks are listed first and the Item Details fields last.
 
-For inventory documents, the field selector lists the main record blocks first and the Item Details fields last.
+Choose AND or OR beside each condition to connect it to the next one, and use the connector between groups to connect whole groups. AND takes precedence over OR: A OR B AND C means A OR (B AND C). Use separate groups when you need (A OR B) AND C. Saving and reopening a workflow preserves these choices. The same grouping applies to record-triggered and scheduled workflows.
 
-Each condition group has its own outline, without an enclosing frame around the whole editor. The Group button appears below the condition groups.
+Comparisons that look at a change, such as "has changed" and "has been set or changed", need a record save. They are skipped when records are selected for a scheduled workflow, and for workflows that run only when a record is created some of them are hidden. If a saved condition is not allowed for the chosen trigger, the editor shows an error and you must correct it before saving. Comparisons on related-record fields do not offer change options.
 
-Review the execution frequency and configured actions before saving. Conditions determine which records qualify; actions determine what the workflow does to those records or related records.
+## Actions
 
-Workflow action names, condition operators, deletion options, creator details and validation messages are shown in the selected application language. This also applies to sharing actions and extension actions such as creating a calendar record, sending an EMAIL Maker message and making a record read-only.
+Action names, comparison operators, deletion options, creator details and validation messages are shown in the selected application language. This includes the sharing actions and extension actions such as creating a calendar record, sending an EMAIL Maker message and making a record read-only.
 
-Workflow action value editors use the same variable format. Inserted variables use PDFMaker-compatible `$field$`, while existing `$field` values remain supported. In **Update Fields**, **Create Entity**, and **Create Calendar Record**, open a mapped value to combine text with one or more source-record variables; use the pencil button when the field normally displays a select. For a direct type-preserving copy into a date, number, currency, or similar field, use the Field Name value type instead of a raw-text template. Workflow condition values remain literal comparisons and therefore do not offer template variables.
+In **Update Fields**, **Create Entity** and **Create Calendar Record**, open a mapped value to combine text with one or more source-record variables. Inserted variables use the `$field$` format; existing `$field` values keep working. Use the pencil button when the field normally displays a select. To copy a value into a date, number, currency or similar field without conversion, use the Field Name value type instead of raw text. Condition values are literal comparisons and do not offer variables.
 
-The **Create Calendar Record** action supports additional standard and custom Appointments fields. Use **Add field** to select a destination field and choose fixed text, source-record variables, a source field, or an expression. The same template modal is used for Subject and Description.
+**Create Calendar Record** can also fill additional standard and custom Appointments fields: use **Add field**, choose the destination field, and enter fixed text, source-record variables, a source field or an expression.
 
-When reopening an existing workflow, the selected fields and comparisons should remain populated, including related-record fields. If field names appear blank after an update, reload after the application update has finished before editing or saving its conditions.
+**Move to Recycle Bin** processes the record through the workflow queue. Its **Deletion mode** is either Move to Recycle Bin, so the record can be restored, or Delete permanently, which cannot be undone.
+
+## Workflow list
+
+The list can be filtered by module and searched. It shows each workflow's name with its description below, a summary of its conditions (All and Any), its actions, and, in the last column, the creator with the creation date and time in your time zone and hour format. Workflows created before this information was recorded show the administrator and a dash instead of a time.
