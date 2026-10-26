@@ -2,7 +2,9 @@
 
 Appointments provides the CRM calendar and supports creating calendar records automatically from workflows.
 
-The Appointments record Summary displays the available standard widgets, such as key fields, related documents, comments, or related appointments according to the installed relations and the current user's permissions. Module installation and updates register these widgets automatically.
+The Appointments record Summary displays the available standard widgets, such as key fields, related documents, comments, or related appointments according to the installed relations and the current user's permissions.
+
+When an appointment with invited users is saved, each invited user receives an email with the appointment attached as a calendar (.ics) file.
 
 Appointments can be rescheduled from the calendar by dragging them to another date or time or by resizing their duration. These changes are saved only when the current user has permission to edit the selected appointment; otherwise, the calendar restores the original schedule.
 

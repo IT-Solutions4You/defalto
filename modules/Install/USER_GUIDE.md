@@ -1,5 +1,7 @@
 # Installation
 
-Defalto installation prepares the database, installs bundled modules, creates the default profiles, and configures their access to every installed module.
+The installation wizard prepares the database, installs the bundled modules, creates the default profiles and gives them access to every installed module.
 
-New installations automatically complete module permissions after the default profiles are created. Administrators do not need to open and save each profile to make bundled modules available.
+Module permissions are completed automatically after the default profiles are created, so administrators do not need to open and save each profile to make bundled modules available.
+
+Licenses, updates and extensions are managed afterwards in the Installer module.

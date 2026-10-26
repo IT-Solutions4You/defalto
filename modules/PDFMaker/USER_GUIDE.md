@@ -4,4 +4,4 @@ PDF Maker generates PDF documents from CRM templates and can include images from
 
 ## Product block templates
 
-Product Block Templates use the shared Inventory Items Block editor. Choose the inventory document module, then create or edit a block and select the columns it should contain. PDFMaker, PDFMaker Pro, and EMAILMaker use the same templates. A new empty installation includes basic and detailed starter layouts.
+Open **Product block templates** (Settings, Inventory section) to manage reusable Inventory Item layouts. Choose the inventory document module, then create or edit a block and select the columns it should contain. PDFMaker, PDFMaker Pro, and EMAILMaker use the same templates. A new empty installation includes basic and detailed starter layouts.
