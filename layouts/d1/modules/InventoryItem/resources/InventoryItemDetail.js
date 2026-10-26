@@ -27,6 +27,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     registerBasicEvents: function () {
         this._super();
         this.registerItemsTableEvents();
+        this.registerWidgetAddButton();
         const self = this;
 
         app.event.on(Vtiger_Detail_Js.relatedListLoad, function () {
@@ -74,8 +75,6 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const self = this;
 
         const addLineItemEventHandler = function (event, params) {
-            app.helper.showProgress();
-
             const clickedItem = jQuery(this);
             const moduleName = clickedItem.data('modulename');
 
@@ -83,28 +82,9 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 params = {};
             }
 
-            const requestParams = {
-                'module': 'InventoryItem',
-                'view': 'PopupItemEdit',
+            self.showItemPopup({
                 'item_type': moduleName,
-                'source_module': app.getModuleName(),
-                'source_record': app.getRecordId(),
                 'data': params.data
-            };
-
-            app.request.post({data: requestParams}).then(function (err, data) {
-                app.helper.hideProgress();
-                app.helper.loadPageContentOverlay(data, {show: true, backdrop: 'static', keyboard: false}).then(function (container) {
-                    let form = jQuery('#InventoryItemPopupForm');
-                    self.registerItemPopupEditEvents(container);
-                    jQuery('input.item_text', container).focus();
-                    const overallDiscount = jQuery('#overall_discount_percent').val();
-                    jQuery('input.overall_discount', container).val(overallDiscount);
-                    jQuery('span.display_overall_discount', container).text(overallDiscount);
-                    app.event.trigger('post.InventoryItemPopup.show', form);
-                    app.helper.registerLeavePageWithoutSubmit(form);
-                    app.helper.registerModalDismissWithoutSubmit(form);
-                });
             });
         };
 
@@ -582,12 +562,10 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     getCurrencyId: function () {
-        return jQuery('#currency_id_original').val();
+        return this.getParentRecordValue('currency_id');
     },
 
     editItem: function (rowNumber) {
-        app.helper.showProgress();
-
         const self = this;
         const clickedItem = jQuery(this);
         const moduleName = clickedItem.data('modulename');
@@ -596,69 +574,112 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             params = {};
         }
 
-        const requestParams = {
-            'module': 'InventoryItem',
-            'view': 'PopupItemEdit',
+        self.showItemPopup({
             'record': jQuery('input[name="lineItemId' + rowNumber + '"]').val(),
             'item_type': moduleName,
+            'data': params.data
+        }, true);
+    },
+
+    duplicateItem: function (rowNumber) {
+        const self = this;
+        const clickedItem = jQuery(this);
+        const moduleName = clickedItem.data('modulename');
+
+        if (typeof params === 'undefined') {
+            params = {};
+        }
+
+        self.showItemPopup({
+            'record': jQuery('input[name="lineItemId' + rowNumber + '"]').val(),
+            'item_type': moduleName,
+            'data': params.data,
+            'duplicate': true
+        }, true);
+    },
+
+    /**
+     * Opens the item popup (add, edit, duplicate) for the items block and for the items widget in the summary.
+     *
+     * @param {Object} requestParams item_type, record, data, duplicate
+     * @param {boolean} recalculate recalculate an existing item after loading
+     */
+    showItemPopup: function (requestParams, recalculate) {
+        const self = this;
+        const params = jQuery.extend({
+            'module': 'InventoryItem',
+            'view': 'PopupItemEdit',
             'source_module': app.getModuleName(),
             'source_record': app.getRecordId(),
-            'data': params.data
-        };
+        }, requestParams);
 
-        app.request.post({data: requestParams}).then(function (err, data) {
+        app.helper.showProgress();
+        app.request.post({data: params}).then(function (err, data) {
             app.helper.hideProgress();
+
+            if (err) {
+                app.helper.showErrorNotification({message: err.message});
+
+                return;
+            }
+
             app.helper.loadPageContentOverlay(data, {show: true, backdrop: 'static', keyboard: false}).then(function (container) {
                 let form = jQuery('#InventoryItemPopupForm');
                 self.registerItemPopupEditEvents(container);
                 jQuery('input.item_text', container).focus();
-                const overallDiscount = jQuery('#overall_discount_percent').val();
+                const overallDiscount = self.getOverallDiscount();
                 jQuery('input.overall_discount', container).val(overallDiscount);
                 jQuery('span.display_overall_discount', container).text(overallDiscount);
                 app.event.trigger('post.InventoryItemPopup.show', form);
                 app.helper.registerLeavePageWithoutSubmit(form);
                 app.helper.registerModalDismissWithoutSubmit(form);
-                self.recalculateItem(container);
+
+                if (recalculate) {
+                    self.recalculateItem(container);
+                }
             });
         });
     },
 
-    duplicateItem: function (rowNumber) {
-        app.helper.showProgress();
+    /**
+     * Value of the parent record (currency_id, pricebookid, region_id) from the items block,
+     * otherwise from the items widget in the summary.
+     *
+     * @param {string} name
+     * @returns {string|undefined}
+     */
+    getParentRecordValue: function (name) {
+        const blockInput = jQuery('#' + name + '_original');
 
-        const self = this;
-        const clickedItem = jQuery(this);
-        const moduleName = clickedItem.data('modulename');
-
-        if (typeof params === 'undefined') {
-            params = {};
+        if (blockInput.length) {
+            return blockInput.val();
         }
 
-        const requestParams = {
-            'module': 'InventoryItem',
-            'view': 'PopupItemEdit',
-            'record': jQuery('input[name="lineItemId' + rowNumber + '"]').val(),
-            'item_type': moduleName,
-            'source_module': app.getModuleName(),
-            'source_record': app.getRecordId(),
-            'data': params.data,
-            'duplicate': true
-        };
+        return jQuery('.inventoryItemWidgetAdd').attr('data-' + name);
+    },
 
-        app.request.post({data: requestParams}).then(function (err, data) {
-            app.helper.hideProgress();
-            app.helper.loadPageContentOverlay(data, {show: true, backdrop: 'static', keyboard: false}).then(function (container) {
-                let form = jQuery('#InventoryItemPopupForm');
-                self.registerItemPopupEditEvents(container);
-                jQuery('input.item_text', container).focus();
-                const overallDiscount = jQuery('#overall_discount_percent').val();
-                jQuery('input.overall_discount', container).val(overallDiscount);
-                jQuery('span.display_overall_discount', container).text(overallDiscount);
-                app.event.trigger('post.InventoryItemPopup.show', form);
-                app.helper.registerLeavePageWithoutSubmit(form);
-                app.helper.registerModalDismissWithoutSubmit(form);
-                self.recalculateItem(container);
-            });
+    /**
+     * @returns {string|undefined} overall discount percent of the parent record
+     */
+    getOverallDiscount: function () {
+        const blockInput = jQuery('#overall_discount_percent');
+
+        if (blockInput.length) {
+            return blockInput.val();
+        }
+
+        return jQuery('.inventoryItemWidgetAdd').attr('data-overall_discount');
+    },
+
+    /**
+     * "Add" menu in the header of the items widget in the summary; the header is part of the page, so the event is delegated.
+     */
+    registerWidgetAddButton: function () {
+        const self = this;
+
+        jQuery(document).off('click.inventoryItemWidgetAdd').on('click.inventoryItemWidgetAdd', '.inventoryItemWidgetAdd [data-modulename]', function (event) {
+            event.preventDefault();
+            self.showItemPopup({'item_type': jQuery(this).data('modulename')});
         });
     },
 
@@ -768,6 +789,15 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         const activeRelatedItem = activeRelatedTab.find('li[data-link-key="LBL_RECORD_DETAILS"]');
 
         if (!itemTable.length) {
+            const itemsWidget = jQuery('.inventoryItemWidgetAdd').closest('[class^="widgetContainer_"]');
+
+            // Summary: reload only the items widget (items and totals) and stay there
+            if (itemsWidget.length) {
+                Vtiger_Detail_Js.getInstance().loadWidget(itemsWidget);
+
+                return;
+            }
+
             activeRelatedItem.click();
             return;
         }
@@ -852,7 +882,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                     record: selectedItemData.id,
                     currency_id: self.getCurrencyId(),
                     sourceModule: app.getModuleName(),
-                    pricebookid: jQuery('#pricebookid_original').val(),
+                    pricebookid: self.getParentRecordValue('pricebookid'),
                 };
                 app.request.post({data: params}).then(
                     function (error, data) {
@@ -893,7 +923,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         }
 
         const lineItemNameElement = container.find('input.item_text');
-        const selectedRegionId = jQuery('#region_id_original').val();
+        const selectedRegionId = this.getParentRecordValue('region_id');
 
         for (let id in responseData) {
             let recordData = responseData[id];
@@ -1120,7 +1150,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 record: data._recordId,
                 currency_id: thisInstance.getCurrencyId(),
                 sourceModule: app.getModuleName(),
-                pricebookid: jQuery('#pricebookid_original').val(),
+                pricebookid: thisInstance.getParentRecordValue('pricebookid'),
             };
             app.request.post({data: params}).then(
                 function (error, data) {
@@ -1253,7 +1283,7 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
     },
 
     applyOverallDiscount: function (container) {
-        const overallDiscountPercent = jQuery('#overall_discount_percent').val();
+        const overallDiscountPercent = this.getOverallDiscount();
 
         if (isNaN(overallDiscountPercent) || parseFloat(overallDiscountPercent) === 0.0) {
             jQuery('.overall_discount', container).val(0).closest('div.full_row').hide();

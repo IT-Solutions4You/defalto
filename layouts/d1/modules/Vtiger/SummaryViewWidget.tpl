@@ -24,6 +24,9 @@
                     </button>
                 </div>
             {/if}
+            {if $DETAIL_VIEW_WIDGET->get('headerActionsModule')}
+                {include file='SummaryWidgetHeaderActions.tpl'|vtemplate_path:$DETAIL_VIEW_WIDGET->get('headerActionsModule')}
+            {/if}
             {if $DETAIL_VIEW_WIDGET->get('action')}
                 {if 'Documents' eq $DETAIL_VIEW_WIDGET->getLabel()}
                     {assign var=PARENT_ID value=$RECORD->getId()}

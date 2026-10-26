@@ -23,3 +23,9 @@
 - An existing item sent with a request must belong to the parent record the request is authorized for (`requireItemsOfParent()`); an id that is not an item is refused.
 - `SaveItemsBlockDetail` runs only the methods listed in `$allowedModes`; never dispatch the `mode` request value to an arbitrary method.
 - The detail items block gets `ITEMS_EDITABLE` from the detail modifier and renders `data-items-readonly`; `InventoryItemDetail.js` then hides or disables the editing controls. This is convenience only, the server check is authoritative.
+
+# Items widget in the summary
+
+- The summary widget (`InventoryItem_Widget_View::showItems`, `ItemsWidget.tpl`) is registered with `headerActions=1` in `InventoryItem_Install_Model::$registerSummaryWidgets`; `updateSummaryWidgets()` rewrites the stored link URL on install and module update. `Vtiger_DetailView_Model` sets `headerActionsModule` from it and the shared `SummaryViewWidget.tpl` includes `SummaryWidgetHeaderActions.tpl` of that module.
+- `layouts/d1/modules/InventoryItem/SummaryWidgetHeaderActions.tpl` renders the "Add" menu (Text, then `InventoryItem_ItemModules_Model::getItemModules()`) only when `InventoryItem_ParentEntity_Model::isParentEditable()` allows it and not in the list quick preview (`LIST_PREVIEW`). It carries `getItemPopupValues()` (currency, price book, region, overall discount of the parent) as data attributes, because the popup code otherwise reads them from the items block.
+- `InventoryItemDetail.js`: `showItemPopup()` opens `PopupItemEdit` for the block (add, edit, duplicate) and for the widget; `getParentRecordValue()` / `getOverallDiscount()` read the block inputs, otherwise the widget data attributes. Without the items block `reloadInventoryItemsBlock()` reloads only the items widget (`Vtiger_Detail_Js::loadWidget()`), so the user stays in the summary.
