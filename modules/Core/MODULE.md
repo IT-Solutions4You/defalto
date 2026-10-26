@@ -1,5 +1,9 @@
 # Core UI ownership
 
+## Server-side JavaScript message translations
+
+- `vJSTranslate($key, $moduleName)` is the compatibility wrapper for server responses that contain JavaScript language strings. It prepends the current user's language before delegating to the language-first `Vtiger_Language_Handler::getJSTranslatedString($language, $key, $module)` contract; preserve this argument order so module names cannot be interpreted as translation keys.
+
 ## Inventory item block templates
 
 - `Core_InventoryItemsBlock_Model` owns product-block templates in `df_inventoryitems_block`; do not use the generic related-block table or model for their list, edit, or delete lifecycle.
