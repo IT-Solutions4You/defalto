@@ -7,6 +7,12 @@
 
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades. They delegate statically to `Core_ImageValidation_Helper`; keep validation logic out of this legacy utility.
 
+# Mass-email recipient preferences
+
+- `Vtiger_RecipientPreference_Model` owns per-user, per-source-module recipient field preferences in `vtiger_emails_recipientprefs`. MailManager and module mass-email views consume this shared model rather than owning preference persistence.
+- The model follows `Core_DatabaseData_Model`: `$table`, `$tableId`, and `$columns` are instance metadata, and `getRecipientPreferenceTable()` is the named CRUD boundary. Its `save()` and `delete()` overrides retain the parent's `void` contract; database failures propagate to the central WebUI exception handler.
+- Validate class loading, preference retrieval, insert, update, and reset; then open a mass-email recipient-field dialog and confirm that the saved selection is restored.
+
 # CRM Settings menu
 
 - `Settings_Vtiger_MenuItem_Model::$defaultMenuItemLinks` owns the standard CRM Settings items. The Inventory section links Product block templates to the Core-owned `index.php?module=Core&view=ProductBlocks` manager.
@@ -49,6 +55,7 @@
 - `SaveWidgetPositions` delegates to `Vtiger_Widget_Model::updateWidgetPosition()`. Updates to `vtiger_module_dashboard_widgets` must be scoped by current user and dashboard tab, including ordinary widgets identified by link ID. MiniList, Notebook and chart widget IDs use a compound DOM ID.
 - Iterate the native `positionsmap` request array. `vtlib_array()` returns an ArrayAccess-only `Vtiger_GuardedArray` with private storage, so foreach over that wrapper silently processes no positions. Reject malformed maps and missing tab IDs instead of reporting a successful no-op.
 - This is shared Vtiger runtime behavior, with no standalone Vtiger module version or schema migration. Validate drag/refresh, resize/refresh, independent tabs containing the same widget, and narrow/wide viewport reloads; run JavaScript syntax and ITS4You ScriptsValidator checks and PHP lint.
+- `Vtiger_Module_Model::getOwnerWhereConditionForDashBoards()` is the shared owner-filter boundary for HelpDesk and Leads dashboard queries. A non-empty owner must validate as a positive integer before it can be included in SQL; malformed request values raise an `Exception`, while an empty value retains the existing all-accessible-records behavior.
 
 # Shared filter processing
 
@@ -116,3 +123,7 @@
 - Workflow compatibility templates include these shared files and its JS inherits base row/group actions. Keep styling changes here, without workflow-specific markup branches. Per-field operator metadata serves saved comparator options and dynamic field changes; workflow JS adds trigger restrictions after parent rendering.
 
 - `Vtiger_SearchAdvanceFilter_Js` clears only the last populated group connector. Empty intermediate groups must not erase the preceding connector. `transferListSearchParamsToFilterCondition()` ignores groups containing only connector metadata, preserving legacy source positions without creating a column at index -1.
+
+# Record permissions
+
+- The global `isPermitted()` function in `include/utils/UserInfoUtil.php` is a compatibility facade for the Users-owned permission model. Keep module, action, record ownership, and sharing evaluation in `Users_Privileges_Model`.

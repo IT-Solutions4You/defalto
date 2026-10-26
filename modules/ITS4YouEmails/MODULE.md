@@ -16,6 +16,7 @@
 # Attachment storage
 
 - Related attachments and Documents are resolved through `Core_Storage_Model::getAttachmentFilePath()` before PHPMailer reads them. This supports both legacy relative paths and configured absolute storage paths without prepending the application root twice.
+- `MassSaveAjax` treats submitted attachment metadata as untrusted. Existing files are resolved again by attachment ID through `ITS4YouEmails_Attachment_Model`; access requires either DetailView permission on a related CRM record or ownership of the MailManager attachment. Submitted Document IDs require Documents DetailView permission. Never restore request-provided attachment paths, stored names, or MIME types as filesystem input.
 - Embedded images retain their physical resolved path when attached to the outgoing message. Browser-visible template images must use the public attachment endpoint supplied by Core.
 
 # Composer document selection

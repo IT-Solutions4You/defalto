@@ -18,66 +18,72 @@
 
 class Vtiger_RecipientPreference_Model extends Vtiger_Record_Model
 {
-    protected static $table = 'vtiger_emails_recipientprefs';
-    protected static $index = 'tabid';
-    protected static $index2 = 'userid';
-    protected static $columns = ['id', 'tabid', 'prefs', 'userid'];
+    protected string $table = 'vtiger_emails_recipientprefs';
+    protected string $tableId = 'id';
+    protected array $columns = ['id', 'tabid', 'prefs', 'userid'];
+    protected string $moduleColumn = 'tabid';
+    protected string $userColumn = 'userid';
     protected static $instanceCache = [];
 
-    public static function getInstance($moduleName)
+    public static function getInstance(string $moduleName): ?self
     {
         if (!isset(self::$instanceCache[$moduleName])) {
-            $db = PearDatabase::getInstance();
+            $instance = new self();
             $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $sql = 'SELECT * FROM ' . self::$table . ' WHERE ' . self::$index . ' =? AND ' . self::$index2 . '=?';
-            $result = $db->pquery($sql, [getTabid($moduleName), $currentUserModel->getId()]);
-            if ($db->num_rows($result) > 0) {
-                $instance = new self();
-                $columns = self::$columns;
-                foreach ($columns as $column) {
-                    $value = $db->query_result($result, 0, $column);
+            $data = $instance->getRecipientPreferenceTable()->selectData(
+                $instance->columns,
+                [
+                    $instance->moduleColumn => getTabid($moduleName),
+                    $instance->userColumn => $currentUserModel->getId(),
+                ],
+            );
 
-                    if ($column == 'prefs') {
-                        $value = Zend_Json::decode(html_entity_decode($value));
-                    }
-                    $instance->set($column, $value);
-                }
-                self::$instanceCache[$moduleName] = $instance;
-            } else {
+            if (empty($data)) {
                 return null;
             }
+
+            $data['prefs'] = Zend_Json::decode($data['prefs']);
+            $instance->setData($data);
+            self::$instanceCache[$moduleName] = $instance;
         }
 
         return self::$instanceCache[$moduleName];
     }
 
-    public function save()
+    public function getRecipientPreferenceTable(): Core_DatabaseData_Model
     {
-        $db = PearDatabase::getInstance();
+        return $this->getTable($this->table, $this->tableId);
+    }
+
+    public function save(): void
+    {
+        $table = $this->getRecipientPreferenceTable();
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
         if ($this->getId()) {
-            $sql = 'UPDATE ' . self::$table . ' SET prefs = ? WHERE id = ? AND ' . self::$index . '=? AND ' . self::$index2 . '=?';
-            $params = [Zend_Json::encode($this->get('prefs')), $this->getId(), $this->get(self::$index), $this->get(self::$index2)];
-            $db->pquery($sql, $params);
-
-            return true;
+            $table->updateData(
+                ['prefs' => Zend_Json::encode($this->get('prefs'))],
+                [
+                    $this->tableId => $this->getId(),
+                    $this->moduleColumn => $this->get($this->moduleColumn),
+                    $this->userColumn => $this->get($this->userColumn),
+                ],
+            );
         } else {
-            $sql = 'INSERT INTO ' . self::$table . ' (' . self::$index . ',prefs,' . self::$index2 . ') VALUES (?,?,?)';
-            $params = [$this->get(self::$index), Zend_Json::encode($this->get('prefs')), $currentUserModel->getId()];
-            $db->pquery($sql, $params);
-
-            return true;
+            $userId = $currentUserModel->getId();
+            $recordId = $table->insertData([
+                $this->moduleColumn => $this->get($this->moduleColumn),
+                'prefs' => Zend_Json::encode($this->get('prefs')),
+                $this->userColumn => $userId,
+            ]);
+            $this->set($this->userColumn, $userId);
+            $this->setId((int)$recordId);
         }
     }
 
-    public function delete()
+    public function delete(): void
     {
-        $db = PearDatabase::getInstance();
-        $sql = 'DELETE FROM ' . self::$table . ' WHERE id = ?';
-        $params = [$this->getId()];
-        $db->pquery($sql, $params);
-
-        return true;
+        $this->getRecipientPreferenceTable()->deleteData([$this->tableId => $this->getId()]);
     }
 
     public function getPreferences()
@@ -87,11 +93,11 @@ class Vtiger_RecipientPreference_Model extends Vtiger_Record_Model
 
     public function getSourceModule()
     {
-        return getTabModuleName($this->get(self::$index));
+        return getTabModuleName($this->get($this->moduleColumn));
     }
 
     public function setSourceModule($moduleName)
     {
-        $this->set(self::$index, getTabid($moduleName));
+        $this->set($this->moduleColumn, getTabid($moduleName));
     }
 }

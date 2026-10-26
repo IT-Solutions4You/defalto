@@ -146,6 +146,13 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action
                 continue;
             }
 
+            if (!$currentUserModel->isAdminUser()) {
+                $fieldModel = $recordModel->getField($fieldName);
+                if (!$fieldModel || !$fieldModel->isEditable()) {
+                    continue;
+                }
+            }
+
             if ($fieldName === 'is_admin' && (!$currentUserModel->isAdminUser() || !$fieldValue)) {
                 $fieldValue = 'off';
             } elseif ($fieldName === 'is_admin' && $currentUserModel->isAdminUser()) {

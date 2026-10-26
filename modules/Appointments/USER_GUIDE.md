@@ -4,6 +4,8 @@ Appointments provides the CRM calendar and supports creating calendar records au
 
 The Appointments record Summary displays the available standard widgets, such as key fields, related documents, comments, or related appointments according to the installed relations and the current user's permissions. Module installation and updates register these widgets automatically.
 
+Appointments can be rescheduled from the calendar by dragging them to another date or time or by resizing their duration. These changes are saved only when the current user has permission to edit the selected appointment; otherwise, the calendar restores the original schedule.
+
 ## Create Calendar Record workflow action
 
 Configure the subject, description, status, type, owner, start and end values, and all-day behavior in the workflow task. Click Subject or Description to open the value window, where you can enter text and insert variables from the workflow's source record.
