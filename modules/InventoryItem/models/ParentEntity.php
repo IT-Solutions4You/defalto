@@ -64,6 +64,24 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
     }
 
     /**
+     * Values of the parent record that the item popup reads from the items block (currency, price book, region,
+     * overall discount); the items widget in the summary has no items block, so it supplies them itself.
+     *
+     * @param Vtiger_Record_Model $parentRecordModel
+     *
+     * @return array name => value
+     */
+    public static function getItemPopupValues(Vtiger_Record_Model $parentRecordModel): array
+    {
+        return [
+            'currency_id'      => (string)$parentRecordModel->get('currency_id'),
+            'pricebookid'      => (string)$parentRecordModel->get('pricebookid'),
+            'region_id'        => (string)$parentRecordModel->get('region_id'),
+            'overall_discount' => number_format((float)$parentRecordModel->get('overall_discount'), 2, '.', ''),
+        ];
+    }
+
+    /**
      * Update calculated / total fields in the parent record.
      * These are known as "computed" in InventoryItem module. If the parent module has a field with the same name, it will be updated.
      *
