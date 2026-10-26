@@ -61,7 +61,8 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
         $viewer->assign('INVENTORY_ITEMS_COUNT', count($items));
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
-        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
+        // Items block only displays values, so columns depend on view permission (read-only fields like unit price stay visible)
+        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel);
         $recordStructure = [];
 
         foreach ($recordStructureInstance->getStructure() as $value) {

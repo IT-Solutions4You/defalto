@@ -33,7 +33,6 @@ sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
     'LBL_GD_LIBRARY' => 'GD-Bibliothek Unterstützung',
     'LBL_HOST_NAME' => 'Hostname',
     'LBL_I_AGREE' => 'Ich stimme zu',
-    'LBL_IMAP_SUPPORT' => 'IMAP-Unterstützung',
     'LBL_INSTALLATION_IN_PROGRESS' => 'Installation läuft',
     'LBL_INSTALLATION_WIZARD' => 'Installationsassistent',
     'LBL_INSTALL_BUTTON' => 'Installieren',

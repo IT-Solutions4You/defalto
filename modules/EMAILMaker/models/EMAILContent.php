@@ -92,10 +92,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     public static function getInstanceById(
         int $templateId,
         string $language,
-        string $moduleName = null,
-        int $recordId = null,
-        int $recipientRecordId = null,
-        string $recipientModuleName = null
+        ?string $moduleName = null,
+        ?int $recordId = null,
+        ?int $recipientRecordId = null,
+        ?string $recipientModuleName = null
     ): self {
         $self = self::getInstance($moduleName, $recordId, $language, $recipientRecordId, $recipientModuleName);
 
@@ -149,7 +149,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
      * @return self
      * @throws Exception
      */
-    public static function getInstance(string $moduleName, int $recordId, string $language, int $recipientRecordId = null, string $recipientModuleName = null): self
+    public static function getInstance(string $moduleName, int $recordId, string $language, ?int $recipientRecordId = null, ?string $recipientModuleName = null): self
     {
         self::$language = $language;
         self::$module = $moduleName;
