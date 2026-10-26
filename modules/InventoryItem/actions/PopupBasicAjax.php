@@ -69,7 +69,7 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
             $priceFieldName = $possiblePriceFieldName;
         }
 
-        if (method_exists($searchModuleModel, 'searchRecordsOnNumber')) {
+        if (!empty($searchValue) && method_exists($searchModuleModel, 'searchRecordsOnNumber')) {
             foreach ($records as $moduleName => $recordModels) {
                 foreach ($recordModels as $recordId => $recordModel) {
                     $records[$moduleName][$recordId] = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);

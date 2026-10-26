@@ -775,8 +775,16 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             container = this.lineItemsHolder;
         }
 
+        // In the item popup, render the suggestion list inside the modal so it scrolls together with the input
+        let modalContent = container.closest('.modal-content');
+
+        if (!modalContent.length) {
+            modalContent = container.find('.modal-content');
+        }
+
         container.find('input.autoComplete').autocomplete({
             minLength: 0,
+            appendTo: modalContent.length ? modalContent : null,
             source: function (request, response) {
                 const params = {
                     'module': 'InventoryItem',
