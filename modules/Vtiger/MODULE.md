@@ -49,6 +49,7 @@
 - `SaveWidgetPositions` delegates to `Vtiger_Widget_Model::updateWidgetPosition()`. Updates to `vtiger_module_dashboard_widgets` must be scoped by current user and dashboard tab, including ordinary widgets identified by link ID. MiniList, Notebook and chart widget IDs use a compound DOM ID.
 - Iterate the native `positionsmap` request array. `vtlib_array()` returns an ArrayAccess-only `Vtiger_GuardedArray` with private storage, so foreach over that wrapper silently processes no positions. Reject malformed maps and missing tab IDs instead of reporting a successful no-op.
 - This is shared Vtiger runtime behavior, with no standalone Vtiger module version or schema migration. Validate drag/refresh, resize/refresh, independent tabs containing the same widget, and narrow/wide viewport reloads; run JavaScript syntax and ITS4You ScriptsValidator checks and PHP lint.
+- `Vtiger_Module_Model::getOwnerWhereConditionForDashBoards()` is the shared owner-filter boundary for HelpDesk and Leads dashboard queries. A non-empty owner must validate as a positive integer before it can be included in SQL; malformed request values raise an `Exception`, while an empty value retains the existing all-accessible-records behavior.
 
 # Shared filter processing
 
