@@ -9,3 +9,17 @@
 - `CRMEntity::insertIntoEntityTable()` writes only fields with `readonly = 0` for a non-admin. `InventoryItem_SaveFromPopup_Action::setReadOnlyPrices()` sets a non-editable `price` (catalogue price for a new item or a changed product, otherwise the stored one; a catalogue price of 0 keeps the entered price) and a non-editable `purchase_cost` (`getItemPurchaseCost()`, converted to the parent's currency like `GetItemDetails`), then sets `isWorkFlowFieldUpdate` so the entity saves them. A price sent from the browser for a locked item is ignored.
 - The items block of the parent detail (`modifiers/DetailView.php`) only displays values, so its columns follow the view permission, not the edit structure.
 - Not covered here: `GetItemDetails` and the `SaveFromPopup` response still send the purchase cost and margin to users without permission to those fields.
+
+# Parent record permissions
+
+- Items are separate `InventoryItem` records whose own permissions know nothing about the parent document (read-only flag, sharing rules, profile). Every client entry point that changes items checks `EditView` of the parent through `InventoryItem_ParentEntity_Model::requireEditableParent()` in `checkPermission()`: `SaveFromPopup` (`source_record`), `SaveItemsBlockDetail` (`for_record`), `DeleteProductLine` and `SortLineItems` (parent of each item, resolved by `InventoryItem_Module_Model::fetchParentIds()`) and the `PopupItemEdit` view (`source_record`). A new entry point that writes items must do the same.
+- An existing item sent with a request must belong to the parent record the request is authorized for (`requireItemsOfParent()`); an id that is not an item is refused.
+- `SaveItemsBlockDetail` runs only the methods listed in `$allowedModes`; never dispatch the `mode` request value to an arbitrary method.
+- The detail items block gets `ITEMS_EDITABLE` from the detail modifier and renders `data-items-readonly`; `InventoryItemDetail.js` then hides or disables the editing controls. This is convenience only, the server check is authoritative.
+
+# Parent record permissions
+
+- Items are separate `InventoryItem` records whose own permissions know nothing about the parent document (read-only flag, sharing rules, profile). Every client entry point that changes items checks `EditView` of the parent through `InventoryItem_ParentEntity_Model::requireEditableParent()` in `checkPermission()`: `SaveFromPopup` (`source_record`), `SaveItemsBlockDetail` (`for_record`), `DeleteProductLine` and `SortLineItems` (parent of each item, resolved by `InventoryItem_Module_Model::fetchParentIds()`) and the `PopupItemEdit` view (`source_record`). A new entry point that writes items must do the same.
+- An existing item sent with a request must belong to the parent record the request is authorized for (`requireItemsOfParent()`); an id that is not an item is refused.
+- `SaveItemsBlockDetail` runs only the methods listed in `$allowedModes`; never dispatch the `mode` request value to an arbitrary method.
+- The detail items block gets `ITEMS_EDITABLE` from the detail modifier and renders `data-items-readonly`; `InventoryItemDetail.js` then hides or disables the editing controls. This is convenience only, the server check is authoritative.

@@ -52,6 +52,23 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     /**
      * @inheritDoc
      */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+
+        $sourceRecordId = (int)$request->get('source_record');
+        InventoryItem_ParentEntity_Model::requireEditableParent($sourceRecordId, (string)$request->get('source_module'));
+
+        if ($request->get('record')) {
+            InventoryItem_ParentEntity_Model::requireItemsOfParent([$request->get('record')], $sourceRecordId);
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function process(Vtiger_Request $request)
     {
         $viewer = $this->getViewer($request);
