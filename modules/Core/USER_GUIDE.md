@@ -1,5 +1,13 @@
 # List filters
 
+## Product block templates
+
+Administrators can open CRM Settings, choose Product block templates in the Inventory section, and manage the shared templates through Core. The list shows the inventory module for every template and supports creating, editing, and deleting templates.
+
+Leave the module filter set to All when creating a template that should be available in every inventory module. Select a specific inventory module before creating when the template should be limited to that module.
+
+Template authors can use `$PS_ROW_NO$` to number only product and service rows continuously, and `$PS_ROW_TYPE$` to distinguish product, service, and text rows. The original inventory sequence variable still includes every document row.
+
 ## Server-side record updates
 
 Background workflows, imports, integrations, scheduled tasks, and custom scripts can load and save records without changing their text. Accented characters, typographic punctuation, and currency symbols in unchanged fields are preserved during these operations.

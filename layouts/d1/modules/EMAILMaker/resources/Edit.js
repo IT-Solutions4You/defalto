@@ -170,6 +170,47 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
 
             EMAILMaker_EditJs.fill_module_lang_array(moduleName);
             EMAILMaker_EditJs.fill_related_blocks_array(moduleName);
+            thisInstance.loadPDFTemplates(moduleName);
+        });
+    },
+    /**
+     * The PDF Maker templates of the template, in their order (hidden input pdf_templates)
+     */
+    registerPDFTemplates: function () {
+        const selectElement = jQuery('#pdf_templates_select');
+
+        if (selectElement.length) {
+            vtUtils.makeSelect2ElementSortable(selectElement, jQuery('#pdf_templates'));
+        }
+    },
+    /**
+     * Another module offers its own PDF templates — the chosen ones are dropped
+     */
+    loadPDFTemplates: function (moduleName) {
+        const selectElement = jQuery('#pdf_templates_select');
+
+        if (!selectElement.length) {
+            return;
+        }
+
+        selectElement.find('option').remove();
+        selectElement.val(null).trigger('change');
+
+        if (!moduleName) {
+            return;
+        }
+
+        app.request.post({
+            data: {module: 'EMAILMaker', action: 'PDFTemplates', source_module: moduleName}
+        }).then(function (error, data) {
+            if (error || !data) {
+                return;
+            }
+
+            jQuery.each(data.templates || [], function (index, template) {
+                selectElement.append(jQuery('<option>').val(template.id).text(template.name).attr('title', template.name));
+            });
+            selectElement.trigger('change');
         });
     },
     registerSelectRelatedModuleOption: function () {
@@ -323,6 +364,7 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
         this.registerValidation();
         this.registerToggleShareList();
         this.registerCSSStyles();
+        this.registerPDFTemplates();
 
         if (typeof this.registerLeavePageWithoutSubmit == 'function') {
             this.registerLeavePageWithoutSubmit(editViewForm);

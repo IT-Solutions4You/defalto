@@ -775,8 +775,16 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
             container = this.lineItemsHolder;
         }
 
+        // In the item popup, render the suggestion list inside the modal so it scrolls together with the input
+        let modalContent = container.closest('.modal-content');
+
+        if (!modalContent.length) {
+            modalContent = container.find('.modal-content');
+        }
+
         container.find('input.autoComplete').autocomplete({
             minLength: 0,
+            appendTo: modalContent.length ? modalContent : null,
             source: function (request, response) {
                 const params = {
                     'module': 'InventoryItem',
@@ -904,7 +912,14 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
                 price = recordData.purchaseCost;
             }
 
-            jQuery('input.price', container).val(price).trigger('change');
+            const priceElement = jQuery('input.price', container);
+
+            // Read-only price (profile): locked when the item has a catalogue price, editable for price on request (0)
+            if (priceElement.data('priceReadonly')) {
+                priceElement.prop('readonly', parseFloat(price) > 0);
+            }
+
+            priceElement.val(price).trigger('change');
             jQuery('input.purchase_cost', container).val(recordData.purchaseCost);
             jQuery('div.display_purchase_cost', container).text(recordData.purchaseCost);
             jQuery('input.pricebookid', container).val(recordData.pricebookid);

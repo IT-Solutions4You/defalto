@@ -79,6 +79,8 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
             $viewer->assign("IS_ACTIVE", $emailtemplateResult["is_active"]);
             $viewer->assign("IS_DEFAULT", $emailtemplateResult["is_default"]);
+            // the PDF Maker templates sent with this e-mail template
+            $viewer->assign('PDF_TEMPLATE_DATA', EMAILMaker_PDFTemplate_Model::getDetailData((int)$emailtemplateResult['templateid']));
             $viewer->assign("ACTIVATE_BUTTON", $emailtemplateResult["activateButton"]);
             $viewer->assign("DEFAULT_BUTTON", $emailtemplateResult["defaultButton"]);
             $detailViewLinks = $EMAILMaker->getDetailViewLinks($record);
@@ -185,6 +187,8 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
             $viewer->assign("IS_ACTIVE", $emailtemplateResult["is_active"]);
             $viewer->assign("IS_DEFAULT", $emailtemplateResult["is_default"]);
+            // the PDF Maker templates sent with this e-mail template
+            $viewer->assign('PDF_TEMPLATE_DATA', EMAILMaker_PDFTemplate_Model::getDetailData((int)$emailtemplateResult['templateid']));
             $viewer->assign("ACTIVATE_BUTTON", $emailtemplateResult["activateButton"]);
             $viewer->assign("DEFAULT_BUTTON", $emailtemplateResult["defaultButton"]);
             $detailViewLinks = $EMAILMaker->getDetailViewLinks($recordId);

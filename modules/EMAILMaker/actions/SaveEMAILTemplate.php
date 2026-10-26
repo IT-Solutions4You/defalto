@@ -77,6 +77,11 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Core_Controller_Action
         EMAILMaker_Record_Model::saveDefaultFrom($templateId, $request->get('default_from_email'));
         EMAILMaker_Record_Model::saveDisplayed($templateId, $request->get('displayedValue'), $request->get('display_conditions'));
 
+        // the form had the PDF Maker templates field (PDF Maker active) — otherwise the links stay
+        if ($request->has('pdf_templates_sent')) {
+            EMAILMaker_PDFTemplate_Model::saveLinks((int)$templateId, (string)$moduleName, explode(';', (string)$request->get('pdf_templates')));
+        }
+
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $EMAILMaker->AddLinks($moduleName);
 

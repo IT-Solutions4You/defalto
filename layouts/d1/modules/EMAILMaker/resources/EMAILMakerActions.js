@@ -120,6 +120,67 @@ jQuery.Class('EMAILMaker_Actions_Js', {
             modalContainer.find('#ispdfactive').val('0');
         });
     },
+    /**
+     * The PDF templates attached to the chosen e-mail template (also the default one on opening)
+     * are added to the PDF block, which opens — the user may remove them or add others. A PDF
+     * choice the window was opened with (from PDF Maker) is left alone.
+     */
+    registerPDFTemplatePreselection: function (modalContainer) {
+        const self = this,
+            templateElement = modalContainer.find('#use_common_email_template'),
+            pdfElement = modalContainer.find('#use_common_pdf_template');
+
+        if (!templateElement.length || !pdfElement.length || '1' === String(templateElement.data('pdf-explicit'))) {
+            return;
+        }
+
+        const preselection = templateElement.data('pdf-templates') || {};
+        let addedIds = [],
+            openedHere = false;
+
+        const apply = function () {
+            const templateIds = (preselection[templateElement.val()] || []).map(String),
+                isOpen = '1' === modalContainer.find('#ispdfactive').val();
+
+            // a template without PDFs after one without PDFs — the user's PDF choice stays as it is
+            if (!templateIds.length && !addedIds.length) {
+                return;
+            }
+
+            // the PDF block opened now sends exactly the attached templates, not the PDF Maker defaults
+            let selectedIds = isOpen ? (pdfElement.val() || []).filter(function (id) {
+                return !self.inArray(id, addedIds);
+            }) : [];
+
+            if (templateIds.length && !isOpen) {
+                modalContainer.find('#addPDFMakerTemplate').trigger('click');
+                openedHere = true;
+            }
+
+            jQuery.each(templateIds, function (index, id) {
+                if (!self.inArray(id, selectedIds)) {
+                    selectedIds.push(id);
+                }
+            });
+            addedIds = templateIds;
+
+            // the order of the options is the order the PDFs are sent in
+            jQuery.each(selectedIds, function (index, id) {
+                pdfElement.append(pdfElement.find('option').filter(function () {
+                    return jQuery(this).val() === id;
+                }).detach());
+            });
+            pdfElement.val(selectedIds).trigger('change');
+
+            if (!selectedIds.length && openedHere) {
+                modalContainer.find('#removePDFMakerTemplate').trigger('click');
+                openedHere = false;
+            }
+        };
+
+        templateElement.on('change', apply);
+        apply();
+    },
 
     getListViewPopup: function () {
         this.emailmaker_sendMail();
@@ -257,6 +318,7 @@ jQuery.Class('EMAILMaker_Actions_Js', {
                                     self.registerEmailFieldSelectionEvent(modalContainer);
                                     self.registerPDFTemplateInput(modalContainer);
                                     self.registerPDFMakerEvents(modalContainer);
+                                    self.registerPDFTemplatePreselection(modalContainer);
                                 }
                             });
                         }

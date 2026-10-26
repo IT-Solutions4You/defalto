@@ -306,7 +306,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         $EMAILMakerFieldsModel = new EMAILMaker_Fields_Model();
 
-        foreach ($EMAILMakerFieldsModel->getInventoryItemsBlockFields() as $viewer_key => $pbFields) {
+        foreach ($EMAILMakerFieldsModel->getInventoryItemsBlockFields($select_module) as $viewer_key => $pbFields) {
             $viewer->assign($viewer_key, $pbFields);
         }
 
@@ -362,6 +362,8 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         $viewer->assign('DOCUMENTS_FOLDERS', Documents_Module_Model::getAllFolders());
         $viewer->assign('RELATED_DOCUMENTS_FOLDERS', $foldersRelatedDocuments);
         $viewer->assign('LOAD_RELATED_DOCUMENTS', $loadRelatedDocuments);
+        // the PDF Maker templates sent with this e-mail template (nothing without PDF Maker)
+        $viewer->assign('PDF_TEMPLATE_DATA', EMAILMaker_PDFTemplate_Model::getEditData((int)$templateId, (string)$select_module));
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'showModuleEditView', $request->getModule(), $viewer, $request);
 

@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Modelos de blocos de produtos',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Gerencie modelos de blocos de produtos para itens de inventário.',
     'LBL_CONDITION' => 'Condição',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Códigos postais disponíveis',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mapeamento de campos de endereço',

@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Product block templates',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Manage product block templates for inventory items.',
     'LBL_SAVED_LIST_FILTER_NOTICE' => 'This list already applies saved conditions. Clearing additional filters does not remove them.',
     'LBL_EDIT_SAVED_LIST_FILTER' => 'Edit saved conditions',
     'LBL_CLEAR_ADDITIONAL_FILTERS' => 'Clear additional filters',
