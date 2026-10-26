@@ -28,7 +28,8 @@ if (!class_exists('Migration_20261026120000')) {
                 $tabId = getTabid($moduleName);
 
                 $db->pquery('UPDATE vtiger_field SET displaytype=1 WHERE tabid=? AND fieldname=? AND displaytype=3', [$tabId, $amountFieldName]);
-                $db->pquery('UPDATE vtiger_field SET displaytype=2, masseditable=0 WHERE tabid=? AND fieldname=? AND displaytype=3', [$tabId, 'balance']);
+                $db->pquery('UPDATE vtiger_field SET displaytype=2 WHERE tabid=? AND fieldname=? AND displaytype=3', [$tabId, 'balance']);
+                $db->pquery('UPDATE vtiger_field SET masseditable=0 WHERE tabid=? AND fieldname=?', [$tabId, 'balance']);
 
                 Core_Install_Model::getInstance('module.postupdate', $moduleName)->updateEventHandler();
                 Core_Install_Model::logSuccess($moduleName . ': fields ' . $amountFieldName . ' and balance updated, handler registered');
