@@ -248,7 +248,6 @@ class Install_Utils_Model
         $preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = [extension_loaded('mysqli'), true, extension_loaded('mysqli')];
         $preInstallConfig['LBL_OPEN_SSL'] = [extension_loaded('openssl'), true, extension_loaded('openssl')];
         $preInstallConfig['LBL_CURL'] = [extension_loaded('curl'), true, extension_loaded('curl')];
-        $preInstallConfig['LBL_IMAP_SUPPORT'] = [extension_loaded('imap'), true, (extension_loaded('imap') == true)];
         $preInstallConfig['LBL_MB_STRING'] = [extension_loaded('mbstring'), true, (extension_loaded('mbstring') == true)];
 
         $gnInstalled = false;

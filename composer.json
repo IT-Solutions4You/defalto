@@ -2,7 +2,7 @@
   "description": "Defalto CRM",
   "type": "project",
   "require": {
-    "php": "^8.1",
+    "php": "^8.2",
     "ext-calendar": "*",
     "ext-curl": "*",
     "ext-dom": "*",
@@ -10,7 +10,6 @@
     "ext-fileinfo": "*",
     "ext-gd": "*",
     "ext-iconv": "*",
-    "ext-imap": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-mysqli": "*",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3b0d41b7263ae7beb3824115c4b7cae1",
+    "content-hash": "e7c16ab6aa3e1e9e6212852e2785ad68",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -453,20 +453,20 @@
         },
         {
             "name": "ezyang/htmlpurifier",
-            "version": "v4.18.0",
+            "version": "v4.19.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "cb56001e54359df7ae76dc522d08845dc741621b"
+                "reference": "5e0539132d934f936fbae2c88b55d58f9438623f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/cb56001e54359df7ae76dc522d08845dc741621b",
-                "reference": "cb56001e54359df7ae76dc522d08845dc741621b",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/5e0539132d934f936fbae2c88b55d58f9438623f",
+                "reference": "5e0539132d934f936fbae2c88b55d58f9438623f",
                 "shasum": ""
             },
             "require": {
-                "php": "~5.6.0 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+                "php": "~5.6.0 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "require-dev": {
                 "cerdic/css-tidy": "^1.7 || ^2.0",
@@ -508,9 +508,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ezyang/htmlpurifier/issues",
-                "source": "https://github.com/ezyang/htmlpurifier/tree/v4.18.0"
+                "source": "https://github.com/ezyang/htmlpurifier/tree/v4.19.1"
             },
-            "time": "2024-11-01T03:51:45+00:00"
+            "time": "2026-09-15T15:42:51+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -1427,22 +1427,23 @@
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.8.1",
+            "version": "2.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "9df2924ca644736c835fc60466a3a60390d334f9"
+                "reference": "8cedfef9d01a8d1fd2ecfabb41734b17592c4b71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/9df2924ca644736c835fc60466a3a60390d334f9",
-                "reference": "9df2924ca644736c835fc60466a3a60390d334f9",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/8cedfef9d01a8d1fd2ecfabb41734b17592c4b71",
+                "reference": "8cedfef9d01a8d1fd2ecfabb41734b17592c4b71",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5",
-                "php": "^7.1 || >=8.0.0 <8.5.0"
+                "guzzlehttp/guzzle": "^6.5.8 || ^7.8.2 || ^8.0",
+                "guzzlehttp/psr7": "^1.9.1 || ^2.6.3 || ^3.0",
+                "php": "^7.1 || >=8.0.0 <8.6.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.3.5",
@@ -1486,26 +1487,26 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-client/issues",
-                "source": "https://github.com/thephpleague/oauth2-client/tree/2.8.1"
+                "source": "https://github.com/thephpleague/oauth2-client/tree/2.9.1"
             },
-            "time": "2025-02-26T04:37:30+00:00"
+            "time": "2026-09-16T13:14:31+00:00"
         },
         {
             "name": "league/oauth2-google",
-            "version": "4.0.1",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-google.git",
-                "reference": "1b01ba18ba31b29e88771e3e0979e5c91d4afe76"
+                "reference": "72be69505f890ea8b6d4e716f619b3c10a1f5010"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-google/zipball/1b01ba18ba31b29e88771e3e0979e5c91d4afe76",
-                "reference": "1b01ba18ba31b29e88771e3e0979e5c91d4afe76",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-google/zipball/72be69505f890ea8b6d4e716f619b3c10a1f5010",
+                "reference": "72be69505f890ea8b6d4e716f619b3c10a1f5010",
                 "shasum": ""
             },
             "require": {
-                "league/oauth2-client": "^2.0",
+                "league/oauth2-client": "^2.0 || ^3.0",
                 "php": "^7.3 || ^8.0"
             },
             "require-dev": {
@@ -1541,9 +1542,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-google/issues",
-                "source": "https://github.com/thephpleague/oauth2-google/tree/4.0.1"
+                "source": "https://github.com/thephpleague/oauth2-google/tree/4.2.0"
             },
-            "time": "2023-03-17T15:20:52+00:00"
+            "time": "2026-03-09T09:36:58+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -4351,22 +4352,22 @@
         },
         {
             "name": "tracy/tracy",
-            "version": "v2.10.10",
+            "version": "v2.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tracy.git",
-                "reference": "32303e02c222eea8571402a8310fc3fe70422c37"
+                "reference": "2664bd9456cb745ff1fb0b31efa79fe2f411bef3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tracy/zipball/32303e02c222eea8571402a8310fc3fe70422c37",
-                "reference": "32303e02c222eea8571402a8310fc3fe70422c37",
+                "url": "https://api.github.com/repos/nette/tracy/zipball/2664bd9456cb745ff1fb0b31efa79fe2f411bef3",
+                "reference": "2664bd9456cb745ff1fb0b31efa79fe2f411bef3",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-session": "*",
-                "php": "8.0 - 8.4"
+                "php": "8.2 - 8.6"
             },
             "conflict": {
                 "nette/di": "<3.0"
@@ -4376,21 +4377,26 @@
                 "nette/di": "^3.0",
                 "nette/http": "^3.0",
                 "nette/mail": "^3.0 || ^4.0",
-                "nette/tester": "^2.2",
+                "nette/phpstan-rules": "^1.0",
+                "nette/tester": "^2.6",
                 "nette/utils": "^3.0 || ^4.0",
-                "phpstan/phpstan": "^1.0",
+                "phpstan/extension-installer": "^1.4@stable",
+                "phpstan/phpstan": "^2.3@stable",
                 "psr/log": "^1.0 || ^2.0 || ^3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.10-dev"
+                    "dev-master": "2.12-dev"
                 }
             },
             "autoload": {
                 "files": [
                     "src/Tracy/functions.php"
                 ],
+                "psr-4": {
+                    "Tracy\\": "src"
+                },
                 "classmap": [
                     "src"
                 ]
@@ -4403,26 +4409,27 @@
                 {
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
-                },
-                {
-                    "name": "Nette Community",
-                    "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "😎  Tracy: the addictive tool to ease debugging PHP code for cool developers. Friendly design, logging, profiler, advanced features like debugging AJAX calls or CLI support. You will love it.",
+            "description": "😎 Tracy: the addictive PHP debugger. Clear error pages with full context, a debug bar, readable dumps, AJAX and CLI support, and logging with e-mail alerts in production.",
             "homepage": "https://tracy.nette.org",
             "keywords": [
-                "Xdebug",
-                "debug",
+                "debug bar",
                 "debugger",
+                "debugging",
+                "dump",
+                "error handler",
+                "logging",
                 "nette",
-                "profiler"
+                "tracy",
+                "var_dump",
+                "whoops"
             ],
             "support": {
                 "issues": "https://github.com/nette/tracy/issues",
-                "source": "https://github.com/nette/tracy/tree/v2.10.10"
+                "source": "https://github.com/nette/tracy/tree/v2.12.2"
             },
-            "time": "2025-04-28T14:35:15+00:00"
+            "time": "2026-10-21T05:14:18+00:00"
         }
     ],
     "aliases": [],
@@ -4431,7 +4438,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-calendar": "*",
         "ext-curl": "*",
         "ext-dom": "*",
@@ -4439,7 +4446,6 @@
         "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-iconv": "*",
-        "ext-imap": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-mysqli": "*",
@@ -4449,5 +4455,5 @@
         "ext-zip": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

@@ -386,7 +386,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
      *
      * @return self
      */
-    public static function getTableInstance(string $table, string $tableId = null): self
+    public static function getTableInstance(string $table, ?string $tableId = null): self
     {
         return (new self())->getTable($table, $tableId);
     }

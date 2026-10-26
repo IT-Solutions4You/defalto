@@ -272,7 +272,7 @@ class MailManager_Connector_Connector
      *
      * @param String $name - folder name
      */
-    public function getFolder(string $name, string $path = null, $mBoxFolder = null): MailManager_Folder_Model
+    public function getFolder(string $name, ?string $path = null, $mBoxFolder = null): MailManager_Folder_Model
     {
         return new MailManager_Folder_Model($name, $path, $mBoxFolder);
     }

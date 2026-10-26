@@ -37,7 +37,6 @@ $languageStrings = [
     'LBL_GD_LIBRARY'                       => 'GD Library támogatás',
     'LBL_HOST_NAME'                        => 'Host neve',
     'LBL_I_AGREE'                          => 'Elfogadom',
-    'LBL_IMAP_SUPPORT'                     => 'Imap támogatás',
     'LBL_INSTALLATION_IN_PROGRESS'         => 'Telepítés folyamatban',
     'LBL_INSTALLATION_WIZARD'              => 'Telepítő varázsló',
     'LBL_INSTALL_BUTTON'                   => 'Telepítés',
