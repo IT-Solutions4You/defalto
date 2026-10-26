@@ -1,5 +1,9 @@
 # Users changelog
 
+## 1.9 - 2026-10-26
+
+- Self-service profile changes now protect login names, administrator access, roles, profiles, account status, and hidden security fields from unauthorized updates.
+
 ## 1.8 - 2026-10-26
 
 - Direct record access now consistently respects ownership and private sharing permissions.
