@@ -20,9 +20,6 @@ class EMAILMaker_IndexAjax_Action extends Core_Controller_Action
             'SaveCustomLabelValues',
             'deleteCustomLabel',
             'DeleteCustomLabels',
-            'SaveProductBlock',
-            'deleteProductBlocks',
-            'DeleteProductBlock',
             'DeleteTheme',
             'DeleteTemplate',
             'updateLinkForModule',
@@ -168,54 +165,6 @@ class EMAILMaker_IndexAjax_Action extends Core_Controller_Action
         }
 
         header("Location:index.php?module=EMAILMaker&view=CustomLabels");
-    }
-
-    public function SaveProductBlock(Vtiger_Request $request)
-    {
-        EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $adb = PearDatabase::getInstance();
-        $tplid = $request->get('tplid');
-        $template_name = $request->get('template_name');
-        $body = $request->get('body');
-
-        if (isset($tplid) && $tplid != "") {
-            $adb->pquery("UPDATE vtiger_emakertemplates_productbloc_tpl SET name=?, body=? WHERE id=?", [$template_name, $body, $tplid]);
-        } else {
-            $adb->pquery("INSERT INTO vtiger_emakertemplates_productbloc_tpl(name, body) VALUES(?,?)", [$template_name, $body]);
-        }
-        header("Location:index.php?module=EMAILMaker&view=ProductBlocks");
-    }
-
-    public function DeleteProductBlock(Vtiger_Request $request)
-    {
-        EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $adb = PearDatabase::getInstance();
-
-        $tplid = $request->get('tplid');
-        $adb->pquery("DELETE FROM vtiger_emakertemplates_productbloc_tpl WHERE id = ?", [$tplid]);
-        header("Location:index.php?module=EMAILMaker&view=ProductBlocks");
-    }
-
-    public function deleteProductBlocks(Vtiger_Request $request)
-    {
-        EMAILMaker_Debugger_Model::GetInstance()->Init();
-        $adb = PearDatabase::getInstance();
-        $sql = "DELETE FROM vtiger_emakertemplates_productbloc_tpl WHERE id IN (";
-        $params = [];
-        foreach ($_REQUEST as $key => $val) {
-            if (substr($key, 0, 4) == "chx_" && $val == "on") {
-                [$dump, $id] = explode("_", $key, 2);
-                if (is_numeric($id)) {
-                    $sql .= "?,";
-                    array_push($params, $id);
-                }
-            }
-        }
-        if (count($params) > 0) {
-            $sql = rtrim($sql, ",") . ")";
-            $adb->pquery($sql, $params);
-        }
-        header("Location:index.php?module=EMAILMaker&view=ProductBlocks");
     }
 
     public function DeleteTheme(Vtiger_Request $request)

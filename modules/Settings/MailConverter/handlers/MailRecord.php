@@ -497,7 +497,7 @@ class Settings_MailConverter_MailRecord_Handler
     /**
      * @throws Exception
      */
-    public function retrieveAttachments($withContent = true, $attachmentName = null, int $attachmentId = null): void
+    public function retrieveAttachments($withContent = true, $attachmentName = null, ?int $attachmentId = null): void
     {
         $this->clearAttachments();
         $this->retrieveAttachmentsFromDB($withContent, $attachmentName, $attachmentId);

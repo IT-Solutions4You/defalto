@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Szablony bloków produktów',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Zarządzaj szablonami bloków produktów dla pozycji magazynowych.',
     'LBL_CONDITION' => 'Warunek',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Kody pocztowe dostępne',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mapowanie pól adresowych',

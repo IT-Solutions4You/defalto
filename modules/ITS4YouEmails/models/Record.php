@@ -26,6 +26,25 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public $emailNames = [];
 
     /**
+     * @param string $subject
+     * @param string $mode
+     *
+     * @return string
+     */
+    public static function getSubjectForMode(string $subject, string $mode): string
+    {
+        if (in_array($mode, ['Reply', 'ReplyAll'], true)) {
+            return preg_match('/^\s*(?:re|aw|odp|sv)\s*:/iu', $subject) ? $subject : 'Re: ' . $subject;
+        }
+
+        if ('Forward' === $mode) {
+            return preg_match('/^\s*(?:fwd|fw|tr)\s*:/iu', $subject) ? $subject : 'Fwd: ' . $subject;
+        }
+
+        return $subject;
+    }
+
+    /**
      * @param int    $userId
      * @param string $type
      *

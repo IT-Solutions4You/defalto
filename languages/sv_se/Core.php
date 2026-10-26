@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Mallar för produktblock',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Hantera mallar för produktblock för lagerposter.',
     'LBL_CONDITION' => 'Villkor',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Postnummer tillgängliga',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Mappning av adressfält',

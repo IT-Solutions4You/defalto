@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Termékblokk-sablonok',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Termékblokk-sablonok kezelése a készlettételekhez.',
     'LBL_CONDITION' => 'Feltétel',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Irányítószámok elérhetők',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Címmezők hozzárendelése',

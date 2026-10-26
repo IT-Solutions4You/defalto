@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Шаблоны товарных блоков',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Управление шаблонами товарных блоков для позиций документа.',
     'LBL_CONDITION' => 'Условие',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Почтовые индексы доступны',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Сопоставление полей адреса',

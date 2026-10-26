@@ -7,6 +7,11 @@
 
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades. They delegate statically to `Core_ImageValidation_Helper`; keep validation logic out of this legacy utility.
 
+# CRM Settings menu
+
+- `Settings_Vtiger_MenuItem_Model::$defaultMenuItemLinks` owns the standard CRM Settings items. The Inventory section links Product block templates to the Core-owned `index.php?module=Core&view=ProductBlocks` manager.
+- Migration `20261023143000` calls `installLink('LBL_PRODUCTBLOCKTPL')`, so existing installations receive the item idempotently without rebuilding every settings link.
+
 # Attachment storage
 
 - Shared record downloads and `Vtiger_ShowFile_Helper` resolve `vtiger_attachments.path` through `Core_Storage_Model`. This supports legacy relative paths and configured absolute paths outside the web directory.

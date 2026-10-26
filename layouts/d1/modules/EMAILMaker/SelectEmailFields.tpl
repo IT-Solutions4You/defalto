@@ -98,7 +98,7 @@
                                         <span>{vtranslate('LBL_SELECT_EMAIL_TEMPLATE','EMAILMaker')}:</span>
                                     </div>
                                     <div class="col-lg">
-                                        <select id="use_common_email_template" name="email_template_ids" class="form-select">
+                                        <select id="use_common_email_template" name="email_template_ids" class="form-select" data-pdf-templates="{if $EMAIL_PDF_TEMPLATES}{Zend_Json::encode($EMAIL_PDF_TEMPLATES)|escape}{/if}" data-pdf-explicit="{if $PDFTEMPLATEIDS neq ''}1{/if}">
                                             <option value="">{vtranslate('LBL_NONE','EMAILMaker')}</option>
                                             {foreach from=$CRM_TEMPLATES["1"] item="options" key="category_name"}
                                                 <optgroup label="{$category_name}">

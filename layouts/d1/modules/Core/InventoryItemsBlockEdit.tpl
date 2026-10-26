@@ -12,6 +12,7 @@
             <input type="hidden" name="module" value="{$MODULE}">
             <input type="hidden" name="action" value="InventoryItemsBlock">
             <input type="hidden" name="record" value="{$RECORD_ID}">
+            <input type="hidden" name="source_module" value="{$SOURCE_MODULE}">
             <input type="hidden" name="related_module" value="InventoryItem" id="relateModule">
             <input type="hidden" name="related_fields" value="{$RELATED_BLOCK_MODEL->get('related_fields')}" class="relateFields">
             <div class="container-fluid border-bottom">
@@ -51,6 +52,9 @@
                 <div class="row py-3">
                     <div class="col-6"></div>
                     <div class="col-6">
+                        <a class="btn btn-outline-secondary" href="index.php?module={$MANAGEMENT_MODULE}&view=InventoryItemsBlock&mode=list&source_module={$SOURCE_MODULE}">
+                            {vtranslate('LBL_CANCEL', $MODULE)}
+                        </a>
                         <button id="saveRelatedBlock" class="btn btn-primary active" type="submit" name="saveButton">
                             <strong>{vtranslate('LBL_SAVE', $MODULE)}</strong>
                         </button>

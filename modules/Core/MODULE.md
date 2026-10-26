@@ -1,5 +1,22 @@
 # Core UI ownership
 
+## Inventory item block templates
+
+- `Core_InventoryItemsBlock_Model` owns product-block templates in `df_inventoryitems_block`; do not use the generic related-block table or model for their list, edit, or delete lifecycle.
+- Management screens may be hosted by another module such as PDFMaker. In that flow, the request `module` is the UI host and `source_module` is the inventory module persisted with the template.
+- `$IB_INVENTORYITEM_SEQUENCE$` is the physical document-line sequence. `$PS_ROW_NO$` counts only rows with a product/service and resets for each rendered block; `$PS_ROW_TYPE$` identifies `Products`, `Services`, or `Text`.
+
+## Product-block compatibility routes
+
+- `ProductBlocks` opens `Core_InventoryItemsBlock_View`; `EditProductBlock` maps legacy `tplid` links to the same shared editor.
+- EMAILMaker, PDFMaker, and PDFMaker Pro use `df_inventoryitems_block` as the single template store. The old module-specific product-block tables are legacy data only and are not used by the runtime editor.
+- Rows with an empty `module` are global templates and are offered for every inventory module. Module-specific rows remain restricted to their source module.
+- `Core_TemplateFields_Helper::getInventoryItemsBlockFields()` passes the selected inventory module to `getAllOptions()` so template editors receive global rows plus rows for that module only.
+- `Core_InventoryItemsBlock_Model::createTables()` inserts the two global InventoryItem starter templates only when `df_inventoryitems_block` has no rows. Never overwrite or append defaults to a populated table.
+- Creating a template while the manager filter is set to All persists a global row with an empty `module`; selecting an inventory module creates a module-specific row.
+- CRM Settings exposes the shared manager through the Inventory menu at `index.php?module=Core&view=ProductBlocks`; the settings-menu registration remains owned by `Settings_Vtiger_MenuItem_Model`.
+- Core-hosted inventory-block management requires an administrator and uses the basic application page lifecycle because Core is a framework owner rather than a permission-bearing CRM entity module. It supplies an explicit breadcrumb label and URL; the shared Topbar must tolerate technical modules without a `Vtiger_Module_Model`. Module-hosted routes retain their normal module permission checks and index lifecycle.
+
 ## Entity persistence encoding
 
 - `PearDatabase::query_result()` and `query_result_rowdata()` return HTML-encoded values. `CRMEntity::retrieve_entity_info()` keeps that public read contract while registering the corresponding raw database value in `TrackableObject` when encoding changed it.
@@ -129,3 +146,13 @@ Use the actual module name instead of `Example`. Unconfigured fields retain the 
 - `getProviderInstance()` returns `League\OAuth2\Client\Provider\Google` or, for Microsoft, a League `GenericProvider` with the Entra v2.0 endpoints (no extra Composer package). Tenant: `$microsoft_oauth_tenant` in `config.inc.php` (tenant ID or domain, required for single-tenant app registrations), default `common`. Scopes `offline_access`, `https://outlook.office.com/IMAP.AccessAsUser.All`, `https://outlook.office.com/SMTP.Send`.
 - Microsoft redirect URI is `<site_URL>/auth.php` without a query string (register exactly this in the app registration); Google keeps `auth.php?provider=Google`. `auth.php` reads the provider from the session.
 - Known limitation: refreshed access tokens are stored, rotated Microsoft refresh tokens are not (the stored one stays valid until its lifetime ends, then authorize again). Storing them needs a per-account update instead of the current update by `client_id`/`client_secret`.
+
+# Template relations
+
+- `Core_TemplateRelation_Model` owns `df_template_rel` (id, record_id, module, related_record_id, related_module, sequence; UNIQUE module+record_id+related_module+related_record_id, KEY module+record_id, KEY related_module+related_record_id): links of templates, which are not CRM records, to records of another module in an order. Agreed with the core maintainer instead of `vtiger_crmentityrel`, which the core looks up by id without the module (CRMEntity, Vtiger_Record_Model, Webservices utils, ITS4YouEmails, Core_RelatedBlock_Model).
+- Instance methods on `Core_TemplateRelation_Model::getInstance()`, the table only in `$table`/`$tableId`, writes and deletes through `Core_DatabaseData_Model` (`insertData()`, `deleteData()`; a list of ids is one IN condition); `getRelatedIds()` is one query of its own on `$this->table` (`record_id IN (…)`, `ORDER BY sequence, id`), keyed by record id — callers read it by key. Every method names both modules: `getRelatedIds()`, `saveRelated()` (replaces one related module of a template, `sequence` from 1), `deleteByRecord()`, `deleteByRelated()`, `deleteByModule()`, `isInstalled()`; `createTables()` is idempotent and listed in `Core_CreateTables_Config`, so `Vtiger_Install_Model::installTables()` creates the table on a fresh install and on the system update (`Install_Utils_Model::installTables()` from the Migration wizard); there is no migration file. Until then `isInstalled()` is false and nothing is related.
+- Users: EMAIL Maker → PDF Maker templates (`EMAILMaker_PDFTemplate_Model`); planned: PDF Maker and links of templates to contacts and other modules.
+
+# Database data: IN conditions
+
+- `Core_DatabaseData_Model` search arrays (`selectData()`, `selectResult()`, `deleteData()`, `updateData()` and their `get*Query()`): a value that is not an array (also null, an object, a bool) is `column=?` with that one value as its parameter, an array of values is `column IN (?,…)` (`getSearchCondition()`, with `getSearchParams()` building the parameters in the same order). An empty array throws an `Exception` (badly prepared data) before the query is built, so nothing runs; callers handle an empty list themselves (`Core_TemplateRelation_Model` returns an empty result or does nothing). Scalar searches produce exactly the former SQL and parameters; an array value never worked before (`PearDatabase::pquery()` flattens it into more parameters than placeholders). A search without any column keeps the former statement for delete/update. Core change agreed with the core maintainer.
