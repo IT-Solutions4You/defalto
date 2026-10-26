@@ -723,6 +723,13 @@ function getParentRecordOwner($tabid, $parModId, $record_id)
     $parentTabName = getTabname($parModId);
     $relTabName = getTabname($tabid);
     $fn_name = "get" . $relTabName . "Related" . $parentTabName;
+
+    if (!function_exists($fn_name)) {
+        $log->debug("Exiting getParentRecordOwner method ...");
+
+        return $parentRecOwner;
+    }
+
     $ent_id = $fn_name($record_id);
     if ($ent_id != '') {
         $parentRecOwner = getRecordOwnerId($ent_id);
