@@ -23,6 +23,30 @@
 {
 
     /**
+     * Rebuild privilege and sharing files for every active user.
+     */
+    public static function recalculateSharingRules(): void
+    {
+        global $log;
+        $log->debug('Entering Users_Privileges_Model::recalculateSharingRules() method ...');
+
+        require_once 'modules/Users/CreateUserPrivilegeFile.php';
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            "SELECT id FROM vtiger_users WHERE deleted = 0 AND status = 'Active'",
+            []
+        );
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $userId = (int)$row['id'];
+            createUserPrivilegesfile($userId);
+            createUserSharingPrivilegesfile($userId);
+        }
+
+        $log->debug('Exiting Users_Privileges_Model::recalculateSharingRules() method ...');
+    }
+
+    /**
      * Function to get the Global Read Permission for the user
      * @return <Number> 0/1
      */

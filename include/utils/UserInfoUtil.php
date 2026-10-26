@@ -1910,19 +1910,7 @@ function getPermittedModuleIdList()
  */
 function RecalculateSharingRules()
 {
-    global $log;
-    $log->debug("Entering RecalculateSharingRules() method ...");
-    global $adb;
-    require_once('modules/Users/CreateUserPrivilegeFile.php');
-    $query = "select id from vtiger_users where deleted=0 AND status = 'Active'";
-    $result = $adb->pquery($query, []);
-    $num_rows = $adb->num_rows($result);
-    for ($i = 0; $i < $num_rows; $i++) {
-        $id = $adb->query_result($result, $i, 'id');
-        createUserPrivilegesfile($id);
-        createUserSharingPrivilegesfile($id);
-    }
-    $log->debug("Exiting RecalculateSharingRules method ...");
+    Users_Privileges_Model::recalculateSharingRules();
 }
 
 /** Function to get the list of module for which the user defined sharing rules can be defined

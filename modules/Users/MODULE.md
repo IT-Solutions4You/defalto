@@ -1,6 +1,7 @@
 # Users ownership
 
 - `Users` owns user records in `vtiger_users`; `Users_Install_Model` owns field/schema setup, and `Users::$moduleVersion` is the install/update version.
+- `Users_Privileges_Model::recalculateSharingRules()` owns rebuilding both privilege and sharing files for every active user. The legacy global `RecalculateSharingRules()` function is a compatibility facade only.
 - `Users::retrieve_entity_info()` preserves the encoded values expected by existing runtime callers and registers raw database values in `TrackableObject`. `Users::insertIntoEntityTable()` restores a raw value only when the corresponding field remains unchanged, preventing server-side user saves from persisting or multiplying HTML entities.
 - Users remains loadable during module-only or partially applied updates where `TrackableObject::setRetrievedValue()` and `getValueForSave()` are not available yet. In that compatibility state it uses the legacy value assignment and save flow; deploy the matching `data/CRMEntity.php` to enable raw-value preservation.
 - Validate an existing user containing encoding-sensitive text with `php tests/integration/EntityHtmlPersistenceTest.php --module=Users --record=<id>`. The test deliberately bypasses user lifecycle side effects and rolls back its direct persistence check.
