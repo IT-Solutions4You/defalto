@@ -19,6 +19,9 @@ class Invoice_Install_Model extends Core_Install_Model
 
     public array $relatedListFields = [['invoice_no', 'subject', 'account_id', 'invoicestatus', 'duedate', 'grand_total',], 'invoicedate', 'DESC'];
     public array $popupFields = ['invoice_no', 'subject', 'account_id', 'invoicestatus', 'duedate', 'grand_total',];
+    public array $registerEventHandler = [
+        [['vtiger.entity.aftersave'], 'modules/Invoice/InvoiceHandler.php', 'InvoiceHandler', '', ['Invoice']],
+    ];
 
     /**
      * @throws Exception
@@ -27,6 +30,7 @@ class Invoice_Install_Model extends Core_Install_Model
     {
         $this->updateToStandardModule();
         $this->updateRelatedList();
+        $this->updateEventHandler();
     }
 
     /**
@@ -35,6 +39,7 @@ class Invoice_Install_Model extends Core_Install_Model
     public function deleteCustomLinks(): void
     {
         $this->updateRelatedList(false);
+        $this->updateEventHandler(false);
     }
 
     public function getBlocks(): array
@@ -353,7 +358,7 @@ class Invoice_Install_Model extends Core_Install_Model
                     'presence' => 2,
                     'typeofdata' => 'N~O',
                     'quickcreate' => 1,
-                    'displaytype' => 3,
+                    'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
@@ -367,8 +372,8 @@ class Invoice_Install_Model extends Core_Install_Model
                     'presence' => 2,
                     'typeofdata' => 'N~O',
                     'quickcreate' => 1,
-                    'displaytype' => 3,
-                    'masseditable' => 1,
+                    'displaytype' => 2,
+                    'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
             ],

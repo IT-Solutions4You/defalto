@@ -25,7 +25,7 @@ Invoices are the billing records used to request payment for delivered products 
 
 ## Amounts and payment tracking
 
-The invoice summary shows the subtotal, discounts, taxes, grand total, received amount, and balance. The balance is the amount still outstanding, so check it after every payment update.
+The invoice summary shows the subtotal, discounts, taxes, grand total, received amount, and balance. Enter the payment in the **Received** field (in the form, in mass edit or inline in the detail view). The **Balance** is calculated automatically as Grand Total minus Received each time the invoice is saved and cannot be edited, so check it after every payment update.
 
 ## Statuses
 
