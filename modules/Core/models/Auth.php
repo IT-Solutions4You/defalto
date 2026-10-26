@@ -122,17 +122,48 @@ class Core_Auth_Model extends Vtiger_Base_Model
      */
     public static function getProviderNameByServer(string $server): string
     {
-        $server = strtolower($server);
+        $host = self::getServerHost($server);
 
-        if (str_contains($server, 'gmail.com')) {
+        if (self::isHostInDomain($host, 'gmail.com')) {
             return self::PROVIDER_GOOGLE;
         }
 
-        if (str_contains($server, 'office365.com')) {
+        if (self::isHostInDomain($host, 'office365.com')) {
             return self::PROVIDER_MICROSOFT;
         }
 
         return '';
+    }
+
+    /**
+     * Returns the host name of a mail server setting, without protocol prefix, port, path
+     * and trailing dot ('ssl://smtp.gmail.com:465' -> 'smtp.gmail.com').
+     *
+     * @param string $server
+     *
+     * @return string
+     */
+    public static function getServerHost(string $server): string
+    {
+        $host = strtolower(trim($server));
+        $host = preg_replace('~^[a-z][a-z0-9+.-]*://~', '', $host);
+        $host = preg_replace('~[:/].*$~s', '', $host);
+
+        return rtrim($host, '.');
+    }
+
+    /**
+     * Tells whether the host is the domain itself or one of its subdomains
+     * ('imap.gmail.com' is in 'gmail.com', 'gmail.com.example.org' and 'xgmail.com' are not).
+     *
+     * @param string $host
+     * @param string $domain
+     *
+     * @return bool
+     */
+    private static function isHostInDomain(string $host, string $domain): bool
+    {
+        return $host === $domain || str_ends_with($host, '.' . $domain);
     }
 
     /**
