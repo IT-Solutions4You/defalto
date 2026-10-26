@@ -117,3 +117,7 @@
 - Workflow compatibility templates include these shared files and its JS inherits base row/group actions. Keep styling changes here, without workflow-specific markup branches. Per-field operator metadata serves saved comparator options and dynamic field changes; workflow JS adds trigger restrictions after parent rendering.
 
 - `Vtiger_SearchAdvanceFilter_Js` clears only the last populated group connector. Empty intermediate groups must not erase the preceding connector. `transferListSearchParamsToFilterCondition()` ignores groups containing only connector metadata, preserving legacy source positions without creating a column at index -1.
+
+# Record permissions
+
+- The global `isPermitted()` function in `include/utils/UserInfoUtil.php` is a compatibility facade for the Users-owned permission model. Keep module, action, record ownership, and sharing evaluation in `Users_Privileges_Model`.

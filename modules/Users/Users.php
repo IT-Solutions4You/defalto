@@ -50,7 +50,7 @@ require_once 'includes/runtime/Cache.php';
  */
 class Users extends CRMEntity
 {
-    public string $moduleVersion = '1.7';
+    public string $moduleVersion = '1.8';
     public string $moduleName = 'Users';
     public int $ownedBy = 1;
     public int $isEntity = 0;
