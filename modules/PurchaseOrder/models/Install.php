@@ -18,6 +18,9 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
 
     public array $relatedListFields = [['purchaseorder_no', 'subject', 'vendor_id', 'contact_id', 'postatus', 'duedate', 'grand_total', 'assigned_user_id',], 'duedate', 'DESC'];
     public array $popupFields = ['purchaseorder_no', 'subject', 'vendor_id', 'contact_id', 'postatus', 'duedate', 'grand_total', 'assigned_user_id',];
+    public array $registerEventHandler = [
+        [['vtiger.entity.aftersave'], 'modules/PurchaseOrder/PurchaseOrderHandler.php', 'PurchaseOrderHandler', '', ['PurchaseOrder']],
+    ];
     public array $blocksHeaderFields = [
         'vendor_id',
         'contact_id',
@@ -34,6 +37,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
         $this->updateComments();
         $this->updateRelatedList();
         $this->updateToStandardModule();
+        $this->updateEventHandler();
     }
 
     /**
@@ -41,6 +45,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
      */
     public function deleteCustomLinks(): void
     {
+        $this->updateEventHandler(false);
     }
 
     /**
@@ -265,7 +270,7 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                     'presence' => 2,
                     'typeofdata' => 'N~O',
                     'quickcreate' => 1,
-                    'displaytype' => 3,
+                    'displaytype' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 0,
                 ],
@@ -279,8 +284,8 @@ class PurchaseOrder_Install_Model extends Core_Install_Model
                     'presence' => 2,
                     'typeofdata' => 'N~O',
                     'quickcreate' => 1,
-                    'displaytype' => 3,
-                    'masseditable' => 1,
+                    'displaytype' => 2,
+                    'masseditable' => 0,
                     'summaryfield' => 0,
                 ],
             ],
