@@ -202,7 +202,9 @@ Settings_Vtiger_Index_Js('Settings_MailConverter_Edit_Js', {
 
         form.find('.fieldContainer').removeClass('hide');
 
-        if (0 <= form.find('[name=server]').val().indexOf('imap.gmail.com')) {
+        let server = form.find('[name=server]').val();
+
+        if (0 <= server.indexOf('imap.gmail.com') || 0 <= server.indexOf('outlook.office365.com')) {
             hideFields = ['password'];
         }
 
