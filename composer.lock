@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e7c16ab6aa3e1e9e6212852e2785ad68",
+    "content-hash": "cf03686aab84cc120124d6335761393f",
     "packages": [
         {
             "name": "adodb/adodb-php",
-            "version": "v5.22.10",
+            "version": "v5.22.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ADOdb/ADOdb.git",
-                "reference": "38ce257600e67b1e854f2e9054166569cff4bf6b"
+                "reference": "19de7b799ac1cd06f839aa3618b85d64425c9aac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/38ce257600e67b1e854f2e9054166569cff4bf6b",
-                "reference": "38ce257600e67b1e854f2e9054166569cff4bf6b",
+                "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/19de7b799ac1cd06f839aa3618b85d64425c9aac",
+                "reference": "19de7b799ac1cd06f839aa3618b85d64425c9aac",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,21 @@
                 "issues": "https://github.com/ADOdb/ADOdb/issues",
                 "source": "https://github.com/ADOdb/ADOdb"
             },
-            "time": "2025-08-03T16:20:39+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/ADOdb",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/dregad",
+                    "type": "github"
+                },
+                {
+                    "url": "https://thanks.dev/u/gh/adodb",
+                    "type": "thanks_dev"
+                }
+            ],
+            "time": "2026-08-19T16:11:27+00:00"
         },
         {
             "name": "apalfrey/select2-bootstrap-5-theme",
