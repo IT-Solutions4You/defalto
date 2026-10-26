@@ -885,10 +885,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $recordModule);
 
         $subject = decode_html($recordModel->get('subject'));
-
-        if (in_array($mode, ['Reply', 'ReplyAll'])) {
-            $subject = 'Re:' . $subject;
-        }
+        $subject = ITS4YouEmails_Record_Model::getSubjectForMode($subject, $mode);
 
         $request->set('subject', $subject);
         $request->set('body', decode_html($recordModel->get('body')));
@@ -922,11 +919,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $recordModel = new MailManager_Message_Model();
         $recordModel->setUid($recordId);
         $recordModel->retrieveRecordFromDB();
-        $subject = $recordModel->getSubject();
-
-        if (in_array($mode, ['Reply', 'ReplyAll'])) {
-            $subject = 'Re:' . $subject;
-        }
+        $subject = ITS4YouEmails_Record_Model::getSubjectForMode($recordModel->getSubject(), $mode);
 
         $sourceId = $request->get('record', '0');
         $request->set('selected_sourceid', $sourceId);
