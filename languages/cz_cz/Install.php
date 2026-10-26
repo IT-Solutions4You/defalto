@@ -28,7 +28,6 @@ $languageStrings = [
     'LBL_GD_LIBRARY' => 'Podpora knihovny GD ',
     'LBL_HOST_NAME' => 'Umístění databáze (př. localhost)',
     'LBL_I_AGREE' => 'Souhlasím',
-    'LBL_IMAP_SUPPORT' => 'Podpora IMAP',
     'LBL_INSTALLATION_IN_PROGRESS' => 'Probíhá instalace',
     'LBL_INSTALLATION_WIZARD' => 'Instalační průvodce',
     'LBL_INSTALL_BUTTON' => 'Instalovat',

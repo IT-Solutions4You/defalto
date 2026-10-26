@@ -187,7 +187,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
             }
         }
 
-        return (boolean)$this->_modulexml->modulebundle;
+        return (bool)$this->_modulexml->modulebundle;
     }
 
     /**
@@ -508,7 +508,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport
 
             $buildModuleArray = [];
             $installSequenceArray = [];
-            $moduleBundle = (boolean)$this->_modulexml->modulebundle;
+            $moduleBundle = (bool)$this->_modulexml->modulebundle;
             if ($moduleBundle == true) {
                 $moduleList = (array)$this->_modulexml->modulelist;
                 foreach ($moduleList as $moduleInfos) {

@@ -211,7 +211,7 @@ class Settings_Vtiger_Menu_Model extends Vtiger_Base_Model
     /**
      * @throws Exception
      */
-    public static function createMenu(string $label, int $sequence = null): Settings_Vtiger_Menu_Model|bool
+    public static function createMenu(string $label, ?int $sequence = null): Settings_Vtiger_Menu_Model|bool
     {
         $menu = Settings_Vtiger_Menu_Model::getInstance($label);
 
