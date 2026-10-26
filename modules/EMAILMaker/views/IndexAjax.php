@@ -392,6 +392,12 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
                 $viewer->assign('IS_PDFMAKER', 'yes');
                 $no_pdftemplates = false;
             }
+
+            // the PDF templates each offered e-mail template brings along (only offered ones)
+            $viewer->assign('EMAIL_PDF_TEMPLATES', EMAILMaker_PDFTemplate_Model::getPreselection(
+                EMAILMaker_PDFTemplate_Model::getTemplateIdsFromOptions(isset($templates) ? (array)$templates : []),
+                array_keys((array)$pdf_templates)
+            ));
         }
 
         if ((!$no_templates_exist || !$no_pdftemplates) && $selecttemplates == "true") {

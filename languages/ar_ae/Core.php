@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'قوالب كتل المنتجات',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'إدارة قوالب كتل المنتجات لبنود المخزون.',
     'LBL_CONDITION' => 'شرط',
     'LBL_POSTAL_CODES_AVAILABLE' => 'الرموز البريدية متاحة',
     'LBL_ADDRESS_FIELD_MAPPING' => 'تعيين حقول العنوان',

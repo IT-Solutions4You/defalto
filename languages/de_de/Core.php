@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Produktblock-Vorlagen',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Produktblock-Vorlagen für Inventarpositionen verwalten.',
     'LBL_SAVED_LIST_FILTER_NOTICE' => 'Diese Liste verwendet bereits gespeicherte Bedingungen. Das Entfernen zusätzlicher Filter hebt diese nicht auf.',
     'LBL_EDIT_SAVED_LIST_FILTER' => 'Gespeicherte Bedingungen bearbeiten',
     'LBL_CLEAR_ADDITIONAL_FILTERS' => 'Zusätzliche Filter entfernen',

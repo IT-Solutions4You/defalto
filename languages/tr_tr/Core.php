@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Ürün bloğu şablonları',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Envanter kalemleri için ürün bloğu şablonlarını yönetin.',
     'LBL_CONDITION' => 'Koşul',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Posta kodları mevcut',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Adres alanı eşleştirmesi',

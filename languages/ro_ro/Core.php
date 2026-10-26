@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PRODUCTBLOCKTPL' => 'Șabloane de blocuri de produse',
+    'LBL_PRODUCTBLOCKTPL_DESC' => 'Gestionați șabloanele de blocuri de produse pentru articolele de inventar.',
     'LBL_CONDITION' => 'Condiție',
     'LBL_POSTAL_CODES_AVAILABLE' => 'Coduri poștale disponibile',
     'LBL_ADDRESS_FIELD_MAPPING' => 'Maparea câmpurilor de adresă',

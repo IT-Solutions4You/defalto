@@ -2,3 +2,10 @@
 
 - `InventoryItem_GetItemDetails_Action` obtains product image URLs through `Core_Storage_Model::getAttachmentPublicUrl()`. Never expose `vtiger_attachments.path` as a browser URL because attachment storage may be outside the web directory.
 - Product image metadata remains owned by `Products_Record_Model`; InventoryItem only prepares item data for inventory editors.
+
+# Read-only unit price and hidden purchase cost
+
+- The edit record structure leaves out fields the profile may only view. `InventoryItem_PopupItemEdit_View` adds `price` back when it is viewable (`PRICE_READONLY`); an existing item with a catalogue price above 0 (`decideItemPriceAndPriceBook()` with the parent record's currency and price book) is `PRICE_LOCKED`. `PopupItemEdit.tpl` marks the input (`data-price-readonly`, `readonly`) and hides the price book picker; `InventoryItemDetail.js` `mapResultsToFields()` locks the price for a catalogue price and leaves it editable for a price on request (0).
+- `CRMEntity::insertIntoEntityTable()` writes only fields with `readonly = 0` for a non-admin. `InventoryItem_SaveFromPopup_Action::setReadOnlyPrices()` sets a non-editable `price` (catalogue price for a new item or a changed product, otherwise the stored one; a catalogue price of 0 keeps the entered price) and a non-editable `purchase_cost` (`getItemPurchaseCost()`, converted to the parent's currency like `GetItemDetails`), then sets `isWorkFlowFieldUpdate` so the entity saves them. A price sent from the browser for a locked item is ignored.
+- The items block of the parent detail (`modifiers/DetailView.php`) only displays values, so its columns follow the view permission, not the edit structure.
+- Not covered here: `GetItemDetails` and the `SaveFromPopup` response still send the purchase cost and margin to users without permission to those fields.

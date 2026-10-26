@@ -70,7 +70,6 @@ class EMAILMaker_Install_Model extends Core_Install_Model
      */
     public function addCustomLinks(): void
     {
-        $this->insertProductBlocks();
         $this->insertEmailTemplates();
 
         $this->retrieveCustomLinks();

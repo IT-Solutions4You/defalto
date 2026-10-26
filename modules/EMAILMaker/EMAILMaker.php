@@ -20,7 +20,7 @@ class EMAILMaker extends CRMExtension
     public $list_fields_name = [];
     public $list_fields = [];
     public $related_tables = [];
-    public string $moduleVersion = '1.4';
+    public string $moduleVersion = '1.5';
 
     public function __construct()
     {
