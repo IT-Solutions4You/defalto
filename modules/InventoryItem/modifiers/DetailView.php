@@ -109,6 +109,7 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
             $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin, $currentUser);
         }
 
+        $viewer->assign('ITEMS_EDITABLE', InventoryItem_ParentEntity_Model::isParentEditable($recordId));
         $viewer->assign('RECORD', $entityRecordModel);
         $viewer->assign('SUBTOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_after_discount', $currentUser));
         $viewer->assign('OVERALL_DISCOUNT', number_format($overallDiscount, 2));

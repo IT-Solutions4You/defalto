@@ -35,8 +35,31 @@ Vtiger_Index_Js('InventoryItem_InventoryItemDetail_Js', {}, {
         });
     },
 
+    isItemsBlockReadonly: function () {
+        return 1 === parseInt(this.itemsBlockHolder.attr('data-items-readonly'));
+    },
+
+    /**
+     * The parent record is not editable (read-only flag, sharing rules), so the items can only be viewed.
+     * The server refuses the changes as well.
+     */
+    disableItemsBlockEditing: function () {
+        const block = this.itemsBlockHolder;
+
+        block.find('#block_line_items_add, .inventoryItemAddButtons, .editAdjustment, .drag_drop_line_item, .more.dropdown.action').addClass('d-none');
+        block.find('.editOverallDiscount, .pricebook-button, .currency-button, .region-button').prop('disabled', true);
+        block.find('a.item_edit').removeClass('item_edit').css('pointer-events', 'none');
+    },
+
     registerItemsTableEvents: function () {
         this.recalculateTotals();
+
+        if (this.isItemsBlockReadonly()) {
+            this.disableItemsBlockEditing();
+
+            return;
+        }
+
         this.makeLineItemsSortable();
         this.addRowListeners();
         this.registerAddButtons();

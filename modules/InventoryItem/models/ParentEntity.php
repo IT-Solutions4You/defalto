@@ -11,6 +11,59 @@
 class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
 {
     /**
+     * Items are separate InventoryItem records, so their permissions do not include the state of the parent record
+     * (read-only flag, sharing rules, profile). Changing items equals editing the parent, therefore EditView of the parent is checked.
+     *
+     * @param int    $parentId
+     * @param string $moduleName Module the request claims for the parent; empty value skips the comparison
+     *
+     * @return bool
+     */
+    public static function isParentEditable(int $parentId, string $moduleName = ''): bool
+    {
+        $parentModuleName = $parentId ? (string)getSalesEntityType($parentId) : '';
+
+        if ('' === $parentModuleName || ('' !== $moduleName && $moduleName !== $parentModuleName)) {
+            return false;
+        }
+
+        return Users_Privileges_Model::isPermitted($parentModuleName, 'EditView', $parentId);
+    }
+
+    /**
+     * @param int    $parentId
+     * @param string $moduleName
+     *
+     * @return void
+     * @throws Exception
+     */
+    public static function requireEditableParent(int $parentId, string $moduleName = ''): void
+    {
+        if (!self::isParentEditable($parentId, $moduleName)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+    }
+
+    /**
+     * Existing items must belong to the parent record the request is authorized for.
+     *
+     * @param array $itemIds
+     * @param int   $parentId
+     *
+     * @return void
+     * @throws Exception
+     */
+    public static function requireItemsOfParent(array $itemIds, int $parentId): void
+    {
+        $itemIds = array_values(array_unique(array_map('intval', $itemIds)));
+        $itemParentIds = InventoryItem_Module_Model::fetchParentIds($itemIds);
+
+        if (count($itemParentIds) !== count($itemIds) || array_diff($itemParentIds, [$parentId])) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+    }
+
+    /**
      * Update calculated / total fields in the parent record.
      * These are known as "computed" in InventoryItem module. If the parent module has a field with the same name, it will be updated.
      *
