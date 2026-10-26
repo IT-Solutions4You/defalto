@@ -236,6 +236,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 return;
 
             let mappingPairs = mappingString.split('&'),
+                isIndexMap = '0' === String(selectedMapElement.attr('data-has-header')),
                 mapping = {};
 
             for (let i = 0; i < mappingPairs.length; ++i) {
@@ -245,19 +246,24 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 header = header.replace(/\/eq\//g, '=');
                 header = header.replace(/\/amp\//g, '&amp;');
                 mapping[header] = mappingPair[1];
-                mapping[i] = mappingPair[1]; /* To make Row based match when there is no header */
             }
+
             fieldsList.each(function (i, element) {
                 let fieldElement = jQuery(element),
                     mappedFields = jQuery('[name=mapped_fields]', fieldElement),
                     rowId = jQuery('[name=row_counter]', fieldElement).get(0).value,
                     headerNameElement = jQuery('[name=header_name]', fieldElement).get(0),
-                    headerName = jQuery(headerNameElement).html();
+                    lookupKey = isIndexMap ? String(rowId - 1) : (headerNameElement ? jQuery(headerNameElement).html() : null);
 
-                if (headerName in mapping) {
-                    mappedFields.val(mapping[headerName]).trigger('change');
-                } else if (rowId - 1 in mapping) { /* Row based match when there is no header - but saved map is loaded. */
-                    mappedFields.val(mapping[rowId - 1]).trigger('change');
+                if (null !== lookupKey && Object.prototype.hasOwnProperty.call(mapping, lookupKey)) {
+                    let fieldName = mapping[lookupKey],
+                        isAvailableField = mappedFields.find('option').filter(function () {
+                            return this.value === fieldName;
+                        }).length > 0;
+
+                    if (isAvailableField) {
+                        mappedFields.val(fieldName).trigger('change');
+                    }
                 }
 
                 Vtiger_Import_Js.loadDefaultValueWidget(fieldElement.attr('id'));
