@@ -8,6 +8,8 @@ When an appointment with invited users is saved, each invited user receives an e
 
 Appointments can be rescheduled from the calendar by dragging them to another date or time or by resizing their duration. These changes are saved only when the current user has permission to edit the selected appointment; otherwise, the calendar restores the original schedule.
 
+Calendar popovers and event refreshes show record information only when the current user can view that record. Administrators can delete default calendar event types. Removing a custom event type removes it from the current user's calendar without affecting other users who use the same type.
+
 ## Create Calendar Record workflow action
 
 Configure the subject, description, status, type, owner, start and end values, and all-day behavior in the workflow task. Click Subject or Description to open the value window, where you can enter text and insert variables from the workflow's source record.

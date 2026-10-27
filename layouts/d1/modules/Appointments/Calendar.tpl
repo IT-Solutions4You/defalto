@@ -103,12 +103,14 @@
                                                         <span class="ms-2">{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}</span>
                                                     </button>
                                                 </li>
-                                                <li>
-                                                    <button type="button" class="dropdown-item deleteEventType text-inherit eventTypeId" value="{$EVENT_TYPE->getId()}">
-                                                        <i class="fa fa-trash"></i>
-                                                        <span class="ms-2">{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}</span>
-                                                    </button>
-                                                </li>
+                                                {if $EVENT_TYPE->isDeletableBy($CURRENT_USER)}
+                                                    <li>
+                                                        <button type="button" class="dropdown-item deleteEventType text-inherit eventTypeId" value="{$EVENT_TYPE->getId()}">
+                                                            <i class="fa fa-trash"></i>
+                                                            <span class="ms-2">{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}</span>
+                                                        </button>
+                                                    </li>
+                                                {/if}
                                             </ul>
                                         </div>
                                     </div>

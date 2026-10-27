@@ -72,20 +72,35 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function delete()
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        $this->adb->pquery(
-            'DELETE FROM its4you_calendar_default_types WHERE id=?',
-            [$this->getId()]
-        );
+        if (!$this->isDeletableBy($currentUser)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
 
-        $this->adb->pquery(
-            'DELETE FROM its4you_calendar_user_types WHERE default_id=? AND user_id=?',
-            [$this->getId(), $currentUser->getId()]
-        );
+        if ($this->isDefault()) {
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_user_types WHERE default_id=?',
+                [$this->getId()]
+            );
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_default_types WHERE id=?',
+                [$this->getId()]
+            );
+        } else {
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_user_types WHERE default_id=? AND user_id=?',
+                [$this->getId(), $currentUser->getId()]
+            );
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_default_types WHERE id=? AND is_default=0 AND NOT EXISTS (SELECT id FROM its4you_calendar_user_types WHERE default_id=?)',
+                [$this->getId(), $this->getId()]
+            );
+        }
     }
 
     /**
@@ -625,6 +640,23 @@ class Appointments_Events_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @param int $recordId
+     *
+     * @return Vtiger_Record_Model
+     * @throws Exception
+     */
+    public static function getViewableRecordModel(int $recordId): Vtiger_Record_Model
+    {
+        $moduleName = getSalesEntityType($recordId);
+
+        if (!isRecordExists($recordId) || empty($moduleName) || !Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        return Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+    }
+
+    /**
      * @return object|Vtiger_Record_Model
      */
     public function getRecordModel()
@@ -708,6 +740,61 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         );
 
         return (bool)$this->adb->num_rows($result);
+    }
+
+    /**
+     * @param Users_Record_Model $user
+     *
+     * @return bool
+     */
+    public function isDeletableBy(Users_Record_Model $user): bool
+    {
+        if ($this->isEmptyId()) {
+            return false;
+        }
+
+        if ($this->isDefault()) {
+            return $user->isAdminUser();
+        }
+
+        return $this->hasUserAssociation($user);
+    }
+
+    /**
+     * @param Users_Record_Model $user
+     *
+     * @return bool
+     */
+    public function isEditableBy(Users_Record_Model $user): bool
+    {
+        if ($this->isEmptyId() || $this->isDefault()) {
+            return true;
+        }
+
+        return $this->hasUserAssociation($user);
+    }
+
+    /**
+     * @param Users_Record_Model $user
+     *
+     * @return bool
+     */
+    protected function hasUserAssociation(Users_Record_Model $user): bool
+    {
+        $result = $this->adb->pquery(
+            'SELECT id FROM its4you_calendar_user_types WHERE default_id=? AND user_id=?',
+            [$this->getId(), $user->getId()]
+        );
+
+        return (bool)$this->adb->num_rows($result);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return (bool)$this->get('is_default');
     }
 
     /**
@@ -815,6 +902,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             $this->set('range_field', $fields[1]);
             $this->set('color', !empty($row['color']) ? $row['color'] : $row['default_color']);
             $this->set('visible', 1 === $row['visible'] || null === $row['visible']);
+            $this->set('is_default', 1 === (int)$row['is_default']);
         }
     }
 
@@ -866,11 +954,12 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
         while ($row = $adb->fetchByAssoc($result)) {
             self::$eventTypes[$row['id']] = [
-                'id'      => $row['id'],
-                'module'  => $row['module'],
-                'fields'  => (array)array_unique(json_decode(decode_html($row['fields']))),
-                'color'   => !empty($row['color']) ? $row['color'] : $row['default_color'],
-                'visible' => 1 === (int)$row['visible'],
+                'id'         => $row['id'],
+                'module'     => $row['module'],
+                'fields'     => (array)array_unique(json_decode(decode_html($row['fields']))),
+                'color'      => !empty($row['color']) ? $row['color'] : $row['default_color'],
+                'visible'    => 1 === (int)$row['visible'],
+                'is_default' => 1 === (int)$row['is_default'],
             ];
         }
     }

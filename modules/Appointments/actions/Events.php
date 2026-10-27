@@ -39,6 +39,11 @@ class Appointments_Events_Action extends Core_Controller_Action
         $module = $request->getModule();
         $eventTypeInfo = $request->get('event_type');
         $eventType = Appointments_Events_Model::getInstance((int)$eventTypeInfo['record']);
+
+        if (!$eventType->isEmptyId() && !$eventType->isEditableBy(Users_Record_Model::getCurrentUserModel())) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
         $eventType->set('fields', explode(',', trim($eventTypeInfo['fields'], ',')));
         $eventType->set('module', $eventTypeInfo['module']);
         $eventType->set('color', $eventTypeInfo['color']);
@@ -97,7 +102,7 @@ class Appointments_Events_Action extends Core_Controller_Action
             $eventType->retrieveCalendarData();
         }
 
-        $eventType->setRecordModel(Vtiger_Record_Model::getInstanceById($recordId));
+        $eventType->setRecordModel(Appointments_Events_Model::getViewableRecordModel($recordId));
 
         $response = new Vtiger_Response();
         $response->setResult([
@@ -135,6 +140,18 @@ class Appointments_Events_Action extends Core_Controller_Action
         if (!empty($mode) && $this->isMethodExposed($mode)) {
             $this->invokeExposedMethod($mode, $request);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
+    {
+        if (in_array($request->getMode(), ['DeleteEventType', 'EditEventType'])) {
+            return $request->validateWriteAccess();
+        }
+
+        return parent::validateRequest($request);
     }
 
     /**

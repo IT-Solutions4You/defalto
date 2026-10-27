@@ -95,7 +95,7 @@ class Appointments_Calendar_View extends Vtiger_Index_View
     public function PopoverContainer(Vtiger_Request $request)
     {
         $recordId = (int)$request->get('recordId');
-        $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $recordModel = Appointments_Events_Model::getViewableRecordModel($recordId);
         $moduleModel = $recordModel->getModule();
         $eventTypeId = (int)$request->get('eventTypeId');
         $eventType = Appointments_Events_Model::getInstance($eventTypeId);

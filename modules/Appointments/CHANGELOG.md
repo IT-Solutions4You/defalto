@@ -1,5 +1,10 @@
 # Appointments changelog
 
+## 1.6 - 2026-10-27
+
+- Calendar popovers and event information now respect record viewing permissions.
+- Default event types are protected from deletion by non-administrators, and removing a custom type no longer affects other users who use it.
+
 ## 1.5 - 2026-10-26
 
 - Prevents users without edit permission from rescheduling appointments in the calendar.
