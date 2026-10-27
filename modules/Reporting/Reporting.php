@@ -10,7 +10,7 @@
 
 class Reporting extends CRMEntity
 {
-    public string $moduleVersion = '1.5';
+    public string $moduleVersion = '1.6';
     /**
      * Mandatory table for supporting custom fields.
      */

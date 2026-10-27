@@ -2,6 +2,8 @@
 
 Reports let you display selected CRM data, narrow the results with filters, and prepare an overview for further work or export. Summary reports also organize records into groups and display the results in a chart.
 
+Report results always follow the permissions of the person viewing or exporting the report. Fields hidden by that person's profile are not offered or displayed, and records outside their sharing access are omitted. A shared report can therefore show different columns or rows to different users.
+
 This guide uses the English labels shown in the application.
 
 ## 1. Choose a report type
@@ -202,7 +204,7 @@ The result is a table grouped by status and a chart showing the total amount for
 | **The chart has no data.** | Check grouping, the selected Y-axis calculation, and whether the filters return records. |
 | **Grouping and Charts tabs are missing.** | These tabs are available for Summary reports. |
 | **Save is disabled.** | Review the marked tabs and complete the missing settings. |
-| **Fewer records appear than expected.** | Check the filters, primary module, and availability of source records. |
+| **Fewer records or columns appear than expected.** | Check the filters, primary module, field visibility, and record-sharing permissions for the current user. |
 | **Amounts differ from expectations.** | Check the currency, grouping by original currency, selected field, and filters. |
 | **A colleague cannot see the report.** | Check report sharing and their CRM permissions. |
 

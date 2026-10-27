@@ -27,7 +27,7 @@ class Reporting_Fields_UIType extends Core_Data_UIType
             return $options;
         }
 
-        $fields = $module->getFields();
+        $fields = Reporting_Fields_Model::getViewableFields($module);
 
         /**
          * @var Vtiger_Field_Model $field
@@ -37,7 +37,7 @@ class Reporting_Fields_UIType extends Core_Data_UIType
             $options[$field->get('name')] = vtranslate($field->get('label'), $field->getModuleName());
         }
 
-        $fields = $module->getFieldsByType(['reference', 'owner']);
+        $fields = Reporting_Fields_Model::getViewableFieldsByType($module, ['reference', 'owner']);
 
         foreach ($fields as $field) {
             $fieldName = $field->get('name');
@@ -51,7 +51,7 @@ class Reporting_Fields_UIType extends Core_Data_UIType
                     continue;
                 }
 
-                $referenceFields = $reference->getFields();
+                $referenceFields = Reporting_Fields_Model::getViewableFields($reference);
 
                 foreach ($referenceFields as $referenceField) {
                     $referenceFieldName = $referenceField->get('name');
@@ -111,7 +111,7 @@ class Reporting_Fields_UIType extends Core_Data_UIType
             return $options;
         }
 
-        $fields = $module->getFieldsByType(['reference', 'owner']);
+        $fields = Reporting_Fields_Model::getViewableFieldsByType($module, ['reference', 'owner']);
 
         /**
          * @var Vtiger_Field_Model $field

@@ -48,18 +48,20 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             return [];
         }
 
-        if (!empty(self::$moduleLabels[$moduleName])) {
-            return self::$moduleLabels[$moduleName];
+        $cacheKey = self::getPermissionCacheKey($moduleName);
+
+        if (isset(self::$moduleLabels[$cacheKey])) {
+            return self::$moduleLabels[$cacheKey];
         }
 
         $options = [];
         $module = Vtiger_Module_Model::getInstance($moduleName);
 
-        if (!$module) {
+        if (!$module || !self::isModuleViewable($module)) {
             return [];
         }
 
-        $fields = array_merge($module->getFields(), self::getCustomFields());
+        $fields = array_merge(self::getViewableFields($module), self::getCustomFieldsForModule($module));
 
         /**
          * @var Vtiger_Field_Model $field
@@ -69,7 +71,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             $options[$field->get('name')] = self::getTranslatedFieldLabel($field);
         }
 
-        $fields = $module->getFieldsByType(['reference', 'owner']);
+        $fields = self::getViewableFieldsByType($module, ['reference', 'owner']);
 
         foreach ($fields as $field) {
             $fieldName = $field->get('name');
@@ -83,7 +85,9 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     continue;
                 }
 
-                $referenceFields = array_merge($reference->getFields(), self::getCustomFields());
+                $referenceFields = self::isModuleViewable($reference)
+                    ? array_merge(self::getViewableFields($reference), self::getCustomFieldsForModule($reference))
+                    : [];
 
                 foreach ($referenceFields as $referenceField) {
                     $referenceFieldName = $referenceField->get('name');
@@ -94,7 +98,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             }
         }
 
-        self::$moduleLabels[$moduleName] = $options;
+        self::$moduleLabels[$cacheKey] = $options;
 
         return $options;
     }
@@ -107,11 +111,11 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
 
         $module = Vtiger_Module_Model::getInstance($moduleName);
 
-        if (!$module) {
+        if (!$module || !self::isModuleViewable($module)) {
             return [];
         }
 
-        $availableFields = $module->getFields();
+        $availableFields = self::getViewableFields($module);
         $allView = CustomView_Record_Model::getAllFilterByModule($moduleName);
         $fields = [];
 
@@ -128,8 +132,8 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             return $fields;
         }
 
-        foreach ($module->getNameFields() as $columnName) {
-            $field = $module->getFieldByColumn($columnName);
+        foreach ($module->getNameFields() as $fieldName) {
+            $field = $availableFields[$fieldName] ?? false;
 
             if ($field && !in_array($field->getName(), $fields, true)) {
                 $fields[] = $field->getName();
@@ -155,13 +159,85 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
         return $fields;
     }
 
-    public static function getField(Vtiger_Module_Model $module, string $fieldName): Vtiger_Field_Model|bool
+    public static function getCustomFieldsForModule(Vtiger_Module_Model $module): array
     {
-        if (self::isCustomField($fieldName)) {
-            return self::getCustomFields()[$fieldName];
+        if (!self::isModuleViewable($module)) {
+            return [];
         }
 
-        return $module->getField($fieldName);
+        $fields = self::getCustomFields();
+
+        if (!self::isRecordLabelViewable($module)) {
+            unset($fields['label']);
+        }
+
+        return $fields;
+    }
+
+    protected static function isRecordLabelViewable(Vtiger_Module_Model $module): bool
+    {
+        $fieldNames = $module->getNameFields();
+
+        if (empty($fieldNames)) {
+            return false;
+        }
+
+        foreach ($fieldNames as $fieldName) {
+            $field = $module->getField($fieldName);
+
+            if (!$field || !$field->isViewable()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static function getViewableFields(Vtiger_Module_Model $module): array
+    {
+        if (!self::isModuleViewable($module)) {
+            return [];
+        }
+
+        return array_filter(
+            $module->getFields(),
+            static fn(Vtiger_Field_Model $field): bool => $field->isViewable()
+        );
+    }
+
+    public static function isModuleViewable(Vtiger_Module_Model $module): bool
+    {
+        return Users_Privileges_Model::isPermitted($module->getName(), 'DetailView');
+    }
+
+    public static function getViewableFieldsByType(Vtiger_Module_Model $module, array|string $types): array
+    {
+        $types = is_array($types) ? $types : [$types];
+
+        return array_filter(
+            self::getViewableFields($module),
+            static fn(Vtiger_Field_Model $field): bool => in_array($field->getFieldDataType(), $types, true)
+        );
+    }
+
+    protected static function getPermissionCacheKey(string $moduleName): string
+    {
+        return Users_Record_Model::getCurrentUserModel()->getId() . ':' . $moduleName;
+    }
+
+    public static function getField(Vtiger_Module_Model $module, string $fieldName): Vtiger_Field_Model|bool
+    {
+        if (!self::isModuleViewable($module)) {
+            return false;
+        }
+
+        if (self::isCustomField($fieldName)) {
+            return self::getCustomFieldsForModule($module)[$fieldName] ?? false;
+        }
+
+        $field = $module->getField($fieldName);
+
+        return $field && $field->isViewable() ? $field : false;
     }
 
     public static function getTranslatedFieldLabel(Vtiger_Field_Model $field): string
@@ -177,18 +253,20 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             return [];
         }
 
-        if (!empty(self::$moduleVariables[$moduleName])) {
-            return self::$moduleVariables[$moduleName];
+        $cacheKey = self::getPermissionCacheKey($moduleName);
+
+        if (isset(self::$moduleVariables[$cacheKey])) {
+            return self::$moduleVariables[$cacheKey];
         }
 
         $options = [];
         $module = Vtiger_Module_Model::getInstance($moduleName);
 
-        if (!$module) {
+        if (!$module || !self::isModuleViewable($module)) {
             return [];
         }
 
-        $fields = array_merge($module->getFields(), self::getCustomFields());
+        $fields = array_merge(self::getViewableFields($module), self::getCustomFieldsForModule($module));
 
         /**
          * @var Vtiger_Field_Model $field
@@ -198,7 +276,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             $options['default'][$field->get('name')] = vtranslate(($field->block->label ?? ''), $field->getModuleName()) . '##' . self::getTranslatedFieldLabel($field);
         }
 
-        $fields = $module->getFieldsByType(['reference', 'owner']);
+        $fields = self::getViewableFieldsByType($module, ['reference', 'owner']);
 
         foreach ($fields as $field) {
             $fieldName = $field->get('name');
@@ -212,7 +290,9 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     continue;
                 }
 
-                $referenceFields = array_merge($reference->getFields(), self::getCustomFields());
+                $referenceFields = self::isModuleViewable($reference)
+                    ? array_merge(self::getViewableFields($reference), self::getCustomFieldsForModule($reference))
+                    : [];
 
                 foreach ($referenceFields as $referenceField) {
                     $referenceFieldName = $referenceField->get('name');
@@ -225,7 +305,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             }
         }
 
-        self::$moduleVariables[$moduleName] = $options;
+        self::$moduleVariables[$cacheKey] = $options;
 
         return $options;
     }
@@ -236,24 +316,26 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             return [];
         }
 
-        if (isset(self::$moduleCurrencyFields[$moduleName])) {
-            return self::$moduleCurrencyFields[$moduleName];
+        $cacheKey = self::getPermissionCacheKey($moduleName);
+
+        if (isset(self::$moduleCurrencyFields[$cacheKey])) {
+            return self::$moduleCurrencyFields[$cacheKey];
         }
 
         $currencyFields = [];
         $module = Vtiger_Module_Model::getInstance($moduleName);
 
-        if (!$module) {
+        if (!$module || !self::isModuleViewable($module)) {
             return [];
         }
 
-        foreach ($module->getFields() as $field) {
+        foreach (self::getViewableFields($module) as $field) {
             if ('currency' === $field->getFieldDataType()) {
                 $currencyFields[] = $field->get('name');
             }
         }
 
-        foreach ($module->getFieldsByType(['reference', 'owner']) as $field) {
+        foreach (self::getViewableFieldsByType($module, ['reference', 'owner']) as $field) {
             foreach (self::getFieldModules($field) as $referenceModuleName) {
                 $referenceModule = Vtiger_Module_Model::getInstance($referenceModuleName);
 
@@ -261,7 +343,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     continue;
                 }
 
-                foreach ($referenceModule->getFields() as $referenceField) {
+                foreach (self::getViewableFields($referenceModule) as $referenceField) {
                     if ('currency' === $referenceField->getFieldDataType()) {
                         $currencyFields[] = implode(':', [
                             $field->get('name'),
@@ -273,7 +355,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             }
         }
 
-        return self::$moduleCurrencyFields[$moduleName] = array_values(array_unique($currencyFields));
+        return self::$moduleCurrencyFields[$cacheKey] = array_values(array_unique($currencyFields));
     }
 
     public static function getFieldDataTypes(string $moduleName): array
@@ -282,27 +364,29 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             return [];
         }
 
-        if (isset(self::$moduleFieldDataTypes[$moduleName])) {
-            return self::$moduleFieldDataTypes[$moduleName];
+        $cacheKey = self::getPermissionCacheKey($moduleName);
+
+        if (isset(self::$moduleFieldDataTypes[$cacheKey])) {
+            return self::$moduleFieldDataTypes[$cacheKey];
         }
 
         $module = Vtiger_Module_Model::getInstance($moduleName);
 
-        if (!$module) {
+        if (!$module || !self::isModuleViewable($module)) {
             return [];
         }
 
         $dataTypes = [];
 
-        foreach ($module->getFields() as $field) {
+        foreach (self::getViewableFields($module) as $field) {
             $dataTypes[$field->get('name')] = (string)$field->getFieldDataType();
         }
 
-        foreach (array_keys(self::$customFields) as $fieldName) {
+        foreach (array_keys(self::getCustomFieldsForModule($module)) as $fieldName) {
             $dataTypes[$fieldName] = 'string';
         }
 
-        foreach ($module->getFieldsByType(['reference', 'owner']) as $field) {
+        foreach (self::getViewableFieldsByType($module, ['reference', 'owner']) as $field) {
             foreach (self::getFieldModules($field) as $referenceModuleName) {
                 $referenceModule = Vtiger_Module_Model::getInstance($referenceModuleName);
 
@@ -310,7 +394,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     continue;
                 }
 
-                foreach ($referenceModule->getFields() as $referenceField) {
+                foreach (self::getViewableFields($referenceModule) as $referenceField) {
                     $dataTypes[implode(':', [
                         $field->get('name'),
                         $referenceModuleName,
@@ -318,7 +402,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
                     ])] = (string)$referenceField->getFieldDataType();
                 }
 
-                foreach (array_keys(self::$customFields) as $referenceFieldName) {
+                foreach (array_keys(self::getCustomFieldsForModule($referenceModule)) as $referenceFieldName) {
                     $dataTypes[implode(':', [
                         $field->get('name'),
                         $referenceModuleName,
@@ -328,7 +412,7 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
             }
         }
 
-        return self::$moduleFieldDataTypes[$moduleName] = $dataTypes;
+        return self::$moduleFieldDataTypes[$cacheKey] = $dataTypes;
     }
 
     public static function getFieldsByDataTypes(string $moduleName, array $dataTypes): array

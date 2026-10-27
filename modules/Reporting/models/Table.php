@@ -79,7 +79,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         $recordKey = implode(':', array_filter([$recordId, $moduleName]));
 
         if (empty($this->records[$recordKey])) {
-            if ($this->isRecordExists($recordId, $moduleName)) {
+            if ($this->isRecordExists($recordId, $moduleName) && $this->isRecordViewable($recordId, $moduleName)) {
                 $record = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
             } else {
                 $record = Vtiger_Record_Model::getCleanInstance($moduleName);
@@ -89,6 +89,11 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         }
 
         return $this->records[$recordKey];
+    }
+
+    protected function isRecordViewable(int $recordId, string $moduleName): bool
+    {
+        return Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
     }
 
     public function isRecordExists(int $recordId, string $moduleName): bool
@@ -1494,6 +1499,10 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     public function getRawFieldValue($value, $record)
     {
+        if (!$this->isDirectReferenceValueViewable($value, $record)) {
+            return null;
+        }
+
         $fieldInfo = $this->getFieldInfo($value);
         $record = $this->getFieldRecord($value, $record);
         $fieldName = $fieldInfo['reference_field'] ?: $fieldInfo['field'];
@@ -1546,6 +1555,10 @@ class Reporting_Table_Model extends Vtiger_Base_Model
      */
     public function getFieldValue($field, $record)
     {
+        if (!$this->isDirectReferenceValueViewable($field, $record)) {
+            return '';
+        }
+
         $record = $this->getFieldRecord($field, $record);
         $fieldInfo = $this->getFieldInfo($field);
         $fieldName = $fieldInfo['reference_field'] ?: $fieldInfo['field'];
@@ -1571,6 +1584,60 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         }
 
         return $fieldValue;
+    }
+
+    protected function isDirectReferenceValueViewable(string $fieldName, object $record): bool
+    {
+        $fieldInfo = $this->getFieldInfo($fieldName);
+
+        if (!empty($fieldInfo['reference_field'])) {
+            return true;
+        }
+
+        $field = $this->getField($fieldName);
+
+        if (!$field || 'reference' !== $field->getFieldDataType()) {
+            return true;
+        }
+
+        $recordIds = array_values(array_filter(
+            array_map('trim', explode(';', (string)$record->get($fieldInfo['field']))),
+            static fn(string $recordId): bool => '' !== $recordId
+        ));
+
+        if (empty($recordIds)) {
+            return true;
+        }
+
+        $referenceModules = $field->getReferenceList();
+        $isUserReference = count($referenceModules) === 1 && 'Users' === reset($referenceModules);
+        $technicalModules = ['Currency', 'DocumentFolders'];
+
+        foreach ($recordIds as $recordId) {
+            if (!ctype_digit($recordId) || 0 >= (int)$recordId) {
+                return false;
+            }
+
+            $referenceModule = $isUserReference ? 'Users' : getSalesEntityType((int)$recordId);
+
+            if (empty($referenceModule)) {
+                if (!empty(array_diff($referenceModules, $technicalModules))) {
+                    return false;
+                }
+
+                continue;
+            }
+
+            if (!in_array($referenceModule, $referenceModules, true)) {
+                return false;
+            }
+
+            if (!$this->isRecordViewable((int)$recordId, $referenceModule)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
