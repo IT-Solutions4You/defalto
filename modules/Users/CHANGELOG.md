@@ -1,5 +1,9 @@
 # Users changelog
 
+## 1.10 - 2026-10-27
+
+- Initial setup now restricts base-currency and system configuration changes to the first administrator.
+
 ## 1.9 - 2026-10-26
 
 - Self-service profile changes now protect login names, administrator access, roles, profiles, account status, and hidden security fields from unauthorized updates.
