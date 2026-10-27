@@ -15,6 +15,6 @@ $languageStrings = array(
 );
 
 $jsLanguageStrings = array(
-	'JS_UNINSTALL_CONFIRM' => 'Are you sure to completely remove module from your CRM?', 
+	'JS_UNINSTALL_CONFIRM' => 'Are you sure you want to completely remove the module from your CRM?',
 ); 
 

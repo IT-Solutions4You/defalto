@@ -2,6 +2,7 @@
 
 ## 1.61 - 2026-10-27
 
+- Adds complete Installer and Settings translations for every language included with Defalto.
 - Extends the license-server response window so slow store connections can complete and return a diagnostic result.
 - Validates and activates every distinct license supplied during initial installation, storing only keys that pass complete validation.
 - Uses PHP cURL for secure license-server communication while retaining the existing client as a compatibility fallback.

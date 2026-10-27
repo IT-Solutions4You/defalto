@@ -1,6 +1,7 @@
 # Installer
 
 Installer lets administrators browse extensions, install or update available packages, manage license keys, and update Defalto.
+Installer follows the CRM language selected by the user, including its Settings entry and uninstall confirmation.
 
 ## Browse and install extensions
 
