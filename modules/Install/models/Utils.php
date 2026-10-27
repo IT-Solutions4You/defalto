@@ -248,7 +248,6 @@ class Install_Utils_Model
         $preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = [extension_loaded('mysqli'), true, extension_loaded('mysqli')];
         $preInstallConfig['LBL_OPEN_SSL'] = [extension_loaded('openssl'), true, extension_loaded('openssl')];
         $preInstallConfig['LBL_CURL'] = [extension_loaded('curl'), true, extension_loaded('curl')];
-        $preInstallConfig['LBL_IMAP_SUPPORT'] = [extension_loaded('imap'), true, (extension_loaded('imap') == true)];
         $preInstallConfig['LBL_MB_STRING'] = [extension_loaded('mbstring'), true, (extension_loaded('mbstring') == true)];
 
         $gnInstalled = false;
@@ -736,6 +735,39 @@ class Install_Utils_Model
                 $install->installTables();
             }
         }
+    }
+
+    /**
+     * Add module permissions that could not be initialized before profiles existed.
+     */
+    public static function initProfileModulePermissions(): void
+    {
+        $db = PearDatabase::getInstance();
+        $db->pquery(
+            'INSERT INTO vtiger_profile2tab (profileid, tabid, permissions)
+                SELECT p.profileid, t.tabid, 0
+                FROM vtiger_profile p
+                CROSS JOIN vtiger_tab t
+                LEFT JOIN vtiger_profile2tab p2t
+                    ON p2t.profileid = p.profileid AND p2t.tabid = t.tabid
+                WHERE p2t.profileid IS NULL',
+            []
+        );
+        $db->pquery(
+            'INSERT INTO vtiger_profile2standardpermissions (profileid, tabid, operation, permissions)
+                SELECT p.profileid, t.tabid, a.actionid, 0
+                FROM vtiger_profile p
+                CROSS JOIN vtiger_tab t
+                CROSS JOIN vtiger_actionmapping a
+                LEFT JOIN vtiger_profile2standardpermissions p2sp
+                    ON p2sp.profileid = p.profileid
+                        AND p2sp.tabid = t.tabid
+                        AND p2sp.operation = a.actionid
+                WHERE t.isentitytype = 1
+                    AND a.actionname IN (?, ?, ?, ?, ?, ?)
+                    AND p2sp.profileid IS NULL',
+            ['Save', 'EditView', 'CreateView', 'Delete', 'index', 'DetailView']
+        );
     }
 
     /**

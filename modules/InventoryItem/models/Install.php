@@ -11,10 +11,10 @@
 class InventoryItem_Install_Model extends Core_Install_Model
 {
     public array $registerSummaryWidgets = [
-        ['Quotes', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=Quotes&sourceRecord=$RECORD$&showDetails=1', '', 5],
-        ['PurchaseOrder', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=PurchaseOrder&sourceRecord=$RECORD$&showDetails=1', '', 5],
-        ['SalesOrder', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=SalesOrder&sourceRecord=$RECORD$&showDetails=1', '', 5],
-        ['Invoice', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=Invoice&sourceRecord=$RECORD$&showDetails=1', '', 5],
+        ['Quotes', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=Quotes&sourceRecord=$RECORD$&showDetails=1&headerActions=1', '', 5],
+        ['PurchaseOrder', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=PurchaseOrder&sourceRecord=$RECORD$&showDetails=1&headerActions=1', '', 5],
+        ['SalesOrder', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=SalesOrder&sourceRecord=$RECORD$&showDetails=1&headerActions=1', '', 5],
+        ['Invoice', 'InventoryItem', 'module=InventoryItem&view=Widget&mode=showItems&sourceModule=Invoice&sourceRecord=$RECORD$&showDetails=1&headerActions=1', '', 5],
     ];
     public array $blocksHeaderFields = [
         1 => 'item_text',

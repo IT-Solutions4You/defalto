@@ -17,13 +17,13 @@ The **Grouping** and **Charts** tabs are available in Summary reports. Use Tabul
 
 1. Open the **Reporting** module.
 2. Click the option to add a new record.
-3. Select the **Report Type**.
+3. On the first tab, select the **Report Type**.
 4. Select the **Primary module** containing the records you want to report on, such as Invoice.
 5. Click **Select**.
 6. Complete the settings on each tab. Click a tab name or use **Back / Next** to move between tabs.
 7. Review the preview and click **Save**.
 
-For your first Summary report, follow this order: **Details → Columns → Calculations → Grouping → Charts → Filters → Sharing**.
+For your first Summary report, follow this order: **Basic Settings → Details → Columns → Calculations → Grouping → Charts → Filters → Sharing**.
 
 ## 3. Details
 
@@ -37,9 +37,9 @@ For your first Summary report, follow this order: **Details → Columns → Calc
 
 ### Working with currencies
 
-Select a report currency to view monetary values in a common currency. To keep calculations separate by their original currencies, enable **Keep calculations in original currencies**. Depending on the interface labels, this may appear as **Group calculations by currency**.
+Select a report currency to view monetary values in a common currency. To keep calculations separate by their original currencies, enable **Keep calculations in original currencies**.
 
-Enabling this option disables the common currency selector. When comparing results, check whether the amounts use one currency or are shown separately by currency.
+The currency selector appears only when the primary module or its related modules in the report contain currency fields. The option to keep original currencies appears only when currency fields are selected as columns. Enabling it disables the common currency selector. When comparing results, check whether the amounts use one currency or are shown separately by currency.
 
 ## 4. Columns
 
@@ -88,7 +88,7 @@ Grouping organizes records by a selected field.
 - **Organization Name:** an invoice overview by customer.
 - **Invoice Date + month:** a monthly invoice overview.
 
-The grouping selection determines the chart's X axis. Configure the X axis through the Grouping tab rather than typing a value on the Charts tab.
+The first grouping field determines the chart's X axis. Configure the X axis through the Grouping tab; the field on the Charts tab is read-only.
 
 Use the arrow beside a group name to collapse or expand its records. **(Empty)** means that some records have no value in the grouping field.
 
@@ -99,7 +99,7 @@ Select at least one calculation and one grouping field before configuring a char
 1. Open the **Charts** tab.
 2. Select a **Chart Type**.
 3. Set the **Chart Position** above or below the table.
-4. Check the **X axis**, which follows your grouping settings.
+4. Check the **X axis**, which follows the first grouping field.
 5. Select a calculation for the **Y axis**, such as **Grand Total (Sum)** or **Count records**.
 6. Review the preview.
 
@@ -134,19 +134,21 @@ Filters determine which records are included in the report.
 
 If you use both groups, a record must satisfy every condition in All Conditions and at least one condition in Any Conditions.
 
+Empty condition groups are ignored.
+
 **Example:** To include invoices for a specific period, set both the start and end date conditions under All Conditions. Choose the date field that matches your purpose: invoice date and due date represent different events.
 
 ## 9. Sharing
 
-On the **Sharing** tab, check the report owner in **Assigned To** and select the main sharing option.
+On the **Sharing** tab, check the report owner in **Assigned To** and select the **Main sharing** option.
 
 | Option | Purpose |
 | --- | --- |
 | **Private** | Does not add other members through report sharing. |
 | **All** | Makes the report available to all users through its sharing settings. |
-| **Selected** | Lets you choose specific members, such as users, groups, or roles. |
+| **Selected members** | Lets you choose specific members, such as users, groups, or roles. |
 
-For Selected sharing, choose at least one member. Report sharing grants viewing access; it does not itself grant permission to edit the report. Overall access also depends on CRM permissions.
+For Selected members, choose at least one member. Report sharing grants viewing access only; it never grants permission to edit the report. Overall access also depends on CRM permissions.
 
 ## 10. Preview, save, and export
 
@@ -203,4 +205,3 @@ The result is a table grouped by status and a chart showing the total amount for
 | **A colleague cannot see the report.** | Check report sharing and their CRM permissions. |
 
 **Before sharing a report:** check its name, primary module, columns, filters, calculations, currency, and sharing recipients. For a Summary report, also check grouping and both chart axes.
-Empty condition groups are ignored. The connector after a populated group joins it to the next populated group, even with an empty group between them.

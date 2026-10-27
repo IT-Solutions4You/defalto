@@ -13,6 +13,23 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
     /**
      * @inheritDoc
      */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+
+        $sourceRecordId = (int)$request->get('source_record');
+        InventoryItem_ParentEntity_Model::requireEditableParent($sourceRecordId, (string)$request->get('source_module'));
+
+        if ($request->get('record')) {
+            InventoryItem_ParentEntity_Model::requireItemsOfParent([$request->get('record')], $sourceRecordId);
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function process(Vtiger_Request $request)
     {
         $response = new Vtiger_Response();
@@ -63,6 +80,7 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
 
             $itemModel->set('parentid', $request->get('source_record'));
             $itemModel->set('sequence', $this->decideSequence((int)$request->get('sequence'), (int)$request->get('source_record')));
+            $this->setReadOnlyPrices($itemModel, $request);
             $itemModel->save();
             $itemModel->saveTaxId((int)$request->get('taxid'));
 
@@ -75,6 +93,81 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
         }
 
         $response->emit();
+    }
+
+    /**
+     * Unit price and purchase cost the user's profile does not allow to edit are set on the server:
+     * - price: catalogue price of the item; when the catalogue price is 0 (price on request) the entered price is kept,
+     * - purchase cost: purchase cost of the item.
+     * An existing item keeps its stored values unless the product was changed.
+     * CRMEntity saves only fields editable by the profile, so the save is allowed to write these values.
+     *
+     * @param Vtiger_Record_Model $itemModel
+     * @param Vtiger_Request      $request
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function setReadOnlyPrices(Vtiger_Record_Model $itemModel, Vtiger_Request $request): void
+    {
+        $productId = (int)$itemModel->get('productid');
+
+        if (!$productId) {
+            return;
+        }
+
+        $moduleModel = $itemModel->getModule();
+        $priceField = $moduleModel->getField('price');
+        $purchaseCostField = $moduleModel->getField('purchase_cost');
+        $protectPrice = $priceField && !$priceField->isEditable();
+        $protectPurchaseCost = $purchaseCostField && !$purchaseCostField->isEditable();
+
+        if (!$protectPrice && !$protectPurchaseCost) {
+            return;
+        }
+
+        $storedItem = $itemModel->getId() ? Vtiger_Record_Model::getInstanceById($itemModel->getId(), 'InventoryItem') : null;
+        $productChanged = !$storedItem || (int)$storedItem->get('productid') !== $productId;
+        $sourceRecordModel = Vtiger_Record_Model::getInstanceById($request->get('source_record'), $request->get('source_module'));
+        $currencyId = (int)$sourceRecordModel->get('currency_id');
+
+        if ($protectPrice) {
+            $priceData = InventoryItem_Utils_Helper::decideItemPriceAndPriceBook($productId, $currencyId, (int)$sourceRecordModel->get('pricebookid'));
+            $catalogPrice = (float)$priceData['price'];
+
+            if ($catalogPrice > 0) {
+                $itemModel->set('price', $productChanged ? $catalogPrice : $storedItem->get('price'));
+            }
+        }
+
+        if ($protectPurchaseCost) {
+            $itemModel->set('purchase_cost', $productChanged ? $this->getItemPurchaseCost($productId, $currencyId) : $storedItem->get('purchase_cost'));
+        }
+
+        $itemModel->getEntity()->isWorkFlowFieldUpdate = true;
+    }
+
+    /**
+     * Purchase cost of the product or service converted to the currency of the parent record
+     *
+     * @param int $itemId
+     * @param int $currencyId
+     *
+     * @return float
+     * @throws Exception
+     */
+    protected function getItemPurchaseCost(int $itemId, int $currencyId): float
+    {
+        $recordModel = Vtiger_Record_Model::getInstanceById($itemId);
+        $purchaseCost = (float)$recordModel->get('purchase_cost');
+        $itemCurrencyId = method_exists($recordModel, 'fetchCurrencyId') ? (int)$recordModel->fetchCurrencyId() : $currencyId;
+
+        if ($itemCurrencyId && $itemCurrencyId !== $currencyId) {
+            $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
+            $purchaseCost = $purchaseCost / $currenciesConversionTable[$itemCurrencyId] * $currenciesConversionTable[$currencyId];
+        }
+
+        return round($purchaseCost, getCurrencyDecimalPlaces());
     }
 
     /**

@@ -52,6 +52,23 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
     /**
      * @inheritDoc
      */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+
+        $sourceRecordId = (int)$request->get('source_record');
+        InventoryItem_ParentEntity_Model::requireEditableParent($sourceRecordId, (string)$request->get('source_module'));
+
+        if ($request->get('record')) {
+            InventoryItem_ParentEntity_Model::requireItemsOfParent([$request->get('record')], $sourceRecordId);
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function process(Vtiger_Request $request)
     {
         $viewer = $this->getViewer($request);
@@ -89,6 +106,21 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         foreach ($recordStructureInstance->getStructure() as $value) {
             foreach ($value as $key2 => $value2) {
                 $recordStructure[$key2] = $value2;
+            }
+        }
+
+        // Unit price the profile only allows to view: show it read-only, so the price of the selected item is filled in and totals are calculated
+        $priceReadOnly = false;
+        $priceLocked = false;
+
+        if (empty($recordStructure['price'])) {
+            $priceFieldModel = $recordModel->getModule()->getField('price');
+
+            if ($priceFieldModel && $priceFieldModel->isViewable()) {
+                $priceFieldModel->set('fieldvalue', $recordModel->get('price'));
+                $recordStructure['price'] = $priceFieldModel;
+                $priceReadOnly = true;
+                $priceLocked = $this->isPriceLocked($recordModel, (int)$request->get('source_record'), (string)$request->get('source_module'));
             }
         }
 
@@ -165,10 +197,39 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol']);
         $viewer->assign('DATA', $itemData);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->assign('PRICE_READONLY', $priceReadOnly);
+        $viewer->assign('PRICE_LOCKED', $priceLocked);
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('PopupEdit.tpl', $moduleName);
+    }
+
+    /**
+     * Read-only price of an existing item stays locked unless the item has no catalogue price (price on request)
+     *
+     * @param Vtiger_Record_Model $recordModel
+     * @param int                 $sourceRecordId
+     * @param string              $sourceModule
+     *
+     * @return bool
+     */
+    protected function isPriceLocked(Vtiger_Record_Model $recordModel, int $sourceRecordId, string $sourceModule): bool
+    {
+        $productId = (int)$recordModel->get('productid');
+
+        if (!$productId || !$sourceRecordId) {
+            return false;
+        }
+
+        $sourceRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecordId, $sourceModule);
+        $priceData = InventoryItem_Utils_Helper::decideItemPriceAndPriceBook(
+            $productId,
+            (int)$sourceRecordModel->get('currency_id'),
+            (int)$sourceRecordModel->get('pricebookid')
+        );
+
+        return (float)$priceData['price'] > 0;
     }
 
     /**

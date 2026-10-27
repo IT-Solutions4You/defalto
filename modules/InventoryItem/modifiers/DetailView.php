@@ -61,7 +61,8 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
         $viewer->assign('INVENTORY_ITEMS_COUNT', count($items));
 
         $recordModel = Vtiger_Record_Model::getCleanInstance('InventoryItem');
-        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
+        // Items block only displays values, so columns depend on view permission (read-only fields like unit price stay visible)
+        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel);
         $recordStructure = [];
 
         foreach ($recordStructureInstance->getStructure() as $value) {
@@ -108,6 +109,7 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
             $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin, $currentUser);
         }
 
+        $viewer->assign('ITEMS_EDITABLE', InventoryItem_ParentEntity_Model::isParentEditable($recordId));
         $viewer->assign('RECORD', $entityRecordModel);
         $viewer->assign('SUBTOTAL_DISPLAY', $entityRecordModel->getCurrencyDisplayValue('price_after_discount', $currentUser));
         $viewer->assign('OVERALL_DISCOUNT', number_format($overallDiscount, 2));

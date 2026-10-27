@@ -8,4 +8,4 @@ Administrators can set `$storage_directory` in `config.inc.php` or `config_overr
 
 An absolute directory outside the public web directory is recommended. The PHP process must be able to create folders and write files there. The configured directory affects new uploads only; existing documents continue to use their previously stored locations.
 
-Document files are grouped automatically by year, month, and week. Include the configured directory in the system backup even when it is kept separately from the application files.
+Document files are grouped automatically into year, month, and week folders. Include the configured directory in the system backup even when it is kept separately from the application files.

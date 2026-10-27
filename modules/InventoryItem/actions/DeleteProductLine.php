@@ -10,6 +10,24 @@
 
 class InventoryItem_DeleteProductLine_Action extends Vtiger_Delete_Action
 {
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+
+        $itemParentIds = InventoryItem_Module_Model::fetchParentIds([$request->get('lineItemId')]);
+
+        if (empty($itemParentIds)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        InventoryItem_ParentEntity_Model::requireEditableParent(reset($itemParentIds));
+
+        return true;
+    }
+
     public function process(Vtiger_Request $request)
     {
         $response = new Vtiger_Response();

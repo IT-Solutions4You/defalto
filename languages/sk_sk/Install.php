@@ -32,7 +32,6 @@ $languageStrings = [
     'LBL_GD_LIBRARY' => 'Podpora GD knižnice',
     'LBL_HOST_NAME' => 'Názov hostiteľa',
     'LBL_I_AGREE' => 'Súhlasím',
-    'LBL_IMAP_SUPPORT' => 'Podpora IMAP',
     'LBL_INSTALLATION_IN_PROGRESS' => 'Inštalácia prebieha',
     'LBL_INSTALLATION_WIZARD' => 'Sprievodca inštaláciou',
     'LBL_INSTALL_BUTTON' => 'Inštalovať',

@@ -421,6 +421,8 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
             }
 
             $widgetLink->set('showDetails', !empty($urlParameters['showDetails']));
+            // headerActions=1: the widget's module adds its own actions to the header (SummaryWidgetHeaderActions.tpl)
+            $widgetLink->set('headerActionsModule', !empty($urlParameters['headerActions']) ? (string)($urlParameters['module'] ?? '') : '');
             $availableWidgets[] = $widgetLink;
         }
 

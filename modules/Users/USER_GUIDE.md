@@ -1,11 +1,19 @@
 # User management
 
-Administrators can create and maintain CRM users, including their names, contact details, role, profile, language, time zone, currency, calendar preferences, signature, and account status.
+Administrators create and maintain CRM users in Settings, under Users: names, contact details, role, profile, language, time zone, currency, calendar preferences, signature and account status. Changes to role, profile, status and preferences take effect through the normal access and privilege flows.
 
-Open Settings and select Users to review the user list or edit an account. Changes to role, profile, status, and preferences take effect through the existing user access and privilege flows.
+## Who can change what
 
-Automated processes and server-side integrations may load and save user records. Text in unchanged fields keeps its original accented characters, punctuation, and currency symbols during those saves.
+- Regular users can update their own personal details and preferences.
+- Only administrators can change a user's login name, administrator status, role, profile or account status.
+- Passwords and access keys are managed by their dedicated security controls.
 
-User detail and preference pages remain accessible while a system update is being completed, including when the Users module files arrive before the matching shared application files.
+## Record access
 
-Use the signature editor for formatted email signatures. Account passwords and access keys remain managed by their dedicated security controls.
+Record access follows the user's profile, role hierarchy, ownership, group membership and sharing rules. Opening a record directly by its URL does not bypass private sharing restrictions.
+
+When access data is repaired by a system update, the privileges and sharing data of all active users are rebuilt automatically. Administrators do not need to resave users.
+
+## Signature
+
+Use the signature editor to format email signatures. The signature is appended to outgoing emails and can be used in workflow email content.

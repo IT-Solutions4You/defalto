@@ -60,7 +60,6 @@ $languageStrings = [
     'LBL_CONFIRM_CONFIGURATION_SETTINGS'   => 'Confirmer les réglages de configuration',
     'LBL_NEXT'                             => 'Suivant',
     'LBL_PHP_VERSION'                      => 'Version de PHP',
-    'LBL_IMAP_SUPPORT'                     => 'Support Imap',
     'LBL_ZLIB_SUPPORT'                     => 'Support Zlib',
     'LBL_GD_LIBRARY'                       => 'Support GD Library ',
     'ERR_DATABASE_CONNECTION_FAILED'       => 'Unable to connect to database Server',

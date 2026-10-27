@@ -65,6 +65,7 @@ class Install_InitSchema_Model
         $defaultDataPopulator->create_tables();
 
         self::createDefaultUsersAccess();
+        Install_Utils_Model::initProfileModulePermissions();
 
         // create and populate combo tables
         $combo = new PopulateComboValues();

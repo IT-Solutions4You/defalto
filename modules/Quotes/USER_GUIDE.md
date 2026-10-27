@@ -4,31 +4,30 @@ Quotes are customer-facing offers that describe what you propose to sell, at wha
 
 ## What you can do
 
-- Create a quote from scratch or from an opportunity.
-- Add products and services, quantities, prices, discounts, and taxes.
+- Create a quote from scratch or from an opportunity (**Create Quote** on the opportunity).
+- Add products and services, quantities, prices, discounts, and taxes (see the Inventory Items guide for how the item lines work).
 - Select a Price Book when standard pricing should be used.
-- Set the quote date, validity date, shipping information, and terms and conditions.
-- Track the quote with stages such as **Created**, **Pending Approval**, **Approved**, **Delivered**, **Accepted**, or **Rejected**.
-- Review subtotal, discounts, tax, grand total, and margin amount.
+- Set the quote date, **Valid Until** date, carrier, billing and shipping addresses, and terms and conditions.
+- Track the quote with stages: **Created**, **Pending Approval**, **Approved**, **Delivered**, **Reviewed**, **Accepted**, or **Rejected**.
+- Review subtotal, discounts, tax, grand total, and margin.
 - Export the quote to PDF or send it by email with the PDF attached.
-- Generate a Sales Order or Invoice from the quote when the customer accepts it.
+- Continue the process from the quote with **Generate Sales Order**, **Generate Invoice**, or **Generate Purchase Order** (each is shown only when you are allowed to create that record type).
+- See the Sales Orders created from the quote in the **Sales Order** related list, and keep Documents, Emails, and Appointments on the quote.
 
 ## Typical workflow
 
-1. Open the Quotes module and select **Add Quote**, or create a quote from an opportunity.
+1. Open the Quotes module and select **Add Quote**, or use **Create Quote** on an opportunity.
 2. Select the customer organization and, when relevant, the contact and opportunity.
 3. Add the products or services and enter quantities.
 4. Check prices, discounts, taxes, currency, and the grand total.
-5. Add the validity date and terms and conditions.
+5. Add the **Valid Until** date and terms and conditions.
 6. Save the quote and move its stage as it goes through approval and delivery.
 7. Export or email the PDF to the customer.
 8. When accepted, use **Generate Sales Order** or **Generate Invoice** to continue the process.
 
-## Line items and totals
+## Read-only quotes
 
-The item table is the core of a quote. Check the quantity, unit price, discount, tax, and final line total for every item. Overall discounts and taxes can change the grand total, so review the summary before sending the document.
-
-If an item has been removed from the catalogue, replace or remove it before saving or generating another document.
+When a quote is read-only (or you are not allowed to edit it), its item lines are locked as well. See the Inventory Items guide.
 
 ## Helpful tips
 
