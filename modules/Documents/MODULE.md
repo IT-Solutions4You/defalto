@@ -3,6 +3,7 @@
 - `Documents_List_View` overrides list initialization to support document folders (`folder_id` and `folder_value` are passed to `Documents_ListView_Model`); `Documents_ListAjax_View` inherits it. Query execution and folder restrictions stay in `Documents_ListView_Model`; filter metadata and editor assets belong to Core. Documents list JavaScript inherits the shared Vtiger search pipeline.
 - On every initial and AJAX render, resolve `CURRENT_CV_MODEL` from the current user's accessible `CUSTOM_VIEWS` by the active view ID. The Core toolbar uses it for saved-condition counts and edit links; it is null when no accessible view matches.
 - Call `Vtiger_List_View::setListFilterData()` before adding the legacy field-name keys to the search parameters, so the Core toolbar receives fields, block groups and positional AND/OR conditions on both renders.
+- Validate list ordering through `Documents_Module_Model`: current list field names and legacy detail/quick-preview order columns must exactly match active Documents field metadata, and directions must normalize to `ASC` or `DESC` before query generation. `Documents_ListView_Model::retrieveOrderBy()` owns the current list boundary; the legacy getters own folder-specific navigation before `ListViewSession` rebuilds SQL.
 - Field installation and default columns belong to `Documents_Install_Model`; the installable version is `Documents::$moduleVersion`.
 - Validate field selection, applying and removing conditions, folder switching and AJAX paging. Lint `views/List.php` and `Documents.php` after changes.
 
