@@ -56,7 +56,6 @@ $languageStrings = [
     'Discount Type' => 'Typ slevy',
     'Price Book' => 'Ceník',
     'LBL_CONVERSION_TITLE' => 'Kontrola položek',
-    'LBL_CONVERSION_DESCRIPTION' => 'Položky záznamu %2$s %1$s. Upravte množství nebo cenu, případně odstraňte položky, které se nemají zkopírovat. Ceny jsou v měně zdrojového záznamu.',
     'LBL_CONVERSION_INVALID_ITEM' => 'Položka nepatří ke zdrojovému záznamu.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Množství a cena musí být čísla.',
     'LBL_CONVERSION_NO_ITEMS' => 'Musí zůstat alespoň jedna položka.',

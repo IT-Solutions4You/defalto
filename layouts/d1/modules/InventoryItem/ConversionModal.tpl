@@ -22,10 +22,6 @@
                 <input type="hidden" name="targetModule" value="{$TARGET_MODULE}"/>
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=vtranslate('LBL_CONVERSION_TITLE', $MODULE)}
                 <div class="modal-body">
-                    <p class="text-secondary">
-                        {vtranslate('LBL_CONVERSION_DESCRIPTION', $MODULE, $SOURCE_RECORD_NAME, vtranslate($SOURCE_MODULE, $SOURCE_MODULE))}
-                        <span class="ms-1">({$CURRENCY_NAME} {$CURRENCY_SYMBOL})</span>
-                    </p>
                     {if !empty($HEADER_FIELD_MODELS)}
                         <div class="massEditTable container-fluid conversionHeader mb-3">
                             <div class="row">
@@ -39,7 +35,8 @@
                                                 {/if}
                                             </div>
                                             <div class="fieldValue col-lg-12">
-                                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(), $TARGET_MODULE) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$TARGET_MODULE MODULE_NAME=$TARGET_MODULE RECORD=''}
+                                                {* Only the address field is shown, without the selector of the address to copy from. *}
+                                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(), $TARGET_MODULE) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$TARGET_MODULE MODULE_NAME=$TARGET_MODULE RECORD='' HIDE_ADDRESS_SELECT=true}
                                             </div>
                                         </div>
                                     </div>
@@ -50,14 +47,15 @@
                     <div class="table-responsive">
                         <table class="table table-sm table-borderless table-hover align-middle conversionItemsTable">
                             <thead>
-                                <tr class="bg-body-secondary text-secondary">
-                                    <th>{vtranslate('LBL_ITEM_NAME', $MODULE)}</th>
-                                    <th class="text-end">{vtranslate('Quantity', $MODULE)}</th>
-                                    <th></th>
-                                    <th class="text-end">{vtranslate('Price', $MODULE)}</th>
-                                    <th class="text-end">{vtranslate('Discount', $MODULE)}</th>
-                                    <th class="text-end">{vtranslate('Tax', $MODULE)}</th>
-                                    <th class="text-center">{vtranslate('LBL_REMOVE', $MODULE)}</th>
+                                {* Bootstrap paints the header cells with the table background, so they are made transparent to show the row background as in the list view. *}
+                                <tr class="bg-body-secondary text-secondary border-transparent">
+                                    <th class="bg-transparent ps-3">{vtranslate('LBL_ITEM_NAME', $MODULE)}</th>
+                                    <th class="bg-transparent text-end">{vtranslate('Quantity', $MODULE)}</th>
+                                    <th class="bg-transparent"></th>
+                                    <th class="bg-transparent text-end">{vtranslate('Price', $MODULE)}</th>
+                                    <th class="bg-transparent text-end">{vtranslate('Discount', $MODULE)}</th>
+                                    <th class="bg-transparent text-end">{vtranslate('Tax', $MODULE)}</th>
+                                    <th class="bg-transparent text-center pe-3">{vtranslate('LBL_REMOVE', $MODULE)}</th>
                                 </tr>
                             </thead>
                             <tbody>

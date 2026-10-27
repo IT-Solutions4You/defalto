@@ -38,7 +38,6 @@ class InventoryItem_ConversionModal_View extends Vtiger_IndexAjax_View
         $conversion->checkAccess($sourceRecord);
 
         $sourceRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecord, $sourceModule);
-        $currencyInfo = Vtiger_Functions::getCurrencyInfo($sourceRecordModel->get('currency_id'));
         $decimals = InventoryItem_Utils_Helper::fetchDecimals();
         $items = [];
 
@@ -66,9 +65,6 @@ class InventoryItem_ConversionModal_View extends Vtiger_IndexAjax_View
             ->assign('SOURCE_MODULE', $sourceModule)
             ->assign('TARGET_MODULE', $targetModule)
             ->assign('SOURCE_RECORD', $sourceRecord)
-            ->assign('SOURCE_RECORD_NAME', $sourceRecordModel->getName())
-            ->assign('CURRENCY_NAME', $currencyInfo['currency_name'])
-            ->assign('CURRENCY_SYMBOL', $currencyInfo['currency_symbol'])
             ->assign('EDITABLE_COLUMNS', array_intersect(InventoryItem_Conversion_Model::SUPPORTED_COLUMNS, $conversion->getEditableColumns()))
             ->assign('INVENTORY_ITEMS', $items)
             ->assign('HEADER_FIELD_MODELS', $fieldModels)

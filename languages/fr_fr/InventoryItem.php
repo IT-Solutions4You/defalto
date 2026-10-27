@@ -35,7 +35,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
     'LBL_CONVERSION_TITLE' => 'Vérifier les articles',
-    'LBL_CONVERSION_DESCRIPTION' => 'Articles de %2$s %1$s. Modifiez la quantité ou le prix, ou supprimez les articles qui ne doivent pas être copiés. Les prix sont affichés dans la devise de l\'enregistrement source.',
     'LBL_CONVERSION_INVALID_ITEM' => 'L\'article n\'appartient pas à l\'enregistrement source.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'La quantité et le prix doivent être des nombres.',
     'LBL_CONVERSION_NO_ITEMS' => 'Au moins un article doit rester.',

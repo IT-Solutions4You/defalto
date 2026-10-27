@@ -35,7 +35,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Последовательность',
     'LBL_CONVERSION_TITLE' => 'Проверка позиций',
-    'LBL_CONVERSION_DESCRIPTION' => 'Позиции записи %2$s %1$s. Измените количество или цену либо удалите позиции, которые не нужно копировать. Цены показаны в валюте исходной записи.',
     'LBL_CONVERSION_INVALID_ITEM' => 'Позиция не относится к исходной записи.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Количество и цена должны быть числами.',
     'LBL_CONVERSION_NO_ITEMS' => 'Должна остаться хотя бы одна позиция.',

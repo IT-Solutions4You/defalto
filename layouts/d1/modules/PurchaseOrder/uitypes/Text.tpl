@@ -18,7 +18,7 @@
             {/if}
         >{$FIELD_MODEL->get('fieldvalue')}</textarea>
     {else}
-        {if $REQUEST_INSTANCE.view neq 'Detail'}
+        {if $REQUEST_INSTANCE.view neq 'Detail' && empty($HIDE_ADDRESS_SELECT)}
             {assign var=blockLabel value=$RECORD_STRUCTURE['LBL_PO_INFORMATION']}
             {assign var=fieldModel value=$blockLabel['accountid']}
             {$pickList = ['' => 'LBL_SELECT_ADDRESS_OPTION', 'company'=> 'LBL_COMPANY_ADDRESS',

@@ -35,7 +35,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
     'LBL_CONVERSION_TITLE' => 'مراجعة البنود',
-    'LBL_CONVERSION_DESCRIPTION' => 'بنود %2$s %1$s. غيّر الكمية أو السعر، أو احذف البنود التي لا يجب نسخها. تُعرض الأسعار بعملة السجل المصدر.',
     'LBL_CONVERSION_INVALID_ITEM' => 'البند لا ينتمي إلى السجل المصدر.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'يجب أن تكون الكمية والسعر أرقامًا.',
     'LBL_CONVERSION_NO_ITEMS' => 'يجب أن يبقى بند واحد على الأقل.',

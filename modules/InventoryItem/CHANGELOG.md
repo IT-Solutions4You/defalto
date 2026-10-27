@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7 - 2026-10-27
+
+- The item review dialog shown before copying items to another document no longer repeats an introductory text above the table, and its table header has the same background as list view headers. When a Purchase Order is created, the billing and shipping address fields are shown without the "Which address should be copied?" selector.
+
 ## 1.6 - 2026-10-26
 
 - The Items widget in the summary has an Add menu (Text, Products, Services) that opens the item dialog; after saving only the widget with its totals is reloaded.

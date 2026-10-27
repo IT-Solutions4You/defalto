@@ -35,7 +35,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Kolejność',
     'LBL_CONVERSION_TITLE' => 'Sprawdź pozycje',
-    'LBL_CONVERSION_DESCRIPTION' => 'Pozycje rekordu %2$s %1$s. Zmień ilość lub cenę albo usuń pozycje, które nie mają być skopiowane. Ceny są pokazane w walucie rekordu źródłowego.',
     'LBL_CONVERSION_INVALID_ITEM' => 'Pozycja nie należy do rekordu źródłowego.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Ilość i cena muszą być liczbami.',
     'LBL_CONVERSION_NO_ITEMS' => 'Musi pozostać co najmniej jedna pozycja.',

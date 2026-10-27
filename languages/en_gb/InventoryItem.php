@@ -38,7 +38,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
     'LBL_CONVERSION_TITLE' => 'Review items',
-    'LBL_CONVERSION_DESCRIPTION' => 'Items of %2$s %1$s. Change the quantity or the price, or remove the items which should not be copied. Prices are shown in the currency of the source record.',
     'LBL_CONVERSION_INVALID_ITEM' => 'The item does not belong to the source record.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Quantity and price must be numbers.',
     'LBL_CONVERSION_NO_ITEMS' => 'At least one item has to remain.',

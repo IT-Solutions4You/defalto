@@ -35,7 +35,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
     'LBL_CONVERSION_TITLE' => 'Kalemleri gözden geçir',
-    'LBL_CONVERSION_DESCRIPTION' => '%2$s %1$s kaydının kalemleri. Miktarı veya fiyatı değiştirin ya da kopyalanmaması gereken kalemleri kaldırın. Fiyatlar kaynak kaydın para biriminde gösterilir.',
     'LBL_CONVERSION_INVALID_ITEM' => 'Kalem kaynak kayda ait değil.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Miktar ve fiyat sayı olmalıdır.',
     'LBL_CONVERSION_NO_ITEMS' => 'En az bir kalem kalmalıdır.',

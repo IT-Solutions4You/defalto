@@ -35,7 +35,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sekvens',
     'LBL_CONVERSION_TITLE' => 'Granska artiklar',
-    'LBL_CONVERSION_DESCRIPTION' => 'Artiklar i %2$s %1$s. Ändra kvantitet eller pris, eller ta bort artiklar som inte ska kopieras. Priserna visas i källpostens valuta.',
     'LBL_CONVERSION_INVALID_ITEM' => 'Artikeln tillhör inte källposten.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Kvantitet och pris måste vara siffror.',
     'LBL_CONVERSION_NO_ITEMS' => 'Minst en artikel måste finnas kvar.',

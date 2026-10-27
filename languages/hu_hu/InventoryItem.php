@@ -35,7 +35,6 @@ $languageStrings = [
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
     'LBL_CONVERSION_TITLE' => 'Tételek ellenőrzése',
-    'LBL_CONVERSION_DESCRIPTION' => 'A(z) %2$s %1$s tételei. Módosítsa a mennyiséget vagy az árat, vagy távolítsa el a nem másolandó tételeket. Az árak a forrásrekord pénznemében jelennek meg.',
     'LBL_CONVERSION_INVALID_ITEM' => 'A tétel nem tartozik a forrásrekordhoz.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'A mennyiségnek és az árnak számnak kell lennie.',
     'LBL_CONVERSION_NO_ITEMS' => 'Legalább egy tételnek maradnia kell.',
