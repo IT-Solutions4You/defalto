@@ -53,6 +53,8 @@ Columns determine which values appear in the results table.
 
 Changing a column label changes its name in the report. It does not rename the field throughout the CRM. Removing a column from a report does not delete the source data.
 
+The **Record Label** field can also be selected from a related record. Preview and export then show the related record's display name.
+
 **Example invoice columns:** Invoice No, Subject, Organization Name, Status, Due Date, Grand Total, and Assigned To.
 
 To calculate a sum or average for a field, first add that numeric field to the columns.

@@ -1,6 +1,7 @@
 # Reporting
 
 - Report definitions are stored in `df_reporting` and `df_reportingcf`. `Reporting_Install_Model` extends `Core_Install_Model` for fields and widgets; `Reporting::$moduleVersion` controls install and update versioning.
+- `Reporting_Fields_Model` owns both persisted module-field metadata and the synthetic report fields `id` and `label`. Resolve either kind through `Reporting_Fields_Model::getField()`; referenced synthetic fields do not exist in `Vtiger_Module_Model::getField()`.
 - Report preview and execution use `Core_QueryGenerator_Model::parseAdvFilterList()`, which owns terminal connector cleanup, empty-group removal and outer grouping. `Reporting_Record_Model::getFormatedFilters()` returns the stored filter groups and connectors unchanged, so saved filters may keep an outgoing connector on the last group or have empty or sparse groups. Normalize only at the shared query boundary, never with a two-group assumption.
 - `Reporting_Field_Model::getReportTypeOptions()` supplies the fixed technical values `tabular` and `summary` with central Reporting translations. Normal and editable picklist accessors both use it, so no picklist tables or seeded values are needed. Existing record values stay unchanged.
 - `Reporting_Edit_View` owns the editor and the `renderTable` preview. Frontend assets are under `layouts/d1/modules/Reporting` (`resources/Edit.js`, `Table.js`, `Detail.js`); Chart.js is loaded in both the normal and overlay flows.

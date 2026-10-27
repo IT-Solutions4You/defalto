@@ -155,7 +155,16 @@ class Reporting_Fields_Model extends Vtiger_Base_Model
         return $fields;
     }
 
-    protected static function getTranslatedFieldLabel(Vtiger_Field_Model $field): string
+    public static function getField(Vtiger_Module_Model $module, string $fieldName): Vtiger_Field_Model|bool
+    {
+        if (self::isCustomField($fieldName)) {
+            return self::getCustomFields()[$fieldName];
+        }
+
+        return $module->getField($fieldName);
+    }
+
+    public static function getTranslatedFieldLabel(Vtiger_Field_Model $field): string
     {
         $moduleName = self::isCustomField($field->get('name')) ? 'Reporting' : $field->getModuleName();
 

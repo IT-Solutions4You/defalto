@@ -1596,16 +1596,20 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         $module = $this->getModule($moduleName);
 
         if ($module) {
-            $field = $module->getField($fieldName);
+            $field = Reporting_Fields_Model::getField($module, $fieldName);
 
-            if (!empty($referenceField)) {
-                $field->set('label', sprintf('(%s) %s', vtranslate($moduleName, $moduleName), vtranslate($field->get('label'), $moduleName)));
+            if ($field && !empty($referenceField)) {
+                $field->set('label', sprintf(
+                    '(%s) %s',
+                    vtranslate($moduleName, $moduleName),
+                    Reporting_Fields_Model::getTranslatedFieldLabel($field),
+                ));
             }
 
             $this->fields[$value] = $field;
         }
 
-        return $this->fields[$value];
+        return $this->fields[$value] ?? false;
     }
 
     /**
