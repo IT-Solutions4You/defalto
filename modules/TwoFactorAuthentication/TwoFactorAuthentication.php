@@ -12,7 +12,7 @@ class TwoFactorAuthentication extends CRMExtension
 {
     public string $moduleLabel = '2FA';
     public string $moduleName = 'TwoFactorAuthentication';
-    public string $moduleVersion = '1.0';
+    public string $moduleVersion = '1.1';
     public string $parentName = 'Settings';
 
     /**
