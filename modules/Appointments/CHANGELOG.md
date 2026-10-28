@@ -2,6 +2,7 @@
 
 ## 1.4 - 2026-10-28
 
+- Dragging or resizing an appointment around midnight now saves the selected calendar date in every time zone.
 - Appointment email reminders are now sent at the correct time when the database server uses a non-UTC time zone.
 - Calendar popovers and event information now respect record viewing permissions.
 - Default event types are protected from deletion by non-administrators, and removing a custom type no longer affects other users who use it.

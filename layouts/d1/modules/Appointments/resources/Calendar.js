@@ -72,9 +72,9 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
     calendar: false,
     convertToDateString: function (date, separator = '-', format = 'year-month-day') {
         let data = {
-            day: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
+            day: date.getUTCDate(),
+            month: date.getUTCMonth() + 1,
+            year: date.getUTCFullYear(),
         };
 
         if (data.day < 10) {
