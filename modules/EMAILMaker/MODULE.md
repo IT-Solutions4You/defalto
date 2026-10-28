@@ -8,6 +8,7 @@
 # Email content rendering
 
 - `VTEmailTask::getContents()` runs `getContent(false)` before workflow variable substitution; `ITS4YouEmails_Record_Model::retrieveContent()` runs recipient-aware `getContent(true, ...)` again before assigning the mailer body. Keep both passes in view when diagnosing formatting.
+- Number formatting is owned by `EMAILMaker_Record_Model::getDecimalSettings()`. Stored module-wide settings take precedence; while `vtiger_emakertemplates_settings` is empty, rendering and numeric template functions use the current user's currency decimal count and separators.
 - `getFieldDisplayValue()` delegates modern `text` fields to the field's `getDisplayValue()` (`Vtiger_Text_UIType` skips newline conversion for `isHtmlField()` fields such as `Users.signature`). Legacy user variables from `getUserValue()` keep their original values. Neither path removes HTML document wrappers.
 - `getFieldValueUtils()` keeps the legacy encoded-br guard and converts textarea newlines through `Core_SimpleHtmlDom_Helper::convertNewlinesToHtml()`, which avoids extra breaks before literal or encoded paragraph tags. The private `EMAILContent::getFieldValue()` wrapper has no local caller.
 - `getContent()` decodes entities on the combined subject/body and replaces `&nbsp;` with ordinary spaces. `handleRowbreak()` always runs; it only splits table cells at row-break tokens and is not a newline-to-br conversion. Spacing depends on paragraphs, breaks and CSS in the template.
