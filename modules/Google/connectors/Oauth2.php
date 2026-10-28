@@ -20,6 +20,9 @@ require_once 'vtlib/Vtiger/Net/Client.php';
 
 class Google_Oauth2_Connector
 {
+    protected const STATE_SESSION_KEY = 'google_oauth2_state';
+    protected const STATE_TTL = 600;
+
     protected $service_provider = 'Google';
 
     protected $source_module;
@@ -119,6 +122,7 @@ class Google_Oauth2_Connector
             'scope=' . urlencode($this->scope),
             'access_type=' . urlencode($this->access_type),
             'approval_prompt=' . urlencode($this->approval_prompt),
+            'state=' . urlencode($this->state),
         ];
         $queryString = implode('&', $params);
 
@@ -141,23 +145,64 @@ class Google_Oauth2_Connector
         return $hasStoredToken;
     }
 
-    public function getState($source)
+    protected function createState(): void
     {
-        global $site_URL;
-        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . $this->source_module . '&service=' . $source;
-        $stateDetails['url'] = $callbackUri;
-        $parse = parse_url($site_URL);
-        $ipAddr = getHostByName($parse['host']);
-        // to prevent domain name forgery
-        $stateDetails['dnf'] = md5($ipAddr);
-        $state = json_encode($stateDetails, JSON_FORCE_OBJECT);
+        $this->state = bin2hex(random_bytes(32));
+        $pendingStates = $_SESSION[self::STATE_SESSION_KEY] ?? [];
+        $activeStates = [];
+        $currentTime = time();
 
-        return $state;
+        foreach ($pendingStates as $stateDetails) {
+            $created = is_array($stateDetails) ? ($stateDetails['created'] ?? 0) : 0;
+
+            if (is_int($created) && $created <= $currentTime && ($currentTime - $created) <= self::STATE_TTL) {
+                $activeStates[] = $stateDetails;
+            }
+        }
+
+        $activeStates[] = [
+            'value' => $this->state,
+            'created' => $currentTime,
+        ];
+        $_SESSION[self::STATE_SESSION_KEY] = $activeStates;
     }
 
-    protected function setState()
+    protected function validateState(string $state): void
     {
-        $this->state = $this->getState($this->service_name);
+        $pendingStates = $_SESSION[self::STATE_SESSION_KEY] ?? [];
+        $activeStates = [];
+        $matchedState = null;
+        $currentTime = time();
+
+        foreach ($pendingStates as $stateDetails) {
+            $expectedState = is_array($stateDetails) ? ($stateDetails['value'] ?? '') : '';
+            $created = is_array($stateDetails) ? ($stateDetails['created'] ?? 0) : 0;
+            $isActive = is_string($expectedState)
+                && is_int($created)
+                && $created <= $currentTime
+                && ($currentTime - $created) <= self::STATE_TTL;
+
+            if (!$isActive) {
+                continue;
+            }
+
+            if ($state !== '' && hash_equals($expectedState, $state)) {
+                $matchedState = $expectedState;
+                continue;
+            }
+
+            $activeStates[] = $stateDetails;
+        }
+
+        if (empty($activeStates)) {
+            unset($_SESSION[self::STATE_SESSION_KEY]);
+        } else {
+            $_SESSION[self::STATE_SESSION_KEY] = $activeStates;
+        }
+
+        if ($matchedState === null) {
+            throw new Exception('Invalid OAuth state');
+        }
     }
 
     protected function showConsentScreen()
@@ -296,17 +341,21 @@ class Google_Oauth2_Connector
 
             return $this;
         } else {
-            if ($_REQUEST['service'] && $_REQUEST['code']) {
-                $authCode = $_REQUEST['code'];
-                $token = $this->exchangeCodeForToken($authCode);
-                $this->storeToken($token);
-                echo '<script>window.opener.sync();window.close();</script>';
-                exit;
-            } elseif ($_REQUEST['service']) {
+            if (!empty($_GET['service'])) {
+                $this->validateState((string)($_GET['state'] ?? ''));
+
+                if (!empty($_GET['code'])) {
+                    $authCode = $_GET['code'];
+                    $token = $this->exchangeCodeForToken($authCode);
+                    $this->storeToken($token);
+                    echo '<script>window.opener.sync();window.close();</script>';
+                    exit;
+                }
+
                 echo '<script>window.close();</script>';
                 exit;
             } else {
-                $this->setState();
+                $this->createState();
                 $this->showConsentScreen();
             }
         }
