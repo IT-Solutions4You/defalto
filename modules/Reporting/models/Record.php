@@ -435,7 +435,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
             $query->addRecordIdsCondition([]);
         }
 
-        $query->setLimit(0);
+        $query->setLimit($this->getMaxEntries());
         $query->setOrderByClauseRequired(true);
         $query->setOrderByColumns($this->getOrderByColumns());
         $query->parseAdvFilterList($this->getFormatedFilters());
