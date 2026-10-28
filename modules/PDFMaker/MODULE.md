@@ -18,3 +18,8 @@
 
 - PDFMaker owns its user-facing labels in `languages/<locale>/PDFMaker.php`; the same file also supplies labels rendered from PDFMaker Settings screens.
 - Every locale shipped under `languages/` must provide the complete PDFMaker PHP and JavaScript key sets. Use `languages/sk_sk/PDFMaker.php` as the structural key reference and keep technical identifiers, URLs, file-system paths, HTML, placeholders, and product names unchanged while translating their surrounding text.
+
+# PDF generation permissions
+
+- `CreatePDFFromTemplate` and `IndexAjax::getPreviewContent` resolve the source module from the requested CRM record and require `DetailView` permission for that record before calling `PDFMaker_checkGenerate_Model::generate()`. Never trust the client-provided `source_module` or `relmodule` as the authorization owner.
+- Keep direct downloads and inline or attachment preview content behind the same record-level permission boundary.

@@ -1,5 +1,6 @@
-## 1.6 - 2026-10-27
+## 1.6 - 2026-10-28
 
+- Restricted PDF downloads and previews to records the current user is allowed to view.
 - Completed and aligned PDF Maker translations for every language included with Defalto.
 
 ## 0.6 - 2026-10-23
