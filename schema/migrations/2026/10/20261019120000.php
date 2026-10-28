@@ -14,7 +14,6 @@ if (!class_exists('Migration_20261019120000')) {
         public function migrate(string $fileName): void
         {
             InventoryItem_Conversion_Model::registerDefaultConversions();
-            (new InventoryItem_ConversionMapping_Model())->createTables();
         }
     }
 } else {
