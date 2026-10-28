@@ -2,6 +2,8 @@
 
 Documents stores files uploaded by users and makes them available from document records and related CRM records. Documents can be organized into folders, marked active or inactive, previewed when their type is supported, and downloaded according to user permissions.
 
+Document lists can be sorted by available document fields in ascending or descending order. Invalid or unavailable sort fields are rejected to keep list and record navigation safe.
+
 ## File storage
 
 Administrators can set `$storage_directory` in `config.inc.php` or `config_override.php` to choose where newly uploaded attachment files, including Documents, are stored. When the setting is missing or empty, the application uses `storage/` in the application directory.

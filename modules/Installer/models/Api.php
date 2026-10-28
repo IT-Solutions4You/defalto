@@ -13,12 +13,13 @@ require_once 'vtlib/Vtiger/Net/Client.php';
 class Installer_Api_Model extends Vtiger_Net_Client
 {
     public const CONNECT_TIMEOUT = 5;
-    public const REQUEST_TIMEOUT = 20;
+    public const REQUEST_TIMEOUT = 75;
     public const CONNECTION_ERROR = 'connection_error';
     public const INVALID_LICENSE = 'invalid_license';
     public const INVALID_REQUEST = 'invalid_request';
     public const INVALID_USER_COUNT = 'invalid_user_count';
     public string $apiUrl = 'https://its4you.sk/en/api_defalto';
+    protected array $lastRequestDiagnostics = [];
 
     public function activateLicenseInfo(string $license, mixed $userCount = null): array
     {
@@ -35,9 +36,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
      */
     public function connect(): bool
     {
-        $this->setURL($this->getEndpointUrl('/connect/v1'));
-        $this->setRequestTimeouts();
-        $response = $this->doGet([], self::CONNECT_TIMEOUT);
+        $response = $this->sendHttpRequest('/connect/v1', [], self::CONNECT_TIMEOUT);
 
         if ('connected' === $response) {
             return true;
@@ -375,9 +374,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
 
     protected function sendJsonRequest(string $endpoint, array $params): array
     {
-        $this->setURL($this->getEndpointUrl($endpoint));
-        $this->setRequestTimeouts();
-        $response = $this->doGet($params, self::CONNECT_TIMEOUT);
+        $response = $this->sendHttpRequest($endpoint, $params);
 
         if (false === $response) {
             return $this->getConnectionError($endpoint, 'transport_failure', $params);
@@ -394,6 +391,63 @@ class Installer_Api_Model extends Vtiger_Net_Client
         }
 
         return $decoded;
+    }
+
+    protected function sendHttpRequest(
+        string $endpoint,
+        array $params,
+        int $requestTimeout = self::REQUEST_TIMEOUT
+    ): string|false {
+        $this->lastRequestDiagnostics = [];
+
+        if (!function_exists('curl_init')) {
+            $this->setURL($this->getEndpointUrl($endpoint));
+            $this->setRequestTimeouts();
+
+            return $this->doGet($params, self::CONNECT_TIMEOUT);
+        }
+
+        $url = $this->getEndpointUrl($endpoint);
+
+        if (!empty($params)) {
+            $url .= '?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+        }
+
+        $handle = curl_init($url);
+
+        if (false === $handle) {
+            $this->lastRequestDiagnostics = [
+                'failure' => 'curl_initialization_failed',
+            ];
+
+            return false;
+        }
+
+        $curlOptions = [
+            CURLOPT_CONNECTTIMEOUT => self::CONNECT_TIMEOUT,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_HTTPHEADER => ['Accept: application/json'],
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_TIMEOUT => $requestTimeout,
+        ];
+
+        if (defined('CURLSSLOPT_NATIVE_CA')) {
+            $curlOptions[CURLOPT_SSL_OPTIONS] = CURLSSLOPT_NATIVE_CA;
+        }
+
+        curl_setopt_array($handle, $curlOptions);
+        $response = curl_exec($handle);
+        $this->lastRequestDiagnostics = [
+            'http_status' => curl_getinfo($handle, CURLINFO_HTTP_CODE) ?: null,
+            'content_type' => curl_getinfo($handle, CURLINFO_CONTENT_TYPE) ?: '',
+            'transport_code' => curl_errno($handle),
+            'transport_message' => curl_error($handle),
+        ];
+
+        return is_string($response) ? $response : false;
     }
 
     protected function getValidationError(string $error): array
@@ -416,14 +470,18 @@ class Installer_Api_Model extends Vtiger_Net_Client
         array $params,
         mixed $responseBody = false
     ): array {
+        $isDebug = true === vglobal('debug') || 1 === (int)($_SESSION['debug'] ?? 0);
         $error = [
             'success' => false,
             'error' => self::CONNECTION_ERROR,
             'transport_error' => true,
         ];
 
-        if (true === vglobal('debug')) {
+        if ($isDebug) {
             $error['debug'] = $this->getConnectionDebug($endpoint, $failure, $params, $responseBody);
+        }
+
+        if (true === vglobal('debug')) {
             Core_Install_Model::logError($error);
         }
 
@@ -440,10 +498,15 @@ class Installer_Api_Model extends Vtiger_Net_Client
             'failure' => $failure,
             'request_method' => 'GET',
             'request_url' => $this->getEndpointUrl($endpoint),
-            'http_status' => $this->client->getResponseCode() ?: null,
-            'http_reason' => $this->client->getResponseReason() ?: '',
-            'content_type' => $this->client->getResponseHeader('content-type') ?: '',
         ];
+
+        if (!empty($this->lastRequestDiagnostics)) {
+            $debug = array_merge($debug, $this->lastRequestDiagnostics);
+        } else {
+            $debug['http_status'] = $this->client->getResponseCode() ?: null;
+            $debug['http_reason'] = $this->client->getResponseReason() ?: '';
+            $debug['content_type'] = $this->client->getResponseHeader('content-type') ?: '';
+        }
 
         if (is_object($this->response) && method_exists($this->response, 'getMessage')) {
             $debug['transport_message'] = $this->redactLicense((string)$this->response->getMessage(), $params);

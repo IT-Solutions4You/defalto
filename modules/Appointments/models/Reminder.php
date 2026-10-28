@@ -236,7 +236,7 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
 		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=its4you_calendar.its4you_calendar_id
 		INNER JOIN its4you_remindme ON its4you_remindme.record_id=its4you_calendar.its4you_calendar_id
 		INNER JOIN its4you_remindme_popup ON its4you_remindme_popup.record_id=its4you_calendar.its4you_calendar_id
-		WHERE its4you_calendar.datetime_start >= CURRENT_TIMESTAMP 
+		WHERE its4you_calendar.datetime_start >= UTC_TIMESTAMP()
 		  AND vtiger_crmentity.crmid != 0 
 		  AND its4you_remindme.reminder_sent = 0 
 		  AND its4you_remindme.reminder_time != 0

@@ -19,7 +19,7 @@
 // Note is used to store customer information.
 class Documents extends CRMEntity
 {
-    public string $moduleVersion = '1.4';
+    public string $moduleVersion = '1.5';
     public string $moduleName = 'Documents';
     public string $parentName = 'HOME';
     public $table_name = "vtiger_notes";
@@ -188,13 +188,13 @@ class Documents extends CRMEntity
         global $log;
         $log->debug("Entering getSortOrder() method ...");
         if (isset($_REQUEST['sorder'])) {
-            $sorder = $this->db->sql_escape_string($_REQUEST['sorder']);
+            $sorder = $_REQUEST['sorder'];
         } else {
             $sorder = (($_SESSION['NOTES_SORT_ORDER'] != '') ? ($_SESSION['NOTES_SORT_ORDER']) : ($this->default_sort_order));
         }
         $log->debug("Exiting getSortOrder() method ...");
 
-        return $sorder;
+        return Vtiger_Module_Model::getInstance($this->moduleName)->validateListSortOrder($sorder);
     }
 
     /**     Function used to get the order by value for Documents listview
@@ -211,13 +211,13 @@ class Documents extends CRMEntity
         }
 
         if (isset($_REQUEST['order_by'])) {
-            $order_by = $this->db->sql_escape_string($_REQUEST['order_by']);
+            $order_by = $_REQUEST['order_by'];
         } else {
             $order_by = (($_SESSION['NOTES_ORDER_BY'] != '') ? ($_SESSION['NOTES_ORDER_BY']) : ($use_default_order_by));
         }
         $log->debug("Exiting getOrderBy method ...");
 
-        return $order_by;
+        return Vtiger_Module_Model::getInstance($this->moduleName)->validateListSortColumn($order_by);
     }
 
     /**
@@ -227,7 +227,7 @@ class Documents extends CRMEntity
     function getSortOrderForFolder($folderId)
     {
         if (isset($_REQUEST['sorder']) && $_REQUEST['folderid'] == $folderId) {
-            $sorder = $this->db->sql_escape_string($_REQUEST['sorder']);
+            $sorder = $_REQUEST['sorder'];
         } elseif (isset($_SESSION['NOTES_FOLDER_SORT_ORDER']) && is_array($_SESSION['NOTES_FOLDER_SORT_ORDER']) &&
             !empty($_SESSION['NOTES_FOLDER_SORT_ORDER'][$folderId])) {
             $sorder = $_SESSION['NOTES_FOLDER_SORT_ORDER'][$folderId];
@@ -235,7 +235,7 @@ class Documents extends CRMEntity
             $sorder = $this->default_sort_order;
         }
 
-        return $sorder;
+        return Vtiger_Module_Model::getInstance($this->moduleName)->validateListSortOrder($sorder);
     }
 
     /**
@@ -249,7 +249,7 @@ class Documents extends CRMEntity
             $use_default_order_by = $this->default_order_by;
         }
         if (isset($_REQUEST['order_by']) && $_REQUEST['folderid'] == $folderId) {
-            $order_by = $this->db->sql_escape_string($_REQUEST['order_by']);
+            $order_by = $_REQUEST['order_by'];
         } elseif (isset($_SESSION['NOTES_FOLDER_ORDER_BY']) && is_array($_SESSION['NOTES_FOLDER_ORDER_BY']) &&
             !empty($_SESSION['NOTES_FOLDER_ORDER_BY'][$folderId])) {
             $order_by = $_SESSION['NOTES_FOLDER_ORDER_BY'][$folderId];
@@ -257,7 +257,7 @@ class Documents extends CRMEntity
             $order_by = ($use_default_order_by);
         }
 
-        return $order_by;
+        return Vtiger_Module_Model::getInstance($this->moduleName)->validateListSortColumn($order_by);
     }
 
     /** Function to export the notes in CSV Format

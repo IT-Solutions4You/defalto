@@ -35,6 +35,11 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action
         if (!empty($mode)) {
             switch ($mode) {
                 case 'addRelationsFromRelatedModuleViewId':
+                    $permissions[] = [
+                        'module_parameter' => 'module',
+                        'action' => 'EditView',
+                        'record_parameter' => 'sourceRecord',
+                    ];
                     $permissions[] = ['module_parameter' => 'relatedModule', 'action' => 'DetailView'];
                     break;
                 case 'updateStatus':
@@ -117,8 +122,9 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action
 
             $response->setResult([true]);
         } else {
-            $response->setError($code);
+            $response->setError(400, vtranslate('LBL_SELECT_STATUS', 'Core'));
         }
+
         $response->emit();
     }
 }

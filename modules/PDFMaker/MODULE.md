@@ -13,3 +13,8 @@
 # E-mail template links
 
 - EMAILMaker links e-mail templates to PDFMaker templates in `df_template_rel`. `PDFMaker_PDFMaker_Model::getAvailableTemplates()` supplies the offered templates (user permissions, active status, display conditions). Details are in `modules/EMAILMaker/MODULE.md`.
+
+# Languages
+
+- PDFMaker owns its user-facing labels in `languages/<locale>/PDFMaker.php`; the same file also supplies labels rendered from PDFMaker Settings screens.
+- Every locale shipped under `languages/` must provide the complete PDFMaker PHP and JavaScript key sets. Use `languages/sk_sk/PDFMaker.php` as the structural key reference and keep technical identifiers, URLs, file-system paths, HTML, placeholders, and product names unchanged while translating their surrounding text.
