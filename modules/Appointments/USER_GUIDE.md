@@ -12,6 +12,8 @@ Appointments can be rescheduled from the calendar by dragging them to another da
 
 Calendar popovers and event refreshes show record information only when the current user can view that record. Administrators can delete default calendar event types. Removing a custom event type removes it from the current user's calendar without affecting other users who use the same type.
 
+Monthly repetitions stay in the selected calendar month. If the selected date does not exist in a shorter month, the appointment is placed on that month's last day. Rules such as the last Friday of the month also remain within that month in every time zone.
+
 ## Create Calendar Record workflow action
 
 Configure the subject, description, status, type, owner, start and end values, and all-day behavior in the workflow task. Click Subject or Description to open the value window, where you can enter text and insert variables from the workflow's source record.

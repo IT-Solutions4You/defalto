@@ -2,6 +2,7 @@
 
 ## 1.4 - 2026-10-28
 
+- Monthly repetitions no longer spill into the following month when the selected date is unavailable or a time-zone boundary shifts a first/last weekday rule.
 - Dragging or resizing an appointment around midnight now saves the selected calendar date in every time zone.
 - Appointment email reminders are now sent at the correct time when the database server uses a non-UTC time zone.
 - Calendar popovers and event information now respect record viewing permissions.
