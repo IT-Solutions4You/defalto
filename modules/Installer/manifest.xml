@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<module>
+<exporttime>2026-10-27 15:46:43</exporttime>
+<name>Installer</name>
+<label>Installer</label>
+<parent/>
+<type>extension</type>
+<version>1.61</version>
+<dependencies>
+<version>1.10.71</version>
+<max_version>1.10.71</max_version></dependencies>
+
+<sharingaccess>
+<default>public_readwritedelete</default>
+</sharingaccess>
+<crons>
+<cron>
+<name>InstallerLicenses</name>
+<frequency>86400</frequency>
+<status>1</status>
+<handler>modules/Installer/cron/UpdateLicenses.php</handler>
+<sequence>72</sequence>
+<description/>
+</cron>
+</crons>
+<description>Extension: Installer 1.61</description><license><inline>Defalto extension.
+Version             : 1.61
+Copyright (c) IT-Solutions4You s.r.o.
+Licensed under the GNU AGPL v3 License.
+See LICENSE-AGPLv3.txt for more details.</inline></license></module>
