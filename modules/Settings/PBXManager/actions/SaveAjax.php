@@ -18,6 +18,21 @@
 
 class Settings_PBXManager_SaveAjax_Action extends Vtiger_SaveAjax_Action
 {
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
+        if (!$currentUserModel->isAdminUser()) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        return true;
+    }
+
     // To save Mapping of user from mapping popup
     public function process(Vtiger_Request $request)
     {
