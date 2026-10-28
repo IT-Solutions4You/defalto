@@ -41,3 +41,7 @@ When starting a mass email, choose which available email fields should receive t
 # Attachments
 
 Record images, previews and downloads keep working when an administrator stores persistent attachments outside the public web directory. Access still follows the usual record and file permissions.
+
+# Dashboard
+
+Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook text are displayed as text, including when they contain characters used by HTML.
