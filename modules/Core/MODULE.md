@@ -1,5 +1,10 @@
 # Core UI ownership
 
+## Style Guide
+
+- `Core_StyleGuide_View` is the administrator-only live UI catalog at `index.php?module=Core&view=StyleGuide`; it extends `Vtiger_Footer_View` so the complete application header, styles, scripts, and footer wrap the technical Core page.
+- `layouts/d1/modules/Core/StyleGuide.tpl` renders Bootstrap and Defalto components with the application's currently loaded resources. Keep examples presentation-only: no database state, module setup, or page-specific JavaScript is required.
+
 ## Server-side JavaScript message translations
 
 - `vJSTranslate($key, $moduleName)` prepends the current user's language and delegates to `Vtiger_Language_Handler::getJSTranslatedString($language, $key, $module)`. Preserve the language-first argument order so module names cannot be read as translation keys.

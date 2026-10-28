@@ -25,7 +25,7 @@ class Reporting_Calculations_UIType extends Core_Data_UIType
             return $options;
         }
 
-        $fields = $module->getFieldsByType($fieldTypes);
+        $fields = Reporting_Fields_Model::getViewableFieldsByType($module, $fieldTypes);
 
         /**
          * @var Vtiger_Field_Model $field
@@ -34,7 +34,7 @@ class Reporting_Calculations_UIType extends Core_Data_UIType
             $options[] = $field->get('name');
         }
 
-        $fields = $module->getFieldsByType('reference');
+        $fields = Reporting_Fields_Model::getViewableFieldsByType($module, 'reference');
 
         foreach ($fields as $field) {
             foreach ($field->getReferenceList() as $referenceModule) {
@@ -44,7 +44,7 @@ class Reporting_Calculations_UIType extends Core_Data_UIType
                     continue;
                 }
 
-                $referenceFields = $referenceModule->getFieldsByType($fieldTypes);
+                $referenceFields = Reporting_Fields_Model::getViewableFieldsByType($referenceModule, $fieldTypes);
 
                 foreach ($referenceFields as $referenceField) {
                     $options[] = implode(':', [$field->get('name'), $referenceModule->getName(), $referenceField->getName()]);

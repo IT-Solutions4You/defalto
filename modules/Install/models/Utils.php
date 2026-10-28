@@ -892,22 +892,36 @@ class Install_Utils_Model
      */
     public static function saveInstallerLicenses(): void
     {
-        if (empty($_SESSION['config_file_info']['licenses']) || !is_array($_SESSION['config_file_info']['licenses'])) {
+        $configuredLicenses = $_SESSION['config_file_info']['licenses'] ?? [];
+        $licenseKeys = is_array($configuredLicenses) ? $configuredLicenses : [];
+        $licenseKeys[] = $_SESSION['config_file_info']['license'] ?? '';
+        $normalizedLicenseKeys = [];
+
+        foreach ($licenseKeys as $licenseKey) {
+            if (!is_scalar($licenseKey)) {
+                continue;
+            }
+
+            $licenseKey = trim((string)$licenseKey);
+
+            if ('' !== $licenseKey) {
+                $normalizedLicenseKeys[$licenseKey] = $licenseKey;
+            }
+        }
+
+        if (empty($normalizedLicenseKeys)) {
             Core_Install_Model::logInfo('No licenses found');
 
             return;
         }
 
-        $licenseKeys = array_filter($_SESSION['config_file_info']['licenses']);
+        foreach ($normalizedLicenseKeys as $licenseKey) {
+            $license = Installer_License_Model::getInstanceForActivation($licenseKey);
+            $license->activate();
 
-        foreach ($licenseKeys as $licenseKey) {
-            $licenseInfo = Installer_Api_Model::getInstance()->activateLicenseInfo($licenseKey);
-
-            Core_Install_Model::logInfo('License activated');
-
-            $license = Installer_License_Model::getInstance($licenseKey);
-            $license->setInfo($licenseInfo);
-            $license->save();
+            Core_Install_Model::logInfo(
+                $license->isValidLicense() ? 'License activated' : 'License activation failed'
+            );
         }
 
         Core_Install_Model::logInfo('License activation completed');

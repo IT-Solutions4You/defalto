@@ -394,7 +394,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         }
 
         $table = Reporting_Table_Model::getInstance($this->getPrimaryModule());
-        $table->setTableRecords($this->query->getRecords());
+        $table->setTableRecords($this->getAccessibleRecords($this->query->getRecords()));
         $table->setTableColumns($this->getFields());
         $table->setTableLabels($this->getLabels());
         $table->setTableCalculations($this->getCalculations());
@@ -408,6 +408,20 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $this->tableModel = $table;
     }
 
+    protected function getAccessibleRecords(array $records): array
+    {
+        $moduleName = $this->getPrimaryModule();
+
+        return array_filter(
+            $records,
+            static fn(Vtiger_Record_Model $record): bool => Users_Privileges_Model::isPermitted(
+                $moduleName,
+                'DetailView',
+                $record->getId(),
+            )
+        );
+    }
+
     public function retrieveQueryGenerator(): void
     {
         if ($this->query) {
@@ -416,6 +430,11 @@ class Reporting_Record_Model extends Vtiger_Record_Model
 
         $query = Core_QueryGenerator_Model::getInstance($this->getPrimaryModule());
         $query->setFields($this->getQueryFields());
+
+        if (!Users_Privileges_Model::isPermitted($this->getPrimaryModule(), 'DetailView')) {
+            $query->addRecordIdsCondition([]);
+        }
+
         $query->setLimit(0);
         $query->setOrderByClauseRequired(true);
         $query->setOrderByColumns($this->getOrderByColumns());
@@ -476,7 +495,21 @@ class Reporting_Record_Model extends Vtiger_Record_Model
 
     public function getCalculations(): array
     {
-        return $this->getArrayFromJson('calculation');
+        $availableFields = Reporting_Fields_Model::getFieldLabels($this->getPrimaryModule());
+        $calculations = [];
+
+        foreach ($this->getArrayFromJson('calculation') as $fieldName => $calculation) {
+            $configuredFieldName = (string)($calculation['name'] ?? $fieldName);
+
+            if (
+                Reporting_Table_Model::RECORD_COUNT_COLUMN === $configuredFieldName
+                || isset($availableFields[$configuredFieldName])
+            ) {
+                $calculations[$fieldName] = $calculation;
+            }
+        }
+
+        return $calculations;
     }
 
     public function getCalculationFields(): array
@@ -703,7 +736,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
             $sortOrder = $sortConfiguration['direction'];
             [$orderBy] = explode(':', $orderBy);
 
-            $field = $primaryModule->getField($orderBy);
+            $field = Reporting_Fields_Model::getField($primaryModule, $orderBy);
 
             if ($field) {
                 $data[$field->get('table') . '.' . $field->get('column')] = $sortOrder;
@@ -764,7 +797,9 @@ class Reporting_Record_Model extends Vtiger_Record_Model
 
     public function getFields(): array
     {
-        return $this->getArrayFromJson('fields');
+        $availableFields = Reporting_Fields_Model::getFieldLabels($this->getPrimaryModule());
+
+        return array_values(array_intersect($this->getArrayFromJson('fields'), array_keys($availableFields)));
     }
 
     public function getLabels(): array
@@ -774,7 +809,47 @@ class Reporting_Record_Model extends Vtiger_Record_Model
 
     public function getFilter(): array
     {
-        return $this->getArrayFromJson('filter');
+        $filters = $this->getArrayFromJson('filter');
+        $availableFields = Reporting_Fields_Model::getFieldLabels($this->getPrimaryModule());
+
+        foreach ($filters as &$group) {
+            $columns = [];
+
+            foreach ((array)($group['columns'] ?? []) as $condition) {
+                $fieldName = $this->getFilterFieldName((string)($condition['columnname'] ?? ''));
+
+                if ('' !== $fieldName && isset($availableFields[$fieldName])) {
+                    $columns[] = $condition;
+                }
+            }
+
+            if (!empty($columns)) {
+                $lastColumn = array_key_last($columns);
+                $columns[$lastColumn]['column_condition'] = '';
+            }
+
+            $group['columns'] = $columns;
+        }
+
+        unset($group);
+
+        return $filters;
+    }
+
+    protected function getFilterFieldName(string $columnName): string
+    {
+        $parts = explode(':', decode_html($columnName));
+        $fieldName = (string)($parts[2] ?? '');
+
+        if ('' === $fieldName && 'vtiger_crmentity' === ($parts[0] ?? '') && 'crmid' === ($parts[1] ?? '')) {
+            return 'id';
+        }
+
+        if (preg_match('/^\((\w+) ; \((\w+)\) (\w+)\)$/', $fieldName, $matches)) {
+            return implode(':', [$matches[1], $matches[2], $matches[3]]);
+        }
+
+        return $fieldName;
     }
 
     public function getWidth(): array

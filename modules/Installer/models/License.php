@@ -771,6 +771,7 @@ class Installer_License_Model extends Core_DatabaseData_Model
             'extensions',
             'error',
             'transport_error',
+            'debug',
         ];
 
         return array_intersect_key($response, array_flip($allowedKeys));

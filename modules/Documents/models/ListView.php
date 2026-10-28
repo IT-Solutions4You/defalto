@@ -18,6 +18,19 @@
 
 class Documents_ListView_Model extends Vtiger_ListView_Model
 {
+    public function retrieveOrderBy($viewId = 0)
+    {
+        $orderBy = $this->get('orderby');
+
+        if (!empty($orderBy)) {
+            $moduleModel = $this->getModule();
+            $this->set('orderby', $moduleModel->validateListSortField($orderBy));
+            $this->set('sortorder', $moduleModel->validateListSortOrder($this->get('sortorder')));
+        }
+
+        parent::retrieveOrderBy($viewId);
+    }
+
     /**
      * Function to get the list of listview links for the module
      *

@@ -7,6 +7,7 @@ Administrators create and maintain CRM users in Settings, under Users: names, co
 - Regular users can update their own personal details and preferences.
 - Only administrators can change a user's login name, administrator status, role, profile or account status.
 - Passwords and access keys are managed by their dedicated security controls.
+- The system's base currency can be selected only by the first administrator during the initial CRM setup. After initial setup, use the administrator currency settings for supported currency management.
 
 ## Record access
 

@@ -18,6 +18,59 @@
 
 class Documents_Module_Model extends Vtiger_Module_Model
 {
+    public function validateListSortField($fieldName): string
+    {
+        if (!is_string($fieldName) || $fieldName === '') {
+            throw new Exception('Invalid Documents list sort field.');
+        }
+
+        $fieldModel = $this->getField($fieldName);
+
+        if (!$fieldModel || !$fieldModel->isActiveField()) {
+            throw new Exception('Invalid Documents list sort field.');
+        }
+
+        return $fieldModel->getName();
+    }
+
+    public function validateListSortColumn($columnName): string
+    {
+        if (!is_string($columnName)) {
+            throw new Exception('Invalid Documents list sort field.');
+        }
+
+        if ($columnName === '') {
+            return '';
+        }
+
+        $fieldModel = $this->getFieldByColumn($columnName);
+
+        if (!$fieldModel || !$fieldModel->isActiveField()) {
+            throw new Exception('Invalid Documents list sort field.');
+        }
+
+        return $fieldModel->get('column');
+    }
+
+    public function validateListSortOrder($sortOrder): string
+    {
+        if (!is_string($sortOrder)) {
+            throw new Exception('Invalid Documents list sort order.');
+        }
+
+        $sortOrder = strtoupper($sortOrder);
+
+        if ($sortOrder === '') {
+            return 'ASC';
+        }
+
+        if (!in_array($sortOrder, ['ASC', 'DESC'], true)) {
+            throw new Exception('Invalid Documents list sort order.');
+        }
+
+        return $sortOrder;
+    }
+
     /**
      * Functions tells if the module supports workflow
      * @return boolean
