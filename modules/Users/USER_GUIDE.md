@@ -18,3 +18,7 @@ When access data is repaired by a system update, the privileges and sharing data
 ## Signature
 
 Use the signature editor to format email signatures. The signature is appended to outgoing emails and can be used in workflow email content.
+
+# Restricted record actions
+
+Actions restricted on a single record (editing, deleting and others, usually set by a workflow) apply to every user, administrators included. Administrators can remove a restriction in the **Restricted actions** box of the record.

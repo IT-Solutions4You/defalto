@@ -186,6 +186,21 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
         $EMAILMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $recordIds = (array)$this->getRecordsListFromRequest($request);
         $viewer = $this->getViewer($request);
+        $permission = Core_RecordActionPermission_Model::getInstance()->getPermittedRecords(
+            $recordIds,
+            Core_RecordActionPermission_Model::ACTION_EMAIL_SEND
+        );
+
+        // Record action rules deny sending emails for every selected record: show the reason instead of the form
+        if (!empty($permission['skipped']) && empty($permission['permitted'])) {
+            $viewer->assign('TITLE', vtranslate('LBL_RECORD_ACTION_EMAIL_SEND', 'Core'));
+            $viewer->assign('DENY_REASON', reset($permission['skipped']));
+            $viewer->view('RecordActionDeniedModal.tpl', 'Core');
+
+            return;
+        }
+
+        $viewer->assign('RECORD_ACTION_SKIPPED_MESSAGE', Core_RecordActionPermission_Model::getInstance()->getSkippedMessage($permission['skipped']));
         if (count($recordIds) == 1) {
             $single_record = true;
         }
@@ -367,8 +382,11 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
         }
 
         $no_pdftemplates = true;
+        $pdfAttachmentMessage = Core_RecordActionPermission_Model::getInstance()->getPdfAttachmentMessage($permission['permitted'], $pdfExportDenied);
+        $viewer->assign('RECORD_ACTION_PDF_SKIPPED_MESSAGE', $pdfAttachmentMessage);
 
-        if (EMAILMaker_Module_Model::isPDFMakerInstalled()) {
+        // Record action rules deny the PDF export of every selected record: no PDF template is offered
+        if (EMAILMaker_Module_Model::isPDFMakerInstalled() && !$pdfExportDenied) {
             $pdftemplateid = $request->get('pdftemplateid');
 
             if ($request->has('pdflanguage') && !$request->isEmpty('pdflanguage')) {

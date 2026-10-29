@@ -222,6 +222,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'يتضمن إنشاء',
     'LBL_ACTION_FOR_WORKFLOW'      => 'إجراءات سير العمل',
     'LBL_WORKFLOW_SEARCH'          => 'البحث عن طريق اسم',
+    'RestrictRecordActions' => 'تقييد إجراءات السجل',
+    'ClearRecordActions' => 'إزالة قيود إجراءات السجل',
+    'LBL_RestrictRecordActions' => 'تقييد إجراءات السجل',
+    'LBL_ClearRecordActions' => 'إزالة قيود إجراءات السجل',
+    'Restrict record actions' => 'تقييد إجراءات السجل',
+    'Clear record action restrictions' => 'إزالة قيود إجراءات السجل',
 ];
 
 $jsLanguageStrings = [
@@ -247,4 +253,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'الهواتف إعلام دفع',
     'VTCreateEntityTask'          => 'إنشاء سجل',
     'LBL_EXPRESSION_INVALID'      => 'التعبير غير صالح',
+    'RestrictRecordActions' => 'تقييد إجراءات السجل',
+    'ClearRecordActions' => 'إزالة قيود إجراءات السجل',
 ];

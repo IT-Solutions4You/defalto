@@ -16,3 +16,7 @@
 - Uploaded files use `Core_Storage_Model::initAttachmentFileDirectory()`. The root is `$storage_directory`; an unset or empty value falls back to `storage/`. Absolute roots outside the web directory are supported.
 - `CRMEntity::getAttachmentUploadPath()` is the shared upload hook and delegates to `decideFilePath()`, so Documents follows the same storage policy as other persisted attachments.
 - The dated `<year>/<month name>/week<N>` directory (week 1-5) is created recursively and written to `vtiger_attachments.path`. Downloads resolve files through `Core_Storage_Model::getAttachmentFilePath()` from that stored path, so existing documents keep their original location when `$storage_directory` changes. Relative stored paths resolve against `root_directory`.
+
+# Record action permissions
+
+- `layouts/d1/modules/Documents/ListViewRecordActions.tpl` hides the Edit and Delete row actions of a document whose record rule denies them (`Core_RecordActionPermission_Model`, preloaded by `Vtiger_List_View`), the same way as `Vtiger/ListViewRecordActions.tpl`.

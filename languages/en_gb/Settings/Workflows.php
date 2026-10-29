@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Includes Creation',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Action for Workflow',
     'LBL_WORKFLOW_SEARCH'          => 'Search by Name',
+    'RestrictRecordActions' => 'Restrict record actions',
+    'ClearRecordActions' => 'Clear record action restrictions',
+    'LBL_RestrictRecordActions' => 'Restrict record actions',
+    'LBL_ClearRecordActions' => 'Clear record action restrictions',
+    'Restrict record actions' => 'Restrict record actions',
+    'Clear record action restrictions' => 'Clear record action restrictions',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Share with',
@@ -237,4 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobile Push Notification',
     'VTCreateEntityTask'          => 'Create Record',
     'LBL_EXPRESSION_INVALID'      => 'Expression Invalid',
+    'RestrictRecordActions' => 'Restrict record actions',
+    'ClearRecordActions' => 'Clear record action restrictions',
 ];

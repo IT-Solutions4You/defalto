@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Comprend La Création',
     'LBL_ACTION_FOR_WORKFLOW'      => 'D\'Action pour les Flux de travail',
     'LBL_WORKFLOW_SEARCH'          => 'Recherche par Nom',
+    'RestrictRecordActions' => 'Restreindre les actions de l’enregistrement',
+    'ClearRecordActions' => 'Supprimer les restrictions des actions de l’enregistrement',
+    'LBL_RestrictRecordActions' => 'Restreindre les actions de l’enregistrement',
+    'LBL_ClearRecordActions' => 'Supprimer les restrictions des actions de l’enregistrement',
+    'Restrict record actions' => 'Restreindre les actions de l’enregistrement',
+    'Clear record action restrictions' => 'Supprimer les restrictions des actions de l’enregistrement',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Partager avec',
@@ -237,4 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobile De Notification Push',
     'VTCreateEntityTask'          => 'Créer Un Enregistrement',
     'LBL_EXPRESSION_INVALID'      => 'Expression Non Valide',
+    'RestrictRecordActions' => 'Restreindre les actions de l’enregistrement',
+    'ClearRecordActions' => 'Supprimer les restrictions des actions de l’enregistrement',
 ];

@@ -209,7 +209,7 @@
         </div>
         <div class="inventoryItemFooter d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3 pt-2">
             <div class="inventoryItemAddContainer flex-grow-1 px-4 py-2">
-                <div class="btn-toolbar inventoryItemAddButtons" style="display:inline;">
+                <div class="btn-toolbar inventoryItemAddButtons{if isset($ITEMS_EDITABLE) && !$ITEMS_EDITABLE} d-none{/if}" style="display:inline;">
                     <div class="recordLabel verticalAlignMiddle me-2 font-bold" style="display:inline;">{vtranslate('Add', 'InventoryItem')}: </div>
                     <button type="button" class="btn btn-primary active mb-2 me-2" id="addText" data-modulename="">
                         <i class="fa fa-i-cursor me-2"></i>

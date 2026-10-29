@@ -227,6 +227,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Incluye La Creación De',
     'LBL_ACTION_FOR_WORKFLOW'      => 'La acción de Flujo de trabajo',
     'LBL_WORKFLOW_SEARCH'          => 'Búsqueda por Nombre',
+    'RestrictRecordActions' => 'Restringir acciones del registro',
+    'ClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'LBL_RestrictRecordActions' => 'Restringir acciones del registro',
+    'LBL_ClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'Restrict record actions' => 'Restringir acciones del registro',
+    'Clear record action restrictions' => 'Eliminar restricciones de acciones del registro',
 ];
 
 $jsLanguageStrings = [
@@ -252,4 +258,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Móvil De Notificación De Inserción',
     'VTCreateEntityTask'          => 'Crear Registro',
     'LBL_EXPRESSION_INVALID'      => 'La Expresión No Válida',
+    'RestrictRecordActions' => 'Restringir acciones del registro',
+    'ClearRecordActions' => 'Eliminar restricciones de acciones del registro',
 ];

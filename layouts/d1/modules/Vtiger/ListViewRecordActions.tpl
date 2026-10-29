@@ -9,11 +9,14 @@
 {strip}
     <!--LIST VIEW RECORD ACTIONS-->
     <div class="table-actions d-flex align-items-center">
+        {assign var=LIST_VIEW_ENTRY_EDIT_DENIED value=Core_RecordActionPermission_Model::getInstance()->getDenyReason($LISTVIEW_ENTRY->getId(), 'EditView')}
+        {assign var=LIST_VIEW_ENTRY_DELETE_DENIED value=Core_RecordActionPermission_Model::getInstance()->getDenyReason($LISTVIEW_ENTRY->getId(), 'Delete')}
         {if !$SEARCH_MODE_RESULTS}
             <span class="input form-check">
                 {assign var=LIST_VIEW_ENTRIE_IS_READONLY value=!Core_Readonly_Model::isPermitted($LISTVIEW_ENTRY->getModuleName(), $LISTVIEW_ENTRY->getId())}
                 <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox form-check-input"/>
                 <input type="hidden" value="{$LIST_VIEW_ENTRIE_IS_READONLY}" class="listViewEntriesIsReadonly"/>
+                <input type="hidden" value="{$LIST_VIEW_ENTRY_EDIT_DENIED|escape}" class="listViewEntriesEditDenied"/>
             </span>
         {/if}
         {if $LISTVIEW_ENTRY->get('starred') eq vtranslate('LBL_YES', $MODULE)}
@@ -52,7 +55,7 @@
                     </a>
                 </li>
                 {if $RECORD_ACTIONS}
-                    {if $RECORD_ACTIONS['edit'] && !$LIST_VIEW_ENTRIE_IS_READONLY}
+                    {if $RECORD_ACTIONS['edit'] && !$LIST_VIEW_ENTRIE_IS_READONLY && !$LIST_VIEW_ENTRY_EDIT_DENIED}
                         <li>
                             <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:app.controller().editRecord('{$LISTVIEW_ENTRY->getEditViewUrl()}&app={$SELECTED_MENU_CATEGORY}')">
                                 <i class="fa-solid fa-pencil text-secondary"></i>
@@ -60,7 +63,7 @@
                             </a>
                         </li>
                     {/if}
-                    {if $RECORD_ACTIONS['delete'] && !$LIST_VIEW_ENTRIE_IS_READONLY}
+                    {if $RECORD_ACTIONS['delete'] && !$LIST_VIEW_ENTRIE_IS_READONLY && !$LIST_VIEW_ENTRY_DELETE_DENIED}
                         <li>
                             <a class="dropdown-item" href="javascript:app.controller().deleteRecord({$LISTVIEW_ENTRY->getId()})" data-id="{$LISTVIEW_ENTRY->getId()}">
                                 <i class="fa-solid fa-trash text-secondary"></i>

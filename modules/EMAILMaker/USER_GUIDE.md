@@ -30,3 +30,7 @@ Notes:
 - Choosing another e-mail template replaces the PDFs the previous one brought; PDFs you added yourself stay.
 - When you start the e-mail from PDF Maker with chosen PDFs, that choice is kept.
 - When PDF Maker is not active, the PDF field and the preselection are not shown.
+
+# Restricted email sending
+
+If sending emails is restricted for a record (for example while it waits for approval), the **Send Email** button in its detail is disabled with a lock; hover over it to see the reason.

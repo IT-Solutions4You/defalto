@@ -220,6 +220,12 @@ $languageStrings = [
     'week days ago'             => 'hace %s días de la semana',
     'more than week days ago'   => 'hace más de %s días de la semana',
     'less than week days ago'   => 'hace menos de %s días de la semana',
+    'RestrictRecordActions' => 'Restringir acciones del registro',
+    'ClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'LBL_RestrictRecordActions' => 'Restringir acciones del registro',
+    'LBL_ClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'Restrict record actions' => 'Restringir acciones del registro',
+    'Clear record action restrictions' => 'Eliminar restricciones de acciones del registro',
 ];
 
 $jsLanguageStrings = [
@@ -245,4 +251,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Notificación móvil automática',
     'VTCreateEntityTask'          => 'Crear registro',
     'LBL_EXPRESSION_INVALID'      => 'La expresión no es válida',
+    'RestrictRecordActions' => 'Restringir acciones del registro',
+    'ClearRecordActions' => 'Eliminar restricciones de acciones del registro',
 ];
