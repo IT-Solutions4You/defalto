@@ -18,6 +18,8 @@ Use the list selector to choose a saved view and the funnel beside the columns t
 
 After applying conditions, check the result count and use sorting, paging or export as usual. Clear additional filters returns to the saved list's own criteria. Save as filter opens the full editor, where you can name and save the combined criteria.
 
+Export keeps the selected list sorting in ascending or descending order. Invalid sorting directions are rejected instead of being included in the export query.
+
 Each open list keeps its saved view and temporary conditions in its own address. You can leave All open in one tab and build conditions in another without changing the first tab, also after a refresh. Switching to another saved view clears the temporary conditions. Copy the current address to reopen the same view and conditions later.
 
 # Condition editor
