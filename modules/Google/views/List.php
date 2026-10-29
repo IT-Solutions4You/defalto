@@ -48,7 +48,7 @@ class Google_List_View extends Vtiger_PopupAjax_View
             case "changeUser" :
                 $request->set('sourcemodule', 'Contacts');
                 $this->deleteSync($request);
-                $request->set('sourcemodule', 'Appointments');
+                $request->set('sourcemodule', 'Calendar');
                 $this->deleteSync($request);
                 $this->renderSyncUI($request);
 

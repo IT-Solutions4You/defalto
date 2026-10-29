@@ -26,6 +26,22 @@ class Google_MapAjax_Action extends Vtiger_BasicAjax_Action
         return [];
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        $moduleName = $request->get('source_module');
+        $recordId = $request->get('recordid');
+
+        if (!Google_Map_Helper::isSupportedModule($moduleName)
+            || !Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        return true;
+    }
+
     public function process(Vtiger_Request $request)
     {
         switch ($request->get("mode")) {

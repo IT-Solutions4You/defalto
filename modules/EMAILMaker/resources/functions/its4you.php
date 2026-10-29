@@ -107,20 +107,21 @@ if (!function_exists('its4you_formatNumberToPDF')) {
         $PDFMaker_template_id = vglobal("PDFMaker_template_id");
 
         if ($PDFMaker_template_id == "email") {
-            $sql = "SELECT decimals, decimal_point, thousands_separator
-                            FROM vtiger_emakertemplates_settings ";
-            $result = $adb->pquery($sql, []);
+            $data = EMAILMaker_Record_Model::getDecimalSettings();
+            $decimal_point = html_entity_decode($data['point'], ENT_QUOTES);
+            $thousands_separator = html_entity_decode($data['thousands'], ENT_QUOTES);
+            $decimals = $data['decimals'];
         } else {
             $sql = "SELECT decimals, decimal_point, thousands_separator
                             FROM vtiger_pdfmaker_settings           
                             WHERE templateid=?";
             $result = $adb->pquery($sql, [$PDFMaker_template_id]);
-        }
-        $data = $adb->fetch_array($result);
+            $data = $adb->fetch_array($result);
 
-        $decimal_point = html_entity_decode($data["decimal_point"], ENT_QUOTES);
-        $thousands_separator = html_entity_decode(($data["thousands_separator"] != "sp" ? $data["thousands_separator"] : " "), ENT_QUOTES);
-        $decimals = $data["decimals"];
+            $decimal_point = html_entity_decode($data["decimal_point"], ENT_QUOTES);
+            $thousands_separator = html_entity_decode(($data["thousands_separator"] != "sp" ? $data["thousands_separator"] : " "), ENT_QUOTES);
+            $decimals = $data["decimals"];
+        }
 
         if (is_numeric($value)) {
             $number = number_format($value, $decimals, $decimal_point, $thousands_separator);
@@ -143,19 +144,19 @@ if (!function_exists('its4you_formatNumberFromPDF')) {
         $PDFMaker_template_id = vglobal("PDFMaker_template_id");
 
         if ($PDFMaker_template_id == "email") {
-            $sql = "SELECT decimals, decimal_point, thousands_separator
-                            FROM vtiger_emakertemplates_settings ";
-            $result = $adb->pquery($sql, []);
+            $data = EMAILMaker_Record_Model::getDecimalSettings();
+            $decimal_point = html_entity_decode($data['point'], ENT_QUOTES);
+            $thousands_separator = html_entity_decode($data['thousands'], ENT_QUOTES);
         } else {
             $sql = "SELECT decimals, decimal_point, thousands_separator
                             FROM vtiger_pdfmaker_settings           
                             WHERE templateid=?";
             $result = $adb->pquery($sql, [$PDFMaker_template_id]);
-        }
-        $data = $adb->fetch_array($result);
+            $data = $adb->fetch_array($result);
 
-        $decimal_point = html_entity_decode($data["decimal_point"], ENT_QUOTES);
-        $thousands_separator = html_entity_decode(($data["thousands_separator"] != "sp" ? $data["thousands_separator"] : " "), ENT_QUOTES);
+            $decimal_point = html_entity_decode($data["decimal_point"], ENT_QUOTES);
+            $thousands_separator = html_entity_decode(($data["thousands_separator"] != "sp" ? $data["thousands_separator"] : " "), ENT_QUOTES);
+        }
 
         $number = str_replace($thousands_separator, '', $value);
         $number = str_replace($decimal_point, '.', $number);

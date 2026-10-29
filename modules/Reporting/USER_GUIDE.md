@@ -34,7 +34,7 @@ For your first Summary report, follow this order: **Basic Settings → Details �
 | **Report Name** | Enter a descriptive name, such as “Invoices by status”. This is required. |
 | **Folder** | Optionally select a folder to organize your reports. |
 | **Description** | Briefly explain the purpose of the report or its filters. |
-| **Max Entries** | In the current version, this field does not limit the records loaded. Use filters to narrow the results. |
+| **Max Entries** | Sets the maximum number of source records loaded into the report. The same limit applies to previews, saved reports, dashboard widgets, charts, PDF, and XLS exports. If left empty, the system list-page limit is used. |
 | **Currency** | Select the report currency when working with monetary values. |
 
 ### Working with currencies

@@ -21,11 +21,36 @@ class CustomerPortal_SaveRecord extends CustomerPortal_FetchRecord
     protected $recordValues = false;
     protected $mode = 'edit';
 
-    protected function isNewRecordRequest(CustomerPortal_API_Request $request)
+    protected function isNewRecordRequest(CustomerPortal_API_Request $request): bool
     {
         $recordid = $request->get('recordId');
 
-        return (preg_match("/([0-9]+)x0/", $recordid));
+        return (bool)preg_match('/^[0-9]+x0$/', (string)$recordid);
+    }
+
+    protected function isRecordUpdateAccessible($recordId, $module, $parentId = null): bool
+    {
+        if (!empty($parentId)) {
+            if (!$this->isRecordAccessible($parentId)) {
+                return false;
+            }
+
+            $relatedRecordIds = $this->relatedRecordIds($module, CustomerPortal_Utils::getRelatedModuleLabel($module), $parentId);
+
+            return in_array($recordId, $relatedRecordIds);
+        }
+
+        $contactId = vtws_getWebserviceEntityId('Contacts', $this->getActiveCustomer()->id);
+
+        if ($module === 'Contacts') {
+            return $recordId === $contactId;
+        }
+
+        if ($module === 'Accounts') {
+            return $recordId === $this->getParent($contactId);
+        }
+
+        return $this->isRecordAccessible($recordId, $module);
     }
 
     function process(CustomerPortal_API_Request $request)
@@ -48,7 +73,9 @@ class CustomerPortal_SaveRecord extends CustomerPortal_FetchRecord
 
             if (in_array($module, ['HelpDesk', 'Documents', 'Assets', 'Quotes', 'Contacts', 'Accounts'])) {
                 $recordId = $request->get('recordId');
-                if (!empty($recordId)) {
+                $isNewRecord = empty($recordId) || $this->isNewRecordRequest($request);
+
+                if (!$isNewRecord) {
                     //Stop edit record if edit is disabled
                     if (!CustomerPortal_Utils::isModuleRecordEditable($module)) {
                         throw new Exception("Module record cannot be edited", 1412);
@@ -99,9 +126,13 @@ class CustomerPortal_SaveRecord extends CustomerPortal_FetchRecord
                 }
 
                 try {
-                    if (!$recordId || vtws_recordExists($recordId)) {
+                    if ($isNewRecord || vtws_recordExists($recordId)) {
                         // Retrieve or Initalize
-                        if (!empty($recordId) && !$this->isNewRecordRequest($request)) {
+                        if (!$isNewRecord) {
+                            if (!$this->isRecordUpdateAccessible($recordId, $module, $request->get('parentId'))) {
+                                throw new Exception("Record not Accessible", 1412);
+                            }
+
                             $this->recordValues = vtws_retrieve($recordId, $current_user);
                         } else {
                             $this->recordValues = [];
@@ -112,6 +143,10 @@ class CustomerPortal_SaveRecord extends CustomerPortal_FetchRecord
                         // Set the modified values
                         if (!empty($values)) {
                             foreach ($values as $name => $value) {
+                                if ($name === 'id') {
+                                    continue;
+                                }
+
                                 $this->recordValues[$name] = $value;
                             }
                         }

@@ -28,6 +28,21 @@ class Settings_PBXManager_Edit_View extends Vtiger_Edit_View
         $this->showPopup($request);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+
+        if (!$currentUserModel->isAdminUser()) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        return true;
+    }
+
     public function showPopup(Vtiger_Request $request)
     {
         $id = $request->get('id');

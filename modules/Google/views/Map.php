@@ -23,10 +23,11 @@ class Google_Map_View extends Vtiger_Detail_View
      */
     public function checkPermission(Vtiger_Request $request): bool
     {
-        $moduleName = $request->getModule();
+        $moduleName = $request->get('source_module');
         $recordId = $request->get('record');
 
-        $recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
+        $recordPermission = Google_Map_Helper::isSupportedModule($moduleName)
+            && Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
 
         if (!$recordPermission) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));

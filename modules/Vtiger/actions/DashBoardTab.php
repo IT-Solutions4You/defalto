@@ -140,4 +140,12 @@ class Vtiger_DashBoardTab_Action extends Core_Controller_Action
         }
         $response->emit();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
+    {
+        return $request->validateWriteAccess();
+    }
 }

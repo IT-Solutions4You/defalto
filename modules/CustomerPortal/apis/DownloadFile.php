@@ -18,6 +18,80 @@
 
 class CustomerPortal_DownloadFile extends CustomerPortal_API_Abstract
 {
+    protected function isWebserviceRecordId($recordId): bool
+    {
+        return is_string($recordId) && preg_match('/^[1-9][0-9]*x[1-9][0-9]*$/', $recordId) === 1;
+    }
+
+    protected function getRecordModule(string $recordId): string
+    {
+        global $adb;
+        $idComponents = vtws_getIdComponents($recordId);
+
+        return VtigerWebserviceObject::fromId($adb, (int)$idComponents[0])->getEntityName();
+    }
+
+    protected function validateDocumentAccess(string $recordId, string $parentId, string $parentModule): void
+    {
+        if (empty($parentId)) {
+            if (!$this->isRecordAccessible($recordId, 'Documents')) {
+                throw new Exception('Record not accessible', 1412);
+            }
+
+            return;
+        }
+
+        if ($parentModule === 'Faq') {
+            if (!$this->isFaqPublished($parentId)) {
+                throw new Exception('This Faq is not published', 1412);
+            }
+        } elseif (!$this->isRecordAccessible($parentId)) {
+            throw new Exception('Parent record not accessible', 1412);
+        }
+
+        $relatedRecordIds = $this->relatedRecordIds(
+            'Documents',
+            CustomerPortal_Utils::getRelatedModuleLabel('Documents', $parentModule),
+            $parentId
+        );
+
+        if (!in_array($recordId, $relatedRecordIds, true)) {
+            throw new Exception('Record not accessible', 1412);
+        }
+    }
+
+    protected function retrieveAccessibleComment(int $commentId, string $parentId): ModComments_Record_Model
+    {
+        $commentModel = Vtiger_Record_Model::getInstanceById($commentId, 'ModComments');
+
+        if ((int)$commentModel->get('is_private') !== 0) {
+            throw new Exception('Record not accessible', 1412);
+        }
+
+        $relatedRecordId = (int)$commentModel->get('related_to');
+        $relatedModule = getSalesEntityType($relatedRecordId);
+
+        if (empty($relatedRecordId) || empty($relatedModule) || !CustomerPortal_Utils::isModuleActive($relatedModule)) {
+            throw new Exception('Record not accessible', 1412);
+        }
+
+        $relatedRecordWebserviceId = vtws_getWebserviceEntityId($relatedModule, $relatedRecordId);
+
+        if (!empty($parentId) && $parentId !== $relatedRecordWebserviceId) {
+            throw new Exception('Record not accessible', 1412);
+        }
+
+        if ($relatedModule === 'Faq') {
+            if (!$this->isFaqPublished($relatedRecordWebserviceId)) {
+                throw new Exception('This Faq is not published', 1412);
+            }
+        } elseif (!$this->isRecordAccessible($relatedRecordWebserviceId, $relatedModule)) {
+            throw new Exception('Record not accessible', 1412);
+        }
+
+        return $commentModel;
+    }
+
     function process(CustomerPortal_API_Request $request)
     {
         global $adb;
@@ -29,40 +103,45 @@ class CustomerPortal_DownloadFile extends CustomerPortal_API_Abstract
             $recordId = $request->get('recordId');
             $module = $request->get('module');
             $parentModule = $request->get('parentModule');
+
+            if (
+                !is_string($module)
+                || !is_string($parentId)
+                || !is_string($parentModule)
+                || !$this->isWebserviceRecordId($recordId)
+            ) {
+                throw new Exception('Invalid download request', 1412);
+            }
+
+            if (!empty($parentId)) {
+                if (!$this->isWebserviceRecordId($parentId)) {
+                    throw new Exception('Invalid download request', 1412);
+                }
+
+                $recordParentModule = $this->getRecordModule($parentId);
+
+                if (!empty($parentModule) && $parentModule !== $recordParentModule) {
+                    throw new Exception('Invalid download request', 1412);
+                }
+
+                $parentModule = $recordParentModule;
+            }
+
             if (!CustomerPortal_Utils::isModuleActive($module)) {
                 $response->setError(1404, 'Module is disabled.');
 
                 return $response;
             }
 
-            if (!empty($parentId)) {
-                if ($parentModule === 'Faq') {
-                    if (!($this->isFaqPublished($parentId))) {
-                        throw new Exception("This Faq is not published", 1412);
-                        exit;
-                    }
-                } else {
-                    if (!$this->isRecordAccessible($parentId)) {
-                        throw new Exception("Parent record not Accessible", 1412);
-                        exit;
-                    }
-                    $relatedRecordIds = $this->relatedRecordIds($module, CustomerPortal_Utils::getRelatedModuleLabel($module, $parentModule), $parentId);
-
-                    if (!in_array($recordId, $relatedRecordIds)) {
-                        throw new Exception("Record not Accessible", 1412);
-                        exit;
-                    }
-                }
-            } else {
-                if (!$this->isRecordAccessible($recordId, $module) && $module != 'ModComments') {
-                    $response->setError(1404, 'Record not accessible');
-
-                    return $response;
-                }
+            if ($this->getRecordModule($recordId) !== $module) {
+                throw new Exception('Invalid download request', 1412);
             }
+
             $idComponents = vtws_getIdComponents($recordId);
             $id = $idComponents[1];
-            if ($module == 'Documents') {
+
+            if ($module === 'Documents') {
+                $this->validateDocumentAccess($recordId, $parentId, $parentModule);
                 $query = "SELECT filetype FROM vtiger_notes INNER JOIN vtiger_crmentity ON vtiger_notes.notesid= vtiger_crmentity.crmid 
                           WHERE notesid =? AND vtiger_crmentity.deleted=?";
                 $res = $adb->pquery($query, [$id, '0']);
@@ -97,10 +176,20 @@ class CustomerPortal_DownloadFile extends CustomerPortal_API_Abstract
                 $fileDetails['filesize'] = $filesize;
                 $fileDetails['filecontents'] = base64_encode(file_get_contents($filenamewithpath));
                 $response->setResult($fileDetails);
-            } elseif ($module == 'ModComments') {
+            } elseif ($module === 'ModComments') {
                 $attachmentId = $request->get('attachmentId');
-                $modCommentsRecordModel = Vtiger_Record_Model::getInstanceById($id, $module);
+
+                if (!is_string($attachmentId) || preg_match('/^[1-9][0-9]*$/', $attachmentId) !== 1) {
+                    throw new Exception('Invalid download request', 1412);
+                }
+
+                $modCommentsRecordModel = $this->retrieveAccessibleComment((int)$id, $parentId);
                 $rawAttachmentDetails = $modCommentsRecordModel->getFileDetails($attachmentId);
+
+                if (empty($rawAttachmentDetails)) {
+                    throw new Exception('Attachment not accessible', 1412);
+                }
+
                 //construct path for attachment and get file size and type details
                 $attachmentDetails = $rawAttachmentDetails[0];
                 $fileid = $attachmentDetails['attachmentsid'];
@@ -123,8 +212,7 @@ class CustomerPortal_DownloadFile extends CustomerPortal_API_Abstract
                 $fileDetails['filecontents'] = base64_encode(file_get_contents($filenamewithpath));
                 $response->setResult($fileDetails);
             } else {
-                throw new Exception("Download not supported.", 1412);
-                exit;
+                throw new Exception('Download not supported.', 1412);
             }
 
             return $response;

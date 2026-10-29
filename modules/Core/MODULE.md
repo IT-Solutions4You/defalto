@@ -120,3 +120,7 @@ class Example_Filter_Model extends Core_Filter_Model
 # Database data: IN conditions
 
 - `Core_DatabaseData_Model` search arrays (`selectData()`, `selectResult()`, `deleteData()`, `updateData()` and their `get*Query()`): a non-array value (including null, object, bool) is `column=?`; an array is `column IN (?,...)` (`getSearchCondition()`, with `getSearchParams()` building parameters in the same order). An empty array throws an `Exception` before any query is built, so callers handle empty lists themselves (as `Core_TemplateRelation_Model` does). Scalar searches produce the former SQL and parameters. A search without any column keeps the former delete/update statement, which the database refuses; it never deletes all rows.
+
+# Database table lifecycle
+
+- Configure `Core_DatabaseTable_Model` through `getTable($table, $tableId)` before schema operations. `dropTable()` performs an idempotent `DROP TABLE IF EXISTS` and clears cached column metadata for that table; callers must pass a trusted table name owned by their install or migration flow.
