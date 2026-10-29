@@ -17,8 +17,13 @@
 # Product block management
 
 - `EMAILMaker_ProductBlocks_View` is only a compatibility route adapter (`index.php?module=EMAILMaker&view=ProductBlocks`) for the Core Inventory Items Block manager (`Core_ProductBlocks_View`, also linked from Settings).
-- Product-block templates are shared with PDFMaker and PDFMaker Pro in `df_inventoryitems_block` (`Core_InventoryItemsBlock_Model`). The legacy `vtiger_emakertemplates_productbloc_tpl` table is still created by the installer but not used by the runtime editor.
+- Product-block templates are shared with PDFMaker and PDFMaker Pro in `df_inventoryitems_block` (`Core_InventoryItemsBlock_Model`). The obsolete `vtiger_emakertemplates_productbloc_tpl` storage is removed by `EMAILMaker_Install_Model::migrate()` and is not created on new installations.
 - Global rows with an empty module are available to every supported inventory document module. Core installs two global starter templates only when the shared table is empty.
+
+# Database lifecycle
+
+- `EMAILMaker_Install_Model::migrate()` removes obsolete EMAIL Maker campaign/drip, mass-email, attachment/content, sequence, license/version, picklist, product-block and related-block tables that have no runtime owner. Related blocks and product blocks are owned by Core in `df_related_block` and `df_inventoryitems_block`.
+- Keep `vtiger_emakertemplates_sent` and `vtiger_emakertemplates_emails` while the existing send/status flow still reads them.
 
 # Display conditions
 

@@ -40,32 +40,6 @@ class EMAILMaker_Install_Model extends Core_Install_Model
 
     /**
      * @return void
-     */
-    public function actualizeSequenceTables(): void
-    {
-        $seqTables = array(
-            'vtiger_emakertemplates_drips_seq' => 'id',
-            'vtiger_emakertemplates_drip_groups_seq' => 'id',
-            'vtiger_emakertemplates_drip_tpls_seq' => 'id',
-            'vtiger_emakertemplates_seq' => 'id',
-            'vtiger_emakertemplates_delay' => 'delay_active',
-            'vtiger_emakertemplates_relblocks_seq' => 'id',
-        );
-
-        foreach ($seqTables as $seqTable => $seqTableId) {
-            $result = $this->db->query(sprintf('SELECT %s FROM %s', $seqTableId, $seqTable));
-
-            if ($this->db->num_rows($result) < 1) {
-                $this->db->pquery(
-                    sprintf('INSERT INTO %s VALUES (?)', $seqTable),
-                    array('0')
-                );
-            }
-        }
-    }
-
-    /**
-     * @return void
      * @throws Exception
      */
     public function addCustomLinks(): void
@@ -88,19 +62,6 @@ class EMAILMaker_Install_Model extends Core_Install_Model
         $this->updateWorkflows(false);
     }
 
-    public function insertProductBlocks()
-    {
-        $result = $this->db->pquery('SELECT id FROM vtiger_emakertemplates_productbloc_tpl');
-
-        if (!$this->db->num_rows($result)) {
-            $data = "INSERT INTO `vtiger_emakertemplates_productbloc_tpl` (`id`, `name`, `body`) VALUES
-                (1, 'product block for individual tax', '<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" style=\"font-size:10px;\" width=\"100%\">\r\n	<thead>\r\n		<tr bgcolor=\"#c0c0c0\">\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>Pos</strong></span></td>\r\n			<td colspan=\"2\" style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%G_Qty%</strong></span></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><span style=\"font-weight: bold;\">Text</span></span></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%G_LBL_LIST_PRICE%<br />\r\n				</strong></span></td>\r\n			<td style=\"text-align: center;\">\r\n				<strong>%G_Subtotal%</strong></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%G_Discount%</strong></span></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%G_LBL_NET_PRICE%<br />\r\n				without TAX<br />\r\n				</strong></span></td>\r\n			<td style=\"text-align: center;\">\r\n				<span><strong>%G_Tax% (%)</strong></span></td>\r\n			<td style=\"text-align: center;\">\r\n				<span><strong>%G_Tax%</strong> (<strong>$" . "CURRENCYCODE$</strong>)</span></td>\r\n			<td style=\"text-align: center;\">\r\n				<span><strong>%M_Total%</strong></span></td>\r\n		</tr>\r\n	</thead>\r\n	<tbody>\r\n		<tr>\r\n			<td colspan=\"11\">\r\n				#PRODUCTBLOC_START#</td>\r\n		</tr>\r\n		<tr>\r\n			<td style=\"text-align: center; vertical-align: top;\">\r\n				$" . "PRODUCTPOSITION$</td>\r\n			<td align=\"right\" valign=\"top\">\r\n				$" . "PRODUCTQUANTITY$</td>\r\n			<td align=\"left\" style=\"TEXT-ALIGN: center\" valign=\"top\">\r\n				$" . "PRODUCTUSAGEUNIT$</td>\r\n			<td align=\"left\" valign=\"top\">\r\n				$" . "PRODUCTNAME$</td>\r\n			<td align=\"right\" style=\"text-align: right;\" valign=\"top\">\r\n				$" . "PRODUCTLISTPRICE$</td>\r\n			<td align=\"right\" style=\"TEXT-ALIGN: right\" valign=\"top\">\r\n				$" . "PRODUCTTOTAL$</td>\r\n			<td align=\"right\" style=\"TEXT-ALIGN: right\" valign=\"top\">\r\n				$" . "PRODUCTDISCOUNT$</td>\r\n			<td align=\"right\" style=\"text-align: right;\" valign=\"top\">\r\n				$" . "PRODUCTSTOTALAFTERDISCOUNT$</td>\r\n			<td align=\"right\" style=\"text-align: right;\" valign=\"top\">\r\n				$" . "PRODUCTVATPERCENT$</td>\r\n			<td align=\"right\" style=\"text-align: right;\" valign=\"top\">\r\n				$" . "PRODUCTVATSUM$</td>\r\n			<td align=\"right\" style=\"TEXT-ALIGN: right\" valign=\"top\">\r\n				$" . "PRODUCTTOTALSUM$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"11\">\r\n				#PRODUCTBLOC_END#</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"TEXT-ALIGN: left\">\r\n				Subtotals</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				<span style=\"text-align: right; \">$" . "TOTALWITHOUTVAT$</span></td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				&nbsp;</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				<span style=\"text-align: right; \">$" . "VAT$</span></td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "SUBTOTAL$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"10\" style=\"TEXT-ALIGN: left\">\r\n				%G_Discount%</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "TOTALDISCOUNT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"10\" style=\"TEXT-ALIGN: left\">\r\n				Total with TAX</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "TOTALWITHVAT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"10\" style=\"text-align: left;\">\r\n				%G_LBL_SHIPPING_AND_HANDLING_CHARGES%</td>\r\n			<td style=\"text-align: right;\">\r\n				$" . "SHTAXAMOUNT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"10\" style=\"TEXT-ALIGN: left\">\r\n				%G_LBL_TAX_FOR_SHIPPING_AND_HANDLING%</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "SHTAXTOTAL$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"10\" style=\"TEXT-ALIGN: left\">\r\n				%G_Adjustment%</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "ADJUSTMENT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"10\" style=\"TEXT-ALIGN: left\">\r\n				<span style=\"font-weight: bold;\">%G_LBL_GRAND_TOTAL% </span><strong>($" . "CURRENCYCODE$)</strong></td>\r\n			<td nowrap=\"nowrap\" style=\"TEXT-ALIGN: right\">\r\n				<strong>$" . "TOTAL$</strong></td>\r\n		</tr>\r\n	</tbody>\r\n</table>\r\n'),
-                (2, 'product block for group tax', '<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" style=\"font-size:10px;\" width=\"100%\">\r\n	<thead>\r\n		<tr bgcolor=\"#c0c0c0\">\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>Pos</strong></span></td>\r\n			<td colspan=\"2\" style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%G_Qty%</strong></span></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><span style=\"font-weight: bold;\">Text</span></span></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%G_LBL_LIST_PRICE%<br />\r\n				</strong></span></td>\r\n			<td style=\"text-align: center;\">\r\n				<strong>%G_Subtotal%</strong></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%G_Discount%</strong></span></td>\r\n			<td style=\"TEXT-ALIGN: center\">\r\n				<span><strong>%M_Total%</strong></span></td>\r\n		</tr>\r\n	</thead>\r\n	<tbody>\r\n		<tr>\r\n			<td colspan=\"8\">\r\n				#PRODUCTBLOC_START#</td>\r\n		</tr>\r\n		<tr>\r\n			<td style=\"text-align: center; vertical-align: top;\">\r\n				$" . "PRODUCTPOSITION$</td>\r\n			<td align=\"right\" valign=\"top\">\r\n				$" . "PRODUCTQUANTITY$</td>\r\n			<td align=\"left\" style=\"TEXT-ALIGN: center\" valign=\"top\">\r\n				$" . "PRODUCTUSAGEUNIT$</td>\r\n			<td align=\"left\" valign=\"top\">\r\n				$" . "PRODUCTNAME$</td>\r\n			<td align=\"right\" style=\"text-align: right;\" valign=\"top\">\r\n				$" . "PRODUCTLISTPRICE$</td>\r\n			<td align=\"right\" style=\"TEXT-ALIGN: right\" valign=\"top\">\r\n				$" . "PRODUCTTOTAL$</td>\r\n			<td align=\"right\" style=\"TEXT-ALIGN: right\" valign=\"top\">\r\n				$" . "PRODUCTDISCOUNT$</td>\r\n			<td align=\"right\" style=\"text-align: right;\" valign=\"top\">\r\n				$" . "PRODUCTSTOTALAFTERDISCOUNT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"8\">\r\n				#PRODUCTBLOC_END#</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"TEXT-ALIGN: left\">\r\n				<span>%G_LBL_NET_PRICE% without TAX</span></td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "TOTALWITHOUTVAT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"TEXT-ALIGN: left\">\r\n				%G_Discount%</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "TOTALDISCOUNT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"TEXT-ALIGN: left\">\r\n				Total without TAX</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "TOTALAFTERDISCOUNT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"text-align: left;\">\r\n				%G_Tax% $" . "VATPERCENT$ % %G_LBL_LIST_OF% $" . "TOTALAFTERDISCOUNT$</td>\r\n			<td style=\"text-align: right;\">\r\n				$" . "VAT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"text-align: left;\">\r\n				Total with TAX</td>\r\n			<td style=\"text-align: right;\">\r\n				$" . "TOTALWITHVAT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"text-align: left;\">\r\n				%G_LBL_SHIPPING_AND_HANDLING_CHARGES%</td>\r\n			<td style=\"text-align: right;\">\r\n				$" . "SHTAXAMOUNT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"TEXT-ALIGN: left\">\r\n				%G_LBL_TAX_FOR_SHIPPING_AND_HANDLING%</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "SHTAXTOTAL$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"TEXT-ALIGN: left\">\r\n				%G_Adjustment%</td>\r\n			<td style=\"TEXT-ALIGN: right\">\r\n				$" . "ADJUSTMENT$</td>\r\n		</tr>\r\n		<tr>\r\n			<td colspan=\"7\" style=\"TEXT-ALIGN: left\">\r\n				<span style=\"font-weight: bold;\">%G_LBL_GRAND_TOTAL% </span><strong>($" . "CURRENCYCODE$)</strong></td>\r\n			<td nowrap=\"nowrap\" style=\"TEXT-ALIGN: right\">\r\n				<strong>$" . "TOTAL$</strong></td>\r\n		</tr>\r\n	</tbody>\r\n</table>\r\n');";
-
-            $this->db->pquery($data);
-        }
-    }
-
     /**
      * @return array
      */
@@ -116,34 +77,18 @@ class EMAILMaker_Install_Model extends Core_Install_Model
     {
         return [
             'vtiger_emakertemplates',
-            'vtiger_emakertemplates_attch',
             'vtiger_emakertemplates_emails',
             'vtiger_emakertemplates_sent',
             'vtiger_emakertemplates_settings',
-            'vtiger_emakertemplates_relblocks',
-            'vtiger_emakertemplates_relblockcol',
-            'vtiger_emakertemplates_relblockcriteria',
-            'vtiger_emakertemplates_relblockcriteria_g',
-            'vtiger_emakertemplates_relblockdatefilter',
-            'vtiger_emakertemplates_productbloc_tpl',
             'vtiger_emakertemplates_ignorepicklistvalues',
             'vtiger_emakertemplates_profilespermissions',
-            'vtiger_emakertemplates_picklists',
             'vtiger_emakertemplates_sharing',
             'vtiger_emakertemplates_default_from',
-            'vtiger_emakertemplates_drips',
-            'vtiger_emakertemplates_drip_groups',
-            'vtiger_emakertemplates_delay',
-            'vtiger_emakertemplates_drip_tpls',
-            'vtiger_emakertemplates_sharing_drip',
             'vtiger_emakertemplates_documents',
             'vtiger_emakertemplates_userstatus',
             'vtiger_emakertemplates_label_keys',
             'vtiger_emakertemplates_label_vals',
             'vtiger_emakertemplates_images',
-            'vtiger_emakertemplates_relblocksortcol',
-            'vtiger_emakertemplates_me',
-            'vtiger_emakertemplates_contents',
             'vtiger_emakertemplates_displayed',
         ];
     }
@@ -210,14 +155,6 @@ class EMAILMaker_Install_Model extends Core_Install_Model
             ->createKey('KEY IF NOT EXISTS `is_listview` (`is_listview`)')
             ->createKey('KEY IF NOT EXISTS `is_theme` (`is_theme`)')
         ;
-        $this->getTable('vtiger_emakertemplates_attch', 'attid')
-            ->createTable()
-            ->createColumn('esentid', 'int(11) NOT NULL')
-            ->createColumn('filename', 'varchar(255) NOT NULL')
-            ->createColumn('file_desc', 'varchar(255) NOT NULL')
-            ->createColumn('type', 'varchar(255) NOT NULL')
-            ->createKey('KEY IF NOT EXISTS `attid` (`attid`)');
-
         $this->getTable('vtiger_emakertemplates_emails', 'emailid')
             ->createTable()
             ->createColumn('esentid', 'int(11) NOT NULL')
@@ -271,53 +208,6 @@ class EMAILMaker_Install_Model extends Core_Install_Model
             ->createColumn('thousands_separator', 'char(2) NOT NULL')
             ->createColumn('phpmailer_version', 'varchar(50) DEFAULT \'emailmaker\'');
 
-        $this->getTable('vtiger_emakertemplates_relblocks', null)
-            ->createTable('relblockid', 'int(11) NOT NULL')
-            ->createColumn('name', 'varchar(255) NOT NULL')
-            ->createColumn('module', 'varchar(255) NOT NULL')
-            ->createColumn('secmodule', 'varchar(255) NOT NULL')
-            ->createColumn('block', 'longtext NOT NULL')
-            ->createColumn('deleted', 'tinyint(4) NOT NULL DEFAULT \'0\'')
-            ->createKey('PRIMARY KEY IF NOT EXISTS(`relblockid`)');
-
-        $this->getTable('vtiger_emakertemplates_relblockcol', null)
-            ->createTable('colid', 'int(19) NOT NULL')
-            ->createColumn('relblockid', 'int(19) NOT NULL')
-            ->createColumn('columnname', 'varchar(250) NOT NULL')
-            ->createColumn('sortorder', 'varchar(250) NOT NULL')
-            ->createColumn('sortsequence', 'tinyint(4) NOT NULL DEFAULT \'0\'')
-            ->createKey('PRIMARY KEY IF NOT EXISTS(`relblockid`,`colid`)');
-
-        $this->getTable('vtiger_emakertemplates_relblockcriteria', null)
-            ->createTable('relblockid', 'int(11) NOT NULL')
-            ->createColumn('colid', 'int(11) NOT NULL')
-            ->createColumn('columnname', 'varchar(250) NOT NULL')
-            ->createColumn('comparator', 'varchar(250) NOT NULL')
-            ->createColumn('value', 'varchar(250) DEFAULT NULL')
-            ->createColumn('groupid', 'int(11) NOT NULL')
-            ->createColumn('column_condition', 'varchar(250) NOT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS(`relblockid`,`colid`)');
-
-        $this->getTable('vtiger_emakertemplates_relblockcriteria_g', null)
-            ->createTable('groupid', 'int(11) NOT NULL')
-            ->createColumn('relblockid', 'int(11) NOT NULL')
-            ->createColumn('group_condition', 'varchar(250) DEFAULT NULL')
-            ->createColumn('condition_expression', 'text DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS(`groupid`,`relblockid`)');
-
-        $this->getTable('vtiger_emakertemplates_relblockdatefilter', null)
-            ->createTable('datefilterid', 'int(11) NOT NULL')
-            ->createColumn('datecolumnname', 'varchar(250) NOT NULL')
-            ->createColumn('datefilter', 'varchar(250) NOT NULL')
-            ->createColumn('startdate', 'date NOT NULL')
-            ->createColumn('enddate', 'date NOT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS(`datefilterid`)');
-
-        $this->getTable('vtiger_emakertemplates_productbloc_tpl', 'id')
-            ->createTable()
-            ->createColumn('name', 'varchar(255) NOT NULL')
-            ->createColumn('body', 'longtext NOT NULL');
-
         $this->getTable('vtiger_emakertemplates_ignorepicklistvalues', null)
             ->createTable('value', 'varchar(100) NOT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS(`value`)');
@@ -327,12 +217,6 @@ class EMAILMaker_Install_Model extends Core_Install_Model
             ->createColumn('operation', 'int(11) NOT NULL')
             ->createColumn('permissions', 'int(1) NOT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS(`profileid`,`operation`)');
-
-        $this->getTable('vtiger_emakertemplates_picklists', null)
-            ->createTable('tabid', 'int(11) NOT NULL')
-            ->createColumn('count', 'decimal(10,0) DEFAULT NULL')
-            ->createKey('KEY IF NOT EXISTS `tabid` (`tabid`)')
-            ->createKey('KEY IF NOT EXISTS `count` (`count`)');
 
         $this->getTable('vtiger_emakertemplates_sharing', null)
             ->createTable('templateid', 'int(11) NOT NULL')
@@ -345,42 +229,6 @@ class EMAILMaker_Install_Model extends Core_Install_Model
             ->createColumn('userid', 'int(11) NOT NULL')
             ->createColumn('fieldname', 'varchar(255) NOT NULL')
             ->createKey('UNIQUE KEY IF NOT EXISTS `templateid` (`templateid`,`userid`)');
-
-        $this->getTable('vtiger_emakertemplates_drips', null)
-            ->createTable('dripid', 'int(11) NOT NULL')
-            ->createColumn('dripname', 'varchar(255) NOT NULL')
-            ->createColumn('description', 'text DEFAULT NULL')
-            ->createColumn('module', 'varchar(255) NOT NULL')
-            ->createColumn('owner', 'int(11) NOT NULL')
-            ->createColumn('sharingtype', 'varchar(7) NOT NULL')
-            ->createColumn('deleted', 'int(5) NOT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`dripid`)');
-
-        $this->getTable('vtiger_emakertemplates_drip_groups', null)
-            ->createTable('drip_group_id', 'int(11) NOT NULL')
-            ->createColumn('drip_group_name', 'varchar(255) NOT NULL')
-            ->createColumn('drip_group_save_date', 'datetime NOT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`drip_group_id`)');
-
-        $this->getTable('vtiger_emakertemplates_delay', null)
-            ->createTable('delay_active', 'int(2) NOT NULL DEFAULT \'0\'')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`delay_active`)');
-
-        $this->getTable('vtiger_emakertemplates_drip_tpls', null)
-            ->createTable('driptplid', 'int(11) NOT NULL')
-            ->createColumn('dripid', 'int(11) NOT NULL')
-            ->createColumn('templateid', 'int(11) NOT NULL')
-            ->createColumn('delay', 'int(11) NOT NULL')
-            ->createColumn('deleted', 'int(2) NOT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`driptplid`)')
-            ->createKey('KEY IF NOT EXISTS `templateid` (`templateid`)')
-            ->createKey('KEY IF NOT EXISTS `dripid` (`dripid`)');
-
-        $this->getTable('vtiger_emakertemplates_sharing_drip', null)
-            ->createTable('dripid', 'int(11) NOT NULL')
-            ->createColumn('shareid', 'varchar(10) NOT NULL')
-            ->createColumn('setype', 'varchar(200) NOT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`dripid`,`shareid`,`setype`)');
 
         $this->getTable('vtiger_emakertemplates_documents', null)
             ->createTable('templateid', 'int(11) NOT NULL')
@@ -417,58 +265,50 @@ class EMAILMaker_Install_Model extends Core_Install_Model
             ->createColumn('height', 'int(11) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`crmid`,`productid`,`sequence`)');
 
-        $this->getTable('vtiger_emakertemplates_relblocksortcol', null)
-            ->createTable('sortcolid', 'int(19) NOT NULL')
-            ->createColumn('relblockid', 'int(19) NOT NULL')
-            ->createColumn('columnname', 'varchar(250) DEFAULT \'\'')
-            ->createColumn('sortorder', 'varchar(250) DEFAULT \'Asc\'')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`sortcolid`,`relblockid`)')
-            ->createKey('KEY IF NOT EXISTS `fk_1_vtiger_emakertemplates_relblocksortcol` (`relblockid`)');
-
-        $this->getTable('vtiger_emakertemplates_me', 'meid')
-            ->createTable()
-            ->createColumn('meid', 'int(11) NOT NULL')
-            ->createColumn('description', 'longtext DEFAULT NULL')
-            ->createColumn('templateid', 'int(11) NOT NULL')
-            ->createColumn('listid', 'int(11) NOT NULL')
-            ->createColumn('start_of', 'datetime NOT NULL')
-            ->createColumn('status', 'varchar(200) NOT NULL')
-            ->createColumn('userid', 'int(11) NOT NULL')
-            ->createColumn('from_name', 'varchar(255) NOT NULL')
-            ->createColumn('from_email', 'varchar(255) NOT NULL')
-            ->createColumn('deleted', 'int(2) NOT NULL')
-            ->createColumn('esentid', 'int(11) DEFAULT NULL')
-            ->createColumn('unsubscribes', 'int(11) DEFAULT \'0\'')
-            ->createColumn('total_entries', 'int(11) DEFAULT \'0\'')
-            ->createColumn('max_limit', 'int(11) DEFAULT NULL')
-            ->createColumn('me_subject', 'varchar(255) NOT NULL')
-            ->createColumn('language', 'varchar(50) DEFAULT NULL')
-            ->createColumn('email_fieldname', 'varchar(255) DEFAULT NULL')
-            ->createKey('KEY IF NOT EXISTS `templateid` (`templateid`)')
-            ->createKey('KEY IF NOT EXISTS `listid` (`listid`)')
-            ->createKey('KEY IF NOT EXISTS `start_of` (`start_of`)')
-            ->createKey('KEY IF NOT EXISTS `status` (`status`)')
-            ->createKey('KEY IF NOT EXISTS `userid` (`userid`)')
-            ->createKey('KEY IF NOT EXISTS `deleted` (`deleted`)')
-            ->createKey('KEY IF NOT EXISTS `esentid` (`esentid`)')
-            ->createKey('KEY IF NOT EXISTS `unsubscribes` (`unsubscribes`)')
-            ->createKey('KEY IF NOT EXISTS `total_entries` (`total_entries`)')
-            ->createKey('KEY IF NOT EXISTS `max_limit` (`max_limit`)');
-
-        $this->getTable('vtiger_emakertemplates_contents', 'contentid')
-            ->createTable()
-            ->createColumn('activityid', 'int(11) NOT NULL')
-            ->createColumn('emailid', 'int(11) NOT NULL')
-            ->createColumn('content', 'longtext NOT NULL')
-            ->createKey('KEY IF NOT EXISTS `activityid` (`activityid`)')
-            ->createKey('KEY IF NOT EXISTS `emailid` (`emailid`)');
-
         $this->getTable('vtiger_emakertemplates_displayed', null)
             ->createTable('templateid', 'int(11) NOT NULL')
             ->createColumn('displayed', 'int(11) NOT NULL')
             ->createColumn('conditions', 'longtext NOT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`templateid`)')
             ->createKey('KEY IF NOT EXISTS `displayed` (`displayed`)');
+    }
+
+    /**
+     * Removes tables whose EMAIL Maker runtime owners were removed or moved to shared Core storage.
+     *
+     * @return void
+     */
+    public function migrate(): void
+    {
+        $tables = [
+            'vtiger_emakertemplates_attch',
+            'vtiger_emakertemplates_contents',
+            'vtiger_emakertemplates_delay',
+            'vtiger_emakertemplates_drip_groups',
+            'vtiger_emakertemplates_drip_groups_seq',
+            'vtiger_emakertemplates_drip_tpls',
+            'vtiger_emakertemplates_drip_tpls_seq',
+            'vtiger_emakertemplates_drips',
+            'vtiger_emakertemplates_drips_seq',
+            'vtiger_emakertemplates_license',
+            'vtiger_emakertemplates_me',
+            'vtiger_emakertemplates_picklists',
+            'vtiger_emakertemplates_productbloc_tpl',
+            'vtiger_emakertemplates_relblockcol',
+            'vtiger_emakertemplates_relblockcriteria',
+            'vtiger_emakertemplates_relblockcriteria_g',
+            'vtiger_emakertemplates_relblockdatefilter',
+            'vtiger_emakertemplates_relblocks',
+            'vtiger_emakertemplates_relblocksortcol',
+            'vtiger_emakertemplates_relblocks_seq',
+            'vtiger_emakertemplates_seq',
+            'vtiger_emakertemplates_sharing_drip',
+            'vtiger_emakertemplates_version',
+        ];
+
+        foreach ($tables as $table) {
+            $this->getTable($table, null)->dropTable();
+        }
     }
 
     public function getTemplateModules(): array
