@@ -444,7 +444,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                     } elseif ($fieldDataType == 'double' || $fieldDataType == 'percentage') {
                         $FIELD_DISPLAY_VALUE = $this->formatNumberToPDF($fieldvalue);
                     } elseif ($fieldDataType == 'currency') {
-                        if (is_numeric($fieldvalue)) {
+                        // Amounts of inventory documents are stored in the currency of the document, so they must not be converted.
+                        if (is_numeric($fieldvalue) && !InventoryItem_Utils_Helper::isInventoryModule((string)$emodule)) {
                             if ($inventory_currency === false) {
                                 $user_currency_data = getCurrencySymbolandCRate($current_user->currency_id);
                                 $crate = $user_currency_data['rate'];

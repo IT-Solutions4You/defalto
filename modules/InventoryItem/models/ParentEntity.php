@@ -82,6 +82,40 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
     }
 
     /**
+     * The conversion rate of a document has to follow its currency. The edit form does not post the rate,
+     * so it is taken from the currency settings when the document is new, the currency was changed, or the rate is missing.
+     * The rate of an unchanged currency is kept, because it is the rate valid at the time the document was created.
+     *
+     * @param Vtiger_Record_Model $recordModel
+     *
+     * @return void
+     */
+    public static function syncConversionRate(Vtiger_Record_Model $recordModel): void
+    {
+        $currencyId = (int)$recordModel->get('currency_id');
+        $conversionRate = $recordModel->get('conversion_rate');
+
+        if ($currencyId) {
+            $recordId = $recordModel->getId();
+
+            if (empty($conversionRate) || empty($recordId) || $recordModel->fetchCurrencyId() !== $currencyId) {
+                $currencyInfo = getCurrencySymbolandCRate($currencyId);
+                $conversionRate = $currencyInfo['rate'] ?? null;
+            }
+        }
+
+        if (empty($conversionRate)) {
+            $conversionRate = 1;
+        }
+
+        $recordModel->set('conversion_rate', $conversionRate);
+
+        $entity = $recordModel->getEntity();
+        $entity->column_fields['conversion_rate'] = $conversionRate;
+        $recordModel->setEntity($entity);
+    }
+
+    /**
      * Update calculated / total fields in the parent record.
      * These are known as "computed" in InventoryItem module. If the parent module has a field with the same name, it will be updated.
      *
