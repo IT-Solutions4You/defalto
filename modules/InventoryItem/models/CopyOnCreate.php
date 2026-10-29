@@ -33,29 +33,31 @@ class InventoryItem_CopyOnCreate_Model extends Vtiger_Base_Model
         if (!empty($allItems)) {
             $sourceRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecord);
             $recordModel = Vtiger_Record_Model::getInstanceById($entity->id);
-            $changed = false;
+            $changes = [];
 
             if ($recordModel->get('currency_id') !== $sourceRecordModel->get('currency_id')) {
-                $recordModel->set('currency_id', $sourceRecordModel->get('currency_id'));
-                $recordModel->set('conversion_rate', $sourceRecordModel->get('conversion_rate'));
-                $entity->column_fields['currency_id'] = $recordModel->get('currency_id');
-                $entity->column_fields['conversion_rate'] = $recordModel->get('conversion_rate');
-                $changed = true;
+                $changes['currency_id'] = $sourceRecordModel->get('currency_id');
+                $changes['conversion_rate'] = $sourceRecordModel->get('conversion_rate');
+                $entity->column_fields['currency_id'] = $changes['currency_id'];
+                $entity->column_fields['conversion_rate'] = $changes['conversion_rate'];
             }
 
             if ($recordModel->get('pricebookid') !== $sourceRecordModel->get('pricebookid')) {
-                $recordModel->set('pricebookid', $sourceRecordModel->get('pricebookid'));
-                $changed = true;
+                $changes['pricebookid'] = $sourceRecordModel->get('pricebookid');
             }
 
             if ($recordModel->get('region_id') !== $sourceRecordModel->get('region_id')) {
-                $recordModel->set('region_id', $sourceRecordModel->get('region_id'));
-                $changed = true;
+                $changes['region_id'] = $sourceRecordModel->get('region_id');
             }
 
-            if ($changed) {
-                $recordModel->set('mode', 'edit');
-                $recordModel->save();
+            if (!empty($changes)) {
+                // Only the changed columns are written. Saving the whole re-fetched record would overwrite the values of the new document.
+                $assignments = implode(', ', array_map(static fn(string $column) => $column . ' = ?', array_keys($changes)));
+                $adb = PearDatabase::getInstance();
+                $adb->pquery(
+                    'UPDATE ' . $entity->table_name . ' SET ' . $assignments . ' WHERE ' . $entity->table_index . ' = ?',
+                    array_merge(array_values($changes), [$entity->id])
+                );
             }
 
             $targetModule = $recordModel->getModuleName();

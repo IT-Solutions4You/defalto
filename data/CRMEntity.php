@@ -862,6 +862,10 @@ class CRMEntity extends CRMExtension
             } else {
                 $fldvalue = '';
             }
+            // Record 0 does not exist, it would break the foreign key of the reference column and the whole row would not be saved
+            if (in_array((int)$uitype, [10, 57], true) && ($fldvalue === 0 || $fldvalue === '0')) {
+                $fldvalue = '';
+            }
             if ($fldvalue == '') {
                 $fldvalue = $this->get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype);
             }
