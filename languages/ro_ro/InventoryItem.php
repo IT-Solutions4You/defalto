@@ -34,6 +34,10 @@ $languageStrings = [
     'Unit' => 'Unitate',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
+    'LBL_CONVERSION_TITLE' => 'Verificarea articolelor',
+    'LBL_CONVERSION_INVALID_ITEM' => 'Articolul nu aparține înregistrării sursă.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Cantitatea și prețul trebuie să fie numere.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Trebuie să rămână cel puțin un articol.',
 ];
 
 $jsLanguageStrings = [

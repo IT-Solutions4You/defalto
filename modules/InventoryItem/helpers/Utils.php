@@ -141,6 +141,8 @@ class InventoryItem_Utils_Helper
                     $fieldValue = $fieldModel->getUITypeModel()->getDisplayValue($fieldValue);
                     $row[$fieldName . '_display'] = $fieldValue;
                 }
+
+                $row['unit_display'] = self::getUnitLabel((string)$row['unit'], $row['entityType']);
             }
 
             foreach (InventoryItem_RoundValues_Helper::$roundValues as $fieldName) {
@@ -168,6 +170,63 @@ class InventoryItem_Utils_Helper
         unset($inventoryItems[0]);
 
         return $inventoryItems;
+    }
+
+    /**
+     * Translates a unit stored on an item. The stored unit is the picklist value of the product (Products)
+     * or service (Services), so the translation is searched in the module of the item first and then in the other one.
+     *
+     * @param string $unit
+     * @param string $itemType Products, Services or empty when unknown
+     *
+     * @return string
+     */
+    public static function getUnitLabel(string $unit, string $itemType = ''): string
+    {
+        if ('' === $unit) {
+            return $unit;
+        }
+
+        $modules = 'Services' === $itemType ? ['Services', 'Products'] : ['Products', 'Services'];
+
+        foreach ($modules as $moduleName) {
+            $label = vtranslate($unit, $moduleName);
+
+            if ($label !== $unit) {
+                return $label;
+            }
+        }
+
+        return $unit;
+    }
+
+    /**
+     * Converts the unit displayed to the user back to the stored picklist value. A value which is not a translation of
+     * any known unit (a free text typed by the user) is returned unchanged.
+     *
+     * @param string $label
+     *
+     * @return string
+     */
+    public static function getUnitValue(string $label): string
+    {
+        if ('' === $label) {
+            return $label;
+        }
+
+        $units = array_merge(array_keys(getAllPickListValues('usageunit')), array_keys(getAllPickListValues('service_usageunit')));
+
+        if (in_array($label, $units, true)) {
+            return $label;
+        }
+
+        foreach ($units as $unit) {
+            if (self::getUnitLabel((string)$unit) === $label || self::getUnitLabel((string)$unit, 'Services') === $label) {
+                return (string)$unit;
+            }
+        }
+
+        return $label;
     }
 
     /**

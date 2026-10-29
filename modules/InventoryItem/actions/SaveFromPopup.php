@@ -69,6 +69,10 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
                 $fieldValue = $request->get($fieldName, null);
                 $fieldValue = $fieldModel->getUITypeModel()->getRequestValue($fieldValue);
 
+                if ('unit' === $fieldName && null !== $fieldValue) {
+                    $fieldValue = InventoryItem_Utils_Helper::getUnitValue((string)$fieldValue);
+                }
+
                 if (null !== $fieldValue) {
                     $itemModel->set($fieldName, $fieldValue);
                 }

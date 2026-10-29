@@ -10,7 +10,7 @@
 
 class InventoryItem extends CRMEntity
 {
-    public string $moduleVersion = '1.6';
+    public string $moduleVersion = '1.7';
     public string $moduleName = 'InventoryItem';
     public $table_name = 'df_inventoryitem';
     public $table_index = 'inventoryitemid';

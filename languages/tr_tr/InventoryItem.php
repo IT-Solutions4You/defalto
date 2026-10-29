@@ -34,6 +34,10 @@ $languageStrings = [
     'Unit' => 'Unit',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
+    'LBL_CONVERSION_TITLE' => 'Kalemleri gözden geçir',
+    'LBL_CONVERSION_INVALID_ITEM' => 'Kalem kaynak kayda ait değil.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Miktar ve fiyat sayı olmalıdır.',
+    'LBL_CONVERSION_NO_ITEMS' => 'En az bir kalem kalmalıdır.',
 ];
 
 $jsLanguageStrings = [
