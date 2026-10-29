@@ -26,9 +26,16 @@ class PDFMaker_IndexAjax_Action extends Core_Controller_Action
     /**
      * @inheritDoc
      */
-    public function checkPermission(Vtiger_Request $request): bool
+    public function requiresPermission(Vtiger_Request $request): array
     {
-        return true;
+        $permissions = parent::requiresPermission($request);
+
+        if ('getPreviewContent' === $request->get('mode')) {
+            $request->set('source_module', getSalesEntityType($request->get('record')));
+            $permissions[] = ['module_parameter' => 'source_module', 'action' => 'DetailView', 'record_parameter' => 'record'];
+        }
+
+        return $permissions;
     }
 
     function process(Vtiger_Request $request)

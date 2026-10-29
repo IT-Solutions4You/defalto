@@ -81,6 +81,21 @@ class Core_DatabaseTable_Model extends Vtiger_Base_Model
     }
 
     /**
+     * Drop the configured table and invalidate its cached column metadata.
+     *
+     * @return $this
+     * @throws Exception
+     */
+    public function dropTable(): static
+    {
+        $this->requireTable('Table is empty for drop table');
+        $this->db->query('DROP TABLE IF EXISTS ' . $this->get('table'));
+        $this->clearTableColumns();
+
+        return $this;
+    }
+
+    /**
      * @param string $columnName
      * @param string $tableName
      * @param bool   $cache

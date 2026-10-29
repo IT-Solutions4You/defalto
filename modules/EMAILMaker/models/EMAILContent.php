@@ -131,12 +131,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function getDecimalData()
     {
-        $result2 = self::$db->pquery("SELECT * FROM vtiger_emakertemplates_settings", []);
-        $data = self::$db->fetch_array($result2);
+        $settings = EMAILMaker_Record_Model::getDecimalSettings();
 
-        self::$decimal_point = html_entity_decode($data["decimal_point"], ENT_QUOTES);
-        self::$thousands_separator = html_entity_decode(($data["thousands_separator"] != "sp" ? $data["thousands_separator"] : " "), ENT_QUOTES);
-        self::$decimals = $data["decimals"];
+        self::$decimal_point = html_entity_decode($settings['point'], ENT_QUOTES);
+        self::$thousands_separator = html_entity_decode($settings['thousands'], ENT_QUOTES);
+        self::$decimals = $settings['decimals'];
     }
 
     /**

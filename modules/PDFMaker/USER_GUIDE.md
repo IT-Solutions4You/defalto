@@ -2,6 +2,8 @@
 
 PDF Maker generates PDF documents from CRM templates and can include images from users, contacts, products, and related records. These images remain available when attachment storage is configured outside the public web directory. Image-selection dialogs display files through the CRM attachment endpoint.
 
+PDF downloads and previews follow the CRM record permissions. A user can generate a PDF only for a record they are allowed to view.
+
 PDF Maker follows the language selected in Defalto. All languages included with the application provide the complete PDF Maker interface, including its Settings pages, template editor, installation messages, confirmations, and validation notices.
 
 ## Product block templates

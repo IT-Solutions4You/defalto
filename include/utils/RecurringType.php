@@ -162,69 +162,8 @@ class RecurringType
                 $tempdateObj = new Core_Datetime_Model($date_arr, true);
                 $tempdate = $tempdateObj->get_DB_formatted_date();
             } elseif ($this->recur_type == 'Monthly') {
-                if ($this->repeat_monthby == 'date') {
-                    if ($this->rptmonth_datevalue <= $date) {
-                        $index = $this->rptmonth_datevalue - 1;
-                        $day = $this->rptmonth_datevalue;
-                        if (isset($this->recur_freq)) {
-                            $month = $month + $this->recur_freq;
-                        } else {
-                            $month = $month + 1;
-                        }
-                        $tempdateObj = $tempdateObj->getThismonthDaysbyIndex($index, $day, $month, $year);
-                    } else {
-                        $index = $this->rptmonth_datevalue - 1;
-                        $day = $this->rptmonth_datevalue;
-                        $tempdateObj = $tempdateObj->getThismonthDaysbyIndex($index, $day, $month, $year);
-                    }
-                } elseif ($this->repeat_monthby == 'day') {
-                    if ($this->rptmonth_daytype == 'first') {
-                        $date_arr = [
-                            'day'   => 1,
-                            'month' => $month,
-                            'year'  => $year,
-                        ];
-                        $tempdateObj = new Core_Datetime_Model($date_arr, true);
-                        $firstdayofmonthObj = $this->getFistdayofmonth($this->dayofweek_to_rpt[0], $tempdateObj);
-                        if ($firstdayofmonthObj->get_DB_formatted_date() <= $tempdate) {
-                            if (isset($this->recur_freq)) {
-                                $month = $firstdayofmonthObj->getMonth() + $this->recur_freq;
-                            } else {
-                                $month = $firstdayofmonthObj->getMonth() + 1;
-                            }
-                            $dateObj = $firstdayofmonthObj->getThismonthDaysbyIndex(0, 1, $month, $firstdayofmonthObj->getYear());
-                            $nextmonthObj = $this->getFistdayofmonth($this->dayofweek_to_rpt[0], $dateObj);
-                            $tempdateObj = $nextmonthObj;
-                        } else {
-                            $tempdateObj = $firstdayofmonthObj;
-                        }
-                    } elseif ($this->rptmonth_daytype == 'last') {
-                        $date_arr = [
-                            'day'   => $tempdateObj->getDaysInMonth(),
-                            'month' => $tempdateObj->getMonth(),
-                            'year'  => $tempdateObj->getYear(),
-                        ];
-                        $tempdateObj = new Core_Datetime_Model($date_arr, true);
-                        $lastdayofmonthObj = $this->getLastdayofmonth($this->dayofweek_to_rpt[0], $tempdateObj);
-                        if ($lastdayofmonthObj->get_DB_formatted_date() <= $tempdate) {
-                            if (isset($this->recur_freq)) {
-                                $month = $lastdayofmonthObj->getMonth() + $this->recur_freq;
-                            } else {
-                                $month = $lastdayofmonthObj->getMonth() + 1;
-                            }
-                            $dateObj = $lastdayofmonthObj->getThismonthDaysbyIndex(0, 1, $month, $lastdayofmonthObj->getYear());
-                            $dateObj = $dateObj->getThismonthDaysbyIndex(
-                                $dateObj->getDaysInMonth() - 1,
-                                $dateObj->getDaysInMonth(),
-                                $month,
-                                $lastdayofmonthObj->getYear(),
-                            );
-                            $nextmonthObj = $this->getLastdayofmonth($this->dayofweek_to_rpt[0], $dateObj);
-                            $tempdateObj = $nextmonthObj;
-                        } else {
-                            $tempdateObj = $lastdayofmonthObj;
-                        }
-                    }
+                if ($this->repeat_monthby == 'date' || $this->repeat_monthby == 'day') {
+                    $tempdateObj = $this->getMonthlyOccurrence($tempdateObj, (int)($dayDiff ?? 0));
                 } else {
                     $date_arr = [
                         'day'   => $date,
@@ -234,7 +173,7 @@ class RecurringType
                     $tempdateObj = new Core_Datetime_Model($date_arr, true);
                 }
                 $tempdate = $tempdateObj->get_DB_formatted_date();
-                if ($tempdate <= $enddate) {
+                if ($this->isMonthlyOccurrenceWithinEndDate($tempdateObj)) {
                     $recurringDates[] = $tempdate;
                 }
             } elseif ($this->recur_type == 'Yearly') {
@@ -263,6 +202,110 @@ class RecurringType
         }
 
         return $recurringDates;
+    }
+
+    protected function getMonthlyOccurrence(Core_Datetime_Model $databaseDate, int $dayDiff): Core_Datetime_Model
+    {
+        $databaseTime = $this->startdate->get_formatted_time();
+        $userStartDateTime = DateTimeField::convertToUserTimeZone(
+            $this->startdate->get_DB_formatted_date() . ' ' . $databaseTime
+        );
+        $userDateTime = DateTimeField::convertToUserTimeZone(
+            $databaseDate->get_DB_formatted_date() . ' ' . $databaseTime
+        );
+        $frequency = max(1, (int)$this->recur_freq);
+        $year = (int)$userDateTime->format('Y');
+        $month = (int)$userDateTime->format('n');
+        $candidate = $this->getMonthlyCandidate($year, $month, $dayDiff, $userStartDateTime);
+
+        if ($candidate->format('Y-m-d') <= $userDateTime->format('Y-m-d')) {
+            $month += $frequency;
+            $candidate = $this->getMonthlyCandidate($year, $month, $dayDiff, $userStartDateTime);
+        }
+
+        $databaseCandidate = $this->getDatabaseDateForUserDate($candidate, $databaseTime);
+        $date = [
+            'day'   => $databaseCandidate->format('j'),
+            'month' => $databaseCandidate->format('n'),
+            'year'  => $databaseCandidate->format('Y'),
+        ];
+
+        return new Core_Datetime_Model($date, true);
+    }
+
+    protected function getMonthlyCandidate(
+        int $year,
+        int $month,
+        int $dayDiff,
+        DateTime $userStartDateTime
+    ): DateTimeImmutable {
+        $monthStart = (new DateTimeImmutable('now', new DateTimeZone('UTC')))
+            ->setDate($year, $month, 1)
+            ->setTime(0, 0);
+
+        if ($this->repeat_monthby == 'date') {
+            $userDay = (int)$this->rptmonth_datevalue - $dayDiff;
+            $startMonthDays = (int)$userStartDateTime->format('t');
+
+            if ($userDay < 1) {
+                $userDay = $startMonthDays;
+            } elseif ($userDay > $startMonthDays) {
+                $userDay = 1;
+            }
+
+            return $monthStart->setDate(
+                (int)$monthStart->format('Y'),
+                (int)$monthStart->format('n'),
+                min($userDay, (int)$monthStart->format('t'))
+            );
+        }
+
+        $userDayOfWeek = ((int)$this->dayofweek_to_rpt[0] - $dayDiff) % 7;
+
+        if ($userDayOfWeek < 0) {
+            $userDayOfWeek += 7;
+        }
+
+        if ($this->rptmonth_daytype == 'last') {
+            $candidate = $monthStart->modify('last day of this month');
+            $daysBack = ((int)$candidate->format('w') - $userDayOfWeek + 7) % 7;
+
+            return $candidate->modify('-' . $daysBack . ' days');
+        }
+
+        $daysForward = ($userDayOfWeek - (int)$monthStart->format('w') + 7) % 7;
+
+        return $monthStart->modify('+' . $daysForward . ' days');
+    }
+
+    protected function getDatabaseDateForUserDate(
+        DateTimeImmutable $userDate,
+        string $databaseTime
+    ): DateTimeImmutable {
+        foreach ([-1, 0, 1] as $dayOffset) {
+            $databaseDate = $userDate->modify($dayOffset . ' days');
+            $convertedDate = DateTimeField::convertToUserTimeZone(
+                $databaseDate->format('Y-m-d') . ' ' . $databaseTime
+            );
+
+            if ($convertedDate->format('Y-m-d') == $userDate->format('Y-m-d')) {
+                return $databaseDate;
+            }
+        }
+
+        return $userDate;
+    }
+
+    protected function isMonthlyOccurrenceWithinEndDate(Core_Datetime_Model $databaseDate): bool
+    {
+        $userDate = DateTimeField::convertToUserTimeZone(
+            $databaseDate->get_DB_formatted_date() . ' ' . $this->startdate->get_formatted_time()
+        );
+        $userEndDate = DateTimeField::convertToUserTimeZone(
+            $this->enddate->get_DB_formatted_date() . ' ' . $this->enddate->get_formatted_time()
+        );
+
+        return $userDate->format('Y-m-d') <= $userEndDate->format('Y-m-d');
     }
 
     public static function fromDBRequest($resultRow)

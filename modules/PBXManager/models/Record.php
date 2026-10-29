@@ -214,7 +214,11 @@ class PBXManager_Record_Model extends Vtiger_Record_Model
         $db = PearDatabase::getInstance();
         $fnumber = preg_replace('/[-()\s+]/', '', $from);
         $rnumber = strrev($fnumber);
-        $result = $db->pquery('SELECT crmid, fieldname FROM ' . self::lookuptableName . ' WHERE fnumber LIKE "' . $fnumber . '%" OR rnumber LIKE "' . $rnumber . '%" ', []);
+        $result = $db->pquery(
+            'SELECT crmid, fieldname FROM ' . self::lookuptableName . ' WHERE fnumber LIKE ? OR rnumber LIKE ?',
+            [$fnumber . '%', $rnumber . '%']
+        );
+
         if ($db->num_rows($result)) {
             $crmid = $db->query_result($result, 0, 'crmid');
             $fieldname = $db->query_result($result, 0, 'fieldname');
@@ -245,8 +249,9 @@ class PBXManager_Record_Model extends Vtiger_Record_Model
         if (empty($number)) {
             return false;
         }
-        $query = PBXManager_Record_Model::buildSearchQueryWithUIType(11, $number, 'Users');
-        $result = $db->pquery($query, []);
+        [$query, $params] = PBXManager_Record_Model::buildSearchQueryWithUIType(11, $number, 'Users');
+        $result = $db->pquery($query, $params);
+
         if ($db->num_rows($result) > 0) {
             $user['id'] = $db->query_result($result, 0, 'id');
             $user['name'] = $db->query_result($result, 0, 'name');
@@ -287,24 +292,23 @@ class PBXManager_Record_Model extends Vtiger_Record_Model
 
         $query = "select id as id, $querycolumnnames, $entitycolumnnames as name ";
         $query .= " FROM vtiger_users";
+        $params = [];
 
         if (!empty($lookupcolumns)) {
             $query .= " WHERE deleted=0 AND ";
-            $i = 0;
-            $columnCount = php7_count($lookupcolumns);
+            $conditions = [];
+
             foreach ($lookupcolumns as $columnname) {
                 if (!empty($columnname)) {
-                    if ($i == 0 || $i == ($columnCount)) {
-                        $query .= sprintf("%s = '%s'", $columnname, $value);
-                    } else {
-                        $query .= sprintf(" OR %s = '%s'", $columnname, $value);
-                    }
-                    $i++;
+                    $conditions[] = $columnname . ' = ?';
+                    $params[] = $value;
                 }
             }
+
+            $query .= '(' . implode(' OR ', $conditions) . ')';
         }
 
-        return $query;
+        return [$query, $params];
     }
 
     public static function getUserNumbers()

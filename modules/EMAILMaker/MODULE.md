@@ -8,6 +8,7 @@
 # Email content rendering
 
 - `VTEmailTask::getContents()` runs `getContent(false)` before workflow variable substitution; `ITS4YouEmails_Record_Model::retrieveContent()` runs recipient-aware `getContent(true, ...)` again before assigning the mailer body. Keep both passes in view when diagnosing formatting.
+- Number formatting is owned by `EMAILMaker_Record_Model::getDecimalSettings()`. Stored module-wide settings take precedence; while `vtiger_emakertemplates_settings` is empty, rendering and numeric template functions use the current user's currency decimal count and separators.
 - `getFieldDisplayValue()` delegates modern `text` fields to the field's `getDisplayValue()` (`Vtiger_Text_UIType` skips newline conversion for `isHtmlField()` fields such as `Users.signature`). Legacy user variables from `getUserValue()` keep their original values. Neither path removes HTML document wrappers.
 - `getFieldValueUtils()` keeps the legacy encoded-br guard and converts textarea newlines through `Core_SimpleHtmlDom_Helper::convertNewlinesToHtml()`, which avoids extra breaks before literal or encoded paragraph tags. The private `EMAILContent::getFieldValue()` wrapper has no local caller.
 - `getContent()` decodes entities on the combined subject/body and replaces `&nbsp;` with ordinary spaces. `handleRowbreak()` always runs; it only splits table cells at row-break tokens and is not a newline-to-br conversion. Spacing depends on paragraphs, breaks and CSS in the template.
@@ -16,8 +17,13 @@
 # Product block management
 
 - `EMAILMaker_ProductBlocks_View` is only a compatibility route adapter (`index.php?module=EMAILMaker&view=ProductBlocks`) for the Core Inventory Items Block manager (`Core_ProductBlocks_View`, also linked from Settings).
-- Product-block templates are shared with PDFMaker and PDFMaker Pro in `df_inventoryitems_block` (`Core_InventoryItemsBlock_Model`). The legacy `vtiger_emakertemplates_productbloc_tpl` table is still created by the installer but not used by the runtime editor.
+- Product-block templates are shared with PDFMaker and PDFMaker Pro in `df_inventoryitems_block` (`Core_InventoryItemsBlock_Model`). The obsolete `vtiger_emakertemplates_productbloc_tpl` storage is removed by `EMAILMaker_Install_Model::migrate()` and is not created on new installations.
 - Global rows with an empty module are available to every supported inventory document module. Core installs two global starter templates only when the shared table is empty.
+
+# Database lifecycle
+
+- `EMAILMaker_Install_Model::migrate()` removes obsolete EMAIL Maker campaign/drip, mass-email, attachment/content, sequence, license/version, picklist, product-block and related-block tables that have no runtime owner. Related blocks and product blocks are owned by Core in `df_related_block` and `df_inventoryitems_block`.
+- Keep `vtiger_emakertemplates_sent` and `vtiger_emakertemplates_emails` while the existing send/status flow still reads them.
 
 # Display conditions
 

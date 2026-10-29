@@ -52,7 +52,13 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View
 
                     $dasbBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
                     $defaultTab = $dasbBoardModel->getUserDefaultTab($currentUser->getId());
-                    $widget->set('tabid', $request->get('tab', $defaultTab['id']));
+                    $tabId = $request->get('tab', $defaultTab['id']);
+
+                    if (!$dasbBoardModel->getTabInfo($tabId)) {
+                        throw new Exception('Invalid dashboard tab');
+                    }
+
+                    $widget->set('tabid', $tabId);
 
                     if ($request->has('data')) {
                         $widget->set('data', $request->get('data'));

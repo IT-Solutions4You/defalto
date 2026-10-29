@@ -224,19 +224,21 @@ class Vtiger_DashBoard_Model extends Vtiger_Base_Model
     public function deleteTab($tabId)
     {
         $db = PearDatabase::getInstance();
-        $query = "DELETE FROM vtiger_dashboard_tabs WHERE id=?";
-        $db->pquery($query, [$tabId]);
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $query = "DELETE FROM vtiger_dashboard_tabs WHERE id=? AND userid=?";
+        $result = $db->pquery($query, [$tabId, $currentUser->getId()]);
 
-        return true;
+        return $db->getAffectedRowCount($result) === 1;
     }
 
     public function renameTab($tabId, $tabName)
     {
         $db = PearDatabase::getInstance();
-        $query = "UPDATE vtiger_dashboard_tabs SET tabname=? WHERE id=?";
-        $db->pquery($query, [$tabName, $tabId]);
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $query = "UPDATE vtiger_dashboard_tabs SET tabname=? WHERE id=? AND userid=?";
+        $result = $db->pquery($query, [$tabName, $tabId, $currentUser->getId()]);
 
-        return true;
+        return $db->getAffectedRowCount($result) === 1;
     }
 
     public function checkTabExist($tabName)
@@ -271,10 +273,11 @@ class Vtiger_DashBoard_Model extends Vtiger_Base_Model
     public function updateTabSequence($sequence)
     {
         $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        $query = "UPDATE vtiger_dashboard_tabs SET sequence = ? WHERE id=?";
+        $query = "UPDATE vtiger_dashboard_tabs SET sequence = ? WHERE id=? AND userid=?";
         foreach ($sequence as $tabId => $seq) {
-            $db->pquery($query, [$seq, $tabId]);
+            $db->pquery($query, [$seq, $tabId, $currentUser->getId()]);
         }
 
         return true;
@@ -283,9 +286,10 @@ class Vtiger_DashBoard_Model extends Vtiger_Base_Model
     public function getTabInfo($tabId)
     {
         $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        $query = "SELECT * FROM vtiger_dashboard_tabs WHERE id=? ";
-        $params = [$tabId];
+        $query = "SELECT * FROM vtiger_dashboard_tabs WHERE id=? AND userid=?";
+        $params = [$tabId, $currentUser->getId()];
         $result = $db->pquery($query, $params);
         if ($db->num_rows($result) <= 0) {
             return false;

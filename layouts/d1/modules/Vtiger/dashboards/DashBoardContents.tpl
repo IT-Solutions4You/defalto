@@ -12,11 +12,11 @@
         <div class="tabContainer">
             <ul class="nav nav-pills tabs sortable container-fluid py-2 bg-body">
                 {foreach key=index item=TAB_DATA from=$DASHBOARD_TABS}
-                    <li class="dashboardTab ms-2 {if $TAB_DATA["id"] eq $SELECTED_TAB}active{/if}" data-tabid="{$TAB_DATA["id"]}" data-tabname="{$TAB_DATA["tabname"]}">
+                    <li class="dashboardTab ms-2 {if $TAB_DATA["id"] eq $SELECTED_TAB}active{/if}" data-tabid="{$TAB_DATA["id"]}" data-tabname="{$TAB_DATA["tabname"]|escape:'html'}">
                         <a class="nav-link {if $TAB_DATA["id"] eq $SELECTED_TAB}active{/if}" data-bs-toggle="tab" href="#tab_{$TAB_DATA["id"]}">
                             <div class="d-flex align-items-center">
-                                <span class="name text-truncate" value="{$TAB_DATA["tabname"]}">
-                                    <strong>{vtranslate($TAB_DATA["tabname"], $QUALIFIED_MODULE)}</strong>
+                                <span class="name text-truncate" value="{$TAB_DATA["tabname"]|escape:'html'}">
+                                    <strong>{vtranslate($TAB_DATA["tabname"], $QUALIFIED_MODULE)|escape:'html'}</strong>
                                 </span>
                                 <span class="editTabName hide">
                                     <input class="form-control d-inline" type="text" name="tabName"/>
@@ -48,7 +48,7 @@
             </ul>
             <div class="tab-content">
                 {foreach key=index item=TAB_DATA from=$DASHBOARD_TABS}
-                    <div id="tab_{$TAB_DATA["id"]}" data-tabid="{$TAB_DATA["id"]}" data-tabname="{$TAB_DATA["tabname"]}" class="tab-pane {if $TAB_DATA["id"] eq $SELECTED_TAB}active show{/if}">
+                    <div id="tab_{$TAB_DATA["id"]}" data-tabid="{$TAB_DATA["id"]}" data-tabname="{$TAB_DATA["tabname"]|escape:'html'}" class="tab-pane {if $TAB_DATA["id"] eq $SELECTED_TAB}active show{/if}">
                         {if $TAB_DATA["id"] eq $SELECTED_TAB}
                             {include file="dashboards/DashBoardTabContents.tpl"|vtemplate_path:$MODULE TABID=$TABID}
                         {/if}

@@ -8,9 +8,11 @@ When an appointment with invited users is saved, each invited user receives an e
 
 Email reminders are sent according to the appointment time regardless of the server's configured time zone.
 
-Appointments can be rescheduled from the calendar by dragging them to another date or time or by resizing their duration. These changes are saved only when the current user has permission to edit the selected appointment; otherwise, the calendar restores the original schedule.
+Appointments can be rescheduled from the calendar by dragging them to another date or time or by resizing their duration. The selected calendar date and time are preserved around midnight and across time zones. These changes are saved only when the current user has permission to edit the selected appointment; otherwise, the calendar restores the original schedule.
 
 Calendar popovers and event refreshes show record information only when the current user can view that record. Administrators can delete default calendar event types. Removing a custom event type removes it from the current user's calendar without affecting other users who use the same type.
+
+Monthly repetitions stay in the selected calendar month. If the selected date does not exist in a shorter month, the appointment is placed on that month's last day. Rules such as the last Friday of the month also remain within that month in every time zone.
 
 ## Create Calendar Record workflow action
 
