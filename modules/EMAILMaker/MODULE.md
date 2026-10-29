@@ -39,6 +39,12 @@
 - `EMAILMaker_EMAILMaker_Model::GetDetailViewData()` and the permission-denied box take `Enable.png`, `Disable.png` and `denied.gif` through `vimage_path()` (`layouts/d1/skins/images/`), like PDFMaker.
 - `layouts/d1/modules/EMAILMaker/unsubscribeinfo/info_en_us.tpl` is not referenced by any code and points at `layouts/vlayout/...` images that do not exist.
 
+# Template authorization
+
+- Template writes, including display-condition updates, are enforced in action `checkPermission()` methods, not only in list and edit views. Creating a template requires the EMAILMaker `EDIT` profile permission for its selected module. Updating requires edit access to both the stored template through the existing owner/sharing rules and the requested target module. An empty target module is valid only for a theme (`is_theme = 1`); non-theme rows must name an authorized module.
+- Deleting a theme requires the EMAILMaker `DELETE` profile permission, access through the existing owner/sharing rules, and a non-deleted `is_theme = 1` record. Only administrators may save EMAILMaker profile-permission settings.
+- `EMAILMaker_EMAILMaker_Model::{isTemplateCreatable,isTemplateEditable,isThemeDeletable}()` own these action-level authorization decisions. Do not authorize an existing template from request-supplied module, owner, sharing, or theme fields.
+
 # PDF Maker templates of an e-mail template
 
 - Links live in `df_template_rel` (`Core_TemplateRelation_Model`: module `EMAILMaker`, related_module `PDFMaker`, `sequence` = order). `EMAILMaker_PDFTemplate_Model` reads and writes them only through that model and owns the PDF-specific rules. The table is created by Core (`Core_CreateTables_Config` -> `Core_TemplateRelation_Model::createTables()`). `vtiger_crmentityrel` is not used.

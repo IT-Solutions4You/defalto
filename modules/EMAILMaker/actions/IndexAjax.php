@@ -53,6 +53,28 @@ class EMAILMaker_IndexAjax_Action extends Core_Controller_Action
      */
     public function checkPermission(Vtiger_Request $request): bool
     {
+        $mode = $request->getMode();
+
+        if ('SaveProfilesPrivilegies' === $mode) {
+            $currentUser = Users_Record_Model::getCurrentUserModel();
+
+            if (!$currentUser->isAdminUser()) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+            }
+        } elseif ('DeleteTheme' === $mode) {
+            $emailMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
+            if (!$emailMaker->isThemeDeletable((int)$request->get('themeid'))) {
+                throw new Exception(vtranslate('LBL_PERMISSION', 'EMAILMaker'));
+            }
+        } elseif ('SaveDisplayConditions' === $mode) {
+            $emailMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+
+            if (!$emailMaker->isTemplateEditable((int)$request->get('record'))) {
+                throw new Exception(vtranslate('LBL_PERMISSION', 'EMAILMaker'));
+            }
+        }
+
         return true;
     }
 

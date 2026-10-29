@@ -1,5 +1,6 @@
-## 1.5 - 2026-10-29
+## 1.3 - 2026-10-29
 
+- Secured template and display-condition saving, theme deletion, and profile-permission settings against unauthorized changes.
 - Removed obsolete legacy database storage that is no longer used by current Email Maker functionality.
 - Kept decimal places and separators in amounts before the first e-mail template is saved.
 - Restored Product Block Templates editing through the shared Inventory Items Block editor.

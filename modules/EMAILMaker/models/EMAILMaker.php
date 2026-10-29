@@ -198,6 +198,44 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return ["detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result];
     }
 
+    public function isTemplateCreatable(string $moduleName, bool $isTheme): bool
+    {
+        if (!$isTheme && empty($moduleName)) {
+            return false;
+        }
+
+        return true === $this->returnTemplatePermissionsData($moduleName)['edit'];
+    }
+
+    public function isTemplateEditable(int $templateId): bool
+    {
+        $template = $this->fetchTemplateAuthorizationData($templateId);
+
+        return !empty($template)
+            && true === $this->returnTemplatePermissionsData($template['module'], $templateId)['edit'];
+    }
+
+    public function isThemeDeletable(int $templateId): bool
+    {
+        $template = $this->fetchTemplateAuthorizationData($templateId);
+
+        return !empty($template)
+            && 1 === (int)$template['is_theme']
+            && true === $this->returnTemplatePermissionsData($template['module'], $templateId)['delete'];
+    }
+
+    private function fetchTemplateAuthorizationData(int $templateId): array
+    {
+        $result = $this->db->pquery(
+            'SELECT module, is_theme FROM vtiger_emakertemplates WHERE templateid = ? AND deleted = ?',
+            [$templateId, 0]
+        );
+
+        $template = $this->db->fetchByAssoc($result);
+
+        return is_array($template) ? $template : [];
+    }
+
     public function CheckSharing($templateId)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
