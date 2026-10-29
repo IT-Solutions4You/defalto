@@ -65,21 +65,23 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
     {
         $currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
-        $massActionLinks = [];
-        if ($currentUserModel->isAdminUser()) {
-            $massActionLinks[] = [
+        if (!$currentUserModel->isAdminUser()) {
+            return [];
+        }
+
+        $massActionLinks = [
+            [
                 'linktype'  => 'LISTVIEWMASSACTION',
                 'linklabel' => 'LBL_DELETE',
                 'linkurl'   => 'javascript:RecycleBin_List_Js.deleteRecords("index.php?module=' . $this->get('name') . '&action=RecycleBinAjax")',
                 'linkicon'  => ''
-            ];
-        }
-
-        $massActionLinks[] = [
-            'linktype'  => 'LISTVIEWMASSACTION',
-            'linklabel' => 'LBL_RESTORE',
-            'linkurl'   => 'javascript:RecycleBin_List_Js.restoreRecords("index.php?module=' . $this->get('name') . '&action=RecycleBinAjax")',
-            'linkicon'  => ''
+            ],
+            [
+                'linktype'  => 'LISTVIEWMASSACTION',
+                'linklabel' => 'LBL_RESTORE',
+                'linkurl'   => 'javascript:RecycleBin_List_Js.restoreRecords("index.php?module=' . $this->get('name') . '&action=RecycleBinAjax")',
+                'linkicon'  => ''
+            ],
         ];
 
         foreach ($massActionLinks as $massActionLink) {
@@ -133,6 +135,17 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
         return $moduleModels;
     }
 
+    public function isSourceModuleAllowed(string $sourceModule): bool
+    {
+        foreach ($this->getAllModuleList() as $moduleModel) {
+            if ($moduleModel->getName() === $sourceModule) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Function to delete the reccords perminently in vitger CRM database
      */
@@ -166,9 +179,14 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
      *
      * @param type $reocrdIds
      */
-    public function deleteRecords($recordIds)
+    public function deleteRecords($recordIds, string $sourceModule = '')
     {
         $db = PearDatabase::getInstance();
+        $recordIds = $this->fetchDeletedRecordIds($recordIds, $sourceModule);
+
+        if (!$recordIds) {
+            return;
+        }
 
         $query = 'DELETE FROM vtiger_relatedlists_rb WHERE entityid in(' . generateQuestionMarks($recordIds) . ')';
         $db->pquery($query, [$recordIds]);
@@ -193,23 +211,36 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
      */
     public function deleteFiles($recordIds)
     {
-        global $db;
+        if (!$recordIds) {
+            return;
+        }
+
         $db = PearDatabase::getInstance();
-        $getAttachmentsIdQuery = 'SELECT * FROM vtiger_seattachmentsrel WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
+        $getAttachmentsIdQuery = 'SELECT DISTINCT attachmentsid FROM vtiger_seattachmentsrel WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
         $result = $db->pquery($getAttachmentsIdQuery, [$recordIds]);
         $attachmentsIds = [];
-        if ($db->num_rows($result)) {
-            for ($i = 0; $i < ($db->num_rows($result)); $i++) {
-                $attachmentsIds[$i] = $db->query_result($result, $i, 'attachmentsid');
-            }
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $attachmentsIds[] = $row['attachmentsid'];
         }
+
         if (!empty($attachmentsIds)) {
             $deleteRelQuery = 'DELETE FROM vtiger_seattachmentsrel WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
             $db->pquery($deleteRelQuery, [$recordIds]);
-            $getPathQuery = 'SELECT * FROM vtiger_attachments WHERE attachmentsid in (' . generateQuestionMarks($attachmentsIds) . ')';
+
+            $getPathQuery = 'SELECT vtiger_attachments.* FROM vtiger_attachments '
+                . 'LEFT JOIN vtiger_seattachmentsrel ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid '
+                . 'LEFT JOIN vtiger_salesmanattachmentsrel ON vtiger_salesmanattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid '
+                . 'LEFT JOIN vtiger_mailmanager_mailattachments ON vtiger_mailmanager_mailattachments.attachid = vtiger_attachments.attachmentsid '
+                . 'WHERE vtiger_attachments.attachmentsid in (' . generateQuestionMarks($attachmentsIds) . ') '
+                . 'AND vtiger_seattachmentsrel.attachmentsid IS NULL '
+                . 'AND vtiger_salesmanattachmentsrel.attachmentsid IS NULL '
+                . 'AND vtiger_mailmanager_mailattachments.attachid IS NULL';
             $pathResult = $db->pquery($getPathQuery, [$attachmentsIds]);
+            $orphanedAttachmentIds = [];
 
             while ($attachment = $db->fetchByAssoc($pathResult)) {
+                $orphanedAttachmentIds[] = $attachment['attachmentsid'];
                 $fileName = Core_Storage_Model::getInstance()->getAttachmentFilePath($attachment);
 
                 if (file_exists($fileName)) {
@@ -218,9 +249,48 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
                 }
             }
 
-            $deleteAttachmentQuery = 'DELETE FROM vtiger_attachments WHERE attachmentsid in (' . generateQuestionMarks($attachmentsIds) . ')';
-            $db->pquery($deleteAttachmentQuery, [$attachmentsIds]);
+            if ($orphanedAttachmentIds) {
+                $deleteAttachmentQuery = 'DELETE FROM vtiger_attachments WHERE attachmentsid in (' . generateQuestionMarks($orphanedAttachmentIds) . ')';
+                $db->pquery($deleteAttachmentQuery, [$orphanedAttachmentIds]);
+            }
         }
+    }
+
+    /**
+     * Return only requested records that are currently in the Recycle Bin.
+     */
+    public function fetchDeletedRecordIds(array $recordIds, string $sourceModule = ''): array
+    {
+        $recordIds = array_values(array_unique(array_filter(array_map('intval', $recordIds))));
+
+        if (!$recordIds) {
+            return [];
+        }
+
+        $db = PearDatabase::getInstance();
+        $query = 'SELECT vtiger_crmentity.crmid FROM vtiger_crmentity';
+
+        if ($sourceModule) {
+            $moduleModel = Vtiger_Module_Model::getInstance($sourceModule);
+
+            if (!$moduleModel || $moduleModel->get('isentitytype') != 1) {
+                return [];
+            }
+
+            $baseTable = $moduleModel->get('basetable');
+            $baseTableId = $moduleModel->get('basetableid');
+            $query .= ' INNER JOIN ' . $baseTable . ' ON ' . $baseTable . '.' . $baseTableId . ' = vtiger_crmentity.crmid';
+        }
+
+        $query .= ' WHERE vtiger_crmentity.deleted = 1 AND vtiger_crmentity.crmid in (' . generateQuestionMarks($recordIds) . ')';
+        $result = $db->pquery($query, [$recordIds]);
+        $deletedRecordIds = [];
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $deletedRecordIds[] = $row['crmid'];
+        }
+
+        return $deletedRecordIds;
     }
 
     /**
@@ -231,7 +301,9 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model
      */
     public function restore($sourceModule, $recordIds)
     {
+        $recordIds = $this->fetchDeletedRecordIds($recordIds, $sourceModule);
         $focus = CRMEntity::getInstance($sourceModule);
+
         for ($i = 0; $i < php7_count($recordIds); $i++) {
             if (!empty($recordIds[$i])) {
                 $focus->restore($sourceModule, $recordIds[$i]);
