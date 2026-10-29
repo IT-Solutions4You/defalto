@@ -25,6 +25,18 @@ class PDFMaker_GetPDFActions_View extends Vtiger_BasicAjax_View
 
         if ($isentitytype) {
             $PDFMakerModel = Vtiger_Module_Model::getInstance('PDFMaker');
+            $denyReason = !$request->isEmpty('record') ? $PDFMakerModel->getPdfExportDenyReason((int)$request->get('record')) : null;
+
+            // The PDF export of the record is denied by a record rule: a disabled button or a notice with the reason
+            if (null !== $denyReason) {
+                $viewer = $this->getViewer($request);
+                $viewer->assign('DENY_REASON', $denyReason);
+                $viewer->assign('CONTAINER_ID', 'PDFMakerContentDiv');
+                $viewer->assign('BUTTON_LABEL', vtranslate('LBL_EXPORT_TO_PDF', 'PDFMaker'));
+                $viewer->view('getButtons' === $request->get('mode') ? 'RecordActionDeniedButton.tpl' : 'RecordActionDenied.tpl', 'Core');
+
+                return;
+            }
 
             if ($request->has('record') && !$request->isEmpty('record')) {
                 $current_user = $cu_model = Users_Record_Model::getCurrentUserModel();

@@ -1,3 +1,7 @@
+## 1.7 - 2026-10-29
+
+- When a record rule restricts the PDF export of a record (record action permissions in the core, for example while a quote waits for approval), the Export to PDF button is disabled with the reason and downloads and previews of that record are refused. Without the record action layer in the core PDF Maker behaves as before.
+
 ## 1.6 - 2026-10-28
 
 - Restricted PDF downloads and previews to records the current user is allowed to view.

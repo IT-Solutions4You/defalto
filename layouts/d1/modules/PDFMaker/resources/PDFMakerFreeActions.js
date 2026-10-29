@@ -135,24 +135,47 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
             self.controlPDFSelectInput(container, element);
         });
     },
+    /**
+     * Asks whether a record rule denies the PDF export of the record before the download or preview:
+     * shows the reason and stops when it is denied (the server refuses it as well).
+     */
+    checkExportableRecords: function (pdfLanguage) {
+        const deferred = jQuery.Deferred(),
+            params = jQuery.extend(this.getDefaultParams('', pdfLanguage), {action: 'CreatePDFFromTemplate', mode: 'checkRecords'});
+
+        app.request.post({data: params}).then(function (error, data) {
+            if (!error && data && data.denied) {
+                app.helper.showErrorNotification({message: jQuery('<div>').text(data.message || '').html()});
+                deferred.reject();
+
+                return;
+            }
+
+            deferred.resolve();
+        });
+
+        return deferred.promise();
+    },
     showPDFPreviewModal: function (pdfLanguage) {
         let self = this;
 
         let params = this.getDefaultParams('IndexAjax', pdfLanguage);
         params['mode'] = 'getPreview';
 
-        app.helper.showProgress();
-        app.request.post({data: params}).then(function (err, data) {
+        self.checkExportableRecords(pdfLanguage).then(function () {
+            app.helper.showProgress();
+            app.request.post({data: params}).then(function (err, data) {
 
-            app.helper.showModal(data, {
-                modalName: 'PDFMakerModal',
-                cb: function (modalContainer) {
-                    self.registerPDFPreviewActionsButtons(modalContainer, pdfLanguage);
-                    self.setMaxModalHeight(modalContainer, 'iframe');
-                }
+                app.helper.showModal(data, {
+                    modalName: 'PDFMakerModal',
+                    cb: function (modalContainer) {
+                        self.registerPDFPreviewActionsButtons(modalContainer, pdfLanguage);
+                        self.setMaxModalHeight(modalContainer, 'iframe');
+                    }
+                });
+
+                app.helper.hideProgress();
             });
-
-            app.helper.hideProgress();
         });
     },
     registerPDFPreviewActionsButtons: function (modalContainer) {
@@ -176,9 +199,11 @@ jQuery.Class('PDFMaker_FreeActions_Js', {
             let pdfLanguage = self.getPDFSelectLanguage(container),
                 params = self.getDefaultParams('', pdfLanguage);
 
-            params["action"] = 'CreatePDFFromTemplate';
+            self.checkExportableRecords(pdfLanguage).then(function () {
+                params["action"] = 'CreatePDFFromTemplate';
 
-            window.location.href = 'index.php?' + jQuery.param(params);
+                window.location.href = 'index.php?' + jQuery.param(params);
+            });
         });
 
         container.find('.PDFModalPreview').on('click', function () {
