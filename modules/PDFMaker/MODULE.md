@@ -4,6 +4,11 @@
 - Browser image-selection modals use `Core_Storage_Model::getAttachmentPublicUrl()` and must never expose a physical attachment path as an image URL.
 - PDFs saved as Documents (`createPDFAndSaveFile`) and PDFMaker uploads go to the directory chosen by `decideFilePath()`, which is owned by the shared Core storage flow.
 
+# Edition and versioning
+
+- The bundled `PDFMaker` module is the Free edition (`PDFMaker_PDFMaker_Model::$version_type` is `Free`) and uses its independent `0.x` module-version line.
+- Public Installer catalog metadata under the `PDFMaker` name can describe the separately distributed Pro edition. Do not use that version to bump the bundled Free module.
+
 # Product block management
 
 - Product-block list, edit, save and delete are owned by the Core Inventory Items Block components (`module=Core&view=ProductBlocks`, linked from Settings, Inventory). PDFMaker has no ProductBlocks view of its own. PDFMaker and PDFMaker Pro use the same compatibility routes as EMAILMaker.
@@ -23,3 +28,9 @@
 
 - `CreatePDFFromTemplate` and `IndexAjax::getPreviewContent` resolve the source module from the requested CRM record and require `DetailView` permission for that record before calling `PDFMaker_checkGenerate_Model::generate()`. Never trust the client-provided `source_module` or `relmodule` as the authorization owner.
 - Keep direct downloads and inline or attachment preview content behind the same record-level permission boundary.
+
+# Record action permissions (PdfExport)
+
+- `PDFMaker_Module_Model::getPdfExportDenyReason()` is the only place that asks the core layer (`Core_RecordActionPermission_Model::ACTION_PDF_EXPORT`); it returns null when the class does not exist, so PDF Maker behaves as before on a core without the layer. Never call `Core_RecordActionPermission_Model` or render `Core/RecordActionDenied*.tpl` from PDF Maker without going through it.
+- `PDFMaker_checkGenerate_Model::generate()` throws the reason before the PDF is built, which covers the download (`CreatePDFFromTemplate`) and the preview (`IndexAjax::getPreviewContent`). `PDFMaker_CreatePDFFromTemplate_Action` (`mode=checkRecords`) lets `PDFMakerFreeActions.js` (`checkExportableRecords()`) show the reason before downloading or previewing. The detail button template `GetPDFButtons.tpl` (DETAILVIEWBASIC `template:` link) and `PDFMaker_GetPDFActions_View` render `Core/RecordActionDeniedButton.tpl` (disabled button with the reason) or `Core/RecordActionDenied.tpl` for a denied record. The record id of the button comes from `$RECORD` (a `Vtiger_Record_Model` in the detail view) before `$ID` (`GetPDFActions`) and `$RECORD_ID`, because the detail view assigns an empty `$RECORD_ID`.
+- PDFs attached to e-mails are filtered by ITS4YouEmails in the core (`removePdfDeniedRecords()`).
