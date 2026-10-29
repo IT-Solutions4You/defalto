@@ -48,6 +48,10 @@ $languageStrings = [
     'Discounts Amount' => 'Discounts Amount',
     'Margin Amount' => 'Margin Amount',
     'Price Book' => 'Price Book',
+    'LBL_CONVERSION_TITLE' => 'Review items',
+    'LBL_CONVERSION_INVALID_ITEM' => 'The item does not belong to the source record.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Quantity and price must be numbers.',
+    'LBL_CONVERSION_NO_ITEMS' => 'At least one item has to remain.',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Product line save error',

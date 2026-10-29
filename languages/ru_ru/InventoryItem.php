@@ -34,6 +34,10 @@ $languageStrings = [
     'Unit' => 'Единица',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Последовательность',
+    'LBL_CONVERSION_TITLE' => 'Проверка позиций',
+    'LBL_CONVERSION_INVALID_ITEM' => 'Позиция не относится к исходной записи.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Количество и цена должны быть числами.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Должна остаться хотя бы одна позиция.',
 ];
 
 $jsLanguageStrings = [

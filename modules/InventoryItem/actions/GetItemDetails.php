@@ -63,9 +63,9 @@ class InventoryItem_GetItemDetails_Action extends Core_Controller_Action
 
             if ($recordModel->getModuleName() === 'Products') {
                 $productIdsList[] = $id;
-                $unit[$id] = $recordModel->get('usageunit');
+                $unit[$id] = InventoryItem_Utils_Helper::getUnitLabel((string)$recordModel->get('usageunit'), 'Products');
             } elseif ($recordModel->getModuleName() === 'Services') {
-                $unit[$id] = $recordModel->get('service_usageunit');
+                $unit[$id] = InventoryItem_Utils_Helper::getUnitLabel((string)$recordModel->get('service_usageunit'), 'Services');
             }
         }
 

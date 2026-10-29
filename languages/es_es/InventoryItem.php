@@ -34,6 +34,10 @@ $languageStrings = [
     'Unit' => 'Unidad',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Secuencia',
+    'LBL_CONVERSION_TITLE' => 'Revisar artículos',
+    'LBL_CONVERSION_INVALID_ITEM' => 'El artículo no pertenece al registro de origen.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'La cantidad y el precio deben ser números.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Debe quedar al menos un artículo.',
 ];
 
 $jsLanguageStrings = [
