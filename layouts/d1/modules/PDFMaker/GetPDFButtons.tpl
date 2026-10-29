@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 
-{if isset($RECORD)}{assign var=PDF_RECORD_ID value=$RECORD->getId()}{else}{assign var=PDF_RECORD_ID value=$ID}{/if}
+{if isset($RECORD) && $RECORD instanceof Vtiger_Record_Model}{assign var=PDF_RECORD_ID value=$RECORD->getId()}{elseif isset($ID)}{assign var=PDF_RECORD_ID value=$ID}{else}{assign var=PDF_RECORD_ID value=$RECORD_ID|default:0}{/if}
 {assign var=PDF_EXPORT_DENIED value=Vtiger_Module_Model::getInstance('PDFMaker')->getPdfExportDenyReason((int)$PDF_RECORD_ID)}
 {if $PDF_EXPORT_DENIED}
     {include file='RecordActionDeniedButton.tpl'|vtemplate_path:'Core' DENY_REASON=$PDF_EXPORT_DENIED CONTAINER_ID='PDFMakerContentDiv' BUTTON_LABEL=vtranslate('LBL_EXPORT_TO_PDF','PDFMaker')}
