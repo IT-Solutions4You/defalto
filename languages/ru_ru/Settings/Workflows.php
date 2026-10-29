@@ -213,10 +213,10 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Включает В Себя Создание',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Действий для рабочего процесса',
     'LBL_WORKFLOW_SEARCH'          => 'Поиск по фамилии',
-    'VTRestrictRecordActions' => 'Ограничить действия с записью',
-    'VTClearRecordActions' => 'Снять ограничения действий с записью',
-    'LBL_VTRestrictRecordActions' => 'Ограничить действия с записью',
-    'LBL_VTClearRecordActions' => 'Снять ограничения действий с записью',
+    'RestrictRecordActions' => 'Ограничить действия с записью',
+    'ClearRecordActions' => 'Снять ограничения действий с записью',
+    'LBL_RestrictRecordActions' => 'Ограничить действия с записью',
+    'LBL_ClearRecordActions' => 'Снять ограничения действий с записью',
     'Restrict record actions' => 'Ограничить действия с записью',
     'Clear record action restrictions' => 'Снять ограничения действий с записью',
 ];
@@ -243,6 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Мобильных Push-Уведомлений',
     'VTCreateEntityTask'          => 'Создать Запись',
     'LBL_EXPRESSION_INVALID'      => 'Выражение Недействительным',
-    'VTRestrictRecordActions' => 'Ограничить действия с записью',
-    'VTClearRecordActions' => 'Снять ограничения действий с записью',
+    'RestrictRecordActions' => 'Ограничить действия с записью',
+    'ClearRecordActions' => 'Снять ограничения действий с записью',
 ];

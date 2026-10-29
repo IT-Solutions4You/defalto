@@ -12,7 +12,7 @@
  * Workflow task: allows or denies selected actions on the record for selected members
  * (Core_RecordActionPermission_Model rules with source "workflow" and the task id as reference).
  */
-class VTRestrictRecordActions extends VTTask
+class RestrictRecordActions extends VTTask
 {
     public $executeImmediately = true;
 

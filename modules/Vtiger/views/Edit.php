@@ -222,6 +222,7 @@ class Vtiger_Edit_View extends Vtiger_Index_View
         $viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
         $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
         $recordStructure = $recordStructureInstance->getStructure();
+        $recordActionDenyReason = null;
 
         // Fields locked by record action rules are shown read-only and not submitted (not for copies)
         if (!empty($record) && !$request->get('isDuplicate') && !in_array($moduleName, Core_RecordActionPermission_Model::NON_ENTITY_MODULES, true)) {
@@ -230,10 +231,11 @@ class Vtiger_Edit_View extends Vtiger_Index_View
 
             // The form shown again after a save denied by a rule (Vtiger_Save_Action) explains why
             if ($request->get('recordActionDenied')) {
-                $viewer->assign('RECORD_ACTION_DENY_REASON', $actionPermission->getChangeDenyReason($recordModel, array_keys($requestFieldList)));
+                $recordActionDenyReason = $actionPermission->getChangeDenyReason($recordModel, array_keys($requestFieldList));
             }
         }
 
+        $viewer->assign('RECORD_ACTION_DENY_REASON', $recordActionDenyReason);
         $viewer->assign('RECORD_STRUCTURE', $recordStructure);
         $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
         $viewer->assign('MODULE', $moduleName);

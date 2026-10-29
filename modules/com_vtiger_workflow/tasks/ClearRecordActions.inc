@@ -11,7 +11,7 @@
 /**
  * Workflow task: removes the record action rules written by workflows, for the selected actions or for all of them.
  */
-class VTClearRecordActions extends VTTask
+class ClearRecordActions extends VTTask
 {
     public $executeImmediately = true;
 

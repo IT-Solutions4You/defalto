@@ -914,7 +914,7 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     /**
      * Task "Restrict record actions": the fields apply only to "Field edit", the values only to "Change to value".
      */
-    registerVTRestrictRecordActionsEvents: function () {
+    registerRestrictRecordActionsEvents: function () {
         const container = jQuery('.record-action-permission-task');
         const actionsElement = container.find('[name="actions[]"]');
         const toggleRows = function () {

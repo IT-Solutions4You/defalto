@@ -222,10 +222,10 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'يتضمن إنشاء',
     'LBL_ACTION_FOR_WORKFLOW'      => 'إجراءات سير العمل',
     'LBL_WORKFLOW_SEARCH'          => 'البحث عن طريق اسم',
-    'VTRestrictRecordActions' => 'تقييد إجراءات السجل',
-    'VTClearRecordActions' => 'إزالة قيود إجراءات السجل',
-    'LBL_VTRestrictRecordActions' => 'تقييد إجراءات السجل',
-    'LBL_VTClearRecordActions' => 'إزالة قيود إجراءات السجل',
+    'RestrictRecordActions' => 'تقييد إجراءات السجل',
+    'ClearRecordActions' => 'إزالة قيود إجراءات السجل',
+    'LBL_RestrictRecordActions' => 'تقييد إجراءات السجل',
+    'LBL_ClearRecordActions' => 'إزالة قيود إجراءات السجل',
     'Restrict record actions' => 'تقييد إجراءات السجل',
     'Clear record action restrictions' => 'إزالة قيود إجراءات السجل',
 ];
@@ -253,6 +253,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'الهواتف إعلام دفع',
     'VTCreateEntityTask'          => 'إنشاء سجل',
     'LBL_EXPRESSION_INVALID'      => 'التعبير غير صالح',
-    'VTRestrictRecordActions' => 'تقييد إجراءات السجل',
-    'VTClearRecordActions' => 'إزالة قيود إجراءات السجل',
+    'RestrictRecordActions' => 'تقييد إجراءات السجل',
+    'ClearRecordActions' => 'إزالة قيود إجراءات السجل',
 ];

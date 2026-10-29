@@ -213,10 +213,10 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Include Crearea De',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Acțiuni de flux de lucru',
     'LBL_WORKFLOW_SEARCH'          => 'Căutare după numele de familie',
-    'VTRestrictRecordActions' => 'Restricționează acțiunile înregistrării',
-    'VTClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
-    'LBL_VTRestrictRecordActions' => 'Restricționează acțiunile înregistrării',
-    'LBL_VTClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
+    'RestrictRecordActions' => 'Restricționează acțiunile înregistrării',
+    'ClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
+    'LBL_RestrictRecordActions' => 'Restricționează acțiunile înregistrării',
+    'LBL_ClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
     'Restrict record actions' => 'Restricționează acțiunile înregistrării',
     'Clear record action restrictions' => 'Elimină restricțiile acțiunilor înregistrării',
 ];
@@ -243,6 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobile De Notificare În Push',
     'VTCreateEntityTask'          => 'Creați O Intrare De',
     'LBL_EXPRESSION_INVALID'      => 'Expresia Void',
-    'VTRestrictRecordActions' => 'Restricționează acțiunile înregistrării',
-    'VTClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
+    'RestrictRecordActions' => 'Restricționează acțiunile înregistrării',
+    'ClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
 ];

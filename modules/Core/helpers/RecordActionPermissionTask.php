@@ -14,8 +14,8 @@
  */
 class Core_RecordActionPermissionTask_Helper
 {
-    public const TASK_RESTRICT = 'VTRestrictRecordActions';
-    public const TASK_CLEAR = 'VTClearRecordActions';
+    public const TASK_RESTRICT = 'RestrictRecordActions';
+    public const TASK_CLEAR = 'ClearRecordActions';
 
     public const MEMBER_ALL = 'All';
 

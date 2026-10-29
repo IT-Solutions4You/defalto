@@ -213,10 +213,10 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Oluşturma İçerir ',
     'LBL_ACTION_FOR_WORKFLOW'      => 'İş Akışı için eylem ',
     'LBL_WORKFLOW_SEARCH'          => 'Ada göre arama ',
-    'VTRestrictRecordActions' => 'Kayıt eylemlerini kısıtla',
-    'VTClearRecordActions' => 'Kayıt eylemi kısıtlamalarını kaldır',
-    'LBL_VTRestrictRecordActions' => 'Kayıt eylemlerini kısıtla',
-    'LBL_VTClearRecordActions' => 'Kayıt eylemi kısıtlamalarını kaldır',
+    'RestrictRecordActions' => 'Kayıt eylemlerini kısıtla',
+    'ClearRecordActions' => 'Kayıt eylemi kısıtlamalarını kaldır',
+    'LBL_RestrictRecordActions' => 'Kayıt eylemlerini kısıtla',
+    'LBL_ClearRecordActions' => 'Kayıt eylemi kısıtlamalarını kaldır',
     'Restrict record actions' => 'Kayıt eylemlerini kısıtla',
     'Clear record action restrictions' => 'Kayıt eylemi kısıtlamalarını kaldır',
 ];
@@ -243,6 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobil İtme Bildirim',
     'VTCreateEntityTask'          => 'Kayıt Oluştur ',
     'LBL_EXPRESSION_INVALID'      => 'İfade Geçersiz',
-    'VTRestrictRecordActions' => 'Kayıt eylemlerini kısıtla',
-    'VTClearRecordActions' => 'Kayıt eylemi kısıtlamalarını kaldır',
+    'RestrictRecordActions' => 'Kayıt eylemlerini kısıtla',
+    'ClearRecordActions' => 'Kayıt eylemi kısıtlamalarını kaldır',
 ];

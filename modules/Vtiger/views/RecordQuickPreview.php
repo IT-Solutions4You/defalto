@@ -40,8 +40,10 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View
 
         $recordModel = $this->record->getRecord();
         $recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_SUMMARY);
+        // Fields locked and values denied by record action rules, also in the field info of the inline edit
+        $summaryRecordStructure = $this->applyLockedFields($request, $recordStrucure->getStructure());
         $moduleModel = $recordModel->getModule();
-        $moduleFields = $moduleModel->getFields();
+        $moduleFields = $this->applyLockedFields($request, ['module' => $moduleModel->getFields()])['module'];
         $fieldsInfo = [];
 
         foreach ($moduleFields as $fieldName => $fieldModel) {
@@ -54,7 +56,7 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View
         $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('MODULE_NAME', $moduleName);
-        $viewer->assign('SUMMARY_RECORD_STRUCTURE', $this->applyLockedFields($request, $recordStrucure->getStructure()));
+        $viewer->assign('SUMMARY_RECORD_STRUCTURE', $summaryRecordStructure);
         $viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
         $viewer->assign('REQUEST_INSTANCE', $request);
         $viewer->assign('$SOCIAL_ENABLED', false);

@@ -269,10 +269,10 @@ $languageStrings = [
     'days later' => 'o %s dní',
     'in less than' => 'o menej ako %s',
     'in more than' => 'o viac ako %s',
-    'VTRestrictRecordActions' => 'Obmedziť akcie záznamu',
-    'VTClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
-    'LBL_VTRestrictRecordActions' => 'Obmedziť akcie záznamu',
-    'LBL_VTClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
+    'RestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'ClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
+    'LBL_RestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'LBL_ClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
     'Restrict record actions' => 'Obmedziť akcie záznamu',
     'Clear record action restrictions' => 'Zrušiť obmedzenia akcií záznamu',
 ];
@@ -300,6 +300,6 @@ $jsLanguageStrings = [
     'JS_TASK_STATUS_CHANGED' => 'Stav úlohy sa úspešne zmenil.',
     'VTUpdateFieldsTask' => 'Aktualizácia polí',
     'JS_WORKFLOWS_STATUS_CHANGED' => 'Stav Automatického procesu sa úspešne zmenil.',
-    'VTRestrictRecordActions' => 'Obmedziť akcie záznamu',
-    'VTClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
+    'RestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'ClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
 ];
