@@ -2,6 +2,12 @@
 
 EMAILMaker templates can include record fields and can use display conditions to control when configured content is shown.
 
+The template list supports sorting by its displayed sortable columns. Template exports preserve supported list sorting and filters; exporting selected templates includes only valid selected template records.
+
+Current date and time variables in a template use the time zone of the user generating the e-mail. The `##HH:II##` and `##HH:II:SS##` variables display time in 24-hour format.
+
+Only users with the configured EMAILMaker editing permission and access to a template through its owner or sharing settings can create or change templates. Theme deletion follows the corresponding delete permission. EMAILMaker profile permissions can be changed only by an administrator.
+
 Amounts and other numeric fields use the decimal count and separators configured in the template's **Settings** tab. Before these shared settings are saved for the first time, EMAILMaker uses the current user's currency formatting preferences.
 
 In the **Display conditions** section of a template (**Edit Conditions**), the main record blocks are listed first and the **Item Details** fields of an inventory document are listed last. Select the field, comparison and value required by the template rule.

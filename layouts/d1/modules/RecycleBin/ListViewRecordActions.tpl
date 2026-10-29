@@ -14,11 +14,13 @@
             <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox form-check-input"/>
         </span>
     {/if}
-    <span class="restoreRecordButton px-2">
-        <i title="{vtranslate('LBL_RESTORE', $MODULE)}" class="fa fa-refresh alignMiddle"></i>
-    </span>
-    <span class="deleteRecordButton px-2">
-        <i title="{vtranslate('LBL_DELETE', $MODULE)}" class="fa fa-trash alignMiddle"></i>
-    </span>
+    {if $CURRENT_USER_MODEL->isAdminUser()}
+        <span class="restoreRecordButton px-2">
+            <i title="{vtranslate('LBL_RESTORE', $MODULE)}" class="fa fa-refresh alignMiddle"></i>
+        </span>
+        <span class="deleteRecordButton px-2">
+            <i title="{vtranslate('LBL_DELETE', $MODULE)}" class="fa fa-trash alignMiddle"></i>
+        </span>
+    {/if}
 </div>
 {/strip}

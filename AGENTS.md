@@ -41,6 +41,14 @@
 - If the change affects rendered or cache-busted browser assets, also bump the application/display patch version in `version.php` so `vresource_url()` invalidates cached resources.
 - Do not bump `version.php` for documentation-only changes, comments-only changes, tests-only changes, generated-map-only changes, or analysis notes that do not alter runtime behavior.
 
+## Commit Messages
+
+- Separate shared Core/Vtiger changes from installable module changes whenever practical, and create a separate commit for each affected installable module.
+- Name commits owned by Core or Vtiger as `Defalto <defaltoVersion>: <short description>`, for example `Defalto 1.10.92: Support module-owned list query rules`. Use the current application version from `version.php`.
+- Name commits owned by an installable module as `<ModuleName> <moduleVersion>: <short description>`, for example `Appointments 1.4: Preserve all-day calendar dates`. Use the module name and its current declared `$moduleVersion`.
+- Keep the description short and customer-readable. Do not add Conventional Commit prefixes such as `feat:`, `fix:`, or `chore:` before the required owner and version.
+- Documentation-only, comments-only, tests-only, and generated-map-only commits still use the applicable owner and current version format, but must not cause a version bump solely for the commit message.
+
 ### Module Versions
 
 - Treat `public string $moduleVersion` in `modules/<Module>/<Module>.php` as the install and update version of that installable module; the install flow persists it to `vtiger_tab.version`.
@@ -190,3 +198,16 @@
 - Run `php -l` on touched PHP files.
 - Run the scripts validator when module resource JavaScript changes.
 - Check that `version.php` was bumped when rendered application styles changed.
+
+## Short Change Summary
+
+- Treat the command `summary` as requests for a concise summary of the completed work.
+- Respond in the user's current language with no more than 10 short bullet points.
+- Briefly state what changed and the practical benefit of each change.
+- Avoid implementation details, filenames, test output, commit hashes, and unnecessary introductory text unless the user asks for them.
+
+## Commit Command
+
+- Treat the command `commits` as an explicit request to create commits for the completed work.
+- Review the working tree, preserve unrelated user changes, run the relevant validation, and split commits according to the repository ownership and commit-message rules.
+- After committing, report the created commit hashes and short messages, and list any changes intentionally left uncommitted.

@@ -88,9 +88,17 @@ class VTCalendarTask extends VTTask
         $recordModel->set('calendar_status', $this->calendar_status);
         $recordModel->set('calendar_type', $this->calendar_type);
         $recordModel->set('assigned_to_user', $this->getAssignedTo());
-        $recordModel->set('datetime_start', DateTimeField::convertToUserFormat($this->getDateTime(true)));
-        $recordModel->set('datetime_end', DateTimeField::convertToUserFormat($this->getDateTime(false)));
         $recordModel->set('is_all_day', $this->is_all_day);
+
+        if ($recordModel->isAllDayEvent()) {
+            $recordModel->setAllDayDates(
+                DateTimeField::convertToUserFormat($this->getDateTime(true)),
+                DateTimeField::convertToUserFormat($this->getDateTime(false))
+            );
+        } else {
+            $recordModel->set('datetime_start', DateTimeField::convertToUserFormat($this->getDateTime(true)));
+            $recordModel->set('datetime_end', DateTimeField::convertToUserFormat($this->getDateTime(false)));
+        }
 
         foreach ($this->getOtherFields() as $fieldName => $fieldModel) {
             $recordModel->set($fieldName, $this->renderTemplateValue((string)$this->get($fieldName), $entityCache));

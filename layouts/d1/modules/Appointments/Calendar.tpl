@@ -182,7 +182,7 @@
                     <input type="hidden" id="calendar_view" value="{Appointments_Events_Model::getInitialView($CURRENT_USER->get('activity_view'))}">
                     <input type="hidden" id="scroll_hour" value="{Appointments_Events_Model::getScrollHour()}">
                     <input type="hidden" id="start_hour" value="{$CURRENT_USER->get('start_hour')}">
-                    <input type="hidden" id="timezone" value="{$CURRENT_USER->get('timezone')}">
+                    <input type="hidden" id="timezone" value="{$CURRENT_USER->get('time_zone')}">
                     <input type="hidden" id="hour_format" value="{$CURRENT_USER->get('hour_format')}">
                     <input type="hidden" id="date_format" value="{$CURRENT_USER->get('date_format')}">
                     <input type="hidden" id="slot_duration" value="{$CURRENT_USER->get('slot_duration')}">

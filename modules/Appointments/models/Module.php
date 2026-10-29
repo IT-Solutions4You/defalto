@@ -161,48 +161,36 @@ class Appointments_Module_Model extends Vtiger_Module_Model
     /**
      * @return Vtiger_ListView_Model
      */
-    public function getTodayRecordsListModel()
+    public function getTodayRecordsListModel(bool $upcomingOnly = false)
     {
-        if (!empty($this->todayRecordsListModel)) {
+        if (!$upcomingOnly && !empty($this->todayRecordsListModel)) {
             return $this->todayRecordsListModel;
         }
 
         $moduleName = $this->getName();
         $currentUser = Users_Record_Model::getCurrentUserModel();
-        $queryGenerator = new EnhancedQueryGenerator($moduleName, $currentUser);
+        $queryGenerator = new Appointments_QueryGenerator_Model($moduleName, $currentUser);
         $queryGenerator->setFields(['id', 'subject', 'calendar_type', 'datetime_start', 'datetime_end', 'is_all_day']);
 
         /** @var Vtiger_ListView_Model $listModel */
         $listModel = Vtiger_ListView_Model::getCleanInstance($moduleName);
         $listModel->set('query_generator', $queryGenerator);
 
-        $date = Appointments_Dates_Helper::getTodayDatetimesForUser();
-        $currentDate = Appointments_Dates_Helper::getCurrentDatetimeForUser();
+        [$utcStart, $utcEnd] = Appointments_Dates_Helper::getTodayDatabaseRangeForUser();
+        $date = Appointments_Dates_Helper::getTodayDateForUser();
+        $queryGenerator->addTodayCondition($date, $utcStart, $utcEnd);
 
-        /**
-         * @var EnhancedQueryGenerator $queryGenerator
-         * Query generator require user dates to convert to database utc
-         */
-        $queryGenerator = $listModel->get('query_generator');
-        $queryGenerator->startGroup('');
-        /** Show events with time between start and end date */
-        $queryGenerator->startGroup('');
-        $queryGenerator->addCondition('datetime_start', $date, 'bw', '');
-        $queryGenerator->addCondition('datetime_end', $date, 'bw', 'OR');
-        $queryGenerator->endGroup();
-        /** Show events with start date less than current time and end date more than current time */
-        $queryGenerator->startGroup($queryGenerator::$OR);
-        $queryGenerator->addCondition('datetime_start', $currentDate, 'l');
-        $queryGenerator->addConditionGlue($queryGenerator::$AND);
-        $queryGenerator->addCondition('datetime_end', $currentDate, 'g');
-        $queryGenerator->endGroup('');
-        $queryGenerator->endGroup('');
+        if ($upcomingOnly) {
+            $queryGenerator->addUpcomingTodayCondition($date, Appointments_Dates_Helper::getCurrentDatabaseDatetime());
+        }
 
         $queryGenerator->addCondition('calendar_status', 'Completed', 'n', 'AND');
         $queryGenerator->addCondition('calendar_status', 'Cancelled', 'n', 'AND');
         $queryGenerator->addCondition('assigned_user_id', decode_html($currentUser->getName()), 'c', 'AND');
 
-        $this->todayRecordsListModel = $listModel;
+        if (!$upcomingOnly) {
+            $this->todayRecordsListModel = $listModel;
+        }
 
         return $listModel;
     }
@@ -211,10 +199,7 @@ class Appointments_Module_Model extends Vtiger_Module_Model
     {
         $db = PearDatabase::getInstance();
         $currentUser = Users_Record_Model::getCurrentUserModel();
-        $listModel = $this->getTodayRecordsListModel();
-
-        $currentDate = Appointments_Dates_Helper::getCurrentDatetimeForUser();
-        $listModel->get('query_generator')->addCondition('datetime_start', $currentDate, 'g', 'AND');
+        $listModel = $this->getTodayRecordsListModel(true);
 
         $controller = new ListViewController($db, $currentUser, $listModel->get('query_generator'));
 

@@ -9,6 +9,7 @@
 # Email content rendering
 
 - `VTEmailTask::getContents()` runs `getContent(false)` before workflow variable substitution; `ITS4YouEmails_Record_Model::retrieveContent()` runs recipient-aware `getContent(true, ...)` again before assigning the mailer body. Keep both passes in view when diagnosing formatting.
+- Current date and time placeholders are generated together in `EMAILMaker_EMAILContent_Model::replaceCurrentDate()` from one instant converted by `DateTimeField` to the current user's time zone. Time placeholders use 24-hour `H:i` and `H:i:s` output.
 - Number formatting is owned by `EMAILMaker_Record_Model::getDecimalSettings()`. Stored module-wide settings take precedence; while `vtiger_emakertemplates_settings` is empty, rendering and numeric template functions use the current user's currency decimal count and separators.
 - `getFieldDisplayValue()` delegates modern `text` fields to the field's `getDisplayValue()` (`Vtiger_Text_UIType` skips newline conversion for `isHtmlField()` fields such as `Users.signature`). Legacy user variables from `getUserValue()` keep their original values. Neither path removes HTML document wrappers.
 - `getFieldValueUtils()` keeps the legacy encoded-br guard and converts textarea newlines through `Core_SimpleHtmlDom_Helper::convertNewlinesToHtml()`, which avoids extra breaks before literal or encoded paragraph tags. The private `EMAILContent::getFieldValue()` wrapper has no local caller.
@@ -39,6 +40,16 @@
 
 - `EMAILMaker_EMAILMaker_Model::GetDetailViewData()` and the permission-denied box take `Enable.png`, `Disable.png` and `denied.gif` through `vimage_path()` (`layouts/d1/skins/images/`), like PDFMaker.
 - `layouts/d1/modules/EMAILMaker/unsubscribeinfo/info_en_us.tpl` is not referenced by any code and points at `layouts/vlayout/...` images that do not exist.
+
+# Template authorization
+
+- Template writes, including display-condition updates, are enforced in action `checkPermission()` methods, not only in list and edit views. Creating a template requires the EMAILMaker `EDIT` profile permission for its selected module. Updating requires edit access to both the stored template through the existing owner/sharing rules and the requested target module. An empty target module is valid only for a theme (`is_theme = 1`); non-theme rows must name an authorized module.
+- Deleting a theme requires the EMAILMaker `DELETE` profile permission, access through the existing owner/sharing rules, and a non-deleted `is_theme = 1` record. Only administrators may save EMAILMaker profile-permission settings.
+- `EMAILMaker_EMAILMaker_Model::{isTemplateCreatable,isTemplateEditable,isThemeDeletable}()` own these action-level authorization decisions. Do not authorize an existing template from request-supplied module, owner, sharing, or theme fields.
+
+# Template list and export queries
+
+- `EMAILMaker_EMAILMaker_Model::{validateListSortColumn,validateListSortOrder}()` own the closed sort contract used by the template list and export. Module filters are bound values in `GetListviewData()`; selected-template export IDs are validated and bound by `EMAILMaker_Module_Model::fetchSelectedExportResult()`.
 
 # PDF Maker templates of an e-mail template
 

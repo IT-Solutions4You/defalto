@@ -74,13 +74,24 @@ class Appointments_InvitationEmail_Model extends Vtiger_Base_Model
         $userLabel = str_replace(['"', "\r", "\n"], '', (string)Vtiger_Functions::getUserRecordLabel($assignedUserId));
         $userEmail = $this->getUserEmail($assignedUserId);
 
+        if ($recordModel->isAllDayEvent()) {
+            $start = 'DTSTART;VALUE=DATE:' . str_replace('-', '', $recordModel->getAllDayStorageDate($this->startDateField));
+            $endDate = (new DateTimeImmutable($recordModel->getAllDayStorageDate($this->endDateField)))
+                ->modify('+1 day')
+                ->format('Ymd');
+            $end = 'DTEND;VALUE=DATE:' . $endDate;
+        } else {
+            $start = 'DTSTART:' . date('Ymd\THis\Z', strtotime($recordModel->get($this->startDateField)));
+            $end = 'DTEND:' . date('Ymd\THis\Z', strtotime($recordModel->get($this->endDateField)));
+        }
+
         $lines = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
             'BEGIN:VEVENT',
             'ORGANIZER;CN="' . $userLabel . '":MAILTO:' . $userEmail,
-            'DTSTART:' . date('Ymd\THis\Z', strtotime($recordModel->get($this->startDateField))),
-            'DTEND:' . date('Ymd\THis\Z', strtotime($recordModel->get($this->endDateField))),
+            $start,
+            $end,
             'DTSTAMP:' . date('Ymd\THis\Z'),
             'DESCRIPTION:' . $this->escapeIcsText((string)$recordModel->get('description')),
             'LOCATION:' . $this->escapeIcsText((string)$recordModel->get('location')),

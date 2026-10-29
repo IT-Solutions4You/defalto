@@ -74,21 +74,22 @@ class Appointments_RepeatRecords_Model
         $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
         [$parentDatabaseEndDate, $parentDatabaseEndTime] = explode(' ', $parentDatabaseEndDateTime);
 
-        $interval = strtotime($parentDatabaseEndDateTime) - strtotime($parentDatabaseStartDateTime);
+        $isAllDay = $parentRecordModel instanceof Appointments_Record_Model && $parentRecordModel->isAllDayEvent();
+        $interval = self::getRepeatInterval($parentDatabaseStartDateTime, $parentDatabaseEndDateTime, $isAllDay);
 
         foreach ($recurringDates as $index => $databaseStartDate) {
             if (0 === $index && $parentDatabaseStartDate === $databaseStartDate) {
                 continue;
             }
 
-            $databaseEndDate = date('Y-m-d', strtotime($databaseStartDate) + $interval);
+            $databaseEndDate = self::getRepeatEndDate($databaseStartDate, $interval, $isAllDay);
             $recordModel = Vtiger_Record_Model::getCleanInstance($parentModule);
 
             foreach ($parentRecordModel->getData() as $key => $value) {
                 if ($key === self::$dateStartField) {
-                    $recordModel->set(self::$dateStartField, self::getUserDateTime($databaseStartDate, $parentDatabaseStartTime));
+                    $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $parentDatabaseStartTime, $isAllDay));
                 } elseif ($key === self::$dateEndField) {
-                    $recordModel->set(self::$dateEndField, self::getUserDateTime($databaseEndDate, $parentDatabaseEndTime));
+                    $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $parentDatabaseEndTime, $isAllDay));
                 } elseif (!in_array($key, $skip_focus_fields)) {
                     $recordModel->set($key, $value);
                 }
@@ -136,6 +137,57 @@ class Appointments_RepeatRecords_Model
     }
 
     /**
+     * @param string $date
+     * @param string $time
+     * @param bool   $isAllDay
+     *
+     * @return string
+     */
+    public static function getRepeatDateTime(string $date, string $time, bool $isAllDay): string
+    {
+        if ($isAllDay) {
+            return $date . ' 00:00:00';
+        }
+
+        return self::getUserDateTime($date, $time);
+    }
+
+    /**
+     * @param string $startDateTime
+     * @param string $endDateTime
+     * @param bool   $isAllDay
+     *
+     * @return int
+     */
+    public static function getRepeatInterval(string $startDateTime, string $endDateTime, bool $isAllDay): int
+    {
+        if ($isAllDay) {
+            $startDate = new DateTimeImmutable(explode(' ', $startDateTime)[0]);
+            $endDate = new DateTimeImmutable(explode(' ', $endDateTime)[0]);
+
+            return (int)$startDate->diff($endDate)->days;
+        }
+
+        return strtotime($endDateTime) - strtotime($startDateTime);
+    }
+
+    /**
+     * @param string $startDate
+     * @param int    $interval
+     * @param bool   $isAllDay
+     *
+     * @return string
+     */
+    public static function getRepeatEndDate(string $startDate, int $interval, bool $isAllDay): string
+    {
+        if ($isAllDay) {
+            return (new DateTimeImmutable($startDate))->modify('+' . $interval . ' days')->format('Y-m-d');
+        }
+
+        return date('Y-m-d', strtotime($startDate) + $interval);
+    }
+
+    /**
      * @var $parentRecordModel Vtiger_Record_Model
      *                         Repeat Activity instance till given limit.
      */
@@ -152,7 +204,8 @@ class Appointments_RepeatRecords_Model
         $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
         [$parentDatabaseEndDate, $parentDatabaseEndTime] = explode(' ', $parentDatabaseEndDateTime);
 
-        $interval = strtotime($parentDatabaseEndDateTime) - strtotime($parentDatabaseStartDateTime);
+        $isAllDay = $parentRecordModel instanceof Appointments_Record_Model && $parentRecordModel->isAllDayEvent();
+        $interval = self::getRepeatInterval($parentDatabaseStartDateTime, $parentDatabaseEndDateTime, $isAllDay);
         $vtEntityDelta = new VTEntityDelta();
         $delta = $vtEntityDelta->getEntityDelta($parentModule, $parentId, true);
 
@@ -238,13 +291,13 @@ class Appointments_RepeatRecords_Model
                     [$recordDatabaseStartDate, $recordDatabaseStartTime] = explode(' ', $recordModel->get(self::$dateStartField));
 
                     if ('future' === $recurrenceMode && $recordDatabaseStartDate >= $parentDatabaseStartDate) {
-                        $databaseEndDate = date('Y-m-d', strtotime($databaseStartDate) + $interval);
+                        $databaseEndDate = self::getRepeatEndDate($databaseStartDate, $interval, $isAllDay);
 
                         foreach ($parentRecordModel->getData() as $key => $value) {
                             if ($key === self::$dateStartField) {
-                                $recordModel->set(self::$dateStartField, self::getUserDateTime($databaseStartDate, $parentDatabaseStartTime));
+                                $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $parentDatabaseStartTime, $isAllDay));
                             } elseif ($key === self::$dateEndField) {
-                                $recordModel->set(self::$dateEndField, self::getUserDateTime($databaseEndDate, $parentDatabaseEndTime));
+                                $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $parentDatabaseEndTime, $isAllDay));
                             } elseif (!in_array($key, $skip_focus_fields) && !empty($delta[$key])) {
                                 $recordModel->set($key, $value);
                             }
@@ -260,13 +313,13 @@ class Appointments_RepeatRecords_Model
                             Appointments_Recurrence_Model::saveRelation($parentId, $recordId);
                         }
                     } elseif ('all' === $recurrenceMode) {
-                        $databaseEndDate = date('Y-m-d', strtotime($databaseStartDate) + $interval);
+                        $databaseEndDate = self::getRepeatEndDate($databaseStartDate, $interval, $isAllDay);
 
                         foreach ($parentRecordModel->getData() as $key => $value) {
                             if ($key === self::$dateStartField) {
-                                $recordModel->set(self::$dateStartField, self::getUserDateTime($databaseStartDate, $parentDatabaseStartTime));
+                                $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $parentDatabaseStartTime, $isAllDay));
                             } elseif ($key === self::$dateEndField) {
-                                $recordModel->set(self::$dateEndField, self::getUserDateTime($databaseEndDate, $parentDatabaseEndTime));
+                                $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $parentDatabaseEndTime, $isAllDay));
                             } elseif (!in_array($key, $skip_focus_fields) && !empty($delta[$key])) {
                                 $recordModel->set($key, $value);
                             }

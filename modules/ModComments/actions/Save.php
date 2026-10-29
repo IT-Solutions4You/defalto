@@ -18,6 +18,56 @@
 
 class ModComments_Save_Action extends Vtiger_Save_Action
 {
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance('ModComments');
+
+        if ($request->get('record')) {
+            parent::checkPermission($request);
+
+            $recordId = $request->get('record');
+
+            if (!Users_Privileges_Model::isPermitted('ModComments', 'DetailView', $recordId)
+                || !Users_Privileges_Model::isPermitted('ModComments', 'EditView', $recordId)) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+
+            $recordModel = Vtiger_Record_Model::getInstanceById($recordId, 'ModComments');
+            $relatedRecordId = $moduleModel->getViewableRelatedRecordId($recordModel->get('related_to'));
+
+            if (false === $relatedRecordId) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+
+            $request->set('related_to', $relatedRecordId);
+            $request->set('parent_comments', $recordModel->get('parent_comments'));
+
+            return true;
+        }
+
+        $relatedRecordId = $moduleModel->getPermittedRelatedRecordId($request->get('related_to'));
+
+        if (false === $relatedRecordId) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        if ($request->get('relationOperation')) {
+            $sourceRecordId = $moduleModel->getPermittedRelatedRecordId($request->get('sourceRecord'));
+            $sourceModule = getSalesEntityType($relatedRecordId);
+
+            if ($sourceRecordId !== $relatedRecordId || $request->get('sourceModule') !== $sourceModule) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+        }
+
+        $request->set('related_to', $relatedRecordId);
+
+        return true;
+    }
+
     public function process(Vtiger_Request $request)
     {
         $recordId = $request->get('record');

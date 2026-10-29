@@ -69,35 +69,37 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     getCurrentPageNum: function () {
-        return jQuery('input[name="currentPageNum"]', this.relatedContentContainer).val();
+        return this.relatedContentContainer.find('input[name="currentPageNum"]').val();
     },
 
     setCurrentPageNumber: function (pageNumber) {
-        jQuery('input[name="currentPageNum"]').val(pageNumber);
+        this.relatedContentContainer.find('input[name="currentPageNum"]').val(pageNumber);
     },
 
     /**
      * Function to get Order by
      */
     getOrderBy: function () {
-        return jQuery('#orderBy').val();
+        return this.relatedContentContainer.find('#orderBy').val();
     },
 
     /**
      * Function to get Sort Order
      */
     getSortOrder: function () {
-        return jQuery("#sortOrder").val();
+        return this.relatedContentContainer.find('#sortOrder').val();
     },
 
     getCompleteParams: function () {
-        let detailInstance = Vtiger_Detail_Js.getInstance();
-        let params = {};
+        let detailInstance = Vtiger_Detail_Js.getInstanceByModuleName(this.parentModuleName),
+            params = {};
+
+        detailInstance.setContainer(this.detailViewContainer);
 
         params['view'] = "Detail";
         params['module'] = this.parentModuleName;
         params['record'] = this.getParentId();
-        params['relationId'] = $('.tab-item.active').data('relationId');
+        params['relationId'] = this.selectedRelatedTabElement.data('relationId');
         params['relatedModule'] = this.relatedModulename;
         params['sortorder'] = this.getSortOrder();
         params['orderby'] = this.getOrderBy();
@@ -105,14 +107,15 @@ jQuery.Class("Vtiger_RelatedList_Js", {
         params['mode'] = "showRelatedList";
         params['tab_label'] = this.selectedRelatedTabElement.data('label-key');
         params['search_params'] = JSON.stringify(detailInstance.getRelatedListSearchParams());
-        params['nolistcache'] = (jQuery('#noFilterCache').val() == 1) ? 1 : 0;
+        params['nolistcache'] = (this.relatedContentContainer.find('#noFilterCache').val() == 1) ? 1 : 0;
 
         return params;
     },
 
     loadRelatedList: function (params) {
-        var aDeferred = jQuery.Deferred();
-        var thisInstance = this;
+        var aDeferred = jQuery.Deferred(),
+            thisInstance = this;
+
         if (typeof this.relatedModulename == "undefined" || this.relatedModulename.length <= 0) {
             return;
         }
@@ -128,11 +131,12 @@ jQuery.Class("Vtiger_RelatedList_Js", {
                 app.helper.hideProgress();
                 thisInstance.relatedTabsContainer.find('li').removeClass('active');
                 thisInstance.selectedRelatedTabElement.addClass('active');
-                container = jQuery('div.details');
+                let container = thisInstance.relatedContentContainer;
+
                 container.html(responseData);
                 thisInstance.initializePaginationEvents();
                 thisInstance.triggerRelationAdditionalActions();
-                app.event.trigger('post.relatedListLoad.click', container);
+                app.event.trigger('post.relatedListLoad.click', container, thisInstance.detailViewContainer);
 
                 aDeferred.resolve(responseData);
             },
@@ -343,19 +347,22 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     registerScrollForRollupComments: function () {
-        let self = this;
+        let self = this,
+            rollUpComments = self.relatedContentContainer.find('#rollupcomments'),
+            commentsBody = self.relatedContentContainer.find('.commentsBody'),
+            moreRelatedComments = self.relatedContentContainer.find('.moreRelatedComments');
 
-        if (parseInt($('#rollupcomments').attr('rollup-status')) !== 1) {
+        if (parseInt(rollUpComments.attr('rollup-status')) !== 1) {
             return;
         }
 
-        $('.commentsBody').on('scroll', function () {
+        commentsBody.off('scroll.rollupComments').on('scroll.rollupComments', function () {
             if ('undefined' !== typeof $(this)[0] && $(this)[0].scrollHeight - $(this).height() === $(this).scrollTop()) {
                 self.loadMoreRelatedComments();
             }
         });
 
-        $('.moreRelatedComments').on('click', function () {
+        moreRelatedComments.off('click.rollupComments').on('click.rollupComments', function () {
             self.loadMoreRelatedComments();
         });
     },
@@ -367,13 +374,13 @@ jQuery.Class("Vtiger_RelatedList_Js", {
         Vtiger_RelatedList_Js.loaded = false;
         app.helper.showProgress();
 
-        let commentsBody = jQuery('.commentsBody'),
-            currentTarget = jQuery('#rollupcomments'),
+        let commentsBody = this.relatedContentContainer.find('.commentsBody'),
+            currentTarget = this.relatedContentContainer.find('#rollupcomments'),
             startIndex = parseInt(currentTarget.attr('startindex')),
             data = {
-                'module': app.getModuleName(),
-                'view': app.getViewName(),
-                'record': app.getRecordId(),
+                'module': this.parentModuleName,
+                'view': 'Detail',
+                'record': this.parentRecordId,
                 'mode': 'showRelatedList',
                 'relatedModule': 'ModComments',
                 'startIndex': startIndex,
@@ -411,13 +418,13 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     pageJump: function () {
-        var thisInstance = this;
-        var aDeferred = jQuery.Deferred();
-        var params = this.getPageJumpParams();
-
-        var element = jQuery('#totalPageCount');
-        var totalCountElem = jQuery('.relatedContainer').find('#totalCount');
-        var totalPageNumber = element.text();
+        var thisInstance = this,
+            aDeferred = jQuery.Deferred(),
+            params = this.getPageJumpParams(),
+            relatedContainer = this.relatedContentContainer.find('.relatedContainer'),
+            element = relatedContainer.find('#totalPageCount'),
+            totalCountElem = relatedContainer.find('#totalCount'),
+            totalPageNumber = element.text();
 
         if (totalPageNumber === "") {
             app.request.post(params).then(
@@ -444,18 +451,19 @@ jQuery.Class("Vtiger_RelatedList_Js", {
 
     totalNumOfRecords: function (curEle) {
         let thisInstance = this,
-            element = jQuery('.relatedContainer #totalCount'),
+            relatedContainer = this.relatedContentContainer.find('.relatedContainer'),
+            element = relatedContainer.find('#totalCount'),
             totalPageNumber = element.text(),
             pageCount;
 
         if (curEle.attr('id') !== 'relatedViewPageJump') curEle.addClass('hide');
 
         if (totalPageNumber === '') {
-            let totalCountElem = jQuery('.relatedContainer #totalCount'),
+            let totalCountElem = relatedContainer.find('#totalCount'),
                 totalRecordCount = totalCountElem.val();
 
             if (!totalRecordCount) {
-                let recordPerPage = jQuery('#pageLimit').val();
+                let recordPerPage = relatedContainer.find('#pageLimit').val();
 
                 if (recordPerPage === '0') {
                     recordPerPage = 1;
@@ -499,26 +507,27 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     showPagingInfo: function () {
-        var totalNumberOfRecords = jQuery('.relatedContainer').find('#totalCount').val();
-        var pageNumberElement = jQuery('.pageNumbersText');
-        var pageRange = pageNumberElement.text();
-        var newPagingInfo = pageRange.trim() + " " + app.vtranslate('of') + " " + totalNumberOfRecords + "  ";
-        var listViewEntriesCount = parseInt(jQuery('#noOfEntries').val());
+        var relatedContainer = this.relatedContentContainer.find('.relatedContainer'),
+            totalNumberOfRecords = relatedContainer.find('#totalCount').val(),
+            pageNumberElement = relatedContainer.find('.pageNumbersText'),
+            pageRange = pageNumberElement.text(),
+            newPagingInfo = pageRange.trim() + " " + app.vtranslate('of') + " " + totalNumberOfRecords + "  ",
+            listViewEntriesCount = parseInt(relatedContainer.find('#noOfEntries').val());
 
         if (listViewEntriesCount !== 0) {
-            jQuery('.pageNumbersText').html(newPagingInfo);
+            pageNumberElement.html(newPagingInfo);
         } else {
-            jQuery('.pageNumbersText').html("");
+            pageNumberElement.html("");
         }
     },
 
     pageJumpOnSubmit: function (element) {
-        var thisInstance = this;
-
-        var currentPageElement = jQuery('.relatedContainer').find('#pageNumber');
-        var currentPageNumber = parseInt(currentPageElement.val());
-        var newPageNumber = parseInt(jQuery('#pageToJump').val());
-        var totalPages = parseInt(jQuery('.relatedContainer').find('#totalPageCount').text());
+        var thisInstance = this,
+            relatedContainer = this.relatedContentContainer.find('.relatedContainer'),
+            currentPageElement = relatedContainer.find('#pageNumber'),
+            currentPageNumber = parseInt(currentPageElement.val()),
+            newPageNumber = parseInt(relatedContainer.find('#pageToJump').val()),
+            totalPages = parseInt(relatedContainer.find('#totalPageCount').text());
 
         if (newPageNumber > totalPages) {
             var message = app.vtranslate('JS_PAGE_NOT_EXIST');
@@ -545,9 +554,10 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     initializePaginationEvents: function () {
-        var thisInstance = this;
-        var paginationObj = new Vtiger_Pagination_Js;
-        var relatedViewContainer = jQuery('.relatedContainer');
+        var thisInstance = this,
+            paginationObj = new Vtiger_Pagination_Js,
+            relatedViewContainer = this.relatedContentContainer.find('.relatedContainer');
+
         paginationObj.initialize(relatedViewContainer);
 
         app.event.on(paginationObj.nextPageButtonClickEventName, function () {
@@ -591,8 +601,8 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     registerEditLink: function () {
-        var relatedContainer = jQuery('.relatedContainer');
-        ;
+        var relatedContainer = this.relatedContentContainer.find('.relatedContainer');
+
         relatedContainer.on('click', 'a.relationEdit', function (e) {
             var element = jQuery(e.currentTarget);
             var url = element.attr('href');

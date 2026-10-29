@@ -4,6 +4,8 @@ Related-record widgets on a record use the language of the related module for th
 
 Quick-preview actions apply to the displayed record, not the screen underneath. Deleting asks for one confirmation and refreshes the source screen afterwards; if an error occurs, the preview stays open. Editable fields in the preview header have the same controls as the record detail header: use the pencil, the checkbox switch or the Assigned To selector to update the record without leaving the list. Read-only fields and fields you cannot edit stay unchanged. See the Core user guide for the shared preview workflow.
 
+Opening, paging through or changing roll-up comments and related records from a quick preview loads the requested content only inside that preview. The summary comments, related content and browser address of the record underneath stay unchanged. When the preview has no matching navigation tab, the link opens the displayed record's own destination instead.
+
 Record-header action icons show a label while the mouse is over them, and the label disappears when the mouse leaves, also after clicking an action or cancelling its confirmation. The buttons also have labels for assistive technology.
 
 # Dropdown fields
@@ -17,6 +19,8 @@ Column settings allow any number of fields. Add the fields you need, arrange the
 Use the list selector to choose a saved view and the funnel beside the columns to add temporary conditions. The quick filter and the saved-list editor offer the same conditions for each field type. Use a date range for a fixed interval, a named period for a moving interval, or a number of days or hours for relative comparisons. Calculated dates and ranges are shown as read-only fields but are still applied and saved; change the selected period to change the range, or choose a custom range to enter dates yourself.
 
 After applying conditions, check the result count and use sorting, paging or export as usual. Clear additional filters returns to the saved list's own criteria. Save as filter opens the full editor, where you can name and save the combined criteria.
+
+Export keeps the selected list sorting in ascending or descending order. Invalid sorting directions are rejected instead of being included in the export query.
 
 Each open list keeps its saved view and temporary conditions in its own address. You can leave All open in one tab and build conditions in another without changing the first tab, also after a refresh. Switching to another saved view clears the temporary conditions. Copy the current address to reopen the same view and conditions later.
 

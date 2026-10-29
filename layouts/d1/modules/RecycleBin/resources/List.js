@@ -10,11 +10,12 @@
 Vtiger_List_Js("RecycleBin_List_Js", {
     recordSelectTrackerInstance: false,
     emptyRecycleBin: function (url) {
-        var message = app.vtranslate('JS_MSG_EMPTY_RB_CONFIRMATION');
+        let message = app.vtranslate('JS_MSG_EMPTY_RB_CONFIRMATION');
         app.helper.showConfirmationBox({'message': message}).then(
             function (e) {
-                var deleteURL = url + '&mode=emptyRecycleBin';
-                var instance = new RecycleBin_List_Js();
+                let deleteURL = url + '&mode=emptyRecycleBin',
+                    instance = new RecycleBin_List_Js();
+
                 app.request.post({url: deleteURL}).then(
                     function (error, data) {
                         if (!error) {
@@ -30,22 +31,34 @@ Vtiger_List_Js("RecycleBin_List_Js", {
         )
     },
     deleteRecords: function (url) {
-        var listInstance = Vtiger_List_Js.getInstance();
-        var validationResult = listInstance.checkListRecordSelected();
+        let listInstance = Vtiger_List_Js.getInstance(),
+            validationResult = listInstance.checkListRecordSelected();
+
         if (validationResult != true) {
-            var selectedIds = listInstance.readSelectedIds(true);
-            var cvId = listInstance.getCurrentCvId();
-            var message = app.vtranslate('LBL_MASS_DELETE_CONFIRMATION');
+            let selectedIds = listInstance.readSelectedIds(true),
+                excludedIds = listInstance.readExcludedIds(true),
+                cvId = listInstance.getCurrentCvId(),
+                message = app.vtranslate('LBL_MASS_DELETE_CONFIRMATION');
+
             app.helper.showConfirmationBox({'message': message}).then(
                 function (e) {
-                    var sourceModule = jQuery('#sourceModule').val();
-                    var deleteURL = url + '&viewname=' + cvId + '&selected_ids=' + selectedIds + '&mode=deleteRecords&sourceModule=' + sourceModule;
+                    let sourceModule = jQuery('#sourceModule').val(),
+                        postData = {
+                            'viewname': cvId,
+                            'selected_ids': selectedIds,
+                            'excluded_ids': excludedIds,
+                            'mode': 'deleteRecords',
+                            'sourceModule': sourceModule,
+                            'search_params': JSON.stringify(listInstance.getListSearchParams())
+                        };
+
                     app.helper.showProgress();
-                    app.request.post({url: deleteURL}).then(
+                    app.request.post({url: url, data: postData}).then(
                         function (error, data) {
                             if (data) {
                                 app.helper.hideProgress();
-                                var instance = new RecycleBin_List_Js();
+                                let instance = new RecycleBin_List_Js();
+
                                 instance.recycleBinActionPostOperations(data);
                             }
                         }
@@ -59,29 +72,42 @@ Vtiger_List_Js("RecycleBin_List_Js", {
 
     },
     restoreRecords: function (url) {
-        var listInstance = Vtiger_List_Js.getInstance();
-        var validationResult = listInstance.checkListRecordSelected();
+        let listInstance = Vtiger_List_Js.getInstance(),
+            validationResult = listInstance.checkListRecordSelected();
+
         if (validationResult != true) {
-            var selectedIds = listInstance.readSelectedIds(true);
-            var excludedIds = listInstance.readExcludedIds(true);
-            var cvId = listInstance.getCurrentCvId();
-            var message = app.vtranslate('JS_LBL_RESTORE_RECORDS_CONFIRMATION');
+            let selectedIds = listInstance.readSelectedIds(true),
+                excludedIds = listInstance.readExcludedIds(true),
+                cvId = listInstance.getCurrentCvId(),
+                message = app.vtranslate('JS_LBL_RESTORE_RECORDS_CONFIRMATION');
+
             app.helper.showConfirmationBox({'message': message}).then(
                 function (e) {
-                    var sourceModule = jQuery('#sourceModule').val();
-                    var restoreURL = url + '&viewname=' + cvId + '&selected_ids=' + selectedIds + '&excluded_ids=' + excludedIds + '&mode=restoreRecords&sourceModule=' + sourceModule + "&search_params=" + JSON.stringify(listInstance.getListSearchParams());
+                    let sourceModule = jQuery('#sourceModule').val(),
+                        postData = {
+                            'viewname': cvId,
+                            'selected_ids': selectedIds,
+                            'excluded_ids': excludedIds,
+                            'mode': 'restoreRecords',
+                            'sourceModule': sourceModule,
+                            'search_params': JSON.stringify(listInstance.getListSearchParams())
+                        };
+
                     app.helper.showProgress();
-                    app.request.post({url: restoreURL}).then(function (error, data) {
+                    app.request.post({url: url, data: postData}).then(function (error, data) {
                         app.helper.hideProgress();
                         if (error === null) {
                             jQuery('.vt-notification').remove();
-                            var moduleLabel = data.modulelabel;
+                            let moduleLabel = data.modulelabel;
+
                             if (!moduleLabel) {
                                 moduleLabel = app.vtranslate('SINGLE_' + sourceModule);
                             }
-                            var instance = new RecycleBin_List_Js();
+
+                            let instance = new RecycleBin_List_Js(),
+                                successNote = app.vtranslate('JS_RECORDS_RESTORED', selectedIdsArray.length, moduleLabel);
+
                             instance.recycleBinActionPostOperations(data);
-                            var successNote = app.vtranslate('JS_RECORDS_RESTORED', selectedIdsArray.length, moduleLabel);
                             app.helper.showSuccessNotification({'message': successNote});
                         } else {
                             app.event.trigger('post.save.failed', error);
@@ -100,7 +126,8 @@ Vtiger_List_Js("RecycleBin_List_Js", {
      * @return <string> json string
      */
     convertToJsonString: function (id) {
-        var jsonObject = [];
+        let jsonObject = [];
+
         jsonObject.push(id);
         return JSON.stringify(jsonObject);
     },
@@ -108,28 +135,31 @@ Vtiger_List_Js("RecycleBin_List_Js", {
      * Function to delete a record
      */
     deleteRecord: function (recordId) {
-        var recordId = RecycleBin_List_Js.convertToJsonString(recordId);
-        var listInstance = Vtiger_List_Js.getInstance();
-        var message = app.vtranslate('LBL_DELETE_CONFIRMATION');
-        var sourceModule = jQuery('#sourceModule').val();
-        var cvId = listInstance.getCurrentCvId();
+        let selectedRecordId = RecycleBin_List_Js.convertToJsonString(recordId),
+            listInstance = Vtiger_List_Js.getInstance(),
+            message = app.vtranslate('LBL_DELETE_CONFIRMATION'),
+            sourceModule = jQuery('#sourceModule').val(),
+            cvId = listInstance.getCurrentCvId();
+
         app.helper.showConfirmationBox({'message': message}).then(
             function (e) {
-                var module = app.getModuleName();
-                var postData = {
+                let module = app.getModuleName(),
+                    postData = {
                     "module": module,
                     "viewname": cvId,
-                    "selected_ids": recordId,
+                    "selected_ids": selectedRecordId,
                     "action": "RecycleBinAjax",
                     "sourceModule": sourceModule,
                     "mode": "deleteRecords"
-                }
+                };
+
                 app.helper.showProgress();
                 app.request.post({data: postData}).then(
                     function (error, data) {
                         if (data) {
                             app.helper.hideProgress();
-                            var instance = new RecycleBin_List_Js();
+                            let instance = new RecycleBin_List_Js();
+
                             instance.recycleBinActionPostOperations(data);
                         }
                     }
@@ -139,31 +169,33 @@ Vtiger_List_Js("RecycleBin_List_Js", {
             });
     },
     restoreAction: function (recordId, restoreExternalFile) {
-        var aDeferred = jQuery.Deferred();
-        var recordId = RecycleBin_List_Js.convertToJsonString(recordId);
-        var listInstance = Vtiger_List_Js.getInstance();
-        var sourceModule = jQuery('#sourceModule').val();
-        var cvId = listInstance.getCurrentCvId();
-
-        var module = app.getModuleName();
-        var postData = {
+        let aDeferred = jQuery.Deferred(),
+            selectedRecordId = RecycleBin_List_Js.convertToJsonString(recordId),
+            listInstance = Vtiger_List_Js.getInstance(),
+            sourceModule = jQuery('#sourceModule').val(),
+            cvId = listInstance.getCurrentCvId(),
+            module = app.getModuleName(),
+            postData = {
             "module": module,
             "action": "RecycleBinAjax",
             "viewname": cvId,
-            "selected_ids": recordId,
+            "selected_ids": selectedRecordId,
             "mode": "restoreRecords",
             "sourceModule": sourceModule
-        }
+        };
+
         if (restoreExternalFile) {
             postData.restoreExternalFiles = true;
         }
+
         app.helper.showProgress();
         app.request.post({data: postData}).then(
             function (error, data) {
                 app.helper.hideProgress();
                 if (error === null) {
                     jQuery('.vt-notification').remove();
-                    var instance = new RecycleBin_List_Js();
+                    let instance = new RecycleBin_List_Js();
+
                     instance.recycleBinActionPostOperations(data);
                     aDeferred.resolve(data);
                 } else {
@@ -178,7 +210,8 @@ Vtiger_List_Js("RecycleBin_List_Js", {
      * Function to restore a record
      */
     restoreRecord: function (recordId) {
-        var message = app.vtranslate('JS_LBL_RESTORE_RECORD_CONFIRMATION');
+        let message = app.vtranslate('JS_LBL_RESTORE_RECORD_CONFIRMATION');
+
         app.helper.showConfirmationBox({'message': message}).then(
             function (e) {
                 RecycleBin_List_Js.restoreAction(recordId, false);
@@ -206,12 +239,12 @@ Vtiger_List_Js("RecycleBin_List_Js", {
         }
     },
     getDefaultParams: function () {
-        var pageNumber = jQuery('#pageNumber').val();
-        var module = app.getModuleName();
-        var parent = app.getParentModuleName();
-        var orderBy = jQuery('#orderBy').val();
-        var sortOrder = jQuery("#sortOrder").val();
-        var params = {
+        let pageNumber = jQuery('#pageNumber').val(),
+            module = app.getModuleName(),
+            parent = app.getParentModuleName(),
+            orderBy = jQuery('#orderBy').val(),
+            sortOrder = jQuery("#sortOrder").val(),
+            params = {
             'module': module,
             'parent': parent,
             'page': pageNumber,
@@ -219,7 +252,8 @@ Vtiger_List_Js("RecycleBin_List_Js", {
             'orderby': orderBy,
             'sortorder': sortOrder,
             'sourceModule': jQuery('#sourceModule').val()
-        }
+        };
+
         return params;
     },
     /*
@@ -228,13 +262,16 @@ Vtiger_List_Js("RecycleBin_List_Js", {
     recycleBinActionPostOperations: function (data) {
         jQuery('#recordsCount').val('');
         jQuery('#totalPageCount').text('');
-        var thisInstance = this;
-        var listInstance = Vtiger_List_Js.getInstance();
+        let thisInstance = this,
+            listInstance = Vtiger_List_Js.getInstance();
+
         if (data) {
-            var params = thisInstance.getDefaultParams();
+            let params = thisInstance.getDefaultParams();
+
             app.request.post({data: params}).then(function (error, data) {
                 app.helper.hideModal();
-                var listViewContainer = thisInstance.getListViewContainer();
+                let listViewContainer = thisInstance.getListViewContainer();
+
                 listViewContainer.html(data);
                 vtUtils.applyFieldElementsView(listViewContainer.find('.searchRow'));
                 jQuery('#deSelectAllMsg').trigger('click');
@@ -247,16 +284,17 @@ Vtiger_List_Js("RecycleBin_List_Js", {
         }
     },
     getRecordsCount: function () {
-        var aDeferred = jQuery.Deferred();
-        var count = '';
-        var module = app.getModuleName();
-        var sourceModule = jQuery('#sourceModule').val();
-        var postData = {
+        let aDeferred = jQuery.Deferred(),
+            count = '',
+            module = app.getModuleName(),
+            sourceModule = jQuery('#sourceModule').val(),
+            postData = {
             "module": module,
             "sourceModule": sourceModule,
             "view": "ListAjax",
             "mode": "getRecordsCount"
-        }
+        };
+
         app.request.post({data: postData}).then(
             function (error, data) {
                 jQuery("#recordsCount").val(data['count']);
@@ -272,24 +310,27 @@ Vtiger_List_Js("RecycleBin_List_Js", {
      * Function to get Page Jump Params
      */
     getPageJumpParams: function () {
-        var module = app.getModuleName();
-        var pageCountParams = {
+        let module = app.getModuleName(),
+            pageCountParams = {
             'module': module,
             'view': "ListAjax",
             'mode': "getPageCount",
             'sourceModule': jQuery('#sourceModule').val(),
             'search_params': JSON.stringify(this.getListSearchParams())
-        }
+        };
+
         return pageCountParams;
     },
     /*
      * Function to register the list view delete record click event
      */
     registerDeleteRecordClickEvent: function () {
-        var listViewContentDiv = this.getListViewContainer();
+        let listViewContentDiv = this.getListViewContainer();
+
         listViewContentDiv.on('click', '.deleteRecordButton', function (e) {
-            var elem = jQuery(e.currentTarget);
-            var recordId = elem.closest('tr').data('id');
+            let elem = jQuery(e.currentTarget),
+                recordId = elem.closest('tr').data('id');
+
             RecycleBin_List_Js.deleteRecord(recordId);
             e.stopPropagation();
         });
@@ -298,10 +339,12 @@ Vtiger_List_Js("RecycleBin_List_Js", {
      * Function to register the list view restore record click event
      */
     registerRestoreRecordClickEvent: function () {
-        var listViewContentDiv = this.getListViewContainer();
+        let listViewContentDiv = this.getListViewContainer();
+
         listViewContentDiv.on('click', '.restoreRecordButton', function (e) {
-            var elem = jQuery(e.currentTarget);
-            var recordId = elem.closest('tr').data('id');
+            let elem = jQuery(e.currentTarget),
+                recordId = elem.closest('tr').data('id');
+
             RecycleBin_List_Js.restoreRecord(recordId);
             e.stopPropagation();
         });

@@ -107,23 +107,14 @@ class EMAILMaker_List_View extends Vtiger_Index_View
             $EMAILMaker->DieDuePermission();
         }
 
-        $orderby = 'templateid';
-        $dir = $request->get('sortorder', 'asc');
+        $orderBy = $EMAILMaker->validateListSortColumn($request->get('orderby', 'templateid'));
+        $sortOrder = $request->get('sortorder', 'asc');
 
-        if (isset($_REQUEST['dir']) && 'desc' === $_REQUEST['dir']) {
-            $dir = 'desc';
+        if ($request->has('dir')) {
+            $sortOrder = $request->get('dir');
         }
 
-        if (isset($_REQUEST['orderby'])) {
-            switch ($_REQUEST['orderby']) {
-                case 'name':
-                    $orderby = 'templatename';
-                    break;
-                default:
-                    $orderby = $_REQUEST['orderby'];
-                    break;
-            }
-        }
+        $sortOrder = $EMAILMaker->validateListSortOrder($sortOrder);
 
         $viewer->assign('VERSION_TYPE', 'profesional');
 
@@ -143,8 +134,8 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         $viewer->assign('THEME', $theme);
         $viewer->assign('PARENTTAB', getParentTab());
         $viewer->assign('IMAGE_PATH', $image_path);
-        $viewer->assign('ORDERBY', $orderby);
-        $viewer->assign('DIR', $dir);
+        $viewer->assign('ORDERBY', $orderBy);
+        $viewer->assign('DIR', $sortOrder);
         $viewer->assign('SEARCHSELECTBOXDATA', $EMAILMaker->getSearchSelectboxData());
         $viewer->assign('CATEGORY', getParentTab());
 
@@ -183,7 +174,7 @@ class EMAILMaker_List_View extends Vtiger_Index_View
 
         $viewer->assign('WTEMPLATESIDS', $WTemplateIds);
 
-        $emailTemplates = $moduleModel->GetListviewData($orderby, $dir, "", false, $request);
+        $emailTemplates = $moduleModel->GetListviewData($orderBy, $sortOrder, '', false, $request);
 
         if (!$request->isEmpty('search_workflow')) {
             $search_workflow = $request->get('search_workflow');

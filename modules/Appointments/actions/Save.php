@@ -43,6 +43,7 @@ class Appointments_Save_Action extends Vtiger_Save_Action
 
         /** @var Appointments_Record_Model $recordModel */
         $recordModel = $this->getRecordModelFromRequest($request);
+        Appointments_DateTime_Helper::setAllDayDatesFromRequest($request, $recordModel);
         $this->setRecurrenceDateTimeRequest($request);
         $recordModel->save();
 
@@ -93,13 +94,20 @@ class Appointments_Save_Action extends Vtiger_Save_Action
         $recordModel->set('recurring_type', $_REQUEST['recurringtype']);
         $recordModel->set('recurringtype', $_REQUEST['recurringtype']);
 
-        $startDateTime = new DateTimeField($recordModel->get('datetime_start'));
-        $endDateTime = new DateTimeField($recordModel->get('datetime_end'));
+        if ($recordModel->isAllDayEvent()) {
+            $_REQUEST['date_start'] = DateTimeField::convertToUserFormat($recordModel->getAllDayDate('datetime_start'));
+            $_REQUEST['time_start'] = '00:00:00';
+            $_REQUEST['due_date'] = DateTimeField::convertToUserFormat($recordModel->getAllDayDate('datetime_end'));
+            $_REQUEST['time_end'] = '00:00:00';
+        } else {
+            $startDateTime = new DateTimeField($recordModel->get('datetime_start'));
+            $endDateTime = new DateTimeField($recordModel->get('datetime_end'));
 
-        $_REQUEST['date_start'] = $startDateTime->getDisplayDate();
-        $_REQUEST['time_start'] = $startDateTime->getDisplayTime();
-        $_REQUEST['due_date'] = $endDateTime->getDisplayDate();
-        $_REQUEST['time_end'] = $endDateTime->getDisplayTime();
+            $_REQUEST['date_start'] = $startDateTime->getDisplayDate();
+            $_REQUEST['time_start'] = $startDateTime->getDisplayTime();
+            $_REQUEST['due_date'] = $endDateTime->getDisplayDate();
+            $_REQUEST['time_end'] = $endDateTime->getDisplayTime();
+        }
 
         $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
 

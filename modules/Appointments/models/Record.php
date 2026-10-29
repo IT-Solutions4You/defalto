@@ -28,11 +28,68 @@ class Appointments_Record_Model extends Vtiger_Record_Model
      */
     public function getTimes(): string
     {
-        $isAllDay = 'Yes' === $this->get('is_all_day');
+        $isAllDay = $this->isAllDayEvent();
         $startDatetime = $this->get('datetime_start');
         $endDatetime = $this->get('datetime_end');
 
+        if ($isAllDay) {
+            $startDatetime = $this->getAllDayStorageDate('datetime_start') . ' 00:00:00';
+            $endDatetime = $this->getAllDayStorageDate('datetime_end') . ' 00:00:00';
+            $endDatetime = (new DateTimeImmutable($endDatetime))->modify('+1 day')->format('Y-m-d 00:00:00');
+        }
+
         return Vtiger_Util_Helper::formatDatesIntoTimesRange($startDatetime, $endDatetime, $isAllDay);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllDayEvent(): bool
+    {
+        return 'Yes' === $this->get('is_all_day') || 1 === (int)$this->get('is_all_day');
+    }
+
+    /**
+     * @param string $startDate
+     * @param string $endDate
+     *
+     * @return void
+     */
+    public function setAllDayDates(string $startDate, string $endDate): void
+    {
+        $startDate = $this->getAllDayDateTime($startDate);
+        $endDate = $this->getAllDayDateTime($endDate);
+
+        $this->set('datetime_start', $startDate);
+        $this->set('datetime_end', $endDate);
+    }
+
+    /**
+     * @param string $fieldName
+     *
+     * @return string
+     */
+    public function getAllDayDate(string $fieldName): string
+    {
+        $value = (string)$this->get($fieldName);
+
+        if ('' === trim($value)) {
+            return '';
+        }
+
+        return preg_split('/\s+/', trim($value), 2)[0];
+    }
+
+    /**
+     * Return the literal database calendar date entered by the user.
+     *
+     * @param string $fieldName
+     *
+     * @return string
+     */
+    public function getAllDayStorageDate(string $fieldName): string
+    {
+        return $this->getAllDayDate($fieldName);
     }
 
     /**
@@ -68,7 +125,7 @@ class Appointments_Record_Model extends Vtiger_Record_Model
         $result = $adb->pquery('SELECT is_all_day FROM its4you_calendar WHERE its4you_calendar_id=?', [$record]);
         $value = $adb->query_result($result, 0, 'is_all_day');
 
-        return (int)$value;
+        return 'Yes' === $value || 1 === (int)$value ? 1 : 0;
     }
 
     /**
@@ -80,16 +137,24 @@ class Appointments_Record_Model extends Vtiger_Record_Model
     {
         $value = $this->get($name);
         [$date, $time] = explode(' ', $value);
-        $displayDate = Vtiger_Util_Helper::formatDateIntoStrings($value);
+        $isAllDay = $this->isAllDayEvent();
+
+        if ($isAllDay) {
+            $date = $this->getAllDayDate($name);
+        }
+
+        $displayDate = $isAllDay
+            ? Vtiger_Date_UIType::getDisplayDateValue($date)
+            : Vtiger_Util_Helper::formatDateIntoStrings($value);
 
         $userModel = Users_Record_Model::getCurrentUserModel();
-        $formattedTime = DateTimeField::convertToUserTimeZone($value)->format('H:i');
+        $formattedTime = $isAllDay ? null : DateTimeField::convertToUserTimeZone($value)->format('H:i');
 
-        if (12 === (int)$userModel->get('hour_format')) {
+        if (!$isAllDay && 12 === (int)$userModel->get('hour_format')) {
             $formattedTime = Vtiger_Time_UIType::getTimeValueInAMorPM($formattedTime);
         }
 
-        if (1 === (int)$this->get('is_all_day')) {
+        if ($isAllDay) {
             $time = $formattedTime = null;
         }
 
@@ -100,4 +165,22 @@ class Appointments_Record_Model extends Vtiger_Record_Model
             'display_time' => $formattedTime,
         ];
     }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    protected function getAllDayDateTime(string $value): string
+    {
+        $value = trim($value);
+
+        if ('' === $value) {
+            return '';
+        }
+
+        $date = preg_split('/\s+/', $value, 2)[0];
+
+        return DateTimeField::convertToDBFormat($date) . ' 00:00:00';
+    }
+
 }

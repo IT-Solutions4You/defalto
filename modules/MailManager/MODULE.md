@@ -9,3 +9,7 @@
 
 - MailManager upload actions use the shared `decideFilePath()` attachment directory. Saved-message attachment reads and cleanup resolve stored relative or absolute paths through `Core_Storage_Model::getFilePath()`.
 - `vtiger_mailmanager_mailattachments.path` follows the same physical storage policy as `vtiger_attachments.path`, while its table and message lifecycle remain owned by MailManager.
+
+# Comment creation
+
+- MailManager delegates interactive ModComments authorization to `ModComments_Module_Model::getPermittedRelatedRecordId()` before saving a comment. The user must be allowed to create comments and view the selected related record.

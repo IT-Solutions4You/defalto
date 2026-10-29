@@ -116,9 +116,17 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
     public function getSubject(): string
     {
         $subject = $this->get('subject');
+        $recordModel = $this->get('record_model');
 
-        $dateTime = new DateTimeField($this->get('datetime_start'));
-        $dateTimeInOwnerFormat = $dateTime->getDisplayDateTimeValue($this->get('owner_focus'));
+        if ($recordModel instanceof Appointments_Record_Model && $recordModel->isAllDayEvent()) {
+            $dateTimeInOwnerFormat = DateTimeField::convertToUserFormat(
+                $recordModel->getAllDayDate('datetime_start'),
+                $this->get('owner_focus')
+            );
+        } else {
+            $dateTime = new DateTimeField($this->get('datetime_start'));
+            $dateTimeInOwnerFormat = $dateTime->getDisplayDateTimeValue($this->get('owner_focus'));
+        }
 
         return vtranslate('Reminder', $this->get('record_module_name')) . ': ' . decode_html($subject) . ' @ ' . $dateTimeInOwnerFormat;
     }

@@ -1086,18 +1086,16 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
 
             if (isAllDay) {
                 startDate += ' 00:00';
-                endDate += ' 23:59';
-
                 let endMoment = moment(endDate);
                 endMoment.subtract(1, 'days');
 
-                endDate = endMoment.format('YYYY-MM-DD HH:mm');
+                endDate = endMoment.format('YYYY-MM-DD') + ' 00:00';
             } else {
                 startDate += ' ' + self.convertToTimeString(startDateObject);
                 endDate += ' ' + self.convertToTimeString(endDateObject);
             }
 
-            if (startDate === endDate) {
+            if (!isAllDay && startDate === endDate) {
                 let endMoment = moment(endDate);
                 endMoment.add(1, 'hours');
 
@@ -1213,8 +1211,8 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
 
         app.event.one('post.QuickCreateForm.show', function (event, form) {
             if (info.allDay) {
-                let startDate = moment(startDateString),
-                    endDate = moment(endDateString);
+                let startDate = moment(startDateString.substring(0, 10), 'YYYY-MM-DD', true),
+                    endDate = moment(endDateString.substring(0, 10), 'YYYY-MM-DD', true);
 
                 endDate.subtract(1, 'days');
 
