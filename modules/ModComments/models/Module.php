@@ -48,6 +48,62 @@ class ModComments_Module_Model extends Vtiger_Module_Model
     }
 
     /**
+     * Return the canonical parent record id when the current user may create a comment for it.
+     *
+     * @param mixed $recordId
+     *
+     * @return int|false
+     */
+    public function getPermittedRelatedRecordId(mixed $recordId): int|false
+    {
+        if (!$this->isPermitted('CreateView')) {
+            return false;
+        }
+
+        return $this->getViewableRelatedRecordId($recordId);
+    }
+
+    /**
+     * Return the canonical parent record id when the current user may view it.
+     *
+     * @param mixed $recordId
+     *
+     * @return int|false
+     */
+    public function getViewableRelatedRecordId(mixed $recordId): int|false
+    {
+        $recordId = $this->convertToRecordId($recordId);
+
+        if (false === $recordId || !isRecordExists($recordId)) {
+            return false;
+        }
+
+        $moduleName = getSalesEntityType($recordId);
+
+        if (!is_string($moduleName) || '' === $moduleName
+            || !Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId)) {
+            return false;
+        }
+
+        return $recordId;
+    }
+
+    private function convertToRecordId(mixed $recordId): int|false
+    {
+        if (is_int($recordId)) {
+            return 0 < $recordId ? $recordId : false;
+        }
+
+        if (!is_string($recordId) || 1 !== preg_match('/^[1-9][0-9]*$/D', $recordId)) {
+            return false;
+        }
+
+        $normalizedRecordId = (int)$recordId;
+
+        return (string)$normalizedRecordId === $recordId ? $normalizedRecordId : false;
+    }
+
+    /**
      * @return array
      */
     public static function getCommentFields(): array

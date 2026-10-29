@@ -18,17 +18,29 @@
 
 class ModComments_MassSaveAjax_Action extends Vtiger_Mass_Action
 {
+    private array $relatedRecordIds = [];
+
     /**
      * @inheritDoc
      */
     public function checkPermission(Vtiger_Request $request): bool
     {
-        $moduleName = $request->getModule();
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+        $moduleModel = Vtiger_Module_Model::getInstance('ModComments');
+        $recordIds = (array)$this->getRecordsListFromRequest($request);
+        $this->relatedRecordIds = [];
 
-        if (!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Save')) {
-            throw new Exception(vtranslate($moduleName, $moduleName) . ' ' . vtranslate('LBL_NOT_ACCESSIBLE'));
+        if (!$moduleModel->isPermitted('CreateView')) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        foreach ($recordIds as $recordId) {
+            $relatedRecordId = $moduleModel->getPermittedRelatedRecordId($recordId);
+
+            if (false === $relatedRecordId) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+
+            $this->relatedRecordIds[] = $relatedRecordId;
         }
 
         return true;
@@ -52,11 +64,10 @@ class ModComments_MassSaveAjax_Action extends Vtiger_Mass_Action
     private function getRecordModelsFromRequest(Vtiger_Request $request)
     {
         $moduleName = $request->getModule();
-        $recordIds = $this->getRecordsListFromRequest($request);
         $recordModels = [];
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-        foreach ($recordIds as $recordId) {
+        foreach ($this->relatedRecordIds as $recordId) {
             $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
             $recordModel->set('mode', '');
             $recordModel->set('commentcontent', $request->getRaw('commentcontent'));
