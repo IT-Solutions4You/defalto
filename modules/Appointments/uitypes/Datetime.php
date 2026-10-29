@@ -10,17 +10,33 @@
 
 class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
 {
+    public static bool $isAllDayEditContext = false;
+    public static array $allDayEditDates = [];
+
+    public function getDBInsertValue($value): string
+    {
+        $isAllDay = $_REQUEST['is_all_day'] ?? false;
+
+        if ('Yes' === $isAllDay || 1 === (int)$isAllDay) {
+            $date = preg_split('/\s+/', trim((string)$value), 2)[0] ?? '';
+
+            return '' === $date ? '' : DateTimeField::convertToDBFormat($date) . ' 00:00:00';
+        }
+
+        return parent::getDBInsertValue($value);
+    }
+
     /**
      * @param $value
      *
      * @return string
      */
-    public function getEditValue($value): string
+    public function getEditValue($value, bool $isAllDay = false): string
     {
         $dateValue = '';
 
         if ('' !== $value) {
-            $dateTimeValue = self::getDisplayDateTimeValue($value);
+            $dateTimeValue = $isAllDay ? $this->getAllDayFieldDisplayValue($value) : self::getDisplayDateTimeValue($value);
             [$startDate, $startTime] = explode(' ', $dateTimeValue);
 
             $currentUser = Users_Record_Model::getCurrentUserModel();
@@ -40,9 +56,14 @@ class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
      *
      * @return string
      */
-    public function getEditViewDisplayValue($value): string
+    public function getEditViewDisplayValue($value, $additionalParameter = null): string
     {
         $fieldName = $this->get('field')->getName();
+        $isAllDay = self::$isAllDayEditContext || (bool)$this->get('field')->get('is_all_day');
+
+        if ($isAllDay && isset(self::$allDayEditDates[$fieldName])) {
+            $value = self::$allDayEditDates[$fieldName] . ' 00:00:00';
+        }
 
         if (empty($value)) {
             switch ($fieldName) {
@@ -59,7 +80,7 @@ class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
             switch ($fieldName) {
                 case 'datetime_end':
                 case 'datetime_start':
-                    return $this->getEditValue($value);
+                    return $this->getEditValue($value, $isAllDay);
             }
         }
 
@@ -68,17 +89,53 @@ class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
 
     public static function transformDisplayValue($value, $record = 0): string
     {
-        $value = Vtiger_Datetime_UIType::getDateTimeValue($value);
-
         if ($record && Appointments_Record_Model::isAllDay($record)) {
-            $value = explode(' ', $value)[0];
+            return explode(' ', self::getAllDayDisplayValue($value))[0];
         }
 
-        return $value;
+        return Vtiger_Datetime_UIType::getDateTimeValue($value);
     }
 
     public function getDisplayValue($value, $record = false, $recordInstance = false): string
     {
+        if ($recordInstance instanceof Appointments_Record_Model && $recordInstance->isAllDayEvent()) {
+            return DateTimeField::convertToUserFormat($recordInstance->getAllDayDate($this->get('field')->getName()));
+        }
+
+        if ($record && Appointments_Record_Model::isAllDay($record)) {
+            /** @var Appointments_Record_Model $recordModel */
+            $recordModel = Vtiger_Record_Model::getInstanceById($record, 'Appointments');
+
+            return DateTimeField::convertToUserFormat($recordModel->getAllDayDate($this->get('field')->getName()));
+        }
+
+        $allDayDate = (string)$this->get('field')->get('all_day_date');
+
+        if ('' !== $allDayDate) {
+            return DateTimeField::convertToUserFormat($allDayDate);
+        }
+
+        if ((bool)$this->get('field')->get('is_all_day')) {
+            return explode(' ', $this->getAllDayFieldDisplayValue($value))[0];
+        }
+
         return self::transformDisplayValue($value, $record);
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    public static function getAllDayDisplayValue(string $value): string
+    {
+        [$date, $time] = array_pad(preg_split('/\s+/', trim($value), 2), 2, '');
+
+        return trim(DateTimeField::convertToUserFormat($date) . ' ' . $time);
+    }
+
+    protected function getAllDayFieldDisplayValue(string $value): string
+    {
+        return self::getAllDayDisplayValue($value);
     }
 }

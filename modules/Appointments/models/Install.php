@@ -564,6 +564,58 @@ class Appointments_Install_Model extends Core_Install_Model
         ];
 
         CustomView_Record_Model::updateColumnNames($moduleName, $fields);
+        $this->migrateAllDayDates();
+    }
+
+    protected function migrateAllDayDates(): void
+    {
+        $result = $this->db->pquery(
+            'SELECT its4you_calendar.its4you_calendar_id, its4you_calendar.datetime_start, '
+            . 'its4you_calendar.datetime_end, vtiger_crmentity.creator_user_id '
+            . 'FROM its4you_calendar '
+            . 'INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = its4you_calendar.its4you_calendar_id '
+            . 'WHERE its4you_calendar.is_all_day IN (?,?) '
+            . 'AND (TIME(its4you_calendar.datetime_start) <> ? OR TIME(its4you_calendar.datetime_end) <> ?)',
+            ['1', 'Yes', '00:00:00', '00:00:00']
+        );
+
+        while ($row = $this->db->fetchByAssoc($result)) {
+            $creator = $this->getAllDayMigrationUser((int)$row['creator_user_id']);
+            $start = $this->getMigratedAllDayDate((string)$row['datetime_start'], 'datetime_start', $creator);
+            $end = $this->getMigratedAllDayDate((string)$row['datetime_end'], 'datetime_end', $creator);
+            $recordId = (int)$row['its4you_calendar_id'];
+
+            $this->db->pquery(
+                'UPDATE its4you_calendar SET datetime_start=?, datetime_end=? WHERE its4you_calendar_id=?',
+                [$start, $end, $recordId]
+            );
+            $this->db->pquery(
+                'UPDATE its4you_remindme_popup SET datetime_start=? WHERE record_id=?',
+                [$start, $recordId]
+            );
+        }
+    }
+
+    protected function getMigratedAllDayDate(string $value, string $fieldName, ?object $creator): string
+    {
+        [$date, $time] = array_pad(preg_split('/\s+/', trim($value), 2), 2, '');
+        $isUnshifted = '00:00:00' === $time
+            || ('datetime_end' === $fieldName && in_array($time, ['23:59:00', '23:59:59'], true));
+
+        if (!$isUnshifted && $creator) {
+            $date = DateTimeField::convertToUserTimeZone($value, $creator)->format('Y-m-d');
+        }
+
+        return $date . ' 00:00:00';
+    }
+
+    protected function getAllDayMigrationUser(int $userId): ?object
+    {
+        if (!$userId) {
+            return null;
+        }
+
+        return Users_Record_Model::getInstanceById($userId, 'Users')->getEntity();
     }
 
     /**

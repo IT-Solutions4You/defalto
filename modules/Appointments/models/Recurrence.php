@@ -151,8 +151,14 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
             return false;
         }
 
-        [$date_start, $time_start] = explode(' ', $recordModel->get('datetime_start'));
-        [$date_end, $time_end] = explode(' ', $recordModel->get('datetime_end'));
+        if ($recordModel->isAllDayEvent()) {
+            $date_start = $recordModel->getAllDayDate('datetime_start');
+            $date_end = $recordModel->getAllDayDate('datetime_end');
+            $time_start = $time_end = '00:00:00';
+        } else {
+            [$date_start, $time_start] = explode(' ', $recordModel->get('datetime_start'));
+            [$date_end, $time_end] = explode(' ', $recordModel->get('datetime_end'));
+        }
 
         return RecurringType::fromDBRequest([
             'date_start'       => $date_start,

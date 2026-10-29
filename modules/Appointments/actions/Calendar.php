@@ -70,8 +70,14 @@ class Appointments_Calendar_Action extends Core_Controller_Action
         if ($recordModel && Users_Privileges_Model::isPermitted($recordModel->getModuleName(), 'Save', $recordId)) {
             $recordModel->set('mode', 'edit');
             $recordModel->set('is_all_day', 'Yes' === $request->get('is_all_day'));
-            $recordModel->set('datetime_start', DateTimeField::convertToUserFormat($request->get('start_date')));
-            $recordModel->set('datetime_end', DateTimeField::convertToUserFormat($request->get('end_date')));
+
+            if ($recordModel->isAllDayEvent()) {
+                $recordModel->setAllDayDates($request->get('start_date'), $request->get('end_date'));
+            } else {
+                $recordModel->set('datetime_start', DateTimeField::convertToUserFormat($request->get('start_date')));
+                $recordModel->set('datetime_end', DateTimeField::convertToUserFormat($request->get('end_date')));
+            }
+
             $recordModel->save();
 
             $success = true;
