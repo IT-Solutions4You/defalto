@@ -46,6 +46,10 @@
 - Deleting a theme requires the EMAILMaker `DELETE` profile permission, access through the existing owner/sharing rules, and a non-deleted `is_theme = 1` record. Only administrators may save EMAILMaker profile-permission settings.
 - `EMAILMaker_EMAILMaker_Model::{isTemplateCreatable,isTemplateEditable,isThemeDeletable}()` own these action-level authorization decisions. Do not authorize an existing template from request-supplied module, owner, sharing, or theme fields.
 
+# Template list and export queries
+
+- `EMAILMaker_EMAILMaker_Model::{validateListSortColumn,validateListSortOrder}()` own the closed sort contract used by the template list and export. Module filters are bound values in `GetListviewData()`; selected-template export IDs are validated and bound by `EMAILMaker_Module_Model::fetchSelectedExportResult()`.
+
 # PDF Maker templates of an e-mail template
 
 - Links live in `df_template_rel` (`Core_TemplateRelation_Model`: module `EMAILMaker`, related_module `PDFMaker`, `sequence` = order). `EMAILMaker_PDFTemplate_Model` reads and writes them only through that model and owns the PDF-specific rules. The table is created by Core (`Core_CreateTables_Config` -> `Core_TemplateRelation_Model::createTables()`). `vtiger_crmentityrel` is not used.

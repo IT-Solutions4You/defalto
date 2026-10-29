@@ -548,6 +548,14 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public function GetListviewResult($orderby = 'templateid', $dir = 'ASC', $request = null, $all_data = true)
     {
+        $orderby = $this->validateListSortColumn($orderby);
+        $dir = $this->validateListSortOrder($dir);
+
+        if ($orderby === 'order') {
+            $orderby = 'module';
+            $dir = 'ASC';
+        }
+
         $adb = PearDatabase::getInstance();
         $R_Atr = ['0'];
 
@@ -593,19 +601,52 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                 $sql .= implode(" AND ", $Search);
             }
         }
+
         if (!empty($orderby)) {
-            $sql .= " ORDER BY ";
-            if ($orderby == "owner" || $orderby == "sharingtype") {
-                $sql .= "vtiger_pdfmaker_settings";
-            } else {
-                $sql .= "vtiger_pdfmaker";
-            }
-            $sql .= "." . $orderby . " " . $dir;
+            $sql .= ' ORDER BY vtiger_emakertemplates.' . $orderby . ' ' . $dir;
         }
 
         $result = $adb->pquery($sql, $R_Atr);
 
         return $result;
+    }
+
+    public function fetchSelectedExportResult(array $templateIds)
+    {
+        if (empty($templateIds)) {
+            throw new Exception('Invalid EMAILMaker template selection.');
+        }
+
+        $normalizedIds = [];
+
+        foreach ($templateIds as $templateId) {
+            if (!is_int($templateId) && !is_string($templateId)) {
+                throw new Exception('Invalid EMAILMaker template identifier.');
+            }
+
+            if (is_string($templateId) && !ctype_digit($templateId)) {
+                throw new Exception('Invalid EMAILMaker template identifier.');
+            }
+
+            $templateId = filter_var($templateId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+            if (false === $templateId) {
+                throw new Exception('Invalid EMAILMaker template identifier.');
+            }
+
+            $normalizedIds[] = $templateId;
+        }
+
+        $normalizedIds = array_values(array_unique($normalizedIds));
+        $params = ['0'];
+        $query = 'SELECT vtiger_emakertemplates.*
+                  FROM vtiger_emakertemplates
+                  LEFT JOIN vtiger_emakertemplates_displayed USING(templateid)
+                  WHERE vtiger_emakertemplates.deleted = ?';
+        $query .= ' AND vtiger_emakertemplates.templateid IN (' . generateQuestionMarks($normalizedIds) . ')';
+        $params = array_merge($params, $normalizedIds);
+
+        return PearDatabase::getInstance()->pquery($query, $params);
     }
 
     private function getSubRoleUserIds($roleid)

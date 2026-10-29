@@ -402,8 +402,53 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return $this->profilesPermissions;
     }
 
+    public function validateListSortColumn($columnName): string
+    {
+        if (!is_string($columnName)) {
+            throw new Exception('Invalid EMAILMaker list sort column.');
+        }
+
+        $columns = [
+            'name' => 'templatename',
+            'templateid' => 'templateid',
+            'templatename' => 'templatename',
+            'module' => 'module',
+            'category' => 'category',
+            'description' => 'description',
+            'sharingtype' => 'sharingtype',
+            'order' => 'order',
+        ];
+
+        if (!isset($columns[$columnName])) {
+            throw new Exception('Invalid EMAILMaker list sort column.');
+        }
+
+        return $columns[$columnName];
+    }
+
+    public function validateListSortOrder($sortOrder): string
+    {
+        if (!is_string($sortOrder)) {
+            throw new Exception('Invalid EMAILMaker list sort order.');
+        }
+
+        $sortOrder = strtoupper($sortOrder);
+
+        if (!in_array($sortOrder, ['ASC', 'DESC'], true)) {
+            throw new Exception('Invalid EMAILMaker list sort order.');
+        }
+
+        return $sortOrder;
+    }
+
     public function GetListviewData($orderby = 'templateid', $sortorder = 'asc', $formodule = '', $load_body = false, ?Vtiger_Request $request = null)
     {
+        if (!is_string($formodule)) {
+            throw new Exception('Invalid EMAILMaker module filter.');
+        }
+
+        $orderby = $this->validateListSortColumn($orderby);
+        $sortorder = $this->validateListSortOrder($sortorder);
         $MODULE = 'EMAILMaker';
         $current_user = Users_Record_Model::getCurrentUserModel();
         $status_sql = "SELECT * FROM vtiger_emakertemplates_userstatus
@@ -426,7 +471,8 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         $R_Atr = [];
         $sql = "SELECT * FROM vtiger_emakertemplates WHERE is_theme = '0' AND deleted = '0' ";
         if ($formodule != "") {
-            $sql .= "AND (module = '" . $formodule . "' OR module IS NULL OR module = '') ";
+            $sql .= "AND (module = ? OR module IS NULL OR module = '') ";
+            $R_Atr[] = $formodule;
         }
 
         $Search = [];
@@ -556,7 +602,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 
             $tmpArr = [];
             foreach ($modules as $orderArr) {
-                if ($originDir == "asc") {
+                if ($originDir == 'ASC') {
                     asort($orderArr, SORT_NUMERIC);
                 } else {
                     arsort($orderArr, SORT_NUMERIC);
