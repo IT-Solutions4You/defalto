@@ -4,6 +4,8 @@ Related-record widgets on a record use the language of the related module for th
 
 Quick-preview actions apply to the displayed record, not the screen underneath. Deleting asks for one confirmation and refreshes the source screen afterwards; if an error occurs, the preview stays open. Editable fields in the preview header have the same controls as the record detail header: use the pencil, the checkbox switch or the Assigned To selector to update the record without leaving the list. Read-only fields and fields you cannot edit stay unchanged. See the Core user guide for the shared preview workflow.
 
+Opening, paging through or changing roll-up comments and related records from a quick preview loads the requested content only inside that preview. The summary comments, related content and browser address of the record underneath stay unchanged. When the preview has no matching navigation tab, the link opens the displayed record's own destination instead.
+
 Record-header action icons show a label while the mouse is over them, and the label disappears when the mouse leaves, also after clicking an action or cancelling its confirmation. The buttons also have labels for assistive technology.
 
 # Dropdown fields

@@ -315,6 +315,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
     setContentHolder: function (container) {
         this.detailViewContentHolder = container;
+        this.detailViewForm = false;
     },
 
     overlayMode: false,
@@ -436,7 +437,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             var container = jQuery('.relatedContainer');
             container.html(res);
             app.helper.hideProgress();
-            app.event.trigger("post.relatedListLoad.click", container.find(".searchRow"));
+            app.event.trigger("post.relatedListLoad.click", container.find(".searchRow"), self.getContainer());
         });
         return aDeferred.promise();
     },
@@ -507,13 +508,16 @@ Vtiger.Class("Vtiger_Detail_Js", {
      * Function to fetch search params
      */
     getRelatedListSearchParams: function () {
-        var detailViewContainer = this.getContainer();
-        var relatedListTable = detailViewContainer.find('.searchRow');
-        var searchParams = [];
-        var currentSearchParams = [];
-        if (jQuery('#currentSearchParams').val()) {
-            currentSearchParams = JSON.parse(jQuery('#currentSearchParams').val());
+        var detailViewContainer = this.getContainer(),
+            relatedListTable = detailViewContainer.find('.searchRow'),
+            searchParams = [],
+            currentSearchParams = [],
+            currentSearchParamsElement = detailViewContainer.find('#currentSearchParams');
+
+        if (currentSearchParamsElement.val()) {
+            currentSearchParams = JSON.parse(currentSearchParamsElement.val());
         }
+
         relatedListTable.find('.listSearchContributor').each(function (index, domElement) {
             var searchInfo = [];
             var searchContributorElement = jQuery(domElement);
@@ -576,7 +580,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
 
     getTabContainer: function () {
-        return jQuery('div.related-tabs');
+        return this.getContainer().find('div.related-tabs');
     },
 
     getRecordId: function () {
@@ -656,8 +660,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
         });
 
         jQuery('.related-tabs', detailViewContainer).on('click', 'li.more-tab', function (e, urlAttributes) {
-            if (0 !== jQuery('.moreTabElement').length) {
-                jQuery('.moreTabElement').remove();
+            let relatedTabs = self.getTabContainer(),
+                currentMoreTab = relatedTabs.find('.moreTabElement');
+
+            if (0 !== currentMoreTab.length) {
+                currentMoreTab.remove();
             }
 
             let moreTabElement = jQuery(e.currentTarget).clone();
@@ -667,7 +674,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             let moreElementTitle = moreTabElement.find('a').attr('displaylabel')
             moreTabElement.attr('title', moreElementTitle);
             moreTabElement.find('.tab-icon').removeClass('text-truncate');
-            jQuery('.related-tab-more-element').before(moreTabElement);
+            relatedTabs.find('.related-tab-more-element').before(moreTabElement);
             self.loadSelectedTabContents(moreTabElement, urlAttributes);
             self.registerQtipevent(moreTabElement);
         });
@@ -686,16 +693,23 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
         return url;
     },
+    isWindowUrlUpdateAllowed: function () {
+        return !this.getOverlayDetailMode() && !this.getQuickPreviewDetailMode();
+    },
     loadSelectedTabContents: function (tabElement, urlAttributes) {
         let self = this,
             url = self.getTabUrl(tabElement);
 
-        vtUtils.updateWindowUrl(url);
+        if (self.isWindowUrlUpdateAllowed()) {
+            vtUtils.updateWindowUrl(url);
+        }
 
         self.loadContents(url, urlAttributes).then(function (data) {
             self.deSelectAllrelatedTabs();
             self.markRelatedTabAsSelected(tabElement);
-            let container = jQuery('.relatedContainer');
+            let contentHolder = self.getContentHolder(),
+                container = contentHolder.find('.relatedContainer');
+
             app.event.trigger("post.relatedListLoad.click", container.find(".searchRow"));
             // Added this to register pagination events in related list
             let relatedModuleInstance = self.getRelatedController();
@@ -712,7 +726,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
             relatedModuleInstance.initializePaginationEvents();
             //prevent detail view ajax form submissions
-            jQuery('form#detailView').on('submit', function (e) {
+            contentHolder.find('form#detailView').on('submit', function (e) {
                 e.preventDefault();
             });
         });
@@ -721,11 +735,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
         return 1 === parseInt(this.getRollUpComments().attr('rollup-status'))
     },
     getRollUpComments: function () {
-        return jQuery('#rollupcomments');
+        return this.getContentHolder().find('#rollupcomments');
     },
     registerRollupCommentsSwitchEvent: function () {
         let self = this,
-            commentsRelatedContainer = jQuery('.commentsRelatedContainer');
+            commentsRelatedContainer = self.getContentHolder().find('.commentsRelatedContainer');
 
         if (self.getRollUpComments().length > 0 && commentsRelatedContainer.length) {
             app.helper.hideProgress();
@@ -741,6 +755,9 @@ Vtiger.Class("Vtiger_Detail_Js", {
                 self.setRollUpComments(false);
             }
         }
+    },
+    isRelatedListEventForCurrentDetail: function (detailContainer) {
+        return !detailContainer || this.getContainer().is(detailContainer);
     },
 
     /**
@@ -768,7 +785,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
         this.registerEventForSelectingRelatedRecord();
         self.registerScrollForRollupEvents();
 
-        app.event.on("post.relatedListLoad.click", function (event, container) {
+        app.event.on("post.relatedListLoad.click", function (event, container, detailContainer) {
+            if (!self.isRelatedListEventForCurrentDetail(detailContainer)) {
+                return;
+            }
+
             vtUtils.applyFieldElementsView(container);
             vtUtils.enableTooltips();
             Vtiger_Index_Js.getInstance().registerMultiUpload();
@@ -1028,7 +1049,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
 
     getRelatedModuleName: function () {
-        return jQuery('.relatedModuleName').val();
+        return this.getContainer().find('.relatedModuleName').val();
     },
 
     getRelatedController: function (relatedModuleName) {
@@ -1630,7 +1651,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         app.helper.showProgress();
         app.request.post(params).then(function (error, response) {
             detailContentsHolder.html(response);
-            self.detailViewForm = jQuery('#detailView');
+            self.setForm(detailContentsHolder.find('form#detailView').first());
             self.registerBlockStatusCheckOnLoad();
             aDeferred.resolve(response);
             app.helper.hideProgress();
@@ -2377,10 +2398,10 @@ Vtiger.Class("Vtiger_Detail_Js", {
             };
             app.request.get({data: params}).then(function (err, data) {
                 currentTarget.attr('rollup-status', !rollupstatus);
-                jQuery('div.related-tabs li[data-label-key="ModComments"]').trigger('click');
+                self.getTabByLabel('ModComments').trigger('click');
             });
         } else {
-            contents = jQuery('div[data-name="ModComments"] div.widget_contents');
+            contents = self.getContentHolder().find('div[data-name="ModComments"] div.widget_contents');
             params = {
                 module: moduleName,
                 relatedModule: 'ModComments',
