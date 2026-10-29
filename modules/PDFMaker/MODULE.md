@@ -4,6 +4,11 @@
 - Browser image-selection modals use `Core_Storage_Model::getAttachmentPublicUrl()` and must never expose a physical attachment path as an image URL.
 - PDFs saved as Documents (`createPDFAndSaveFile`) and PDFMaker uploads go to the directory chosen by `decideFilePath()`, which is owned by the shared Core storage flow.
 
+# Edition and versioning
+
+- The bundled `PDFMaker` module is the Free edition (`PDFMaker_PDFMaker_Model::$version_type` is `Free`) and uses its independent `0.x` module-version line.
+- Public Installer catalog metadata under the `PDFMaker` name can describe the separately distributed Pro edition. Do not use that version to bump the bundled Free module.
+
 # Product block management
 
 - Product-block list, edit, save and delete are owned by the Core Inventory Items Block components (`module=Core&view=ProductBlocks`, linked from Settings, Inventory). PDFMaker has no ProductBlocks view of its own. PDFMaker and PDFMaker Pro use the same compatibility routes as EMAILMaker.
