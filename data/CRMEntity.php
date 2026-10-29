@@ -531,6 +531,16 @@ class CRMEntity extends CRMExtension
         }
     }
 
+    /**
+     * @param string $fieldName
+     *
+     * @return bool
+     */
+    protected function requiresDateTimeConversion(string $fieldName): bool
+    {
+        return true;
+    }
+
     /** Function to insert values in the specifed table for the specified module
      *
      * @param $table_name -- table name:: Type varchar
@@ -693,7 +703,7 @@ class CRMEntity extends CRMExtension
                     $fldvalue = $field_list;
                 } elseif ($uitype == 5 || $uitype == 6 || $uitype == 23) {
                     //Added to avoid function call getDBInsertDateValue in ajax save
-                    if (isset($current_user->date_format) && !$ajaxSave) {
+                    if (isset($current_user->date_format) && !$ajaxSave && $this->requiresDateTimeConversion($fieldname)) {
                         $fldvalue = getValidDBInsertDateTimeValue($this->column_fields[$fieldname]);
                     } else {
                         $fldvalue = $this->column_fields[$fieldname];
