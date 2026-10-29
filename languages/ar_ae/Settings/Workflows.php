@@ -253,4 +253,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'الهواتف إعلام دفع',
     'VTCreateEntityTask'          => 'إنشاء سجل',
     'LBL_EXPRESSION_INVALID'      => 'التعبير غير صالح',
+    'VTRestrictRecordActions' => 'تقييد إجراءات السجل',
+    'VTClearRecordActions' => 'إزالة قيود إجراءات السجل',
 ];

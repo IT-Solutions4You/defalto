@@ -251,5 +251,7 @@ $jsLanguageStrings = [
     'VTSMSTask'                              => 'Tarefa SMS',
     'VTPushNotificationTask'                 => 'Notificação Push Celular',
     'VTCreateEntityTask'                     => 'Criar Registro',
-    'LBL_EXPRESSION_INVALID'                 => 'Expressão Inválida'
+    'LBL_EXPRESSION_INVALID'                 => 'Expressão Inválida',
+    'VTRestrictRecordActions' => 'Restringir ações do registro',
+    'VTClearRecordActions' => 'Remover restrições de ações do registro',
 ];

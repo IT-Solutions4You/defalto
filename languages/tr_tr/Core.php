@@ -1170,6 +1170,9 @@ Vtiger dışında.',
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Değerler',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => '"Değere değiştirme" eylemi için: kayıt seçilen değerlere değiştirilemez.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Atlanan kayıtlar (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'İstisna',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'PDF eki olmadan (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'İşleme izin verilmiyor',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Sil',

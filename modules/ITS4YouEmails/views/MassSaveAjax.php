@@ -28,6 +28,9 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 
     /** Records skipped because of record action rules [record id => translated reason] */
     public array $skippedRecords = [];
+
+    /** Records whose emails are sent without the PDF attachment because of record action rules [record id => translated reason] */
+    public array $pdfSkippedRecords = [];
     private $from_name;
     private $from_email;
     private $from_user;
@@ -103,12 +106,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             'is_merge_templates'      => $request->get('is_merge_templates'),
         ];
 
-        // PDFs attached to the emails follow the PDF export rules of the records they are created for
-        if (!empty($sendEmails[0]['pdf_template_ids'])) {
-            $this->removePdfDeniedRecords();
-        }
-
-        $emailSentId = $this->saveEmails($sendEmails, $this->mailAddresses);
+        // Record action rules left no record to send the email for: show the reason instead of sending
+        $emailSentId = empty($this->mailAddresses['to']) && !empty($this->skippedRecords)
+            ? false
+            : $this->saveEmails($sendEmails, $this->mailAddresses);
 
         $emailsResult = [];
         $success = false;
@@ -123,6 +124,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $viewer->assign('QUALIFIED_MODULE', $request->getModule(false));
         $viewer->assign('SUCCESS', $success);
         $viewer->assign('SKIPPED_MESSAGE', Core_RecordActionPermission_Model::getInstance()->getSkippedMessage($this->skippedRecords));
+        $viewer->assign('PDF_SKIPPED_MESSAGE', Core_RecordActionPermission_Model::getInstance()->getSkippedMessage($this->pdfSkippedRecords, 'LBL_RECORD_ACTION_PDF_SKIPPED'));
         $viewer->assign('TITLE', vtranslate($this->moduleName, $this->moduleName));
         $viewer->assign('RESULT', $emailsResult);
         $viewer->assign('RELATED_LOAD', !$request->isEmpty('related_load'));
@@ -363,59 +365,41 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     }
 
     /**
-     * Removes the addresses of records whose PDF export is denied by a record action rule (source record or
-     * recipient record), because the attached PDFs are created for them; checked before any email is saved.
+     * Returns whether the PDF attachment may be created for a record; a record whose PDF export is denied by a record
+     * action rule is remembered with the reason, its email is sent without the PDF.
      *
-     * @return void
-     * @throws Exception with the reason when no address is left
+     * @param int $recordId related record of the email
+     *
+     * @return bool
+     * @throws Exception
      */
-    public function removePdfDeniedRecords(): void
+    public function isPdfAttachmentPermitted(int $recordId): bool
     {
-        $actionPermission = Core_RecordActionPermission_Model::getInstance();
-        $hasAddresses = false;
-
-        foreach ((array)$this->mailAddresses as $mailType => $sourceAddresses) {
-            foreach ((array)$sourceAddresses as $sourceId => $addresses) {
-                $reason = $actionPermission->getDenyReason((int)$sourceId, Core_RecordActionPermission_Model::ACTION_PDF_EXPORT);
-
-                if (null !== $reason) {
-                    $this->skippedRecords[(int)$sourceId] = $reason;
-                    unset($this->mailAddresses[$mailType][$sourceId]);
-
-                    continue;
-                }
-
-                foreach (array_keys((array)$addresses) as $addressKey) {
-                    [$recipientId, , $recipientModule] = array_pad(explode('|', (string)$addressKey), 3, '');
-
-                    // User ids are not record ids
-                    $reason = 'Users' !== $recipientModule
-                        ? $actionPermission->getDenyReason((int)$recipientId, Core_RecordActionPermission_Model::ACTION_PDF_EXPORT)
-                        : null;
-
-                    if (null !== $reason) {
-                        $this->skippedRecords[(int)$recipientId] = $reason;
-                        unset($this->mailAddresses[$mailType][$sourceId][$addressKey]);
-                    } else {
-                        $hasAddresses = true;
-                    }
-                }
-            }
+        if (isset($this->pdfSkippedRecords[$recordId])) {
+            return false;
         }
 
-        if (!$hasAddresses && !empty($this->skippedRecords)) {
-            throw new Exception(reset($this->skippedRecords));
+        $reason = $recordId
+            ? Core_RecordActionPermission_Model::getInstance()->getDenyReason($recordId, Core_RecordActionPermission_Model::ACTION_PDF_EXPORT)
+            : null;
+
+        if (null !== $reason) {
+            $this->pdfSkippedRecords[$recordId] = $reason;
+
+            return false;
         }
+
+        return true;
     }
 
     /**
      * Removes the source records whose emails are denied by record action rules; ids that are not records
-     * (0 for addresses without a record) stay.
+     * (0 for addresses without a record) stay. The skipped records and their reasons are kept in $skippedRecords.
      *
      * @param array $recordIds
      *
-     * @return array
-     * @throws Exception with the reason when every source record is denied
+     * @return array empty when every source record is denied
+     * @throws Exception
      */
     public function getSendableRecords(array $recordIds): array
     {
@@ -429,13 +413,8 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         }
 
         $this->skippedRecords += $permission['skipped'];
-        $sendable = array_values(array_filter($recordIds, static fn($recordId) => !isset($permission['skipped'][(int)$recordId])));
 
-        if (empty($sendable)) {
-            throw new Exception(reset($permission['skipped']));
-        }
-
-        return $sendable;
+        return array_values(array_filter($recordIds, static fn($recordId) => !isset($permission['skipped'][(int)$recordId])));
     }
 
     public function getRecordsListFromRequest(Vtiger_Request $request)
@@ -593,6 +572,14 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                         $cloneRecordModelEmails->set('assigned_user_id', $current_user_id);
                         $cloneRecordModelEmails->set('attachment_ids', $sendEmail['attachment_ids']);
                         $cloneRecordModelEmails->set('related_to', $relatedTo);
+
+                        // The PDF is created for the related record, so it follows the PDF export rules of that record;
+                        // set on every clone, the clones share their values with the original model
+                        $cloneRecordModelEmails->set(
+                            'pdf_template_ids',
+                            !empty($sendEmail['pdf_template_ids']) && $this->isPdfAttachmentPermitted((int)$relatedTo) ? $sendEmail['pdf_template_ids'] : ''
+                        );
+
                         $cloneRecordModelEmails->set('to_email', $toEmail);
                         $cloneRecordModelEmails->set('to_email_ids', $toEmailId);
                         $cloneRecordModelEmails->clearRelatedToInfo();

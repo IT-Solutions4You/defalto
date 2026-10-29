@@ -252,4 +252,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobil Push Notification',
     'VTCreateEntityTask'          => 'Skapa Post',
     'LBL_EXPRESSION_INVALID'      => 'Uttryck Ogiltig',
+    'VTRestrictRecordActions' => 'Begränsa postens åtgärder',
+    'VTClearRecordActions' => 'Ta bort begränsningar av postens åtgärder',
 ];

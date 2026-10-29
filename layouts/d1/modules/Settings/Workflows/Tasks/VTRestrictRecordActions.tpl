@@ -18,7 +18,7 @@
                 </select>
             </div>
         </div>
-        <div class="row py-2">
+        <div class="row py-2 recordActionFieldsRow{if !$TASK_OBJECT->isSelectedAction('FieldEdit')} d-none{/if}">
             <div class="col-lg-2">{vtranslate('LBL_RECORD_ACTION_FIELDS', 'Core')}</div>
             <div class="col-lg-6">
                 <select class="select2 inputElement" multiple="true" name="fields[]" data-placeholder="{vtranslate('LBL_RECORD_ACTION_FIELDS', 'Core')}">
@@ -29,7 +29,7 @@
                 <div class="form-text">{vtranslate('LBL_RECORD_ACTION_FIELDS_INFO', 'Core')}</div>
             </div>
         </div>
-        <div class="row py-2">
+        <div class="row py-2 recordActionStatusValuesRow{if !$TASK_OBJECT->isSelectedAction('StatusChange')} d-none{/if}">
             <div class="col-lg-2">{vtranslate('LBL_RECORD_ACTION_STATUS_VALUES', 'Core')}</div>
             <div class="col-lg-6">
                 <select class="select2 inputElement" multiple="true" name="statusValues[]" data-placeholder="{vtranslate('LBL_RECORD_ACTION_STATUS_VALUES', 'Core')}">

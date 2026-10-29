@@ -51,6 +51,9 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
         'Delete'   => self::ACTION_DELETE,
     ];
 
+    /** Request parameters with the record a new record is copied or converted from */
+    public const COPY_SOURCE_PARAMETERS = ['sourceRecord', 'quote_id', 'salesorder_id', 'invoice_id'];
+
     /** Modules whose record ids are not crmids */
     public const NON_ENTITY_MODULES = ['Users'];
 
@@ -75,6 +78,9 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
     protected static ?array $ruleRecordIds = null;
 
     protected static ?self $instance = null;
+
+    /** Set while runWithoutRules() runs: permission checks then ignore the record rules */
+    protected static bool $rulesSuspended = false;
 
     /**
      * Returns the shared instance used by permission checks.
@@ -266,12 +272,32 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
         $recordId = is_numeric($recordId) ? (int)$recordId : 0;
         $action = self::PERMISSION_ACTIONS[$actionName] ?? '';
 
-        if (!$recordId || '' === $action || in_array($module, self::NON_ENTITY_MODULES, true)) {
+        if (self::$rulesSuspended || !$recordId || '' === $action || in_array($module, self::NON_ENTITY_MODULES, true)) {
             return true;
         }
 
         // Rules belong to the crmid, not to the module parameter of the check (Save may pass source_module)
         return self::getInstance()->isActionPermitted($recordId, $action);
+    }
+
+    /**
+     * Runs a callback with the permission checks ignoring the record rules, so a view denied by a rule can still verify
+     * the profile and sharing permissions before it shows the reason instead of the content.
+     *
+     * @param callable $callback
+     *
+     * @return mixed the result of the callback
+     */
+    public static function runWithoutRules(callable $callback): mixed
+    {
+        $suspended = self::$rulesSuspended;
+        self::$rulesSuspended = true;
+
+        try {
+            return $callback();
+        } finally {
+            self::$rulesSuspended = $suspended;
+        }
     }
 
     /**
@@ -328,20 +354,39 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Returns the PDF attachment message for emails composed for records: records whose PDF export is denied get no
+     * PDF. With $denied set to true, the PDF export is denied for every record, so no PDF template is offered.
+     *
+     * @param array $recordIds source records of the email
+     * @param bool  $denied    set to true when the PDF export is denied for every record
+     *
+     * @return string empty when every record allows the PDF export
+     * @throws Exception
+     */
+    public function getPdfAttachmentMessage(array $recordIds, ?bool &$denied = null): string
+    {
+        $permission = $this->getPermittedRecords($recordIds, self::ACTION_PDF_EXPORT);
+        $denied = !empty($permission['skipped']) && empty($permission['permitted']);
+
+        return $this->getSkippedMessage($permission['skipped'], 'LBL_RECORD_ACTION_PDF_SKIPPED');
+    }
+
+    /**
      * Returns the message about records skipped by a mass action, with their distinct reasons.
      *
-     * @param array $skipped record id => translated reason
+     * @param array  $skipped record id => translated reason
+     * @param string $label   Core language key with %d (count) and %s (reasons)
      *
      * @return string empty when nothing was skipped
      */
-    public function getSkippedMessage(array $skipped): string
+    public function getSkippedMessage(array $skipped, string $label = 'LBL_RECORD_ACTION_SKIPPED'): string
     {
         if (empty($skipped)) {
             return '';
         }
 
         return sprintf(
-            vtranslate('LBL_RECORD_ACTION_SKIPPED', 'Core'),
+            vtranslate($label, 'Core'),
             count($skipped),
             implode('; ', array_unique(array_map('strval', $skipped)))
         );
@@ -461,8 +506,10 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
 
     /**
      * Marks the fields of a record structure locked by FieldEdit rules: they are not inline editable and the edit
-     * view shows them read-only with the reason. The field models of a structure are not always the instances of
-     * Vtiger_Module_Model::getFields() (field cache), so the structure handed to the template is marked.
+     * view shows them read-only with the reason. Picklist values denied by StatusChange rules are marked as well
+     * (record_action_denied_values), so the picklist offers them disabled. The field models of a structure are not
+     * always the instances of Vtiger_Module_Model::getFields() (field cache), so the structure handed to the template
+     * is marked.
      *
      * @param array $structure block label => [field name => Vtiger_Field_Model]
      * @param int   $recordId
@@ -472,22 +519,73 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
      */
     public function applyLockedFields(array $structure, int $recordId): array
     {
-        if (!$recordId || !$this->hasActionRules($recordId, self::ACTION_FIELD_EDIT)) {
+        if (!$recordId || !$this->hasValueRules($recordId)) {
             return $structure;
         }
 
+        // Stored values: the structure may hold submitted values (edit form shown again after a denied save)
+        $storedRecord = $this->hasActionRules($recordId, self::ACTION_STATUS_CHANGE) ? Vtiger_Record_Model::getInstanceById($recordId) : null;
+
         foreach ($structure as $fieldModels) {
             foreach ((array)$fieldModels as $fieldName => $fieldModel) {
+                if (!$fieldModel instanceof Vtiger_Field_Model) {
+                    continue;
+                }
+
                 $reason = $this->getDenyReason($recordId, self::ACTION_FIELD_EDIT, (string)$fieldName);
 
-                if (null !== $reason && $fieldModel instanceof Vtiger_Field_Model) {
+                if (null !== $reason) {
                     $fieldModel->set('record_action_locked', $reason);
                     $fieldModel->ajaxeditable = 0;
+
+                    continue;
+                }
+
+                if ($storedRecord && 'picklist' === $fieldModel->getFieldDataType()) {
+                    $fieldModel->set('record_action_denied_values', $this->getDeniedStatusValues(
+                        $recordId,
+                        (string)$fieldName,
+                        array_keys((array)$fieldModel->getPicklistValues()),
+                        (string)$storedRecord->get($fieldName)
+                    ));
                 }
             }
         }
 
         return $structure;
+    }
+
+    /**
+     * Returns the picklist values a record may not be changed to (StatusChange rules); the stored value stays
+     * selectable.
+     *
+     * @param int    $recordId
+     * @param string $fieldName
+     * @param array  $values       picklist values of the field
+     * @param string $currentValue stored value of the record
+     *
+     * @return array value => translated reason
+     * @throws Exception
+     */
+    public function getDeniedStatusValues(int $recordId, string $fieldName, array $values, string $currentValue): array
+    {
+        $deniedValues = [];
+
+        foreach ($values as $value) {
+            $value = (string)$value;
+
+            if ($this->isSameValue($value, $currentValue)) {
+                continue;
+            }
+
+            $reason = $this->getDenyReason($recordId, self::ACTION_STATUS_CHANGE, self::getStatusValue($fieldName, $value));
+
+            if (null !== $reason) {
+                $deniedValues[$value] = $reason;
+            }
+        }
+
+        return $deniedValues;
     }
 
     /**
@@ -559,6 +657,67 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
         }
 
         return null;
+    }
+
+    /**
+     * Returns the records a new record is copied or converted from, by the request parameters of the edit view and
+     * the save (COPY_SOURCE_PARAMETERS).
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return array record ids
+     */
+    public static function getCopySourceRecordIds(Vtiger_Request $request): array
+    {
+        $recordIds = [];
+
+        foreach (self::COPY_SOURCE_PARAMETERS as $parameter) {
+            $recordIds[] = (int)$request->get($parameter);
+        }
+
+        return self::getIds($recordIds);
+    }
+
+    /**
+     * Returns why the edit form of a record may not be opened: editing a record, duplicating it or converting an
+     * inventory record denied by a record rule.
+     *
+     * @param string $moduleName      module of the form
+     * @param int    $recordId        edited or duplicated record; 0 for a new record
+     * @param bool   $isDuplicate
+     * @param array  $sourceRecordIds records the new record is created from (getCopySourceRecordIds())
+     *
+     * @return string|null translated reason, null when the form may be opened
+     * @throws Exception
+     */
+    public function getEditDenyReason(string $moduleName, int $recordId, bool $isDuplicate, array $sourceRecordIds): ?string
+    {
+        if ($recordId && !$isDuplicate) {
+            return self::getPermissionDenyReason($moduleName, 'EditView', $recordId);
+        }
+
+        return $this->getCopyDenyReason($moduleName, $isDuplicate ? $recordId : 0, $sourceRecordIds);
+    }
+
+    /**
+     * Checks whether the current user may see all the records, so a denied page may show the reason in the layout
+     * with the record header.
+     *
+     * @param array $recordIds
+     *
+     * @return bool
+     */
+    public function isViewPermitted(array $recordIds): bool
+    {
+        foreach (self::getIds($recordIds) as $recordId) {
+            $moduleName = (string)getSalesEntityType($recordId);
+
+            if ('' === $moduleName || !Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -654,7 +813,7 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
 
             $rule['action_label'] = $this->getActionLabel($rule);
             $rule['scope_label'] = $this->getScopeLabel($rule);
-            $rule['reason_label'] = $this->getRuleReason($rule);
+            $rule['reason_label'] = $this->getRuleReasonLabel($rule);
             $rule['source_label'] = $this->getSourceLabel($rule);
             $rules[] = $rule;
         }
@@ -933,7 +1092,7 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
      * @return bool
      * @throws Exception
      */
-    protected function hasValueRules(int $recordId): bool
+    public function hasValueRules(int $recordId): bool
     {
         return $this->hasActionRules($recordId, self::ACTION_FIELD_EDIT)
             || $this->hasActionRules($recordId, self::ACTION_STATUS_CHANGE);
@@ -1093,6 +1252,23 @@ class Core_RecordActionPermission_Model extends Core_DatabaseData_Model
         }
 
         return $translated !== $reason ? $translated : vtranslate($reason, 'Core');
+    }
+
+    /**
+     * Returns the reason shown for a rule in the rules table: an allow rule without its own reason is an exception,
+     * not a restriction.
+     *
+     * @param array $rule
+     *
+     * @return string
+     */
+    protected function getRuleReasonLabel(array $rule): string
+    {
+        if (self::EFFECT_ALLOW === $rule['effect'] && '' === trim(decode_html((string)$rule['reason']))) {
+            return vtranslate('LBL_RECORD_ACTION_EXCEPTION', 'Core');
+        }
+
+        return $this->getRuleReason($rule);
     }
 
     /**

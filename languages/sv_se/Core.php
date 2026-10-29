@@ -1307,6 +1307,9 @@ utanför Vtiger.',
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Värden',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'För åtgärden ”Ändra till värde”: posten kan inte ändras till de valda värdena.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Överhoppade poster (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Undantag',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Utan PDF-bilaga (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Åtgärden är inte tillåten',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Ta Bort',

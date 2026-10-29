@@ -29,3 +29,5 @@ The **Field mapping** button of each conversion lets an administrator decide whi
 ## Restricted conversion
 
 If creating another document from a quote, sales order or invoice is restricted (for example while the quote waits for approval), the conversion links are hidden and the item review dialog shows the reason instead of creating the document.
+
+When editing the document itself is restricted, its items cannot be added or changed either: the buttons for adding text, products and services are hidden and any attempt shows the reason of the restriction.

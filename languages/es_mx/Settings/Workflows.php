@@ -251,4 +251,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Notificación móvil automática',
     'VTCreateEntityTask'          => 'Crear registro',
     'LBL_EXPRESSION_INVALID'      => 'La expresión no es válida',
+    'VTRestrictRecordActions' => 'Restringir acciones del registro',
+    'VTClearRecordActions' => 'Eliminar restricciones de acciones del registro',
 ];

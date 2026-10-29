@@ -258,4 +258,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Móvil De Notificación De Inserción',
     'VTCreateEntityTask'          => 'Crear Registro',
     'LBL_EXPRESSION_INVALID'      => 'La Expresión No Válida',
+    'VTRestrictRecordActions' => 'Restringir acciones del registro',
+    'VTClearRecordActions' => 'Eliminar restricciones de acciones del registro',
 ];

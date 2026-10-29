@@ -1173,6 +1173,9 @@ fuera de Vtiger.',
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Valores',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Para la acción «Cambiar a valor»: el registro no se podrá cambiar a los valores seleccionados.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Registros omitidos (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Excepción',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Sin PDF adjunto (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Acción no permitida',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Eliminar',

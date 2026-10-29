@@ -252,4 +252,6 @@ $jsLanguageStrings = [
     "JS_TASK_STATUS_CHANGED" => "Stav byl úspěšně změněn.",
     "VTUpdateFieldsTask" => "Upravit Pole",
     "JS_WORKFLOWS_STATUS_CHANGED" => "Stav  automatického procesu byl úspěšně změněn.",
+    'VTRestrictRecordActions' => 'Omezit akce záznamu',
+    'VTClearRecordActions' => 'Zrušit omezení akcí záznamu',
 ];

@@ -1175,6 +1175,9 @@ kívül Vtiger.',
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Értékek',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'A „Módosítás értékre” művelethez: a rekord nem módosítható a kiválasztott értékekre.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Kihagyott rekordok (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Kivétel',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'PDF melléklet nélkül (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'A művelet nem engedélyezett',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Törlés',

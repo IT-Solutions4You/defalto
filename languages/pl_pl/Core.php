@@ -1295,6 +1295,9 @@ na zewnątrz free rosyjska.',
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Wartości',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Dla akcji „Zmiana na wartość”: rekordu nie będzie można zmienić na wybrane wartości.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Pominięte rekordy (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Wyjątek',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Bez załącznika PDF (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Akcja niedozwolona',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Usuń',

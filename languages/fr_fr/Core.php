@@ -1157,6 +1157,9 @@ $languageStrings = [
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Valeurs',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Pour l’action « Changer en valeur » : l’enregistrement ne pourra pas prendre les valeurs sélectionnées.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Enregistrements ignorés (%d) : %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Exception',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Sans pièce jointe PDF (%d) : %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Action non autorisée',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Supprimer',

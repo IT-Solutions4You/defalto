@@ -14,4 +14,4 @@ Physical attachment storage may be configured outside the public web directory. 
 
 # Restricted email sending
 
-If sending emails is restricted for a record (for example while it waits for approval), composing from that record shows the reason. When several records are selected, restricted records are left out and the email is sent for the others; the compose window and the result tell you which records were skipped and why. If PDF export is restricted for a record, emails with an attached PDF are not sent for it.
+If sending emails is restricted for a record (for example while it waits for approval), composing from that record shows the reason. When several records are selected, restricted records are left out and the email is sent for the others; the compose window and the result tell you which records were skipped and why. If PDF export is restricted for a record, its email is sent without the PDF attachment and the compose window and the result tell you which records got no PDF and why; when PDF export is restricted for every selected record, no PDF template is offered.

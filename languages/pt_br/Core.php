@@ -1470,6 +1470,9 @@ $languageStrings = [
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Valores',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Para a ação "Alterar para valor": o registro não poderá ser alterado para os valores selecionados.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Registros ignorados (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Exceção',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Sem anexo PDF (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Ação não permitida',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Apagar',

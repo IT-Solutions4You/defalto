@@ -244,4 +244,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask' => 'Mobile Push-Benachrichtigung',
     'VTCreateEntityTask' => 'Datensatz Erstellen',
     'LBL_EXPRESSION_INVALID' => 'Ausdruck Ungültig',
+    'VTRestrictRecordActions' => 'Aktionen des Datensatzes einschränken',
+    'VTClearRecordActions' => 'Einschränkungen der Datensatzaktionen entfernen',
 ];

@@ -243,4 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobil Push Értesítés',
     'VTCreateEntityTask'          => 'Bejegyzés Létrehozása',
     'LBL_EXPRESSION_INVALID'      => 'Kifejezés Érvénytelen',
+    'VTRestrictRecordActions' => 'Rekordműveletek korlátozása',
+    'VTClearRecordActions' => 'Rekordművelet-korlátozások eltávolítása',
 ];

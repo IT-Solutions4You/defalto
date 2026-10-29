@@ -1386,6 +1386,9 @@ $languageStrings = [
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Werte',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Für die Aktion „Auf Wert ändern“: Der Datensatz kann nicht auf die ausgewählten Werte geändert werden.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Übersprungene Datensätze (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Ausnahme',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Ohne PDF-Anhang (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Aktion nicht erlaubt',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Löschen',

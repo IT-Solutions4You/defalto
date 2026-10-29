@@ -1169,6 +1169,9 @@ $languageStrings = [
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Values',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'For the action "Change to value": the record cannot be changed to the selected values.',
     'LBL_RECORD_ACTION_SKIPPED' => '%d record(s) skipped: %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Exception',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Without PDF attachment (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Action not permitted',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Delete',

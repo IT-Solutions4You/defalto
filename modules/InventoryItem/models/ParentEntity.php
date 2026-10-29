@@ -35,12 +35,14 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
      * @param string $moduleName
      *
      * @return void
-     * @throws Exception
+     * @throws Exception with the reason of the record action rule that denies editing the parent, if there is one
      */
     public static function requireEditableParent(int $parentId, string $moduleName = ''): void
     {
         if (!self::isParentEditable($parentId, $moduleName)) {
-            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            $denyReason = Core_RecordActionPermission_Model::getPermissionDenyReason((string)getSalesEntityType($parentId), 'EditView', $parentId);
+
+            throw new Exception($denyReason ?? vtranslate('LBL_PERMISSION_DENIED'));
         }
     }
 

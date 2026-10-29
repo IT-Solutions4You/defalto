@@ -170,6 +170,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE_MODEL', $this->record->getModule());
         $viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
+        $this->applyLockedModuleFields($request, $this->record->getModule());
 
         $viewer->assign('IS_EDITABLE', $this->record->getRecord()->isEditable($moduleName));
         $viewer->assign('IS_DELETABLE', $this->record->getRecord()->isDeletable($moduleName));
@@ -229,6 +230,31 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         }
 
         return Core_RecordActionPermission_Model::getInstance()->applyLockedFields($structure, $recordId);
+    }
+
+    /**
+     * Marks the module field instances (header fields of DetailViewHeaderFieldsView.tpl and the field info of the
+     * inline edit, uimeta) locked or with denied values by record action rules, then assigns the field info again,
+     * because Vtiger_Index_View::preProcess() built it before.
+     *
+     * @param Vtiger_Request      $request
+     * @param Vtiger_Module_Model $moduleModel
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function applyLockedModuleFields(Vtiger_Request $request, Vtiger_Module_Model $moduleModel): void
+    {
+        $recordId = (int)$request->get('record');
+
+        // Records without field or value rules keep the field info built by the parent
+        if (!$recordId || in_array($request->getModule(), Core_RecordActionPermission_Model::NON_ENTITY_MODULES, true)
+            || !Core_RecordActionPermission_Model::getInstance()->hasValueRules($recordId)) {
+            return;
+        }
+
+        $this->applyLockedFields($request, ['module' => $moduleModel->getFields()]);
+        $this->setModuleInfo($request, $moduleModel);
     }
 
     public function process(Vtiger_Request $request)

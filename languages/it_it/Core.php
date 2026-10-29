@@ -1172,6 +1172,9 @@ al di fuori di Vtiger.',
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Valori',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Per l’azione «Cambia in valore»: il record non potrà essere cambiato nei valori selezionati.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Record saltati (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Eccezione',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Senza allegato PDF (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Azione non consentita',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Elimina',

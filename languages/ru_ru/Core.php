@@ -1171,6 +1171,9 @@ $languageStrings = [
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Значения',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Для действия «Изменение на значение»: запись нельзя будет изменить на выбранные значения.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Пропущено записей (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Исключение',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Без PDF-вложения (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Действие не разрешено',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'удалять',

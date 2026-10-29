@@ -1549,6 +1549,9 @@ $languageStrings = [
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Hodnoty',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Pro akci „Změna na hodnotu“: záznam nebude možné změnit na vybrané hodnoty.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Přeskočené záznamy (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Výjimka',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Bez PDF přílohy (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Akce není povolena',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Smazat',

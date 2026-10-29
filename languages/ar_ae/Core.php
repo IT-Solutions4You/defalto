@@ -1308,6 +1308,9 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'القيم',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'لإجراء "التغيير إلى قيمة": لا يمكن تغيير السجل إلى القيم المحددة.',
     'LBL_RECORD_ACTION_SKIPPED' => 'السجلات المتخطاة (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'استثناء',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'بدون مرفق PDF (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'الإجراء غير مسموح به',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'حذف',

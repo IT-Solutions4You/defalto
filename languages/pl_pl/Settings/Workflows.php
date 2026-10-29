@@ -253,4 +253,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobilnych Powiadomień Push',
     'VTCreateEntityTask'          => 'Nowy Wpis',
     'LBL_EXPRESSION_INVALID'      => 'Wyrażenie Nieważne',
+    'VTRestrictRecordActions' => 'Ogranicz akcje rekordu',
+    'VTClearRecordActions' => 'Usuń ograniczenia akcji rekordu',
 ];

@@ -861,6 +861,9 @@ class Vtiger_Field_Model extends Vtiger_Field
             if ($picklistColors) {
                 $this->fieldInfo['picklistColors'] = $picklistColors;
             }
+
+            // Values denied by record action rules (Core_RecordActionPermission_Model::applyLockedFields()) for the inline edit
+            $this->fieldInfo['recordActionDeniedValues'] = (array)$this->get('record_action_denied_values');
         }
 
         if ($fieldDataType == "documentsFolder") {

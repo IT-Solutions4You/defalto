@@ -20,6 +20,9 @@ class Vtiger_Save_Action extends Core_Controller_Action
 {
     public $savedRecordId;
 
+    /** Reason of a record action rule that denied the save (saveRecord()) */
+    protected ?string $recordActionDenyReason = null;
+
     /**
      * @inheritDoc
      */
@@ -67,7 +70,7 @@ class Vtiger_Save_Action extends Core_Controller_Action
             $denyReason = Core_RecordActionPermission_Model::getInstance()->getCopyDenyReason(
                 $moduleName,
                 (int)$request->get('duplicateFrom'),
-                [(int)$request->get('sourceRecord'), (int)$request->get('quote_id'), (int)$request->get('salesorder_id')]
+                Core_RecordActionPermission_Model::getCopySourceRecordIds($request)
             );
 
             if (null !== $denyReason) {
@@ -137,8 +140,36 @@ class Vtiger_Save_Action extends Core_Controller_Action
                 $viewer->view('RedirectToEditView.tpl', 'Vtiger');
             }
         } catch (Exception $e) {
+            // A form denied by a record action rule is shown again with the submitted values and the reason
+            if (null !== $this->recordActionDenyReason && !$request->isAjax()) {
+                $this->showDeniedEditView($request);
+
+                return;
+            }
+
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * Posts the submitted values back to the edit view, which shows the reason of the record action rule that
+     * denied the save.
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return void
+     */
+    protected function showDeniedEditView(Vtiger_Request $request): void
+    {
+        $requestData = $request->getAll();
+        unset($requestData['action'], $requestData['__vtrftk']);
+        $requestData['view'] = 'Edit';
+        $requestData['recordActionDenied'] = 1;
+
+        $viewer = new Vtiger_Viewer();
+        $viewer->assign('REQUEST_DATA', $requestData);
+        $viewer->assign('REQUEST_URL', 'index.php?module=' . urlencode($request->getModule()) . '&view=Edit&record=' . (int)$request->get('record'));
+        $viewer->view('RedirectToEditView.tpl', 'Vtiger');
     }
 
     /**
@@ -160,6 +191,8 @@ class Vtiger_Save_Action extends Core_Controller_Action
             );
 
             if (null !== $denyReason) {
+                $this->recordActionDenyReason = $denyReason;
+
                 throw new Exception($denyReason);
             }
         }

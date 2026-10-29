@@ -1168,6 +1168,9 @@ buiten Vtiger.',
     'LBL_RECORD_ACTION_STATUS_VALUES' => 'Waarden',
     'LBL_RECORD_ACTION_STATUS_VALUES_INFO' => 'Voor de actie "Wijzigen naar waarde": het record kan niet naar de geselecteerde waarden worden gewijzigd.',
     'LBL_RECORD_ACTION_SKIPPED' => 'Overgeslagen records (%d): %s',
+    'LBL_RECORD_ACTION_EXCEPTION' => 'Uitzondering',
+    'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Zonder PDF-bijlage (%d): %s',
+    'LBL_RECORD_ACTION_DENIED_TITLE' => 'Actie niet toegestaan',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Wis',

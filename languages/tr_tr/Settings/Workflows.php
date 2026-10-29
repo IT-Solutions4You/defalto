@@ -243,4 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobil İtme Bildirim',
     'VTCreateEntityTask'          => 'Kayıt Oluştur ',
     'LBL_EXPRESSION_INVALID'      => 'İfade Geçersiz',
+    'VTRestrictRecordActions' => 'Kayıt eylemlerini kısıtla',
+    'VTClearRecordActions' => 'Kayıt eylemi kısıtlamalarını kaldır',
 ];

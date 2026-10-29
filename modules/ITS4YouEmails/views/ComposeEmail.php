@@ -1265,6 +1265,14 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
             return;
         }
 
+        $PDFMessage = Core_RecordActionPermission_Model::getInstance()->getPdfAttachmentMessage((array)$this->getSourceRecords($request), $PDFDenied);
+        $viewer->assign('RECORD_ACTION_PDF_SKIPPED_MESSAGE', $PDFMessage);
+
+        // Record action rules deny the PDF export of every source record: the email is composed without PDFs
+        if ($PDFDenied) {
+            return;
+        }
+
         $this->isPDFActive = true;
         $PDFLanguage = $request->get('pdf_template_language', $request->get('email_template_language'));
         $PDFTemplatesList = ITS4YouEmails_Utils_Helper::validatePDFTemplates($PDFTemplateIds, [

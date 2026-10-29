@@ -382,8 +382,11 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
         }
 
         $no_pdftemplates = true;
+        $pdfAttachmentMessage = Core_RecordActionPermission_Model::getInstance()->getPdfAttachmentMessage($permission['permitted'], $pdfExportDenied);
+        $viewer->assign('RECORD_ACTION_PDF_SKIPPED_MESSAGE', $pdfAttachmentMessage);
 
-        if (EMAILMaker_Module_Model::isPDFMakerInstalled()) {
+        // Record action rules deny the PDF export of every selected record: no PDF template is offered
+        if (EMAILMaker_Module_Model::isPDFMakerInstalled() && !$pdfExportDenied) {
             $pdftemplateid = $request->get('pdftemplateid');
 
             if ($request->has('pdflanguage') && !$request->isEmpty('pdflanguage')) {

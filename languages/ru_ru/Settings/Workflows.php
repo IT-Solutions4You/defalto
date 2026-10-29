@@ -243,4 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Мобильных Push-Уведомлений',
     'VTCreateEntityTask'          => 'Создать Запись',
     'LBL_EXPRESSION_INVALID'      => 'Выражение Недействительным',
+    'VTRestrictRecordActions' => 'Ограничить действия с записью',
+    'VTClearRecordActions' => 'Снять ограничения действий с записью',
 ];

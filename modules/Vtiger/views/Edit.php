@@ -20,6 +20,9 @@ class Vtiger_Edit_View extends Vtiger_Index_View
 {
     protected $record = false;
 
+    /** Reason of a record action rule that denies the form; the page shows it in the layout instead of the form */
+    protected ?string $recordActionDenyReason = null;
+
     function __construct()
     {
         parent::__construct();
@@ -57,18 +60,53 @@ class Vtiger_Edit_View extends Vtiger_Index_View
             }
         }
 
-        // Duplicating a record and converting an inventory record follow the action rules of the record
-        $denyReason = Core_RecordActionPermission_Model::getInstance()->getCopyDenyReason(
-            $moduleName,
-            $request->get('isDuplicate') ? (int)$record : 0,
-            [(int)$request->get('sourceRecord')]
-        );
+        // Editing, duplicating and converting a record follow the action rules of the record
+        if (!in_array($moduleName, $nonEntityModules)) {
+            $actionPermission = Core_RecordActionPermission_Model::getInstance();
+            $sourceRecordIds = Core_RecordActionPermission_Model::getCopySourceRecordIds($request);
+            $denyReason = $actionPermission->getEditDenyReason($moduleName, (int)$record, (bool)$request->get('isDuplicate'), $sourceRecordIds);
 
-        if (null !== $denyReason) {
-            throw new Exception($denyReason);
+            if (null !== $denyReason) {
+                // The edit form itself (not ajax, other views or modes) of records the user may see shows the reason in
+                // the page layout, others get the plain error page
+                if ($request->isAjax() || 'Edit' !== $request->get('view') || !$request->isEmpty('mode')
+                    || !$actionPermission->isViewPermitted(array_merge([(int)$record], $sourceRecordIds))) {
+                    throw new Exception($denyReason);
+                }
+
+                // Profile and sharing permissions still apply; only the record rule is shown instead of the form
+                Core_RecordActionPermission_Model::runWithoutRules(fn() => parent::checkPermission($request));
+                $this->recordActionDenyReason = $denyReason;
+
+                return true;
+            }
         }
 
         return parent::checkPermission($request);
+    }
+
+    /**
+     * Checks whether a record action rule denies the form (checkPermission()); the view then shows only the reason.
+     *
+     * @return bool
+     */
+    public function isRecordActionDenied(): bool
+    {
+        return null !== $this->recordActionDenyReason;
+    }
+
+    /**
+     * Shows the reason of the record action rule that denies the form, in the page layout.
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return void
+     */
+    public function showRecordActionDenied(Vtiger_Request $request): void
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->assign('DENY_REASON', $this->recordActionDenyReason);
+        $viewer->view('RecordActionDeniedPage.tpl', 'Core');
     }
 
     public function setModuleInfo($request, $moduleModel)
@@ -120,6 +158,12 @@ class Vtiger_Edit_View extends Vtiger_Index_View
 
     public function process(Vtiger_Request $request)
     {
+        if ($this->isRecordActionDenied()) {
+            $this->showRecordActionDenied($request);
+
+            return;
+        }
+
         $viewer = $this->getViewer($request);
         $moduleName = $request->getModule();
         $record = $request->get('record');
@@ -181,7 +225,13 @@ class Vtiger_Edit_View extends Vtiger_Index_View
 
         // Fields locked by record action rules are shown read-only and not submitted (not for copies)
         if (!empty($record) && !$request->get('isDuplicate') && !in_array($moduleName, Core_RecordActionPermission_Model::NON_ENTITY_MODULES, true)) {
-            $recordStructure = Core_RecordActionPermission_Model::getInstance()->applyLockedFields($recordStructure, (int)$record);
+            $actionPermission = Core_RecordActionPermission_Model::getInstance();
+            $recordStructure = $actionPermission->applyLockedFields($recordStructure, (int)$record);
+
+            // The form shown again after a save denied by a rule (Vtiger_Save_Action) explains why
+            if ($request->get('recordActionDenied')) {
+                $viewer->assign('RECORD_ACTION_DENY_REASON', $actionPermission->getChangeDenyReason($recordModel, array_keys($requestFieldList)));
+            }
         }
 
         $viewer->assign('RECORD_STRUCTURE', $recordStructure);
