@@ -250,12 +250,14 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     public function replaceCurrentDate()
     {
-        self::$rep['##DD-MM-YYYY##'] = date('d-m-Y');
-        self::$rep['##DD.MM.YYYY##'] = date('d.m.Y');
-        self::$rep['##MM-DD-YYYY##'] = date('m-d-Y');
-        self::$rep['##YYYY-MM-DD##'] = date('Y-m-d');
-        self::$rep['##HH:II:SS##'] = date('h:i:s');
-        self::$rep['##HH:II##'] = date('h:i');
+        $currentDateTime = DateTimeField::convertToUserTimeZone('now');
+
+        self::$rep['##DD-MM-YYYY##'] = $currentDateTime->format('d-m-Y');
+        self::$rep['##DD.MM.YYYY##'] = $currentDateTime->format('d.m.Y');
+        self::$rep['##MM-DD-YYYY##'] = $currentDateTime->format('m-d-Y');
+        self::$rep['##YYYY-MM-DD##'] = $currentDateTime->format('Y-m-d');
+        self::$rep['##HH:II:SS##'] = $currentDateTime->format('H:i:s');
+        self::$rep['##HH:II##'] = $currentDateTime->format('H:i');
     }
 
     /**

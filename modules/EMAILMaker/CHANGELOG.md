@@ -1,5 +1,6 @@
 ## 1.3 - 2026-10-29
 
+- Corrected current date and time variables to use the generating user's time zone and 24-hour time format.
 - Secured template and display-condition saving, theme deletion, and profile-permission settings against unauthorized changes.
 - Removed obsolete legacy database storage that is no longer used by current Email Maker functionality.
 - Kept decimal places and separators in amounts before the first e-mail template is saved.
