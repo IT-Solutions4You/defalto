@@ -32,6 +32,8 @@ Recurring invoicing is useful for subscriptions, maintenance, and other repeatin
 
 **Next Invoice Date** is filled in by the system: it starts at the Start Period (and is reset when the Start Period changes) and moves forward after each invoice. It cannot be edited.
 
+Monthly and longer calendar-based schedules keep the day from the Start Period. If a month does not contain that day, the invoice is created on that month's last day and the original schedule day is restored in the next month that supports it. For example, a monthly schedule starting on 31 January runs on 28 February and then 31 March.
+
 A scheduled job creates an invoice with the status **AutoCreated** on each billing date, copying the order's customer and items. Orders with the status **Cancelled** are skipped. Switching recurring off removes the schedule. Review the schedule whenever the order period or billing arrangement changes.
 
 ## Read-only orders
