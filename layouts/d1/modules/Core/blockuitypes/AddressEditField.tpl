@@ -26,7 +26,7 @@
         {if $FIELD_MODEL->isMandatory()}{assign var=ADDR_LABEL value="`$ADDR_LABEL` *"}{/if}
         <div class="py-1 {$COL}" data-address-placeholder="{$ADDR_LABEL|escape}">
             <div class="fieldValue {if $FIELD_MODEL->get('uitype') eq '56'}checkBoxType{/if}">
-                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$FIELD_MODEL FIELD_NAME=$FIELD_MODEL->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}
+                {if $FIELD_MODEL->isRecordActionLocked()}<span class="recordActionLockedField" title="{$FIELD_MODEL->getRecordActionLockedReason()|escape}"><i class="fa-solid fa-lock text-secondary me-2"></i>{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}</span>{else}{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$FIELD_MODEL FIELD_NAME=$FIELD_MODEL->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}{/if}
             </div>
         </div>
     {else}
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="fieldValue col-sm-8 {if $FIELD_MODEL->get('uitype') eq '56'}checkBoxType{/if}">
-                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$FIELD_MODEL FIELD_NAME=$FIELD_MODEL->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}
+                    {if $FIELD_MODEL->isRecordActionLocked()}<span class="recordActionLockedField" title="{$FIELD_MODEL->getRecordActionLockedReason()|escape}"><i class="fa-solid fa-lock text-secondary me-2"></i>{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}</span>{else}{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$FIELD_MODEL FIELD_NAME=$FIELD_MODEL->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}{/if}
                 </div>
             </div>
         </div>

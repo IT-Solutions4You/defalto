@@ -33,9 +33,10 @@
 	{if $FIELD_MODEL->isEmptyPicklistOptionAllowed()}<option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option>{/if}
 	{assign var=CURRENT_VALUE value=php7_trim(decode_html($FIELD_MODEL->get('fieldvalue')))}
 	{assign var=CURRENT_VALUE_FOUND value=false}
+	{assign var=DENIED_VALUES value=$FIELD_MODEL->get('record_action_denied_values')}
 	{foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
 		{assign var=CLASS_NAME value=$FIELD_MODEL->getPicklistOptionClass($PICKLIST_NAME)}
-		<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if isset($PICKLIST_COLORS[$PICKLIST_NAME]) && $PICKLIST_COLORS[$PICKLIST_NAME]}class="{$CLASS_NAME}"{/if} {if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
+		<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if isset($PICKLIST_COLORS[$PICKLIST_NAME]) && $PICKLIST_COLORS[$PICKLIST_NAME]}class="{$CLASS_NAME}"{/if} {if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} selected {/if}{if !empty($DENIED_VALUES[$PICKLIST_NAME]) && $CURRENT_VALUE neq php7_trim($PICKLIST_NAME)} disabled title="{$DENIED_VALUES[$PICKLIST_NAME]|escape}"{/if}>{$PICKLIST_VALUE}</option>
 		{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)}
 			{assign var=CURRENT_VALUE_FOUND value=true}
 		{/if}

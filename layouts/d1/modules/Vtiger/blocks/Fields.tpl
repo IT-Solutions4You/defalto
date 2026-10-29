@@ -15,7 +15,19 @@
                 {assign var=refrenceList value=$FIELD_MODEL->getReferenceList()}
                 {assign var=refrenceListCount value=php7_count($refrenceList)}
                 {if $FIELD_MODEL->isEditable() eq true}
-                    {if $FIELD_MODEL->isTableCustomWidth()}
+                    {if $FIELD_MODEL->isRecordActionLocked() && !$MASS_EDITION_MODE}
+                        <div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
+                            <div class="row align-items-center">
+                                <div class="fieldLabel text-secondary {if $FIELD_MODEL->isTableFullWidth()}col-sm-2{else}col-sm-4{/if}">
+                                    {vtranslate($FIELD_MODEL->get('label'), $MODULE)}
+                                </div>
+                                <div class="fieldValue recordActionLockedField {if $FIELD_MODEL->isTableFullWidth()}col-sm-10{else}col-sm-8{/if}" title="{$FIELD_MODEL->getRecordActionLockedReason()|escape}">
+                                    <i class="fa-solid fa-lock text-secondary me-2"></i>
+                                    {$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD_ID)}
+                                </div>
+                            </div>
+                        </div>
+                    {elseif $FIELD_MODEL->isTableCustomWidth()}
                         {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
                     {else}
                         <div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">

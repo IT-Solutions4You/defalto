@@ -214,6 +214,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION' => 'Beinhaltet Die Einrichtung',
     'LBL_ACTION_FOR_WORKFLOW' => 'Aktion für Workflow',
     'LBL_WORKFLOW_SEARCH' => 'Suche nach Name',
+    'RestrictRecordActions' => 'Aktionen des Datensatzes einschränken',
+    'ClearRecordActions' => 'Einschränkungen der Datensatzaktionen entfernen',
+    'LBL_RestrictRecordActions' => 'Aktionen des Datensatzes einschränken',
+    'LBL_ClearRecordActions' => 'Einschränkungen der Datensatzaktionen entfernen',
+    'Restrict record actions' => 'Aktionen des Datensatzes einschränken',
+    'Clear record action restrictions' => 'Einschränkungen der Datensatzaktionen entfernen',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Teilen mit',
@@ -238,4 +244,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask' => 'Mobile Push-Benachrichtigung',
     'VTCreateEntityTask' => 'Datensatz Erstellen',
     'LBL_EXPRESSION_INVALID' => 'Ausdruck Ungültig',
+    'RestrictRecordActions' => 'Aktionen des Datensatzes einschränken',
+    'ClearRecordActions' => 'Einschränkungen der Datensatzaktionen entfernen',
 ];

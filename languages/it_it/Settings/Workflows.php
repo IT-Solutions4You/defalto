@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Comprende La Creazione',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Azione per il Flusso di lavoro',
     'LBL_WORKFLOW_SEARCH'          => 'Ricerca per Nome',
+    'RestrictRecordActions' => 'Limita le azioni del record',
+    'ClearRecordActions' => 'Rimuovi le limitazioni delle azioni del record',
+    'LBL_RestrictRecordActions' => 'Limita le azioni del record',
+    'LBL_ClearRecordActions' => 'Rimuovi le limitazioni delle azioni del record',
+    'Restrict record actions' => 'Limita le azioni del record',
+    'Clear record action restrictions' => 'Rimuovi le limitazioni delle azioni del record',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Condividi con',
@@ -237,4 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobile Di Notifica Push',
     'VTCreateEntityTask'          => 'Creare Record',
     'LBL_EXPRESSION_INVALID'      => 'Espressione Non Valida',
+    'RestrictRecordActions' => 'Limita le azioni del record',
+    'ClearRecordActions' => 'Rimuovi le limitazioni delle azioni del record',
 ];

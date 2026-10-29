@@ -269,7 +269,12 @@ $languageStrings = [
     'days later' => 'o %s dní',
     'in less than' => 'o menej ako %s',
     'in more than' => 'o viac ako %s',
-
+    'RestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'ClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
+    'LBL_RestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'LBL_ClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
+    'Restrict record actions' => 'Obmedziť akcie záznamu',
+    'Clear record action restrictions' => 'Zrušiť obmedzenia akcií záznamu',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Zdieľať s',
@@ -295,4 +300,6 @@ $jsLanguageStrings = [
     'JS_TASK_STATUS_CHANGED' => 'Stav úlohy sa úspešne zmenil.',
     'VTUpdateFieldsTask' => 'Aktualizácia polí',
     'JS_WORKFLOWS_STATUS_CHANGED' => 'Stav Automatického procesu sa úspešne zmenil.',
+    'RestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'ClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
 ];

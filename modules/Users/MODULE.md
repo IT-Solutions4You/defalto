@@ -19,3 +19,7 @@
 ## Validation
 
 - Lint changed PHP. Manually check initial setup acceptance for the first administrator, preference-only setup acceptance for a new non-administrator, rejection of non-administrator currency changes and completed-setup replays, the encoding fallback, editable-field rejection for a non-admin, signature rendering, and workflow HTML preservation (final spacing in a delivered workflow email on a configured instance).
+
+# Record action permissions
+
+- `Users_Privileges_Model::getPermission()` asks `Core_RecordActionPermission_Model::isPermissionActionPermitted()` right after `Core_Readonly_Model::isPermitted()` and before the administrator shortcut, so a record rule narrows edit and delete permissions for every user, administrators included. See `modules/Core/MODULE.md` (Record action permissions).

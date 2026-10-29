@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'De Oprichting',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Actie voor Workflow',
     'LBL_WORKFLOW_SEARCH'          => 'Zoek op Naam',
+    'RestrictRecordActions' => 'Acties van het record beperken',
+    'ClearRecordActions' => 'Beperkingen van recordacties verwijderen',
+    'LBL_RestrictRecordActions' => 'Acties van het record beperken',
+    'LBL_ClearRecordActions' => 'Beperkingen van recordacties verwijderen',
+    'Restrict record actions' => 'Acties van het record beperken',
+    'Clear record action restrictions' => 'Beperkingen van recordacties verwijderen',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Delen met',
@@ -237,4 +243,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobiele Push-Meldingen',
     'VTCreateEntityTask'          => 'Record Maken',
     'LBL_EXPRESSION_INVALID'      => 'Ongeldige Expressie',
+    'RestrictRecordActions' => 'Acties van het record beperken',
+    'ClearRecordActions' => 'Beperkingen van recordacties verwijderen',
 ];

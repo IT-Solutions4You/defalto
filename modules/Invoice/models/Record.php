@@ -34,20 +34,7 @@ class Invoice_Record_Model extends Vtiger_Record_Model
      */
     public function save(): void
     {
-        if ($this->has('conversion_rate')) {
-            $conversion_rate = $this->get('conversion_rate');
-
-            if (empty($conversion_rate)) {
-                $this->set('conversion_rate', 1);
-            }
-        }
-
-        $entity = $this->getEntity();
-
-        if (empty($entity->column_fields['conversion_rate'])) {
-            $entity->column_fields['conversion_rate'] = 1;
-            $this->setEntity($entity);
-        }
+        InventoryItem_ParentEntity_Model::syncConversionRate($this);
 
         parent::save();
     }

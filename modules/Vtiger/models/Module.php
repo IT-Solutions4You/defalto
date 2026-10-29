@@ -2021,15 +2021,17 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     }
 
     /**
-     * function to check if duplicate option is allowed in DetailView
+     * Checks whether the record may be duplicated: the profile permission and the action rules of the record.
      *
-     * @param <string> $action , $recordId
+     * @param string     $action   permission action of the copy (CreateView)
+     * @param int|string $recordId record to duplicate
      *
-     * @return <boolean>
+     * @return bool
      */
     public function isDuplicateOptionAllowed($action, $recordId)
     {
-        return Users_Privileges_Model::isPermitted($this->getName(), $action, $recordId);
+        return Users_Privileges_Model::isPermitted($this->getName(), $action, $recordId)
+            && Core_RecordActionPermission_Model::getInstance()->isActionPermitted((int)$recordId, Core_RecordActionPermission_Model::ACTION_DUPLICATE);
     }
 
     public function isCreateOptionAllowed()

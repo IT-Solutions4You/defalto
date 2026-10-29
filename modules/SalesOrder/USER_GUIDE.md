@@ -46,3 +46,7 @@ When a Sales Order is read-only (or you are not allowed to edit it), its item li
 - Keep the related Quote selected so users can compare the order with the accepted offer.
 - Use **Delivered** only when the delivery or service milestone has actually been completed.
 - Decide whether the order is billed once or recurrently before creating the first invoice.
+
+## Restricted conversion
+
+If creating other documents from this sales order is restricted (for example by a workflow while the sales order waits for approval), the options to create an invoice or purchase order are hidden and opening them directly shows the reason. The restriction is listed in the **Restricted actions** box of the record.

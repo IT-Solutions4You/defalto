@@ -911,6 +911,22 @@ Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
         this.registerFillTaskFromEmailFieldEvent();
         this.registerCcAndBccEvents();
     },
+    /**
+     * Task "Restrict record actions": the fields apply only to "Field edit", the values only to "Change to value".
+     */
+    registerRestrictRecordActionsEvents: function () {
+        const container = jQuery('.record-action-permission-task');
+        const actionsElement = container.find('[name="actions[]"]');
+        const toggleRows = function () {
+            const actions = actionsElement.val() || [];
+
+            container.find('.recordActionFieldsRow').toggleClass('d-none', -1 === actions.indexOf('FieldEdit'));
+            container.find('.recordActionStatusValuesRow').toggleClass('d-none', -1 === actions.indexOf('StatusChange'));
+        };
+
+        actionsElement.on('change', toggleRows);
+        toggleRows();
+    },
     registerVTUpdateFieldsTaskEvents: function () {
         var thisInstance = this;
         this.registerAddFieldEvent();

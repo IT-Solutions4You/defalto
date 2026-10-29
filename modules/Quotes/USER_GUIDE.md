@@ -35,3 +35,7 @@ When a quote is read-only (or you are not allowed to edit it), its item lines ar
 - Use **Accepted** and **Rejected** rather than deleting old quotes; this preserves the negotiation history.
 - Check the linked opportunity and customer before generating the next document.
 - Preview the PDF before sending it externally.
+
+## Restricted conversion
+
+If creating other documents from this quote is restricted (for example by a workflow while the quote waits for approval), the **Generate** options are hidden and opening them directly shows the reason. The restriction is listed in the **Restricted actions** box of the record.

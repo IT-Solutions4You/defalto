@@ -221,6 +221,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Omfattar Skapande',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Åtgärder för Arbetsflöde',
     'LBL_WORKFLOW_SEARCH'          => 'Sök på Namn',
+    'RestrictRecordActions' => 'Begränsa postens åtgärder',
+    'ClearRecordActions' => 'Ta bort begränsningar av postens åtgärder',
+    'LBL_RestrictRecordActions' => 'Begränsa postens åtgärder',
+    'LBL_ClearRecordActions' => 'Ta bort begränsningar av postens åtgärder',
+    'Restrict record actions' => 'Begränsa postens åtgärder',
+    'Clear record action restrictions' => 'Ta bort begränsningar av postens åtgärder',
 ];
 
 $jsLanguageStrings = [
@@ -246,4 +252,6 @@ $jsLanguageStrings = [
     'VTPushNotificationTask'      => 'Mobil Push Notification',
     'VTCreateEntityTask'          => 'Skapa Post',
     'LBL_EXPRESSION_INVALID'      => 'Uttryck Ogiltig',
+    'RestrictRecordActions' => 'Begränsa postens åtgärder',
+    'ClearRecordActions' => 'Ta bort begränsningar av postens åtgärder',
 ];

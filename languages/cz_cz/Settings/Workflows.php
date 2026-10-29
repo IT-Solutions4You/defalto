@@ -220,6 +220,12 @@ $languageStrings = [
     "Workflow Name" => "Název automatického procesu",
     "Trigger" => "Spouštěč",
     "Conditions" => "Podmínky",
+    'RestrictRecordActions' => 'Omezit akce záznamu',
+    'ClearRecordActions' => 'Zrušit omezení akcí záznamu',
+    'LBL_RestrictRecordActions' => 'Omezit akce záznamu',
+    'LBL_ClearRecordActions' => 'Zrušit omezení akcí záznamu',
+    'Restrict record actions' => 'Omezit akce záznamu',
+    'Clear record action restrictions' => 'Zrušit omezení akcí záznamu',
 ];
 
 $jsLanguageStrings = [
@@ -246,4 +252,6 @@ $jsLanguageStrings = [
     "JS_TASK_STATUS_CHANGED" => "Stav byl úspěšně změněn.",
     "VTUpdateFieldsTask" => "Upravit Pole",
     "JS_WORKFLOWS_STATUS_CHANGED" => "Stav  automatického procesu byl úspěšně změněn.",
+    'RestrictRecordActions' => 'Omezit akce záznamu',
+    'ClearRecordActions' => 'Zrušit omezení akcí záznamu',
 ];

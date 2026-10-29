@@ -15,7 +15,7 @@
                 <div class="widget_contents p-3" id="popup_notifi_content">
                     {vtranslate('LBL_EMAILS_SENT_RESULT', $MODULE)}
                     <hr>
-                    {vtranslate('LBL_TOTAL_EMAILS', $MODULE)}: {$RESULT['total']}
+                    {vtranslate('LBL_TOTAL_EMAILS', $MODULE)}: {$RESULT['total']|default:0}
                     <br>
                     {if $RESULT['sent']}
                         {vtranslate('LBL_SENT_EMAILS', $MODULE)}: {$RESULT['sent']}
@@ -25,6 +25,16 @@
                         {vtranslate('LBL_ERROR_EMAILS', $MODULE)}: {$RESULT['error']}
                         <br>
                         <span style="color: red; white-space: pre-line;">{$RESULT['error_message']}</span>
+                    {/if}
+                    {if $SKIPPED_MESSAGE}
+                        <div class="recordActionSkipped alert alert-warning mt-3 mb-0">
+                            <i class="fa-solid fa-lock me-2"></i>{$SKIPPED_MESSAGE|escape}
+                        </div>
+                    {/if}
+                    {if $PDF_SKIPPED_MESSAGE}
+                        <div class="recordActionPdfSkipped alert alert-warning mt-3 mb-0">
+                            <i class="fa-solid fa-file-pdf me-2"></i>{$PDF_SKIPPED_MESSAGE|escape}
+                        </div>
                     {/if}
                 </div>
             </div>

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8 - 2026-10-29
+
+- When a record rule restricts converting a document (record action permissions, for example while a quote waits for approval), the conversion links in the detail view are hidden and the item review dialog and its save refuse the conversion with the reason.
+- When editing a document is restricted, its items block no longer shows the Text / Products / Services buttons, and changing items is refused with the reason of the restriction instead of a general permission message.
+
 ## 1.7 - 2026-10-27
 
 - The item review dialog shown before copying items to another document no longer repeats an introductory text above the table, and its table header has the same background as list view headers. When a Purchase Order is created, the billing and shipping address fields are shown without the "Which address should be copied?" selector.

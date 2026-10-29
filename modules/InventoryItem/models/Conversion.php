@@ -196,6 +196,13 @@ class InventoryItem_Conversion_Model extends Core_DatabaseData_Model
         ) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        // A record rule may deny converting this record (Core_RecordActionPermission_Model)
+        $denyReason = Core_RecordActionPermission_Model::getInstance()->getDenyReason($sourceRecord, Core_RecordActionPermission_Model::ACTION_CONVERT);
+
+        if (null !== $denyReason) {
+            throw new Exception($denyReason);
+        }
     }
 
     /**
@@ -430,11 +437,16 @@ class InventoryItem_Conversion_Model extends Core_DatabaseData_Model
      * @param int    $sourceRecord
      * @param string $createUrl create view url of the target record
      *
-     * @return string|false false when the action is disabled and the link must not be displayed
+     * @return string|false false when the action is disabled or denied for the record and the link must not be displayed
      * @throws Exception
      */
     public static function getLinkUrl(string $sourceModule, string $targetModule, int $sourceRecord, string $createUrl): string|false
     {
+        // A record rule may deny converting this record (Core_RecordActionPermission_Model); the save checks it as well
+        if (!Core_RecordActionPermission_Model::getInstance()->isActionPermitted($sourceRecord, Core_RecordActionPermission_Model::ACTION_CONVERT)) {
+            return false;
+        }
+
         $conversion = self::getConversion($sourceModule, $targetModule);
 
         if (empty($conversion)) {

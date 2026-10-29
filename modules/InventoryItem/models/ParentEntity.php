@@ -35,12 +35,14 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
      * @param string $moduleName
      *
      * @return void
-     * @throws Exception
+     * @throws Exception with the reason of the record action rule that denies editing the parent, if there is one
      */
     public static function requireEditableParent(int $parentId, string $moduleName = ''): void
     {
         if (!self::isParentEditable($parentId, $moduleName)) {
-            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            $denyReason = Core_RecordActionPermission_Model::getPermissionDenyReason((string)getSalesEntityType($parentId), 'EditView', $parentId);
+
+            throw new Exception($denyReason ?? vtranslate('LBL_PERMISSION_DENIED'));
         }
     }
 
@@ -79,6 +81,40 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
             'region_id'        => (string)$parentRecordModel->get('region_id'),
             'overall_discount' => number_format((float)$parentRecordModel->get('overall_discount'), 2, '.', ''),
         ];
+    }
+
+    /**
+     * The conversion rate of a document has to follow its currency. The edit form does not post the rate,
+     * so it is taken from the currency settings when the document is new, the currency was changed, or the rate is missing.
+     * The rate of an unchanged currency is kept, because it is the rate valid at the time the document was created.
+     *
+     * @param Vtiger_Record_Model $recordModel
+     *
+     * @return void
+     */
+    public static function syncConversionRate(Vtiger_Record_Model $recordModel): void
+    {
+        $currencyId = (int)$recordModel->get('currency_id');
+        $conversionRate = $recordModel->get('conversion_rate');
+
+        if ($currencyId) {
+            $recordId = $recordModel->getId();
+
+            if (empty($conversionRate) || empty($recordId) || $recordModel->fetchCurrencyId() !== $currencyId) {
+                $currencyInfo = getCurrencySymbolandCRate($currencyId);
+                $conversionRate = $currencyInfo['rate'] ?? null;
+            }
+        }
+
+        if (empty($conversionRate)) {
+            $conversionRate = 1;
+        }
+
+        $recordModel->set('conversion_rate', $conversionRate);
+
+        $entity = $recordModel->getEntity();
+        $entity->column_fields['conversion_rate'] = $conversionRate;
+        $recordModel->setEntity($entity);
     }
 
     /**

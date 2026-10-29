@@ -20,6 +20,9 @@ class Vtiger_Save_Action extends Core_Controller_Action
 {
     public $savedRecordId;
 
+    /** Reason of a record action rule that denied the save (saveRecord()) */
+    protected ?string $recordActionDenyReason = null;
+
     /**
      * @inheritDoc
      */
@@ -59,6 +62,19 @@ class Vtiger_Save_Action extends Core_Controller_Action
             $recordEntityName = getSalesEntityType($record);
             if ($recordEntityName !== $moduleName) {
                 throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+        }
+
+        // A new record copied from a duplicated or converted record follows the action rules of the source
+        if (!$record) {
+            $denyReason = Core_RecordActionPermission_Model::getInstance()->getCopyDenyReason(
+                $moduleName,
+                (int)$request->get('duplicateFrom'),
+                Core_RecordActionPermission_Model::getCopySourceRecordIds($request)
+            );
+
+            if (null !== $denyReason) {
+                throw new Exception($denyReason);
             }
         }
 
@@ -124,8 +140,36 @@ class Vtiger_Save_Action extends Core_Controller_Action
                 $viewer->view('RedirectToEditView.tpl', 'Vtiger');
             }
         } catch (Exception $e) {
+            // A form denied by a record action rule is shown again with the submitted values and the reason
+            if (null !== $this->recordActionDenyReason && !$request->isAjax()) {
+                $this->showDeniedEditView($request);
+
+                return;
+            }
+
             throw new Exception($e->getMessage());
         }
+    }
+
+    /**
+     * Posts the submitted values back to the edit view, which shows the reason of the record action rule that
+     * denied the save.
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return void
+     */
+    protected function showDeniedEditView(Vtiger_Request $request): void
+    {
+        $requestData = $request->getAll();
+        unset($requestData['action'], $requestData['__vtrftk']);
+        $requestData['view'] = 'Edit';
+        $requestData['recordActionDenied'] = 1;
+
+        $viewer = new Vtiger_Viewer();
+        $viewer->assign('REQUEST_DATA', $requestData);
+        $viewer->assign('REQUEST_URL', 'index.php?module=' . urlencode($request->getModule()) . '&view=Edit&record=' . (int)$request->get('record'));
+        $viewer->view('RedirectToEditView.tpl', 'Vtiger');
     }
 
     /**
@@ -138,6 +182,21 @@ class Vtiger_Save_Action extends Core_Controller_Action
     public function saveRecord($request)
     {
         $recordModel = $this->getRecordModelFromRequest($request);
+
+        // Fields locked and status values denied by record action rules cannot be changed
+        if ('edit' === $recordModel->get('mode')) {
+            $denyReason = Core_RecordActionPermission_Model::getInstance()->getChangeDenyReason(
+                $recordModel,
+                $this->getSubmittedFieldNames($request, $recordModel->getModule())
+            );
+
+            if (null !== $denyReason) {
+                $this->recordActionDenyReason = $denyReason;
+
+                throw new Exception($denyReason);
+            }
+        }
+
         if ($request->get('imgDeleted')) {
             $imageIds = $request->get('imageid');
             foreach ($imageIds as $imageId) {
@@ -162,6 +221,27 @@ class Vtiger_Save_Action extends Core_Controller_Action
         $this->savedRecordId = $recordModel->getId();
 
         return $recordModel;
+    }
+
+    /**
+     * Returns the fields submitted by the request (form fields or the inline edited field).
+     *
+     * @param Vtiger_Request      $request
+     * @param Vtiger_Module_Model $moduleModel
+     *
+     * @return array field names
+     */
+    protected function getSubmittedFieldNames(Vtiger_Request $request, Vtiger_Module_Model $moduleModel): array
+    {
+        $fieldNames = [];
+
+        foreach (array_keys($moduleModel->getFields()) as $fieldName) {
+            if ($request->has($fieldName) || $fieldName === $request->get('field')) {
+                $fieldNames[] = $fieldName;
+            }
+        }
+
+        return $fieldNames;
     }
 
     /**
