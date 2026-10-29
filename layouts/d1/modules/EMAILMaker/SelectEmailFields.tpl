@@ -12,6 +12,11 @@
             <div class="modal-content">
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE={vtranslate('LBL_SELECT_EMAIL_IDS', $MODULE)}}
                 <div class="modal-body">
+                    {if !empty($RECORD_ACTION_SKIPPED_MESSAGE)}
+                        <div class="recordActionSkipped alert alert-warning">
+                            <i class="fa-solid fa-lock me-2"></i>{$RECORD_ACTION_SKIPPED_MESSAGE|escape}
+                        </div>
+                    {/if}
                     <input type="hidden" name="selected_ids" value={ZEND_JSON::encode($SELECTED_IDS)}>
                     <input type="hidden" name="excluded_ids" value={ZEND_JSON::encode($EXCLUDED_IDS)}>
                     <input type="hidden" name="viewname" value="{$VIEWNAME}">

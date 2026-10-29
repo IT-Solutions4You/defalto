@@ -239,6 +239,10 @@
             return 'no';
         }
 
+        if (!Core_RecordActionPermission_Model::isPermissionActionPermitted((string)$module, (string)$actionname, $record_id)) {
+            return 'no';
+        }
+
         global $log;
         $log->debug("Entering isPermitted(" . $module . "," . $actionname . "," . $record_id . ") method ...");
 

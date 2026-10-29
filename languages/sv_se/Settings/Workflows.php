@@ -221,6 +221,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Omfattar Skapande',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Åtgärder för Arbetsflöde',
     'LBL_WORKFLOW_SEARCH'          => 'Sök på Namn',
+    'VTRestrictRecordActions' => 'Begränsa postens åtgärder',
+    'VTClearRecordActions' => 'Ta bort begränsningar av postens åtgärder',
+    'LBL_VTRestrictRecordActions' => 'Begränsa postens åtgärder',
+    'LBL_VTClearRecordActions' => 'Ta bort begränsningar av postens åtgärder',
+    'Restrict record actions' => 'Begränsa postens åtgärder',
+    'Clear record action restrictions' => 'Ta bort begränsningar av postens åtgärder',
 ];
 
 $jsLanguageStrings = [

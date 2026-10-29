@@ -679,6 +679,11 @@ class Vtiger_Field_Model extends Vtiger_Field
      */
     public function isAjaxEditable()
     {
+        // Locked for the record by a record action rule (Core_RecordActionPermission_Model::applyLockedFields())
+        if ($this->get('record_action_locked')) {
+            return false;
+        }
+
         if ($this->block && 'LBL_SYSTEM_INFORMATION' === $this->block->label) {
             $this->ajaxeditable = (int)Users_Record_Model::getCurrentUserModel()->isAdminUser();
         }

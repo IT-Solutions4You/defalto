@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Include Crearea De',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Acțiuni de flux de lucru',
     'LBL_WORKFLOW_SEARCH'          => 'Căutare după numele de familie',
+    'VTRestrictRecordActions' => 'Restricționează acțiunile înregistrării',
+    'VTClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
+    'LBL_VTRestrictRecordActions' => 'Restricționează acțiunile înregistrării',
+    'LBL_VTClearRecordActions' => 'Elimină restricțiile acțiunilor înregistrării',
+    'Restrict record actions' => 'Restricționează acțiunile înregistrării',
+    'Clear record action restrictions' => 'Elimină restricțiile acțiunilor înregistrării',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Partajează cu',

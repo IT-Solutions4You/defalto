@@ -11,3 +11,7 @@ Use the attachment menu in the composer to select a file from all CRM Documents 
 When an existing attachment is reused in a reply or forwarded message, the server verifies that you can still access its related CRM record or that the attachment belongs to your Mail Manager mailbox. If access has been removed, the email is not sent with that attachment.
 
 Physical attachment storage may be configured outside the public web directory. Email sending resolves both older relative paths and newer absolute paths automatically. Administrators must include the configured attachment directory in backups.
+
+# Restricted email sending
+
+If sending emails is restricted for a record (for example while it waits for approval), composing from that record shows the reason. When several records are selected, restricted records are left out and the email is sent for the others; the compose window and the result tell you which records were skipped and why. If PDF export is restricted for a record, emails with an attached PDF are not sent for it.

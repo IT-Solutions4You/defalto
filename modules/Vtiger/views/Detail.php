@@ -100,6 +100,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
 
         $recordId = $request->get('record');
         $moduleName = $request->getModule();
+
         if (!$this->record) {
             $this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
         }
@@ -107,7 +108,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         $recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
         $summaryInfo = [];
         // Take first block information as summary information
-        $stucturedValues = $recordStrucure->getStructure();
+        $stucturedValues = $this->applyLockedFields($request, $recordStrucure->getStructure());
         foreach ($stucturedValues as $blockLabel => $fieldList) {
             $summaryInfo[$blockLabel] = $fieldList;
             break;
@@ -118,9 +119,15 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         $detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
         $navigationInfo = ListViewSession::getListViewNavigation($recordId);
 
+        $recordActionPermission = Core_RecordActionPermission_Model::getInstance();
+        $isAdminUser = Users_Record_Model::getCurrentUserModel()->isAdminUser();
+        $actionRecordId = in_array($moduleName, Core_RecordActionPermission_Model::NON_ENTITY_MODULES, true) ? 0 : (int)$recordId;
+
         $viewer = $this->getViewer($request);
         $viewer->assign('RECORD', $recordModel);
         $viewer->assign('NAVIGATION', $navigationInfo);
+        $viewer->assign('RECORD_DENIED_ACTIONS', $recordActionPermission->getDeniedActions($actionRecordId));
+        $viewer->assign('RECORD_ACTION_RULES', $isAdminUser ? $recordActionPermission->getActiveRules($actionRecordId) : []);
 
         //Intially make the prev and next records as null
         $prevRecordId = null;
@@ -204,6 +211,26 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         return 'DetailViewPreProcess.tpl';
     }
 
+    /**
+     * Marks the fields of a record structure locked by record action rules, so they are not inline editable.
+     *
+     * @param Vtiger_Request $request
+     * @param array          $structure block label => [field name => Vtiger_Field_Model]
+     *
+     * @return array the same structure
+     * @throws Exception
+     */
+    protected function applyLockedFields(Vtiger_Request $request, array $structure): array
+    {
+        $recordId = (int)$request->get('record');
+
+        if (!$recordId || in_array($request->getModule(), Core_RecordActionPermission_Model::NON_ENTITY_MODULES, true)) {
+            return $structure;
+        }
+
+        return Core_RecordActionPermission_Model::getInstance()->applyLockedFields($structure, $recordId);
+    }
+
     public function process(Vtiger_Request $request)
     {
         $mode = $request->getMode();
@@ -275,6 +302,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
             '~layouts/' . $layout . '/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js',
             'modules.Vtiger.resources.Tag',
             'modules.Google.resources.Map',
+            'modules.Core.resources.RecordActionPermission',
         ];
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
@@ -309,7 +337,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         }
         $recordModel = $this->record->getRecord();
         $recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
-        $structuredValues = $recordStrucure->getStructure();
+        $structuredValues = $this->applyLockedFields($request, $recordStrucure->getStructure());
 
         $moduleModel = $recordModel->getModule();
 
@@ -387,7 +415,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
 
         $viewer->assign('MODULE_NAME', $moduleName);
         $viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
-        $viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStructure->getStructure());
+        $viewer->assign('SUMMARY_RECORD_STRUCTURE', $this->applyLockedFields($request, $recordStructure->getStructure()));
 
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $pagingModel = new Vtiger_Paging_Model();
@@ -431,7 +459,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
 
         $moduleModel = $recordModel->getModule();
         $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
-        $viewer->assign('RECORD_STRUCTURE', $recordStructure->getStructure());
+        $viewer->assign('RECORD_STRUCTURE', $this->applyLockedFields($request, $recordStructure->getStructure()));
         $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 
         return $viewer->view('DetailViewSummaryContents.tpl', $moduleName, true);

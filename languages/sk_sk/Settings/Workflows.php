@@ -269,7 +269,12 @@ $languageStrings = [
     'days later' => 'o %s dní',
     'in less than' => 'o menej ako %s',
     'in more than' => 'o viac ako %s',
-
+    'VTRestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'VTClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
+    'LBL_VTRestrictRecordActions' => 'Obmedziť akcie záznamu',
+    'LBL_VTClearRecordActions' => 'Zrušiť obmedzenia akcií záznamu',
+    'Restrict record actions' => 'Obmedziť akcie záznamu',
+    'Clear record action restrictions' => 'Zrušiť obmedzenia akcií záznamu',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Zdieľať s',

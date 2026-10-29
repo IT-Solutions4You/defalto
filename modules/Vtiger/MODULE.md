@@ -83,3 +83,7 @@ This module holds shared base behavior inherited by other modules. It has no sta
 - Quick preview and tooltips: repeated preview opens, action confirmation and cancellation, header edits from the preview.
 - Filters: empty and populated groups, two tabs with different temporary conditions, reload, clearing, view switching and failed AJAX requests.
 - Dashboard: drag then refresh, resize then refresh, independent tabs holding the same widget, and narrow/wide viewport reloads.
+
+# Record action permissions
+
+- `Save`/`SaveAjax` (`saveRecord()`), `MassSave`, `MassDelete`, the list row actions, `Detail` and `Edit` (locked fields in `blocks/Fields.tpl`) apply `Core_RecordActionPermission_Model` rules; see `modules/Core/MODULE.md` (Record action permissions) for the owner, the checks and the validation scenario.

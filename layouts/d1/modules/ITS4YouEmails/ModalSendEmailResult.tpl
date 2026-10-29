@@ -26,6 +26,11 @@
                         <br>
                         <span style="color: red; white-space: pre-line;">{$RESULT['error_message']}</span>
                     {/if}
+                    {if $SKIPPED_MESSAGE}
+                        <div class="recordActionSkipped alert alert-warning mt-3 mb-0">
+                            <i class="fa-solid fa-lock me-2"></i>{$SKIPPED_MESSAGE|escape}
+                        </div>
+                    {/if}
                 </div>
             </div>
         </div>

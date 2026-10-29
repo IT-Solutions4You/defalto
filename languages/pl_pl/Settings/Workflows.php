@@ -222,6 +222,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Obejmuje Tworzenie',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Działania dla procesu roboczego',
     'LBL_WORKFLOW_SEARCH'          => 'Wyszukiwanie według nazwiska',
+    'VTRestrictRecordActions' => 'Ogranicz akcje rekordu',
+    'VTClearRecordActions' => 'Usuń ograniczenia akcji rekordu',
+    'LBL_VTRestrictRecordActions' => 'Ogranicz akcje rekordu',
+    'LBL_VTClearRecordActions' => 'Usuń ograniczenia akcji rekordu',
+    'Restrict record actions' => 'Ogranicz akcje rekordu',
+    'Clear record action restrictions' => 'Usuń ograniczenia akcji rekordu',
 ];
 
 $jsLanguageStrings = [

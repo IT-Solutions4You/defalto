@@ -222,6 +222,12 @@ $languageStrings = [
     'LBL_VTPushNotificationTask'           => 'Notificação Celular',
     'LBL_VTCreateEntityTask'               => 'Criar Registro',
     'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'O número máximo de (%s)workflows agendado foi excedido',
+    'VTRestrictRecordActions' => 'Restringir ações do registro',
+    'VTClearRecordActions' => 'Remover restrições de ações do registro',
+    'LBL_VTRestrictRecordActions' => 'Restringir ações do registro',
+    'LBL_VTClearRecordActions' => 'Remover restrições de ações do registro',
+    'Restrict record actions' => 'Restringir ações do registro',
+    'Clear record action restrictions' => 'Remover restrições de ações do registro',
 ];
 
 $jsLanguageStrings = [

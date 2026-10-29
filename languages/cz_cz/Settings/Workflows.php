@@ -220,6 +220,12 @@ $languageStrings = [
     "Workflow Name" => "Název automatického procesu",
     "Trigger" => "Spouštěč",
     "Conditions" => "Podmínky",
+    'VTRestrictRecordActions' => 'Omezit akce záznamu',
+    'VTClearRecordActions' => 'Zrušit omezení akcí záznamu',
+    'LBL_VTRestrictRecordActions' => 'Omezit akce záznamu',
+    'LBL_VTClearRecordActions' => 'Zrušit omezení akcí záznamu',
+    'Restrict record actions' => 'Omezit akce záznamu',
+    'Clear record action restrictions' => 'Zrušit omezení akcí záznamu',
 ];
 
 $jsLanguageStrings = [

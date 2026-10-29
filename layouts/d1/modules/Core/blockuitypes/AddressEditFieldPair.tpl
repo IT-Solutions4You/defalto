@@ -42,13 +42,13 @@
                 {if $ZIP_FIELD}
                     <div class="col-4">
                         {if $MASS_EDIT}<input class="inputElement me-2 form-check-input" id="include_in_mass_edit_{$ZIP_FIELD->getFieldName()}" data-update-field="{$ZIP_FIELD->getFieldName()}" type="checkbox">{/if}
-                        {include file=vtemplate_path($ZIP_FIELD->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$ZIP_FIELD FIELD_NAME=$ZIP_FIELD->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}
+                        {if $ZIP_FIELD->get('record_action_locked')}<span class="recordActionLockedField" title="{$ZIP_FIELD->get('record_action_locked')|escape}"><i class="fa-solid fa-lock text-secondary me-2"></i>{$ZIP_FIELD->getDisplayValue($ZIP_FIELD->get('fieldvalue'))}</span>{else}{include file=vtemplate_path($ZIP_FIELD->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$ZIP_FIELD FIELD_NAME=$ZIP_FIELD->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}{/if}
                     </div>
                 {/if}
                 {if $CITY_FIELD}
                     <div class="col-8">
                         {if $MASS_EDIT}<input class="inputElement me-2 form-check-input" id="include_in_mass_edit_{$CITY_FIELD->getFieldName()}" data-update-field="{$CITY_FIELD->getFieldName()}" type="checkbox">{/if}
-                        {include file=vtemplate_path($CITY_FIELD->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$CITY_FIELD FIELD_NAME=$CITY_FIELD->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}
+                        {if $CITY_FIELD->get('record_action_locked')}<span class="recordActionLockedField" title="{$CITY_FIELD->get('record_action_locked')|escape}"><i class="fa-solid fa-lock text-secondary me-2"></i>{$CITY_FIELD->getDisplayValue($CITY_FIELD->get('fieldvalue'))}</span>{else}{include file=vtemplate_path($CITY_FIELD->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$CITY_FIELD FIELD_NAME=$CITY_FIELD->getName() MODULE=$MODULE QUALIFIED_MODULE=$MODULE}{/if}
                     </div>
                 {/if}
             </div>

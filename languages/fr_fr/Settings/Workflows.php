@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Comprend La Création',
     'LBL_ACTION_FOR_WORKFLOW'      => 'D\'Action pour les Flux de travail',
     'LBL_WORKFLOW_SEARCH'          => 'Recherche par Nom',
+    'VTRestrictRecordActions' => 'Restreindre les actions de l’enregistrement',
+    'VTClearRecordActions' => 'Supprimer les restrictions des actions de l’enregistrement',
+    'LBL_VTRestrictRecordActions' => 'Restreindre les actions de l’enregistrement',
+    'LBL_VTClearRecordActions' => 'Supprimer les restrictions des actions de l’enregistrement',
+    'Restrict record actions' => 'Restreindre les actions de l’enregistrement',
+    'Clear record action restrictions' => 'Supprimer les restrictions des actions de l’enregistrement',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Partager avec',

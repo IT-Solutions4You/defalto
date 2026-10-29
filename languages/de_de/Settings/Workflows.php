@@ -214,6 +214,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION' => 'Beinhaltet Die Einrichtung',
     'LBL_ACTION_FOR_WORKFLOW' => 'Aktion für Workflow',
     'LBL_WORKFLOW_SEARCH' => 'Suche nach Name',
+    'VTRestrictRecordActions' => 'Aktionen des Datensatzes einschränken',
+    'VTClearRecordActions' => 'Einschränkungen der Datensatzaktionen entfernen',
+    'LBL_VTRestrictRecordActions' => 'Aktionen des Datensatzes einschränken',
+    'LBL_VTClearRecordActions' => 'Einschränkungen der Datensatzaktionen entfernen',
+    'Restrict record actions' => 'Aktionen des Datensatzes einschränken',
+    'Clear record action restrictions' => 'Einschränkungen der Datensatzaktionen entfernen',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Teilen mit',

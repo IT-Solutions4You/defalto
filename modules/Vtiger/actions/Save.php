@@ -62,6 +62,19 @@ class Vtiger_Save_Action extends Core_Controller_Action
             }
         }
 
+        // A new record copied from a duplicated or converted record follows the action rules of the source
+        if (!$record) {
+            $denyReason = Core_RecordActionPermission_Model::getInstance()->getCopyDenyReason(
+                $moduleName,
+                (int)$request->get('duplicateFrom'),
+                [(int)$request->get('sourceRecord'), (int)$request->get('quote_id'), (int)$request->get('salesorder_id')]
+            );
+
+            if (null !== $denyReason) {
+                throw new Exception($denyReason);
+            }
+        }
+
         return parent::checkPermission($request);
     }
 
@@ -138,6 +151,19 @@ class Vtiger_Save_Action extends Core_Controller_Action
     public function saveRecord($request)
     {
         $recordModel = $this->getRecordModelFromRequest($request);
+
+        // Fields locked and status values denied by record action rules cannot be changed
+        if ('edit' === $recordModel->get('mode')) {
+            $denyReason = Core_RecordActionPermission_Model::getInstance()->getChangeDenyReason(
+                $recordModel,
+                $this->getSubmittedFieldNames($request, $recordModel->getModule())
+            );
+
+            if (null !== $denyReason) {
+                throw new Exception($denyReason);
+            }
+        }
+
         if ($request->get('imgDeleted')) {
             $imageIds = $request->get('imageid');
             foreach ($imageIds as $imageId) {
@@ -162,6 +188,27 @@ class Vtiger_Save_Action extends Core_Controller_Action
         $this->savedRecordId = $recordModel->getId();
 
         return $recordModel;
+    }
+
+    /**
+     * Returns the fields submitted by the request (form fields or the inline edited field).
+     *
+     * @param Vtiger_Request      $request
+     * @param Vtiger_Module_Model $moduleModel
+     *
+     * @return array field names
+     */
+    protected function getSubmittedFieldNames(Vtiger_Request $request, Vtiger_Module_Model $moduleModel): array
+    {
+        $fieldNames = [];
+
+        foreach (array_keys($moduleModel->getFields()) as $fieldName) {
+            if ($request->has($fieldName) || $fieldName === $request->get('field')) {
+                $fieldNames[] = $fieldName;
+            }
+        }
+
+        return $fieldNames;
     }
 
     /**

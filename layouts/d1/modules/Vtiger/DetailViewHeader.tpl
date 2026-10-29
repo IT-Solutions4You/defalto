@@ -12,5 +12,6 @@
             {include file='DetailViewHeaderTitle.tpl'|vtemplate_path:$QUALIFIED_MODULE}
             {include file='DetailViewActions.tpl'|vtemplate_path:$QUALIFIED_MODULE}
         </div>
+        {include file='RecordActionPermissions.tpl'|vtemplate_path:'Core'}
     </div>
 {/strip}

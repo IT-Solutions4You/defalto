@@ -57,6 +57,17 @@ class Vtiger_Edit_View extends Vtiger_Index_View
             }
         }
 
+        // Duplicating a record and converting an inventory record follow the action rules of the record
+        $denyReason = Core_RecordActionPermission_Model::getInstance()->getCopyDenyReason(
+            $moduleName,
+            $request->get('isDuplicate') ? (int)$record : 0,
+            [(int)$request->get('sourceRecord')]
+        );
+
+        if (null !== $denyReason) {
+            throw new Exception($denyReason);
+        }
+
         return parent::checkPermission($request);
     }
 
@@ -166,7 +177,14 @@ class Vtiger_Edit_View extends Vtiger_Index_View
 
         $viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
         $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
-        $viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
+        $recordStructure = $recordStructureInstance->getStructure();
+
+        // Fields locked by record action rules are shown read-only and not submitted (not for copies)
+        if (!empty($record) && !$request->get('isDuplicate') && !in_array($moduleName, Core_RecordActionPermission_Model::NON_ENTITY_MODULES, true)) {
+            $recordStructure = Core_RecordActionPermission_Model::getInstance()->applyLockedFields($recordStructure, (int)$record);
+        }
+
+        $viewer->assign('RECORD_STRUCTURE', $recordStructure);
         $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
         $viewer->assign('MODULE', $moduleName);
         $viewer->assign('CURRENTDATE', date('Y-n-j'));

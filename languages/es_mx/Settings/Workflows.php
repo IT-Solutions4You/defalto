@@ -220,6 +220,12 @@ $languageStrings = [
     'week days ago'             => 'hace %s días de la semana',
     'more than week days ago'   => 'hace más de %s días de la semana',
     'less than week days ago'   => 'hace menos de %s días de la semana',
+    'VTRestrictRecordActions' => 'Restringir acciones del registro',
+    'VTClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'LBL_VTRestrictRecordActions' => 'Restringir acciones del registro',
+    'LBL_VTClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'Restrict record actions' => 'Restringir acciones del registro',
+    'Clear record action restrictions' => 'Eliminar restricciones de acciones del registro',
 ];
 
 $jsLanguageStrings = [

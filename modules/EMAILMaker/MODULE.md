@@ -4,6 +4,7 @@
 - ITS4YouEmails owns Emails records, composing, MIME/SMTP delivery, attachments and open/click tracking; it calls EMAILMaker rendering through `ITS4YouEmails_Record_Model::retrieveContent()`. See `modules/ITS4YouEmails/MODULE.md`.
 - MailManager owns IMAP mailboxes and saved-message data; reply/forward composing and sending are delegated to ITS4YouEmails.
 - The workflow email task (`modules/com_vtiger_workflow/tasks/VTEmailTask.inc`) renders through EMAILMaker, then creates ITS4YouEmails records with source `WF`.
+- Record action rules (`Core_RecordActionPermission_Model::ACTION_EMAIL_SEND`): `GetEMAILActions` renders `Core/RecordActionDeniedButton.tpl` (`mode=getButtons`, container `EMAILMakerContentDiv`) or `Core/RecordActionDenied.tpl` for a denied record, and `IndexAjax::showComposeEmailForm()` shows `Core/RecordActionDeniedModal.tpl` when every selected record is denied; sending itself is checked in ITS4YouEmails (`ComposeEmail`, `MassSaveAjax`).
 
 # Email content rendering
 

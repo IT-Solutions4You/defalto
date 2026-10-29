@@ -25,3 +25,7 @@ In that window (titled **Review items**) you can change the quantity or the pric
 Administrators configure each conversion in **Settings > Inventory > Conversions**: whether the items are reviewed in the window, which item fields (quantity, price) can be edited, and which fields of the new document (for example subject or due date) appear at the top of the window. Values entered there are saved into the new document. The review in the window is switched on by default for every conversion.
 
 The **Field mapping** button of each conversion lets an administrator decide which field of the source document fills which field of the new document. Fields with the same name are still copied automatically. The mapping reads from left to right: the field of the source document, then the field of the new document. After you choose the source field, only fields of a compatible type are offered as the target (for example a date can only go to a date field). Choose **Not copied** as the source for a field that should stay empty in the new document.
+
+## Restricted conversion
+
+If creating another document from a quote, sales order or invoice is restricted (for example while the quote waits for approval), the conversion links are hidden and the item review dialog shows the reason instead of creating the document.

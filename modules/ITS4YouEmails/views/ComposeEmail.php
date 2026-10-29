@@ -527,13 +527,39 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
      */
     public function process(Vtiger_Request $request)
     {
+        $skippedMessage = $this->checkSendableRecords($request);
         $this->composeMailData($request);
 
         $viewer = $this->getViewer($request);
+        $viewer->assign('RECORD_ACTION_SKIPPED_MESSAGE', $skippedMessage);
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('ComposeEmailForm.tpl', $request->getModule());
+    }
+
+    /**
+     * Stops composing when record action rules deny sending emails for every source record; records denied
+     * among others are skipped when the email is sent (ITS4YouEmails_MassSaveAjax_View).
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return string message about the records that will be skipped, empty when none
+     * @throws Exception with the reason of the rule
+     */
+    public function checkSendableRecords(Vtiger_Request $request): string
+    {
+        $actionPermission = Core_RecordActionPermission_Model::getInstance();
+        $permission = $actionPermission->getPermittedRecords(
+            (array)$this->getSourceRecords($request),
+            Core_RecordActionPermission_Model::ACTION_EMAIL_SEND
+        );
+
+        if (!empty($permission['skipped']) && empty($permission['permitted'])) {
+            throw new Exception(reset($permission['skipped']));
+        }
+
+        return $actionPermission->getSkippedMessage($permission['skipped']);
     }
 
     /**

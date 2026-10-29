@@ -46,7 +46,7 @@
                 </a>
             </li>
             {if $RECORD_ACTIONS}
-                {if $RECORD_ACTIONS['edit']}
+                {if $RECORD_ACTIONS['edit'] && !Core_RecordActionPermission_Model::getInstance()->getDenyReason($LISTVIEW_ENTRY->getId(), 'EditView')}
                     <li>
                         <a class="dropdown-item editLink" data-id="{$LISTVIEW_ENTRY->getId()}" data-url="{$LISTVIEW_ENTRY->getEditViewUrl()|escape}&amp;app={$SELECTED_MENU_CATEGORY|escape}" href="{$LISTVIEW_ENTRY->getEditViewUrl()|escape}&amp;app={$SELECTED_MENU_CATEGORY|escape}">
                             <i class="fa-solid fa-pencil text-secondary"></i>
@@ -54,7 +54,7 @@
                         </a>
                     </li>
                 {/if}
-				{if $RECORD_ACTIONS['delete']}
+				{if $RECORD_ACTIONS['delete'] && !Core_RecordActionPermission_Model::getInstance()->getDenyReason($LISTVIEW_ENTRY->getId(), 'Delete')}
                 <li>
                     <a data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" class="deleteRecordButton dropdown-item">
                         <i class="fa-solid fa-trash text-secondary"></i>

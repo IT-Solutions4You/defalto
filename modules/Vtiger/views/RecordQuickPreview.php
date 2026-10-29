@@ -54,7 +54,7 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View
         $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('MODULE_NAME', $moduleName);
-        $viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStrucure->getStructure());
+        $viewer->assign('SUMMARY_RECORD_STRUCTURE', $this->applyLockedFields($request, $recordStrucure->getStructure()));
         $viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
         $viewer->assign('REQUEST_INSTANCE', $request);
         $viewer->assign('$SOCIAL_ENABLED', false);

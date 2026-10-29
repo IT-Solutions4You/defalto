@@ -36,26 +36,53 @@ class Vtiger_MassSave_Action extends Vtiger_Mass_Action
             vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode', false));
             $moduleName = $request->getModule();
             $recordModels = $this->getRecordModelsFromRequest($request);
-            $allRecordSave = true;
+            $actionPermission = Core_RecordActionPermission_Model::getInstance();
+            $actionPermission->preload(array_keys($recordModels));
+            $fieldNames = $this->getSubmittedFieldNames($request, Vtiger_Module_Model::getInstance($moduleName));
+            $skipped = [];
+
             foreach ($recordModels as $recordId => $recordModel) {
-                if (Users_Privileges_Model::isPermitted($moduleName, 'Save', $recordId)) {
+                // Records denied by the profile or by record action rules (edit, locked fields, status values) are skipped
+                $denyReason = Users_Privileges_Model::isPermitted($moduleName, 'Save', $recordId)
+                    ? $actionPermission->getChangeDenyReason($recordModel, $fieldNames)
+                    : ($actionPermission->getDenyReason((int)$recordId, Core_RecordActionPermission_Model::ACTION_EDIT) ?? vtranslate('LBL_PERMISSION_DENIED'));
+
+                if (null === $denyReason) {
                     $recordModel->save();
                 } else {
-                    $allRecordSave = false;
+                    $skipped[$recordId] = $denyReason;
                 }
             }
+
             vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
-            if ($allRecordSave) {
-                $response->setResult(true);
-            } else {
-                $response->setResult(false);
-            }
+            $response->setResult(empty($skipped) ? true : ['message' => $actionPermission->getSkippedMessage($skipped)]);
         } catch (DuplicateException $e) {
             $response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }
         $response->emit();
+    }
+
+    /**
+     * Returns the fields submitted for the mass update.
+     *
+     * @param Vtiger_Request      $request
+     * @param Vtiger_Module_Model $moduleModel
+     *
+     * @return array field names
+     */
+    protected function getSubmittedFieldNames(Vtiger_Request $request, Vtiger_Module_Model $moduleModel): array
+    {
+        $fieldNames = [];
+
+        foreach (array_keys($moduleModel->getFields()) as $fieldName) {
+            if ($request->has($fieldName)) {
+                $fieldNames[] = $fieldName;
+            }
+        }
+
+        return $fieldNames;
     }
 
     /**

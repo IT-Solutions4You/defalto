@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Includes Creation',
     'LBL_ACTION_FOR_WORKFLOW'      => 'Action for Workflow',
     'LBL_WORKFLOW_SEARCH'          => 'Search by Name',
+    'VTRestrictRecordActions' => 'Restrict record actions',
+    'VTClearRecordActions' => 'Clear record action restrictions',
+    'LBL_VTRestrictRecordActions' => 'Restrict record actions',
+    'LBL_VTClearRecordActions' => 'Clear record action restrictions',
+    'Restrict record actions' => 'Restrict record actions',
+    'Clear record action restrictions' => 'Clear record action restrictions',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Share with',

@@ -227,6 +227,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Incluye La Creación De',
     'LBL_ACTION_FOR_WORKFLOW'      => 'La acción de Flujo de trabajo',
     'LBL_WORKFLOW_SEARCH'          => 'Búsqueda por Nombre',
+    'VTRestrictRecordActions' => 'Restringir acciones del registro',
+    'VTClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'LBL_VTRestrictRecordActions' => 'Restringir acciones del registro',
+    'LBL_VTClearRecordActions' => 'Eliminar restricciones de acciones del registro',
+    'Restrict record actions' => 'Restringir acciones del registro',
+    'Clear record action restrictions' => 'Eliminar restricciones de acciones del registro',
 ];
 
 $jsLanguageStrings = [

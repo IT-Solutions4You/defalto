@@ -213,6 +213,12 @@ $languageStrings = [
     'LBL_INCLUDES_CREATION'        => 'Magában Foglalja A Teremtés',
     'LBL_ACTION_FOR_WORKFLOW'      => 'A művelet a Munkafolyamat',
     'LBL_WORKFLOW_SEARCH'          => 'Név szerinti keresés',
+    'VTRestrictRecordActions' => 'Rekordműveletek korlátozása',
+    'VTClearRecordActions' => 'Rekordművelet-korlátozások eltávolítása',
+    'LBL_VTRestrictRecordActions' => 'Rekordműveletek korlátozása',
+    'LBL_VTClearRecordActions' => 'Rekordművelet-korlátozások eltávolítása',
+    'Restrict record actions' => 'Rekordműveletek korlátozása',
+    'Clear record action restrictions' => 'Rekordművelet-korlátozások eltávolítása',
 ];
 $jsLanguageStrings = [
     'AddSharing' => 'Megosztás vele',

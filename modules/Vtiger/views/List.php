@@ -384,6 +384,9 @@ class Vtiger_List_View extends Vtiger_Index_View
         if (!$this->listViewEntries) {
             $this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
         }
+
+        // Row actions check the record action rules; load them for the whole page at once
+        Core_RecordActionPermission_Model::getInstance()->preload(array_keys((array)$this->listViewEntries));
         //if list view entries restricted to show, paging should not fail
         if (!$this->noOfEntries) {
             $this->noOfEntries = $pagingModel->get('_listcount');
