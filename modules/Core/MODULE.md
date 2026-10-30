@@ -1,5 +1,9 @@
 # Core UI ownership
 
+## Recurrence generation
+
+- `Core_RecurringType_Model` in `modules/Core/models/RecurringType.php` owns shared recurrence request parsing, occurrence generation, and the `getRecurringObjValue()` request factory and is loaded through `Vtiger_Loader`. Runtime callers should use the Core model directly. `Vtiger_Functions::getRecurringObjValue()` remains a delegating compatibility facade. `include/utils/RecurringType.php` contains only the legacy `RecurringType` subclass for old integrations that explicitly include the historical file; never load that facade globally from `CommonUtils`, because doing so creates a parent-class autoload cycle.
+
 ## Style Guide
 
 - `Core_StyleGuide_View` is the administrator-only live UI catalog at `index.php?module=Core&view=StyleGuide`; it extends `Vtiger_Footer_View` so the complete application header, styles, scripts, and footer wrap the technical Core page.
