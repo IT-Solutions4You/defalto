@@ -4,6 +4,7 @@
 
 - Restricted individual, bulk, and Mail Manager comments to records the user is allowed to view.
 - Added support for configured attachment storage locations when previewing, downloading, and emailing comment files.
+- Prevented internal ticket comments from being included in converted knowledge base articles.
 
 ## 1.2 - 2026-09-09
 

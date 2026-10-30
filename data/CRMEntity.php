@@ -98,6 +98,8 @@ class CRMExtension
 
 class CRMEntity extends CRMExtension
 {
+    protected const ENTITY_REFERENCE_UI_TYPES = [10, 51, 57, 58, 59, 73, 75, 76, 78, 80, 81];
+
     public int $isEntity = 1;
     public int $ownedBy = 0;
 
@@ -872,10 +874,10 @@ class CRMEntity extends CRMExtension
             } else {
                 $fldvalue = '';
             }
-            // Record 0 does not exist, it would break the foreign key of the reference column and the whole row would not be saved
-            if (in_array((int)$uitype, [10, 57], true) && ($fldvalue === 0 || $fldvalue === '0')) {
+            if ($this->isEmptyEntityReferenceValue($uitype, $fldvalue)) {
                 $fldvalue = '';
             }
+
             if ($fldvalue == '') {
                 $fldvalue = $this->get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype);
             }
@@ -921,6 +923,16 @@ class CRMEntity extends CRMExtension
             $sql1 = "insert into $table_name(" . implode(",", $column) . ") values(" . generateQuestionMarks($value) . ")";
             $adb->pquery($sql1, $value);
         }
+    }
+
+    /**
+     * Empty entity selectors can submit 0, but entity records start above 0 and
+     * reference columns with foreign keys require an empty value to be NULL.
+     */
+    protected function isEmptyEntityReferenceValue(int|string $uitype, mixed $value): bool
+    {
+        return in_array((int)$uitype, self::ENTITY_REFERENCE_UI_TYPES, true)
+            && ($value === 0 || $value === '0');
     }
 
     /** Function to delete a record in the specifed table

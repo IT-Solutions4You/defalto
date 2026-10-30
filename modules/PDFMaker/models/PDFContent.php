@@ -268,8 +268,6 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
      */
     private function convertRelatedModule()
     {
-        $v = 'vtiger_current_version';
-        $vcv = vglobal($v);
         $field_inf = '_fieldinfo_cache';
         $fieldModRel = $this->GetFieldModuleRel();
 

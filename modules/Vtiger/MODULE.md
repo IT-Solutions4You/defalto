@@ -4,12 +4,16 @@ This module holds shared base behavior inherited by other modules. It has no sta
 
 ## Summary widgets
 
-- `Vtiger_Link_Model::getTranslatedLabel()` translates a widget label in the module named by the link's `linkName` (links without a related-module owner use the source record module). When the related module does not define the label it falls back to the source module, because custom widget labels are registered there. `SummaryViewWidget.tpl` uses the resolved label for both the heading and the add action.
+- `Vtiger_Link_Model::getTranslatedLabel()` translates a widget label in the module named by the link's `linkName` (links without a related-module or explicit widget-module owner use the source record module). `Vtiger_DetailView_Model::getWidgets()` derives that owner from `relatedModule` or the explicit `module` URL parameter. When the owner does not define the label it falls back to the source module, because custom widget labels are registered there. `SummaryViewWidget.tpl` uses the resolved label for both the heading and the add action.
+- A persisted summary-widget URL can set `summaryFirst=1`; `Vtiger_Link_Model::isSummaryFirst()` and `Vtiger_DetailView_Model::getWidgets()` then place it before the other widgets while retaining its stored sequence and therefore its configured column.
 - `SummaryViewWidgets.tpl` treats a missing or empty `DETAILVIEWWIDGET` link group as a valid empty layout. `getDetailViewLinks()` does not guarantee a key for link types without links, so guard the collection before iterating.
 - A summary widget link URL with `headerActions=1` lets the widget's own module (`module` URL parameter) add actions to the widget header: `Vtiger_DetailView_Model::getWidgets()` sets `headerActionsModule` and `SummaryViewWidget.tpl` includes `SummaryWidgetHeaderActions.tpl` of that module (used by InventoryItem). Do not hard-code module-specific buttons in the shared header.
 
 ## Shared utilities and storage
 
+- The running application version is owned by `version.php` as `$defalto_current_version`. Shared runtime code must use that value and must not restore the removed `vtiger_current_version` global.
+- `Vtiger_Header_View::getHeaderLinks()` builds only application-owned settings, user, and registered header links. Do not restore hard-coded upstream vtiger feedback, documentation, video, or marketing URLs.
+- Legacy layout help links must target the Core `Documentation` redirect route; never link directly to upstream vtiger documentation.
 - `Vtiger_Base_UIType::getRequestValue()` is the shared server-side field-value validation boundary used by `Save` and `SaveAjax`. `Vtiger_Util_Helper::validateFieldValue()` rejects empty mandatory fields, malformed email and numeric values, and unavailable picklist values with an exception; it must never silently coerce an invalid submitted value. New records also validate every editable mandatory field in `Vtiger_Save_Action::saveRecord()`, including fields omitted from the request; non-editable generated fields remain owned by the persistence lifecycle. Partial edits retain omitted values from the existing record.
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades over `Core_ImageValidation_Helper`; keep validation logic out of the legacy utility.
 - The global `isPermitted()` in `include/utils/UserInfoUtil.php` is a compatibility facade for the Users-owned permission model. Keep module, action, ownership and sharing evaluation in `Users_Privileges_Model`.
@@ -28,6 +32,7 @@ This module holds shared base behavior inherited by other modules. It has no sta
 
 ## Record header, quick preview and tooltips
 
+- Read-only record actions use `Core_Readonly_Model::isMakeReadonlyPermitted()` for the same decision as the Core action. Administrators see lock or unlock according to state; a non-administrator sees Lock only for a directly assigned record that the user may edit.
 - Vtiger.js keeps the shared preview request launcher and its stale-response counter. After the modal's `SCRIPTS` run, the callback calls Core QuickPreview's static `registerPreview()`. Do not load Core QuickPreview globally or initialize it inline in Smarty.
 - `getQuickPreviewHeaderScripts()` declares the base and module-specific Detail/RelatedList dependencies followed by Core QuickPreview. Overrides must keep Core QuickPreview last, because `RecordQuickPreview::process()` only assigns the returned list without merging extra resources. `ListViewQuickPreview.tpl` consumes the ordered, cache-busted `SCRIPTS` at the end of the modal markup. Escaped field JSON belongs to a hidden control and scoped container data, not a global `quick_preview_uimeta`. Core owns modal actions and cleanup, including removing its script elements and class on close.
 - `RecordQuickPreview` requests are AJAX, so WebUI skips `Detail::preProcess()`; `process()` must assign `REQUEST_INSTANCE` and `IS_AJAX_ENABLED` itself before rendering the shared header. Header edits (ordinary fields, checkbox switches, Assigned To) use the record and module from their nearest form or the scoped Detail instance, never the underlying page.

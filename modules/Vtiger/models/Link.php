@@ -438,6 +438,11 @@ class Vtiger_Link_Model extends Vtiger_Link
         return $parameters;
     }
 
+    public function isSummaryFirst(): bool
+    {
+        return !empty($this->getUrlParameters()['summaryFirst']);
+    }
+
     /**
      * @return string
      * @throws Exception

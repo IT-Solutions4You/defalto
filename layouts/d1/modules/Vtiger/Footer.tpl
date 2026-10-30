@@ -10,7 +10,7 @@
 <footer class="app-footer bg-body">
     <div class="h-footer d-flex justify-content-center align-items-center">
         <div>
-            <a href="https://defalto.com">Powered by Defalto {$VTIGER_VERSION} © 2022 - {date('Y')}</a>
+            <a href="index.php?module=Core&view=Redirect&mode=Web">Powered by Defalto {$VTIGER_VERSION} © 2022 - {date('Y')}</a>
             {Core_Utils_Helper::getBranding()}
         </div>
     </div>

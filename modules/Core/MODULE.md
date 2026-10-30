@@ -1,5 +1,17 @@
 # Core UI ownership
 
+## Read-only records
+
+- `Core_Readonly_Action::checkPermission()` is the authorization boundary for manual lock state changes. `makeEditable` and the workflow/schema `install` mode are administrator-only. `makeReadonly` is allowed to administrators or to the current record owner when `Users_Privileges_Model::isPermitted($module, 'EditView', $record)` succeeds.
+- `Core_Readonly_Model::isMakeReadonlyPermitted()` owns the shared lock decision used by the action and `Vtiger_DetailView_Model`. For non-administrators it verifies that the record belongs to the requested module before checking edit permission and ownership. Direct URLs must never bypass this predicate.
+- `updateReadonlyForUser()` revalidates the manual lock at the write boundary and includes `smownerid` in a non-administrator's UPDATE, so reassignment between the action check and the write cannot let the former owner lock the record. Workflow task `VTReadonly` remains on `setReadonly()` as an internal automation path without a manual acting user.
+
+## External redirects
+
+- `Core_Redirect_Model` owns Defalto external destinations and builds application redirect routes. UI links use the relative `index.php?module=Core&view=Redirect&mode=<mode>` route; generated content that leaves the application uses `getRedirectUrl($mode, true)` so recipients first reach the public CRM instance and then the centrally managed destination.
+- `Core_Redirect_View` delegates destination lookup to the model. Do not hard-code Defalto, upstream vtiger, store, documentation, social, or release URLs in application UI or generated content.
+- Shared user-facing confirmations and support guidance must not expose upstream vtiger service domains or contacts; keep those values aligned across Core locales.
+
 ## Recurrence generation
 
 - `Core_RecurringType_Model` in `modules/Core/models/RecurringType.php` owns shared recurrence request parsing, occurrence generation, and the `getRecurringObjValue()` request factory and is loaded through `Vtiger_Loader`. Runtime callers should use the Core model directly. `Vtiger_Functions::getRecurringObjValue()` remains a delegating compatibility facade. `include/utils/RecurringType.php` contains only the legacy `RecurringType` subclass for old integrations that explicitly include the historical file; never load that facade globally from `CommonUtils`, because doing so creates a parent-class autoload cycle.
@@ -28,6 +40,7 @@
 
 - `PearDatabase::query_result()` and `query_result_rowdata()` return HTML-encoded values. `CRMEntity::retrieve_entity_info()` keeps that public contract while registering the raw database value in `TrackableObject::setRetrievedValue()` when encoding changed it.
 - `TrackableObject::getValueForSave()` returns the raw value only while the field still exactly matches its originally retrieved encoded value; explicitly changed values take the normal conversion path. Entity-table writes and the always-updated `vtiger_crmentity.description` both use it. Keep this boundary so a retrieve-and-save cycle cannot convert characters to named HTML entities or double-encode data. `Users` follows the same contract (see `modules/Users/MODULE.md`).
+- `CRMEntity::insertIntoEntityTable()` treats integer or string `0` from an empty entity-reference selector as an empty value for generic and legacy entity-reference uitypes. The existing column conversion then persists `NULL`, preventing optional foreign keys from rejecting the owning entity row. Do not apply this rule to non-entity references such as owners, currencies, or document folders, where zero may follow a different validation contract.
 
 ## Shared quick preview
 

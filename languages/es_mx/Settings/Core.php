@@ -180,10 +180,10 @@ $languageStrings = [
     'LBL_REQUIRES_AUTHENTICATION'            => 'Requiere autenticación',
     'LBL_OUTGOING_SERVER'                    => 'Servidor de correo (SMTP)',
     'LBL_OUTGOING_SERVER_DESC'               => 'Configure los detalles de la cuenta SMTP para envío de correos desde Vtiger CRM.',
-    'LBL_DEFAULT'                            => 'Por defecto, las configuraciones de la cuenta SMTP para el servidor de salida están configuradas para el servidor de correo od1.vtiger.com. Para evitar que los correos de salida pasen por filtros de spam en su servidor de correos de destinatario ISP, le recomendamos implementar una de las acciones siguientes',
+    'LBL_DEFAULT'                            => 'Por defecto, las configuraciones de la cuenta SMTP para el servidor de salida están configuradas para el servidor de correo defalto.com. Para evitar que los correos de salida pasen por filtros de spam en su servidor de correos de destinatario ISP, le recomendamos implementar una de las acciones siguientes',
     'LBL_OPTIONS1'                           => 'Enviar correos desde su servidor de correos <br>
 					- Ingresar los detalles de la cuenta SMTP (Nombre del servidor, Nombre del usuario, Contraseña) para la misma cuenta tal y como se ingresó en la dirección de correo DE',
-    'LBL_OPTIONS2'                           => "Añada el servidor vtiger.com como un remitente autorizado de correos para su dominio <b>(su_empresa.com)</b> cuando utilice su <b>de correo(eg : soporte@su_empresa.com)</b>.<br>
+    'LBL_OPTIONS2'                           => "Añada el servidor defalto.com como un remitente autorizado de correos para su dominio <b>(su_empresa.com)</b> cuando utilice su <b>de correo(eg : soporte@su_empresa.com)</b>.<br>
 										-Para garantizar que sus correos no los rechace el servidor del detinatario como SPAM,
 										el registro TXT que se menciona abajo deberá agragarse al regsitro DNS de su dominio",
     'LBL_MAIL_SERVER_SMTP'                   => 'Configuración del servidor de correo (SMTP)',

@@ -7,3 +7,5 @@ Module permissions are completed automatically after the default profiles are cr
 License keys supplied to the installation process are activated after the administrator account is created. Multiple different keys are supported; duplicate keys are activated only once, and an invalid new key is not stored.
 
 Licenses, updates and extensions are managed afterwards in the Installer module.
+
+The installation process does not send administrator registration details to upstream vtiger services.

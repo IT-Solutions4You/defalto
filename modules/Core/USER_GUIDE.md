@@ -2,6 +2,14 @@
 
 Administrators can open `index.php?module=Core&view=StyleGuide` to review the colors and common interface components currently rendered by Defalto. The page includes semantic colors, alerts, buttons, badges, form controls, navigation, cards, lists, tables, progress indicators, loading states, and their common variants. It is a visual reference only and does not change application data or settings.
 
+# External links
+
+Defalto website, documentation, store, community, social, and release links pass through the CRM redirect page. This keeps destinations consistent across the application and in generated emails or documents. Legacy links to upstream vtiger websites are not shown.
+
+# Read-only records
+
+Administrators can lock and unlock records. A non-administrator can lock a record only when it is assigned directly to that user and the user is allowed to edit it. Unlocking records and installing the read-only workflow remain administrator-only operations. Opening a lock or unlock URL directly does not bypass these rules.
+
 # List filters
 
 Use the funnel icon beside the column selector in a list to narrow the current list. Choose a field, a condition and its value, then select Apply. Text, numbers, selections, owners, related records and dates use the same conditions as the saved-list editor. Fields from directly related records can be used as well. Owner fields group users and groups separately, and related-record fields let you pick the record in a popup.

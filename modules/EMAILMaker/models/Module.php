@@ -526,13 +526,13 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                         foreach ($emailFields as $emailField) {
                             $emailFieldValue = $row[$emailField];
                             if ($emailFieldValue) {
-                                $recordLabel = getEntityFieldNameDisplay($moduleName, $nameFields, $row);
+                                $recordLabel = decode_html(getEntityFieldNameDisplay($moduleName, $nameFields, $row));
                                 if (strpos($emailFieldValue, $searchValue) !== false || strpos($recordLabel, $searchValue) !== false) {
                                     $emailsResult[vtranslate($moduleName, $moduleName)][$row[$moduleInstance->table_index]][]
                                         = [
                                         'value'  => $emailFieldValue,
                                         'name'   => $recordLabel,
-                                        'label'  => $recordLabel . ' <b>(' . $emailFieldValue . ')</b>',
+                                        'label'  => $recordLabel . ' (' . $emailFieldValue . ')',
                                         'module' => $moduleName
                                     ];
                                 }

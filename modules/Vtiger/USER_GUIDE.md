@@ -1,4 +1,10 @@
+# Header menu
+
+The header menu contains Defalto settings available to administrators, the current user's preferences and sign-out action, and links registered by installed extensions. It does not show links to upstream vtiger feedback, documentation, videos, or marketing pages. Defalto website and help links use the application's redirect page so their destinations stay centrally managed.
+
 # Record actions
+
+Administrators can lock or unlock a record. A non-administrator can lock a record only when it is assigned directly to that user and the user has permission to edit it; unlocking remains available only to administrators.
 
 Related-record widgets on a record use the language of the related module for their title and add action. If a custom widget label exists only for the displayed record's module, that label is used instead, so users never see a technical name. For example, the Appointments widget keeps its translated Appointments label even on another module's record. A record with no summary widgets shows empty widget columns without an error.
 

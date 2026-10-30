@@ -1350,6 +1350,12 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             return '';
         }
 
-        return '<div style="text-align: center; font-size: 10px;"><a href="https://defalto.com" style="color: silver;">Sent via Defalto CRM</a></div>';
+        $url = htmlspecialchars(
+            Core_Redirect_Model::getInstance()->getRedirectUrl('Web', true),
+            ENT_QUOTES,
+            'UTF-8'
+        );
+
+        return '<div style="text-align: center; font-size: 10px;"><a href="' . $url . '" style="color: silver;">Sent via Defalto CRM</a></div>';
     }
 }

@@ -19,6 +19,7 @@
 // Switch the working directory to base
 chdir(__DIR__ . '/../..');
 
+include_once 'config.php';
 require_once 'vendorCheck.php';
 require_once 'vendor/autoload.php';
 require_once 'include/Zend/Json.php';
@@ -70,8 +71,10 @@ class Webform_Capture
             $parameters = [];
             $webformFields = $webform->getFields();
             foreach ($webformFields as $webformField) {
+                $fieldName = $webformField->getFieldName();
+
                 if ($webformField->getDefaultValue() != null) {
-                    $parameters[$webformField->getFieldName()] = decode_html($webformField->getDefaultValue());
+                    $parameters[$fieldName] = decode_html($webformField->getDefaultValue());
                 } else {
                     //If urlencode is enabled then skipping decoding field names
                     if ($isURLEncodeEnabled == 1) {
@@ -80,22 +83,22 @@ class Webform_Capture
                         $webformNeutralizedField = html_entity_decode($webformField->getNeutralizedField(), ENT_COMPAT, "UTF-8");
                     }
 
-                    if (isset($request[$webformField->getFieldName()])) {
-                        $webformNeutralizedField = $webformField->getFieldName();
-                    }
-                    if (is_array(vtlib_purify($request[$webformNeutralizedField]))) {
-                        $fieldData = implode(" |##| ", vtlib_purify($request[$webformNeutralizedField]));
-                    } else {
-                        $fieldData = vtlib_purify($request[$webformNeutralizedField]);
-                        $fieldData = decode_html($fieldData);
+                    if (isset($request[$fieldName])) {
+                        $webformNeutralizedField = $fieldName;
                     }
 
-                    $parameters[$webformField->getFieldName()] = stripslashes($fieldData);
-                }
-                if ($webformField->getRequired()) {
-                    if (!isset($parameters[$webformField->getFieldName()])) {
-                        throw new Exception("Required fields not filled");
+                    $requestValue = vtlib_purify($request[$webformNeutralizedField] ?? null);
+                    if (is_array($requestValue)) {
+                        $fieldData = implode(" |##| ", $requestValue);
+                    } else {
+                        $fieldData = decode_html($requestValue);
                     }
+
+                    $parameters[$fieldName] = stripslashes($fieldData ?? '');
+                }
+
+                if ($webformField->isRequiredValueMissing($parameters[$fieldName])) {
+                    throw new Exception("Required fields not filled");
                 }
             }
 
@@ -111,9 +114,12 @@ class Webform_Capture
 
             $moduleModel = Vtiger_Module_Model::getInstance($webform->getTargetModule());
             $fieldInstances = Vtiger_Field_Model::getAllForModule($moduleModel);
+            $fieldModels = [];
             foreach ($fieldInstances as $blockInstance) {
                 foreach ($blockInstance as $fieldInstance) {
                     $fieldName = $fieldInstance->getName();
+                    $fieldModels[$fieldName] = $fieldInstance;
+
                     if ($fieldInstance->get('uitype') == 56 && $fieldInstance->getDefaultFieldValue() == '') {
                         $defaultValue = $request[$fieldName];
                     } elseif (empty($parameters[$fieldName])) {
@@ -125,6 +131,14 @@ class Webform_Capture
                         //ignore comma(,) if it is currency field
                         $parameters[$fieldName] = str_replace(",", "", $parameters[$fieldName]);
                     }
+                }
+            }
+
+            foreach ($webformFields as $webformField) {
+                $fieldName = $webformField->getFieldName();
+
+                if (isset($fieldModels[$fieldName])) {
+                    Vtiger_Util_Helper::validateFieldValue($parameters[$fieldName], $fieldModels[$fieldName]);
                 }
             }
 

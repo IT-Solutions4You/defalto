@@ -838,16 +838,6 @@ class Install_Utils_Model
         }
     }
 
-    /*
-     * Register installed user detail to inform about product updates and news.
-     */
-    public static function registerUser($name, $email, $industry)
-    {
-        require_once 'vtlib/Vtiger/Net/Client.php';
-        $client = new Vtiger_Net_Client("https://stats.vtiger.com/register.php");
-        @$client->doPost(["name" => $name, "email" => $email, "industry" => $industry], 5);
-    }
-
     /**
      * @param Vtiger_Request $request
      *

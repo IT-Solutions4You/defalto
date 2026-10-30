@@ -43,6 +43,7 @@
 
 ## Commit Messages
 
+- When the user asks for `commits`, create the requested commits and push the current branch after they succeed unless the user explicitly asks not to push.
 - Separate shared Core/Vtiger changes from installable module changes whenever practical, and create a separate commit for each affected installable module.
 - Name commits owned by Core or Vtiger as `Defalto <defaltoVersion>: <short description>`, for example `Defalto 1.10.92: Support module-owned list query rules`. Use the current application version from `version.php`.
 - Name commits owned by an installable module as `<ModuleName> <moduleVersion>: <short description>`, for example `Appointments 1.4: Preserve all-day calendar dates`. Use the module name and its current declared `$moduleVersion`.

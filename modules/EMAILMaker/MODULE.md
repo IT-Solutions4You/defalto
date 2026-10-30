@@ -6,6 +6,10 @@
 - The workflow email task (`modules/com_vtiger_workflow/tasks/VTEmailTask.inc`) renders through EMAILMaker, then creates ITS4YouEmails records with source `WF`.
 - Record action rules (`Core_RecordActionPermission_Model::ACTION_EMAIL_SEND`): `GetEMAILActions` renders `Core/RecordActionDeniedButton.tpl` (`mode=getButtons`, container `EMAILMakerContentDiv`) or `Core/RecordActionDenied.tpl` for a denied record, and `IndexAjax::showComposeEmailForm()` shows `Core/RecordActionDeniedModal.tpl` when every selected record is denied; the PDF templates are left out when the PDF export of every permitted record is denied (`getPdfAttachmentMessage()`, `RECORD_ACTION_PDF_SKIPPED_MESSAGE` in `SelectEmailFields.tpl`); sending itself is checked in ITS4YouEmails (`ComposeEmail`, `MassSaveAjax`).
 
+# Recipient search
+
+- `EMAILMaker_Module_Model::searchEmails()` owns the autocomplete result contract used by the ITS4YouEmails composer for To, Cc and Bcc. Result labels for every supported module, including Users, are decoded plain text in the form `Name (address)`; do not include HTML tags because Select2 renders the `text` value as text.
+
 # Email content rendering
 
 - `VTEmailTask::getContents()` runs `getContent(false)` before workflow variable substitution; `ITS4YouEmails_Record_Model::retrieveContent()` runs recipient-aware `getContent(true, ...)` again before assigning the mailer body. Keep both passes in view when diagnosing formatting.
