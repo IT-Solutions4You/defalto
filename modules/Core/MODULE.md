@@ -1,5 +1,11 @@
 # Core UI ownership
 
+## Read-only records
+
+- `Core_Readonly_Action::checkPermission()` is the authorization boundary for manual lock state changes. `makeEditable` and the workflow/schema `install` mode are administrator-only. `makeReadonly` is allowed to administrators or to the current record owner when `Users_Privileges_Model::isPermitted($module, 'EditView', $record)` succeeds.
+- `Core_Readonly_Model::isMakeReadonlyPermitted()` owns the shared lock decision used by the action and `Vtiger_DetailView_Model`. For non-administrators it verifies that the record belongs to the requested module before checking edit permission and ownership. Direct URLs must never bypass this predicate.
+- `updateReadonlyForUser()` revalidates the manual lock at the write boundary and includes `smownerid` in a non-administrator's UPDATE, so reassignment between the action check and the write cannot let the former owner lock the record. Workflow task `VTReadonly` remains on `setReadonly()` as an internal automation path without a manual acting user.
+
 ## External redirects
 
 - `Core_Redirect_Model` owns Defalto external destinations and builds application redirect routes. UI links use the relative `index.php?module=Core&view=Redirect&mode=<mode>` route; generated content that leaves the application uses `getRedirectUrl($mode, true)` so recipients first reach the public CRM instance and then the centrally managed destination.

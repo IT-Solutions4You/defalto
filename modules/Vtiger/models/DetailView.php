@@ -170,7 +170,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
             }
         }
 
-        if ($currentUserModel->isAdminUser() || $currentUserModel->getId() === $recordModel->get('assigned_user_id')) {
+        if (Core_Readonly_Model::isMakeReadonlyPermitted($moduleName, $recordId, $currentUserModel)) {
             if (Core_Readonly_Model::isButtonPermitted($moduleName, $recordId)) {
                 $links[] = Vtiger_Link_Model::getInstanceFromValues(
                     [

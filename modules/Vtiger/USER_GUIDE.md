@@ -4,6 +4,8 @@ The header menu contains Defalto settings available to administrators, the curre
 
 # Record actions
 
+Administrators can lock or unlock a record. A non-administrator can lock a record only when it is assigned directly to that user and the user has permission to edit it; unlocking remains available only to administrators.
+
 Related-record widgets on a record use the language of the related module for their title and add action. If a custom widget label exists only for the displayed record's module, that label is used instead, so users never see a technical name. For example, the Appointments widget keeps its translated Appointments label even on another module's record. A record with no summary widgets shows empty widget columns without an error.
 
 Quick-preview actions apply to the displayed record, not the screen underneath. Deleting asks for one confirmation and refreshes the source screen afterwards; if an error occurs, the preview stays open. Editable fields in the preview header have the same controls as the record detail header: use the pencil, the checkbox switch or the Assigned To selector to update the record without leaving the list. Read-only fields and fields you cannot edit stay unchanged. See the Core user guide for the shared preview workflow.
