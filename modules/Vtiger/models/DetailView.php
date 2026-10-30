@@ -395,6 +395,10 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
                 continue;
             }
 
+            if (!empty($urlParameters['module'])) {
+                $widgetLink->set('linkName', $targetModuleName);
+            }
+
             if ($relatedModuleName) {
                 $relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModuleName);
                 $isDynamicListWidget = ($urlParameters['view'] ?? '') === 'Widget'
@@ -439,6 +443,12 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
 
         $availableWidgets = array_values($uniqueWidgets);
         usort($availableWidgets, static function (Vtiger_Link_Model $first, Vtiger_Link_Model $second): int {
+            $priorityComparison = (int)$second->isSummaryFirst() <=> (int)$first->isSummaryFirst();
+
+            if ($priorityComparison) {
+                return $priorityComparison;
+            }
+
             $sequenceComparison = (int)$first->get('sequence') <=> (int)$second->get('sequence');
 
             return $sequenceComparison ?: (int)$first->getId() <=> (int)$second->getId();

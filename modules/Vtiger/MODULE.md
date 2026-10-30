@@ -4,7 +4,8 @@ This module holds shared base behavior inherited by other modules. It has no sta
 
 ## Summary widgets
 
-- `Vtiger_Link_Model::getTranslatedLabel()` translates a widget label in the module named by the link's `linkName` (links without a related-module owner use the source record module). When the related module does not define the label it falls back to the source module, because custom widget labels are registered there. `SummaryViewWidget.tpl` uses the resolved label for both the heading and the add action.
+- `Vtiger_Link_Model::getTranslatedLabel()` translates a widget label in the module named by the link's `linkName` (links without a related-module or explicit widget-module owner use the source record module). `Vtiger_DetailView_Model::getWidgets()` derives that owner from `relatedModule` or the explicit `module` URL parameter. When the owner does not define the label it falls back to the source module, because custom widget labels are registered there. `SummaryViewWidget.tpl` uses the resolved label for both the heading and the add action.
+- A persisted summary-widget URL can set `summaryFirst=1`; `Vtiger_Link_Model::isSummaryFirst()` and `Vtiger_DetailView_Model::getWidgets()` then place it before the other widgets while retaining its stored sequence and therefore its configured column.
 - `SummaryViewWidgets.tpl` treats a missing or empty `DETAILVIEWWIDGET` link group as a valid empty layout. `getDetailViewLinks()` does not guarantee a key for link types without links, so guard the collection before iterating.
 - A summary widget link URL with `headerActions=1` lets the widget's own module (`module` URL parameter) add actions to the widget header: `Vtiger_DetailView_Model::getWidgets()` sets `headerActionsModule` and `SummaryViewWidget.tpl` includes `SummaryWidgetHeaderActions.tpl` of that module (used by InventoryItem). Do not hard-code module-specific buttons in the shared header.
 
