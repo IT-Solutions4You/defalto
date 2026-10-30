@@ -109,7 +109,7 @@ class Appointments_Save_Action extends Vtiger_Save_Action
             $_REQUEST['time_end'] = $endDateTime->getDisplayTime();
         }
 
-        $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
+        $recurrenceObject = Core_RecurringType_Model::getRecurringObjValue();
 
         if ($recurrenceObject) {
             $recurringDataChanged = Appointments_RepeatRecords_Model::checkRecurringDataChanged($recurrenceObject, $this->recurrenceDatabaseObject);

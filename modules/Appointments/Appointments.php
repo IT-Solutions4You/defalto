@@ -178,7 +178,7 @@ class Appointments extends CRMEntity
             return;
         }
 
-        $recurringObject = Vtiger_Functions::getRecurringObjValue();
+        $recurringObject = Core_RecurringType_Model::getRecurringObjValue();
         $recordId = (int)$this->id;
 
         if ($recurringObject) {

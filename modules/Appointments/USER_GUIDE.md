@@ -16,6 +16,8 @@ Calendar popovers and event refreshes show record information only when the curr
 
 Monthly repetitions stay in the selected calendar month. If the selected date does not exist in a shorter month, the appointment is placed on that month's last day. Rules such as the last Friday of the month also remain within that month in every time zone.
 
+Weekly repetitions stay on the selected weekdays and at the selected local time when daylight-saving time begins or ends.
+
 ## Create Calendar Record workflow action
 
 Configure the subject, description, status, type, owner, start and end values, and all-day behavior in the workflow task. Click Subject or Description to open the value window, where you can enter text and insert variables from the workflow's source record.

@@ -136,7 +136,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
     /**
      * @param $recordId
      *
-     * @return false|RecurringType
+     * @return false|Core_RecurringType_Model
      */
     public static function getRecurringObject($recordId)
     {
@@ -160,7 +160,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
             [$date_end, $time_end] = explode(' ', $recordModel->get('datetime_end'));
         }
 
-        return RecurringType::fromDBRequest([
+        return Core_RecurringType_Model::fromDBRequest([
             'date_start'       => $date_start,
             'time_start'       => $time_start,
             'due_date'         => $date_end,
@@ -169,6 +169,7 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
             'recurringfreq'    => $recurringModel->get('recurring_frequency'),
             'recurringenddate' => $recurringModel->get('recurring_end_date'),
             'recurringinfo'    => $recurringModel->get('recurring_info'),
+            'is_all_day'       => $recordModel->isAllDayEvent(),
         ]);
     }
 
@@ -337,11 +338,11 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
 
     /**
      * @param int           $recordId
-     * @param RecurringType $recurrenceObject
+     * @param Core_RecurringType_Model $recurrenceObject
      *
      * @return void
      */
-    public static function saveRecurring(int $recordId, RecurringType $recurrenceObject)
+    public static function saveRecurring(int $recordId, Core_RecurringType_Model $recurrenceObject)
     {
         $recurringEndDate = null;
         $startDate = $recurrenceObject->startdate->get_DB_formatted_date();
