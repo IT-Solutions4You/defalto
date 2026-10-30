@@ -29,6 +29,12 @@
 - `CreatePDFFromTemplate` and `IndexAjax::getPreviewContent` resolve the source module from the requested CRM record and require `DetailView` permission for that record before calling `PDFMaker_checkGenerate_Model::generate()`. Never trust the client-provided `source_module` or `relmodule` as the authorization owner.
 - Keep direct downloads and inline or attachment preview content behind the same record-level permission boundary.
 
+# Template authorization and preview
+
+- `SavePDFTemplate` requires a POST request with a valid CSRF token, PDFMaker module access, and an existing, non-deleted template that the current PDFMaker profile may edit. The action must authorize from stored template state, not request-supplied module data.
+- PDFMaker profile operations are stored in `vtiger_pdfmaker_profilespermissions`; `PDFMaker_PDFMaker_Model::isTemplateEditable()` owns the write decision.
+- Template HTML is encoded while it is held in the parent page and rendered only inside sandboxed preview iframes. Keep scripts disabled in previews while preserving HTML used by CKEditor and PDF generation.
+
 # Record action permissions (PdfExport)
 
 - `PDFMaker_Module_Model::getPdfExportDenyReason()` is the only place that asks the core layer (`Core_RecordActionPermission_Model::ACTION_PDF_EXPORT`); it returns null when the class does not exist, so PDF Maker behaves as before on a core without the layer. Never call `Core_RecordActionPermission_Model` or render `Core/RecordActionDenied*.tpl` from PDF Maker without going through it.

@@ -1,5 +1,6 @@
 ## 0.7 - 2026-10-29
 
+- Protected template saving with profile permissions and request validation, and isolated template previews from executable content.
 - When a record rule restricts the PDF export of a record (record action permissions in the core, for example while a quote waits for approval), the Export to PDF button is disabled with the reason and downloads and previews of that record are refused. Without the record action layer in the core PDF Maker behaves as before.
 
 ## 0.6 - 2026-10-28

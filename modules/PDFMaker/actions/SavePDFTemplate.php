@@ -15,7 +15,21 @@ class PDFMaker_SavePDFTemplate_Action extends Core_Controller_Action
      */
     public function checkPermission(Vtiger_Request $request): bool
     {
+        $pdfMaker = PDFMaker_PDFMaker_Model::getInstance();
+
+        if (!$pdfMaker->isTemplateEditable((int)$request->get('templateid'))) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateRequest(Vtiger_Request $request): bool
+    {
+        return $request->validateWriteAccess();
     }
 
     public function process(Vtiger_Request $request)

@@ -57,7 +57,7 @@
                             </div>
                         </td>
                         <td class="listViewEntryValue">{$template.module}</a></td>
-                        <td class="listViewEntryValue">{$template.description}&nbsp;</td>
+                        <td class="listViewEntryValue">{$template.description|php7_htmlentities}&nbsp;</td>
                     </tr>
                 {/foreach}
                 </tbody>
