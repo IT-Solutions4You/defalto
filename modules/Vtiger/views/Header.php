@@ -55,8 +55,9 @@ abstract class Vtiger_Header_View extends Core_Controller_View
      */
     function getHeaderLinks()
     {
+        global $defalto_current_version;
+
         $appUniqueKey = vglobal('application_unique_key');
-        $vtigerCurrentVersion = vglobal('vtiger_current_version');
         $site_URL = vglobal('site_URL');
 
         $userModel = Users_Record_Model::getCurrentUserModel();
@@ -67,7 +68,7 @@ abstract class Vtiger_Header_View extends Core_Controller_View
             [
                 'linktype'   => 'HEADERLINK',
                 'linklabel'  => 'LBL_FEEDBACK',
-                'linkurl'    => "javascript:window.open('http://vtiger.com/products/crm/od-feedback/index.php?version=" . $vtigerCurrentVersion .
+                'linkurl'    => "javascript:window.open('http://vtiger.com/products/crm/od-feedback/index.php?version=" . $defalto_current_version .
                     "&email=" . $userEmail . "&uid=" . $appUniqueKey .
                     "&ui=6','feedbackwin','height=400,width=550,top=200,left=300')",
                 'linkicon'   => 'info.png',
@@ -90,7 +91,7 @@ abstract class Vtiger_Header_View extends Core_Controller_View
                     [
                         'linktype'  => 'HEADERLINK',
                         'linklabel' => 'LBL_FEEDBACK',
-                        'linkurl'   => "javascript:window.open('http://vtiger.com/products/crm/od-feedback/index.php?version=" . $vtigerCurrentVersion .
+                        'linkurl'   => "javascript:window.open('http://vtiger.com/products/crm/od-feedback/index.php?version=" . $defalto_current_version .
                             "&email=" . $userEmail . "&uid=" . $appUniqueKey .
                             "&ui=6','feedbackwin','height=400,width=550,top=200,left=300')",
                         'linkicon'  => '',

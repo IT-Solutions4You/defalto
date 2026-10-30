@@ -10,6 +10,7 @@ This module holds shared base behavior inherited by other modules. It has no sta
 
 ## Shared utilities and storage
 
+- The running application version is owned by `version.php` as `$defalto_current_version`. Shared runtime code must use that value and must not restore the removed `vtiger_current_version` global.
 - `Vtiger_Base_UIType::getRequestValue()` is the shared server-side field-value validation boundary used by `Save` and `SaveAjax`. `Vtiger_Util_Helper::validateFieldValue()` rejects empty mandatory fields, malformed email and numeric values, and unavailable picklist values with an exception; it must never silently coerce an invalid submitted value. New records also validate every editable mandatory field in `Vtiger_Save_Action::saveRecord()`, including fields omitted from the request; non-editable generated fields remain owned by the persistence lifecycle. Partial edits retain omitted values from the existing record.
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades over `Core_ImageValidation_Helper`; keep validation logic out of the legacy utility.
 - The global `isPermitted()` in `include/utils/UserInfoUtil.php` is a compatibility facade for the Users-owned permission model. Keep module, action, ownership and sharing evaluation in `Users_Privileges_Model`.
