@@ -2,6 +2,8 @@
 
 EMAILMaker templates can include record fields and can use display conditions to control when configured content is shown.
 
+When composing an e-mail, type at least three characters in the **To**, **Cc**, or **Bcc** field to find matching users and CRM records by name or e-mail address. Recipient names display with normal accented characters and without formatting tags.
+
 The template list supports sorting by its displayed sortable columns. Template exports preserve supported list sorting and filters; exporting selected templates includes only valid selected template records.
 
 Current date and time variables in a template use the time zone of the user generating the e-mail. The `##HH:II##` and `##HH:II:SS##` variables display time in 24-hour format.

@@ -1,3 +1,7 @@
+## 1.6 - 2026-10-30
+
+- Corrected recipient suggestions in To, Cc, and Bcc so user names display accented characters correctly and no HTML tags are shown.
+
 ## 1.3 - 2026-10-29
 
 - Secured template list sorting, module filtering, and selected-template exports against manipulated request parameters.
