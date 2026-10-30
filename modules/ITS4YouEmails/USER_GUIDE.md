@@ -2,6 +2,8 @@
 
 The Emails module composes and sends CRM email, supports EMAILMaker templates, related records, file attachments and embedded images. Reply, Reply all and Forward in Mail Manager open the same composer.
 
+When membership branding is included in an outgoing email, its Defalto link first opens the public CRM redirect endpoint and then the centrally configured Defalto website.
+
 When replying, the composer adds `Re: ` only when the subject does not already contain a recognized reply prefix. When forwarding, it adds `Fwd: ` unless a recognized forward prefix is already present.
 
 # Attachments
