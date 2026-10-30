@@ -145,4 +145,10 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
         ];
         $jsFileNames = array_merge($jsFileNames, $myJsFileNames);
     }
+
+    public function modifyGetHeaderCss(array &$cssFileNames, Vtiger_Request $request): void
+    {
+        $layout = Vtiger_Viewer::getLayoutName();
+        $cssFileNames[] = "layouts.$layout.modules.InventoryItem.resources.Detail";
+    }
 }

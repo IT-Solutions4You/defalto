@@ -1,0 +1,20 @@
+.inventoryItemSummaryItems {
+    max-height: 32rem;
+    overflow: auto;
+    scrollbar-gutter: stable;
+}
+
+.inventoryItemSummaryItems thead td,
+.inventoryItemSummaryItems tfoot td {
+    position: sticky;
+    z-index: 1;
+    background-color: var(--bs-body-bg);
+}
+
+.inventoryItemSummaryItems thead td {
+    top: 0;
+}
+
+.inventoryItemSummaryItems tfoot td {
+    bottom: 0;
+}

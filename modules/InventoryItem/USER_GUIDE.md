@@ -14,7 +14,7 @@ If your profile may only view the unit price, the price of a selected product is
 
 ## Adding items from the summary
 
-The Items widget in the summary of a quote, sales order, invoice or purchase order has an **Add** menu next to **Details**. Choose **Text** or an item type (Products, Services; only active modules are offered) to open the same item dialog as in the items block. After saving, the widget shows the new line and the updated totals and you stay in the summary. The overall discount of the document is applied to the new line. The menu is not shown when you are not allowed to edit the document.
+The **Items** widget is the first widget in the right summary column of a quote, sales order, invoice or purchase order. A long item list scrolls inside the widget while its column headings and total remain visible; the grand total and margin stay below the list. The widget has an **Add** menu next to **Details**. Choose **Text** or an item type (Products, Services; only active modules are offered) to open the same item dialog as in the items block. After saving, the widget shows the new line and the updated totals and you stay in the summary. The overall discount of the document is applied to the new line. The menu is not shown when you are not allowed to edit the document.
 
 ## Creating a document from another document
 
