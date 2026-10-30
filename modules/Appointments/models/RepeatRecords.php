@@ -69,10 +69,9 @@ class Appointments_RepeatRecords_Model
         $skip_focus_fields = ['record_id', 'createdtime', 'modifiedtime', 'mode', 'id', 'deleted'];
 
         $parentDatabaseStartDateTime = $parentRecordModel->get(self::$dateStartField);
-        [$parentDatabaseStartDate, $parentDatabaseStartTime] = explode(' ', $parentDatabaseStartDateTime);
+        $parentDatabaseStartDate = explode(' ', $parentDatabaseStartDateTime)[0];
 
         $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
-        [$parentDatabaseEndDate, $parentDatabaseEndTime] = explode(' ', $parentDatabaseEndDateTime);
 
         $isAllDay = $parentRecordModel instanceof Appointments_Record_Model && $parentRecordModel->isAllDayEvent();
         $interval = self::getRepeatInterval($parentDatabaseStartDateTime, $parentDatabaseEndDateTime, $isAllDay);
@@ -82,14 +81,20 @@ class Appointments_RepeatRecords_Model
                 continue;
             }
 
-            $databaseEndDate = self::getRepeatEndDate($databaseStartDate, $interval, $isAllDay);
+            $databaseStartTime = $recurrenceObject->getRecurringTime($index);
+            [$databaseEndDate, $databaseEndTime] = self::getRepeatEndDateTime(
+                $databaseStartDate,
+                $databaseStartTime,
+                $interval,
+                $isAllDay
+            );
             $recordModel = Vtiger_Record_Model::getCleanInstance($parentModule);
 
             foreach ($parentRecordModel->getData() as $key => $value) {
                 if ($key === self::$dateStartField) {
-                    $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $parentDatabaseStartTime, $isAllDay));
+                    $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $databaseStartTime, $isAllDay));
                 } elseif ($key === self::$dateEndField) {
-                    $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $parentDatabaseEndTime, $isAllDay));
+                    $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $databaseEndTime, $isAllDay));
                 } elseif (!in_array($key, $skip_focus_fields)) {
                     $recordModel->set($key, $value);
                 }
@@ -168,7 +173,11 @@ class Appointments_RepeatRecords_Model
             return (int)$startDate->diff($endDate)->days;
         }
 
-        return strtotime($endDateTime) - strtotime($startDateTime);
+        $databaseTimeZone = new DateTimeZone(DateTimeField::getDBTimeZone());
+        $start = new DateTimeImmutable($startDateTime, $databaseTimeZone);
+        $end = new DateTimeImmutable($endDateTime, $databaseTimeZone);
+
+        return $end->getTimestamp() - $start->getTimestamp();
     }
 
     /**
@@ -187,6 +196,25 @@ class Appointments_RepeatRecords_Model
         return date('Y-m-d', strtotime($startDate) + $interval);
     }
 
+    public static function getRepeatEndDateTime(
+        string $startDate,
+        string $startTime,
+        int $interval,
+        bool $isAllDay
+    ): array {
+        if ($isAllDay) {
+            return [self::getRepeatEndDate($startDate, $interval, true), '00:00:00'];
+        }
+
+        $startDateTime = new DateTimeImmutable(
+            $startDate . ' ' . $startTime,
+            new DateTimeZone(DateTimeField::getDBTimeZone())
+        );
+        $endDateTime = $startDateTime->modify('+' . $interval . ' seconds');
+
+        return [$endDateTime->format('Y-m-d'), $endDateTime->format('H:i:s')];
+    }
+
     /**
      * @var $parentRecordModel Vtiger_Record_Model
      *                         Repeat Activity instance till given limit.
@@ -199,10 +227,9 @@ class Appointments_RepeatRecords_Model
         $recurrenceMode = $parentRecordModel->get('recurringEditMode');
 
         $parentDatabaseStartDateTime = $parentRecordModel->get(self::$dateStartField);
-        [$parentDatabaseStartDate, $parentDatabaseStartTime] = explode(' ', $parentDatabaseStartDateTime);
+        $parentDatabaseStartDate = explode(' ', $parentDatabaseStartDateTime)[0];
 
         $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
-        [$parentDatabaseEndDate, $parentDatabaseEndTime] = explode(' ', $parentDatabaseEndDateTime);
 
         $isAllDay = $parentRecordModel instanceof Appointments_Record_Model && $parentRecordModel->isAllDayEvent();
         $interval = self::getRepeatInterval($parentDatabaseStartDateTime, $parentDatabaseEndDateTime, $isAllDay);
@@ -238,7 +265,7 @@ class Appointments_RepeatRecords_Model
                         }
 
                         $_REQUEST['date_start'] = explode(' ', $parentModel->getDisplayValue(self::$dateStartField))[0];
-                        $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
+                        $recurrenceObject = Core_RecurringType_Model::getRecurringObjValue();
                     }
                 }
             }
@@ -267,8 +294,9 @@ class Appointments_RepeatRecords_Model
 
             $dateIndex = 0;
 
-            foreach ($recurrenceObject->recurringdates as $databaseStartDate) {
+            foreach ($recurrenceObject->recurringdates as $occurrenceIndex => $databaseStartDate) {
                 $recordId = $childRecords[$dateIndex];
+                $databaseStartTime = $recurrenceObject->getRecurringTime($occurrenceIndex);
 
                 if (empty($databaseStartDate)) {
                     continue;
@@ -291,13 +319,18 @@ class Appointments_RepeatRecords_Model
                     [$recordDatabaseStartDate, $recordDatabaseStartTime] = explode(' ', $recordModel->get(self::$dateStartField));
 
                     if ('future' === $recurrenceMode && $recordDatabaseStartDate >= $parentDatabaseStartDate) {
-                        $databaseEndDate = self::getRepeatEndDate($databaseStartDate, $interval, $isAllDay);
+                        [$databaseEndDate, $databaseEndTime] = self::getRepeatEndDateTime(
+                            $databaseStartDate,
+                            $databaseStartTime,
+                            $interval,
+                            $isAllDay
+                        );
 
                         foreach ($parentRecordModel->getData() as $key => $value) {
                             if ($key === self::$dateStartField) {
-                                $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $parentDatabaseStartTime, $isAllDay));
+                                $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $databaseStartTime, $isAllDay));
                             } elseif ($key === self::$dateEndField) {
-                                $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $parentDatabaseEndTime, $isAllDay));
+                                $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $databaseEndTime, $isAllDay));
                             } elseif (!in_array($key, $skip_focus_fields) && !empty($delta[$key])) {
                                 $recordModel->set($key, $value);
                             }
@@ -313,13 +346,18 @@ class Appointments_RepeatRecords_Model
                             Appointments_Recurrence_Model::saveRelation($parentId, $recordId);
                         }
                     } elseif ('all' === $recurrenceMode) {
-                        $databaseEndDate = self::getRepeatEndDate($databaseStartDate, $interval, $isAllDay);
+                        [$databaseEndDate, $databaseEndTime] = self::getRepeatEndDateTime(
+                            $databaseStartDate,
+                            $databaseStartTime,
+                            $interval,
+                            $isAllDay
+                        );
 
                         foreach ($parentRecordModel->getData() as $key => $value) {
                             if ($key === self::$dateStartField) {
-                                $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $parentDatabaseStartTime, $isAllDay));
+                                $recordModel->set(self::$dateStartField, self::getRepeatDateTime($databaseStartDate, $databaseStartTime, $isAllDay));
                             } elseif ($key === self::$dateEndField) {
-                                $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $parentDatabaseEndTime, $isAllDay));
+                                $recordModel->set(self::$dateEndField, self::getRepeatDateTime($databaseEndDate, $databaseEndTime, $isAllDay));
                             } elseif (!in_array($key, $skip_focus_fields) && !empty($delta[$key])) {
                                 $recordModel->set($key, $value);
                             }
@@ -333,7 +371,7 @@ class Appointments_RepeatRecords_Model
                     }
                 } elseif (self::$recurringDataChanged) {
                     $datesList = [];
-                    $datesList[] = $databaseStartDate;
+                    $datesList[$occurrenceIndex] = $databaseStartDate;
 
                     self::createRecurringEvents($parentRecordModel, $recurrenceObject, $datesList, $parentRecurringId);
                 }
@@ -365,7 +403,7 @@ class Appointments_RepeatRecords_Model
     public static function repeatFromRequest(object $parentRecordModel, $recurrenceObjectDatabase = false)
     {
         $parentRecordId = $parentRecordModel->getId();
-        $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
+        $recurrenceObject = Core_RecurringType_Model::getRecurringObjValue();
 
         self::$recurringDataChanged = self::checkRecurringDataChanged($recurrenceObject, $recurrenceObjectDatabase);
 

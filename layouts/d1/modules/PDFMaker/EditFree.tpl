@@ -426,7 +426,7 @@
                                             {vtranslate('LBL_DESCRIPTION',$MODULE)}:
                                         </label>
                                         <div class="controls col-sm-9">
-                                            <input name="description" type="text" value="{$DESCRIPTION}" class="col-sm-12 form-control" tabindex="2">
+                                            <input name="description" type="text" value="{$DESCRIPTION|php7_htmlentities}" class="col-sm-12 form-control" tabindex="2">
                                         </div>
                                     </div>
                                     {* pdf format settings *}
@@ -545,15 +545,15 @@
                             <div class="tab-content">
                                 {*********************************************BODY DIV*************************************************}
                                 <div class="tab-pane active" id="body_div2">
-                                    <textarea name="body" id="body" class=small tabindex="5">{$BODY}</textarea>
+                                    <textarea name="body" id="body" class=small tabindex="5">{$BODY|php7_htmlentities}</textarea>
                                 </div>
                                 {*********************************************Header DIV*************************************************}
                                 <div class="tab-pane" id="header_div2">
-                                    <textarea name="header_body" id="header_body" class="small">{$HEADER}</textarea>
+                                    <textarea name="header_body" id="header_body" class="small">{$HEADER|php7_htmlentities}</textarea>
                                 </div>
                                 {*********************************************Footer DIV*************************************************}
                                 <div class="tab-pane" id="footer_div2">
-                                    <textarea name="footer_body" id="footer_body" class="small">{$FOOTER}</textarea>
+                                    <textarea name="footer_body" id="footer_body" class="small">{$FOOTER|php7_htmlentities}</textarea>
                                 </div>
                             </div>
                             <div class="container-fluid mt-3">

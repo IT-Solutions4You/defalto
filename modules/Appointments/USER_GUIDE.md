@@ -10,11 +10,15 @@ Email reminders are sent according to the appointment time regardless of the ser
 
 Appointments can be rescheduled from the calendar by dragging them to another date or time or by resizing their duration. The selected calendar date and time are preserved around midnight and across time zones. These changes are saved only when the current user has permission to edit the selected appointment; otherwise, the calendar restores the original schedule.
 
+When creating an appointment in the full form or quick-create form, the suggested start time uses the current user's local time. The suggested end time adds the user's configured call duration.
+
 All-day appointments remain on the selected calendar date for every user, regardless of the user's time zone. A one-day appointment is shown as one day in the calendar and keeps the same date when viewed or edited from another time zone.
 
 Calendar popovers and event refreshes show record information only when the current user can view that record. Administrators can delete default calendar event types. Removing a custom event type removes it from the current user's calendar without affecting other users who use the same type.
 
 Monthly repetitions stay in the selected calendar month. If the selected date does not exist in a shorter month, the appointment is placed on that month's last day. Rules such as the last Friday of the month also remain within that month in every time zone.
+
+Weekly repetitions stay on the selected weekdays and at the selected local time when daylight-saving time begins or ends.
 
 ## Create Calendar Record workflow action
 

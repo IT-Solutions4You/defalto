@@ -8,6 +8,8 @@ If PDF export of a record is restricted (for example while the record waits for 
 
 PDF Maker follows the language selected in Defalto. All languages included with the application provide the complete PDF Maker interface, including its Settings pages, template editor, installation messages, confirmations, and validation notices.
 
+Only users whose profile allows PDF Maker editing can save changes to templates. Template previews display the document layout in an isolated frame, so embedded scripts are not run in the CRM interface.
+
 ## Product block templates
 
 Open **Product block templates** (Settings, Inventory section) to manage reusable Inventory Item layouts. Choose the inventory document module, then create or edit a block and select the columns it should contain. PDFMaker, PDFMaker Pro, and EMAILMaker use the same templates. A new empty installation includes basic and detailed starter layouts.

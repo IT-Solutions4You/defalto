@@ -34,7 +34,7 @@
                                         <div class="col-4 fieldLabel">
                                             <label class="muted text-truncate">{vtranslate('LBL_DESCRIPTION','PDFMaker')}</label>
                                         </div>
-                                        <div class="col-lg fieldValue">{$DESCRIPTION}</div>
+                                        <div class="col-lg fieldValue">{$DESCRIPTION|php7_htmlentities}</div>
                                     </div>
                                     <div class="row summaryViewEntries py-2">
                                         <div class="col-4 fieldLabel">
@@ -65,18 +65,18 @@
                         <div class="tab-content">
                             {*********************************************BODY DIV*************************************************}
                             <div class="tab-pane active" id="body_div2">
-                                <div id="previewcontent_body" class="hide">{$BODY}</div>
-                                <iframe id="preview_body" class="col-lg-12" style="height:1200px;"></iframe>
+                                <textarea id="previewcontent_body" class="hide">{$BODY|php7_htmlentities}</textarea>
+                                <iframe id="preview_body" class="col-lg-12" sandbox="" style="height:1200px;"></iframe>
                             </div>
                             {*********************************************Header DIV*************************************************}
                             <div class="tab-pane" id="header_div2">
-                                <div id="previewcontent_header" class="hide">{$HEADER}</div>
-                                <iframe id="preview_header" class="col-lg-12" style="height:500px;"></iframe>
+                                <textarea id="previewcontent_header" class="hide">{$HEADER|php7_htmlentities}</textarea>
+                                <iframe id="preview_header" class="col-lg-12" sandbox="" style="height:500px;"></iframe>
                             </div>
                             {*********************************************Footer DIV*************************************************}
                             <div class="tab-pane" id="footer_div2">
-                                <div id="previewcontent_footer" class="hide">{$FOOTER}</div>
-                                <iframe id="preview_footer" class="col-lg-12" style="height:500px;"></iframe>
+                                <textarea id="previewcontent_footer" class="hide">{$FOOTER|php7_htmlentities}</textarea>
+                                <iframe id="preview_footer" class="col-lg-12" sandbox="" style="height:500px;"></iframe>
                             </div>
                         </div>
                     </div>
