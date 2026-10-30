@@ -1,5 +1,11 @@
 # Core UI ownership
 
+## External redirects
+
+- `Core_Redirect_Model` owns Defalto external destinations and builds application redirect routes. UI links use the relative `index.php?module=Core&view=Redirect&mode=<mode>` route; generated content that leaves the application uses `getRedirectUrl($mode, true)` so recipients first reach the public CRM instance and then the centrally managed destination.
+- `Core_Redirect_View` delegates destination lookup to the model. Do not hard-code Defalto, upstream vtiger, store, documentation, social, or release URLs in application UI or generated content.
+- Shared user-facing confirmations and support guidance must not expose upstream vtiger service domains or contacts; keep those values aligned across Core locales.
+
 ## Recurrence generation
 
 - `Core_RecurringType_Model` in `modules/Core/models/RecurringType.php` owns shared recurrence request parsing, occurrence generation, and the `getRecurringObjValue()` request factory and is loaded through `Vtiger_Loader`. Runtime callers should use the Core model directly. `Vtiger_Functions::getRecurringObjValue()` remains a delegating compatibility facade. `include/utils/RecurringType.php` contains only the legacy `RecurringType` subclass for old integrations that explicitly include the historical file; never load that facade globally from `CommonUtils`, because doing so creates a parent-class autoload cycle.

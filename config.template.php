@@ -35,7 +35,7 @@ ini_set('memory_limit', '512M');
 $CALENDAR_DISPLAY = 'true';
 $USE_RTE = 'true';
 
-// helpdesk support email id and support name (Example: 'support@vtiger.com' and 'vtiger support')
+// helpdesk support email id and support name (Example: 'support@defalto.com' and 'Defalto support')
 $HELPDESK_SUPPORT_EMAIL_ID = '_USER_SUPPORT_EMAIL_';
 $HELPDESK_SUPPORT_NAME = 'your-support name';
 $HELPDESK_SUPPORT_EMAIL_REPLY_ID = $HELPDESK_SUPPORT_EMAIL_ID;
@@ -89,7 +89,7 @@ $host_name = $dbconfig['db_hostname'];
 
 $site_URL = '_SITE_URL_';
 
-// url for customer portal (Example: http://vtiger.com/portal)
+// url for customer portal (Example: https://crm.example.com/portal)
 $PORTAL_URL = $site_URL . '/customerportal';
 // root directory path
 $root_directory = '_VT_ROOTDIR_';

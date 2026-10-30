@@ -1,5 +1,5 @@
 # ------------------------------------------
-# vtiger CRM . -- http://www.vtiger.com
+# Defalto CRM
 # Robot Exclusion File -- robots.txt
 # Author:  vtiger CRM
 # Last Updated:  17/11/06 

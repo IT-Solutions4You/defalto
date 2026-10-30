@@ -49,32 +49,15 @@ class Core_Redirect_View extends Vtiger_Basic_View {
         $mode = (string)$request->get('mode');
         $url = $this->getUrl($mode);
 
-        if (!empty($url)) {
-            header('Location: ' . $url);
+        if (empty($url)) {
+            throw new Exception('Invalid mode');
         }
 
-        throw new Exception('Invalid mode');
+        header('Location: ' . $url);
     }
 
     public function getUrl(string $mode): string
     {
-        return match ($mode) {
-            'Web' => 'https://defalto.com/',
-            'Forum' => 'https://defalto.com/forum/',
-            'Blog' => 'https://defalto.com/blog/',
-            'Documentation' => 'https://defalto.com/docs/',
-            'Videos' => 'https://www.youtube.com/@DefaltoCRM',
-            'Releases' => 'https://github.com/IT-Solutions4You/defalto/releases',
-            'Facebook' => 'https://www.facebook.com/defalto.crm',
-            'Youtube' => 'https://www.youtube.com/@DefaltoCRM',
-            'Migration' => 'https://defalto.com/administrator-guide/installation-guide/system-backup-database-and-files/',
-            'SourceForge' => 'https://sourceforge.net/projects/defalto-crm/',
-            'Requirements' => 'https://defalto.com/administrator-guide/installation-guide/system-requirements/',
-            'Buy' => 'https://defalto.com/pricing/',
-            'Store' => 'https://defalto.store/',
-            'Membership' => 'https://defalto.com/services/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=info',
-            'MembershipOrder' => 'https://defalto.store/downloads/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=order',
-            default => 'https://defalto.com/',
-        };
+        return Core_Redirect_Model::getInstance()->getUrl($mode);
     }
 }

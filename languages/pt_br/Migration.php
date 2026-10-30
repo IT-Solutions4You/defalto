@@ -23,7 +23,7 @@ $languageStrings = [
     'LBL_PRIDE_BEING_ASSOCIATED'           => 'Estamos orgulhosos de termos você conosco.',
     'LBL_TALK_TO_US_AT_FORUMS'             => 'Tem alguma dúvida? Encontre ajuda sobre o Vtiger em <a href="index.php?module=Core&view=Redirect&mode=Forum" target="_blank"> Discussões </a><br>',
     'LBL_DISCUSS_WITH_US_AT_BLOGS'         => 'Para saber mais sobre Vtiger siga-nos <a href="index.php?module=Core&view=Redirect&mode=Blog" target="_blank">Blog</a>',
-    'LBL_CRM_DOCUMENTATION'                => 'Ajuda Vtiger7 - <a href="http://wiki.vtiger.com/vtiger7" target="_blank">Documentação</a> , <a href="index.php?module=Core&view=Redirect&mode=Videos" target="_blank">Vídeos</a> <BR>',
+    'LBL_CRM_DOCUMENTATION'                => 'Ajuda Defalto - <a href="index.php?module=Core&view=Redirect&mode=Documentation" target="_blank">Documentação</a> , <a href="index.php?module=Core&view=Redirect&mode=Videos" target="_blank">Vídeos</a> <BR>',
     'LBL_THANKS'                           => 'Obrigado por utilizar <b>vtiger CRM</b>',
     'LBL_WE_AIM_TO_BE_BEST'                => 'Pretendemos ser simplesmente o melhor',
     'LBL_SPACE_FOR_YOU'                    => 'Venha conosco, há espaço para você também!',
