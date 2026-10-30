@@ -40,6 +40,7 @@
 
 - `PearDatabase::query_result()` and `query_result_rowdata()` return HTML-encoded values. `CRMEntity::retrieve_entity_info()` keeps that public contract while registering the raw database value in `TrackableObject::setRetrievedValue()` when encoding changed it.
 - `TrackableObject::getValueForSave()` returns the raw value only while the field still exactly matches its originally retrieved encoded value; explicitly changed values take the normal conversion path. Entity-table writes and the always-updated `vtiger_crmentity.description` both use it. Keep this boundary so a retrieve-and-save cycle cannot convert characters to named HTML entities or double-encode data. `Users` follows the same contract (see `modules/Users/MODULE.md`).
+- `CRMEntity::insertIntoEntityTable()` treats integer or string `0` from an empty entity-reference selector as an empty value for generic and legacy entity-reference uitypes. The existing column conversion then persists `NULL`, preventing optional foreign keys from rejecting the owning entity row. Do not apply this rule to non-entity references such as owners, currencies, or document folders, where zero may follow a different validation contract.
 
 ## Shared quick preview
 
