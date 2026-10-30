@@ -66,14 +66,16 @@ class Appointments_Datetime_UIType extends Vtiger_Datetime_UIType
         }
 
         if (empty($value)) {
+            $userDateTime = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i:s'));
+
             switch ($fieldName) {
                 case 'datetime_start':
-                    $value = date('Y-m-d H:i:s');
+                    $value = $userDateTime->format('Y-m-d H:i:s');
                     break;
                 case 'datetime_end':
                     $currentUser = Users_Record_Model::getCurrentUserModel();
                     $minutes = $currentUser->get('callduration');
-                    $value = date('Y-m-d H:i:s', strtotime("+$minutes minutes"));
+                    $value = $userDateTime->modify("+$minutes minutes")->format('Y-m-d H:i:s');
                     break;
             }
         } else {

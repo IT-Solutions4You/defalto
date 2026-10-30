@@ -2,6 +2,7 @@
 
 ## 1.4 - 2026-10-30
 
+- New appointments now suggest start and end times in the current user's time zone.
 - Weekly repetitions now keep their selected weekday and local time across daylight-saving changes.
 - All-day appointments now remain on the selected date and no longer expand into adjacent days for users in other time zones.
 - Monthly repetitions no longer spill into the following month when the selected date is unavailable or a time-zone boundary shifts a first/last weekday rule.
