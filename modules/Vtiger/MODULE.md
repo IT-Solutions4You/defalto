@@ -10,6 +10,7 @@ This module holds shared base behavior inherited by other modules. It has no sta
 
 ## Shared utilities and storage
 
+- `Vtiger_Base_UIType::getRequestValue()` is the shared server-side field-value validation boundary used by `Save` and `SaveAjax`. `Vtiger_Util_Helper::validateFieldValue()` rejects empty mandatory fields, malformed email and numeric values, and unavailable picklist values with an exception; it must never silently coerce an invalid submitted value. New records also validate every editable mandatory field in `Vtiger_Save_Action::saveRecord()`, including fields omitted from the request; non-editable generated fields remain owned by the persistence lifecycle. Partial edits retain omitted values from the existing record.
 - `Vtiger_Functions::validateImage()` and `validateImageMetadata()` are compatibility facades over `Core_ImageValidation_Helper`; keep validation logic out of the legacy utility.
 - The global `isPermitted()` in `include/utils/UserInfoUtil.php` is a compatibility facade for the Users-owned permission model. Keep module, action, ownership and sharing evaluation in `Users_Privileges_Model`.
 - Shared record downloads and `Vtiger_ShowFile_Helper` resolve `vtiger_attachments.path` through `Core_Storage_Model`, which accepts legacy relative paths and configured absolute paths outside the web directory. Browser-visible images must use `Core_Storage_Model::getAttachmentPublicUrl()` and never expose the physical path. Persistent attachment writers keep using `decideFilePath()`; temporary generated files use the Core temporary-directory flow.
@@ -82,6 +83,7 @@ This module holds shared base behavior inherited by other modules. It has no sta
 ## Validation
 
 - PHP lint of touched files; the JavaScript syntax check and the ITS4You ScriptsValidator for touched resources.
+- Record saves: valid and invalid required, email, integer, decimal, picklist and multipicklist values through both full save and detail `SaveAjax`; confirm rejected values leave the record and its label unchanged.
 - Mass-email preferences: class loading, retrieval, insert, update and reset, then open a mass-email recipient dialog and confirm the saved selection returns.
 - Quick preview and tooltips: repeated preview opens, action confirmation and cancellation, header edits from the preview.
 - Filters: empty and populated groups, two tabs with different temporary conditions, reload, clearing, view switching and failed AJAX requests.

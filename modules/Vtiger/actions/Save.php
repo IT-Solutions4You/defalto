@@ -183,6 +183,17 @@ class Vtiger_Save_Action extends Core_Controller_Action
     {
         $recordModel = $this->getRecordModelFromRequest($request);
 
+        if ('' === $recordModel->get('mode')) {
+            foreach ($recordModel->getModule()->getMandatoryFieldModels() as $fieldModel) {
+                if (!$fieldModel->isEditable()) {
+                    continue;
+                }
+
+                $fieldName = $fieldModel->getName();
+                Vtiger_Util_Helper::validateFieldValue($recordModel->get($fieldName), $fieldModel);
+            }
+        }
+
         // Fields locked and status values denied by record action rules cannot be changed
         if ('edit' === $recordModel->get('mode')) {
             $denyReason = Core_RecordActionPermission_Model::getInstance()->getChangeDenyReason(
@@ -270,12 +281,19 @@ class Vtiger_Save_Action extends Core_Controller_Action
         $fieldModelList = $moduleModel->getFields();
 
         foreach ($fieldModelList as $fieldName => $fieldModel) {
-            $fieldValue = $request->get($fieldName, null);
-            $fieldValue = $fieldModel->getUITypeModel()->getRequestValue($fieldValue);
-
-            if (null !== $fieldValue) {
-                $recordModel->set($fieldName, $fieldValue);
+            if (!$request->has($fieldName)) {
+                continue;
             }
+
+            $fieldValue = $request->get($fieldName, null);
+
+            if (null === $fieldValue) {
+                Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
+            } else {
+                $fieldValue = $fieldModel->getUITypeModel()->getRequestValue($fieldValue);
+            }
+
+            $recordModel->set($fieldName, $fieldValue);
         }
 
         return $recordModel;
