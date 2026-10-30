@@ -599,6 +599,24 @@ class ModComments_Record_Model extends Vtiger_Record_Model
         return $data;
     }
 
+    public static function getPublicCommentContentsByRecord(int $recordId): array
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery(
+            'SELECT commentcontent FROM vtiger_modcomments
+                WHERE related_to = ? AND is_private = ?
+                ORDER BY modcommentsid ASC',
+            [$recordId, 0],
+        );
+        $comments = [];
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $comments[] = $row['commentcontent'];
+        }
+
+        return $comments;
+    }
+
     /**
      * @param array    $columns
      * @param int|null $limit
