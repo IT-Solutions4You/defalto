@@ -154,11 +154,10 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
             $adb->pquery($templateQuery, $templateParams);
         } else {
-            $templateId = $adb->getUniqueID($templateTable);
-            $templateParams[$templateTableId] = $templateId;
             $templateQuery = self::getInsertFromParams($templateParams, $templateTable);
 
             $adb->pquery($templateQuery, $templateParams);
+            $templateId = $adb->getLastInsertID();
         }
 
         return $templateId;

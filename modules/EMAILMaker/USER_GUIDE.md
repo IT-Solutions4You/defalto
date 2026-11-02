@@ -1,6 +1,10 @@
 # Email templates
 
+Saving a new, duplicated or imported template creates a separate template record. Saving changes to an existing template keeps its identity and related settings.
+
 EMAILMaker templates can include record fields and can use display conditions to control when configured content is shown.
+
+Selecting a module is optional. Leave **Module** unselected for a template without a specific record module; select a module when you need its record fields. The usual template editing and sharing permissions still apply.
 
 When composing an e-mail, type at least three characters in the **To**, **Cc**, or **Bcc** field to find matching users and CRM records by name or e-mail address. Recipient names display with normal accented characters and without formatting tags.
 

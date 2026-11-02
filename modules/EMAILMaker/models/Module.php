@@ -25,23 +25,13 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public function saveRecord(Vtiger_Record_Model $recordModel)
     {
-        $db = PearDatabase::getInstance();
-        $templateid = $recordModel->getId();
-        if (empty($templateid)) {
-            $templateid = $db->getUniqueID('vtiger_emakertemplates');
-            $sql = "INSERT INTO vtiger_emakertemplates(templatename, subject, description, body, deleted, templateid) VALUES (?,?,?,?,?,?)";
-        } else {
-            $sql = "UPDATE vtiger_emakertemplates SET templatename=?, subject=?, description=?, body=?, deleted=? WHERE templateid = ?";
-        }
-        $params = [
-            decode_html($recordModel->get('templatename')),
-            decode_html($recordModel->get('subject')),
-            decode_html($recordModel->get('description')),
-            $recordModel->get('body'),
-            0,
-            $templateid
-        ];
-        $db->pquery($sql, $params);
+        $templateid = EMAILMaker_Record_Model::saveTemplate([
+            'templatename' => decode_html($recordModel->get('templatename')),
+            'subject' => decode_html($recordModel->get('subject')),
+            'description' => decode_html($recordModel->get('description')),
+            'body' => $recordModel->get('body'),
+            'deleted' => 0,
+        ], $recordModel->getId());
 
         return $recordModel->setId($templateid);
     }
