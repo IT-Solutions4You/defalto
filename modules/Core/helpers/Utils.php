@@ -113,7 +113,7 @@ class Core_Utils_Helper
             return;
         }
 
-        $_SESSION['KCFINDER']['uploadURL'] = vglobal('site_URL') . 'test/upload';
+        $_SESSION['KCFINDER']['uploadURL'] = rtrim((string)vglobal('site_URL'), '/') . '/test/upload';
         $_SESSION['KCFINDER']['uploadDir'] = vglobal('root_directory') . 'test/upload';
         $_SESSION['KCFINDER']['deniedExts'] = implode(' ', (array)vglobal('upload_badext'));
     }
