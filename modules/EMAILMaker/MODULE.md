@@ -28,6 +28,8 @@
 
 # Database lifecycle
 
+- Template creation uses `vtiger_emakertemplates.templateid` AUTO_INCREMENT and the same connection's `getLastInsertID()` in `EMAILMaker_Record_Model::saveTemplate()`. Module record saves and XML imports delegate to it. Never use the removed `vtiger_emakertemplates_seq` sequence: migrations drop it and a recreated sequence can collide with existing IDs. Updates preserve the template ID.
+
 - `EMAILMaker_Install_Model::migrate()` removes obsolete EMAIL Maker campaign/drip, mass-email, attachment/content, sequence, license/version, picklist, product-block and related-block tables that have no runtime owner. Related blocks and product blocks are owned by Core in `df_related_block` and `df_inventoryitems_block`.
 - Keep `vtiger_emakertemplates_sent` and `vtiger_emakertemplates_emails` while the existing send/status flow still reads them.
 
@@ -36,6 +38,8 @@
 - `EMAILMaker_FilterRecordStructure_Model` takes blocks from `Core_FilterEditor_Model::getConditionBlocks()` for the source and referenced modules: ordinary blocks keep their order and `LBL_ITEM_DETAILS` is listed last. This changes only field ordering.
 
 # Attachment images
+
+- Company image URLs in `Record::getCompanyImages()` and `[site_URL]` expansion in `Edit` trim the base URL's trailing slash before appending a slash-prefixed path.
 
 - Browser-visible user, contact, product, record and company images use `Core_Storage_Model::getAttachmentPublicUrl()` instead of exposing `vtiger_attachments.path`, so templates work with attachment storage outside the web directory.
 - PDFMaker renders from resolved physical paths; do not replace those with browser URLs without validating the PDF renderer.
@@ -47,7 +51,7 @@
 
 # Template authorization
 
-- Template writes, including display-condition updates, are enforced in action `checkPermission()` methods, not only in list and edit views. Creating a template requires the EMAILMaker `EDIT` profile permission for its selected module. Updating requires edit access to both the stored template through the existing owner/sharing rules and the requested target module. An empty target module is valid only for a theme (`is_theme = 1`); non-theme rows must name an authorized module.
+- Template writes, including display-condition updates, are enforced in action `checkPermission()` methods, not only in list and edit views. Creating a template requires EMAILMaker editing permission; a selected module also requires module access. The target module is optional for both ordinary templates and themes. Updating requires edit access to the stored template through the existing owner/sharing rules as well as permission for the requested target module when selected.
 - Deleting a theme requires the EMAILMaker `DELETE` profile permission, access through the existing owner/sharing rules, and a non-deleted `is_theme = 1` record. Only administrators may save EMAILMaker profile-permission settings.
 - `EMAILMaker_EMAILMaker_Model::{isTemplateCreatable,isTemplateEditable,isThemeDeletable}()` own these action-level authorization decisions. Do not authorize an existing template from request-supplied module, owner, sharing, or theme fields.
 

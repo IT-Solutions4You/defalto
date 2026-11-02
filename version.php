@@ -17,7 +17,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-$patch_version = '2610300012';
+$patch_version = '2611020003';
 $modified_database = '';
-$defalto_display_version = $defalto_current_version = '1.10.109';
+$defalto_display_version = $defalto_current_version = '1.10.112';
 $_SESSION['defalto_version'] = $defalto_current_version;

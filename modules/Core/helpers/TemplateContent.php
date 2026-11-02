@@ -85,7 +85,7 @@ class Core_TemplateContent_Helper extends Vtiger_Base_Model
                 $fields['$company-country$'] = $value;
                 $fields['%company-country%'] = $label;
             } elseif ('logo' === $coll && !empty($companyDetailsData['logoname'])) {
-                $value = '<img src="' . $site_URL . LOGO_PATH . $companyDetailsData['logoname'] . '">';
+                $value = '<img src="' . rtrim($site_URL, '/') . '/' . ltrim(LOGO_PATH, '/') . $companyDetailsData['logoname'] . '">';
             } elseif (($coll == 'logo' || $coll == 'stamp') && $isMultiCompany && !empty($companyDetailsData[$coll])) {
                 $value = self::getAttachmentImage($companyDetailsData[$coll], $site_URL);
             }

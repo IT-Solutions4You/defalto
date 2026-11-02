@@ -1,4 +1,8 @@
-## 1.6 - 2026-10-30
+## 1.6 - 2026-11-02
+
+- Corrected duplicate slashes in company image and starter-template image addresses.
+- Restored saving e-mail templates without selecting a module.
+- Fixed duplicate template ID errors when creating, duplicating or importing e-mail templates.
 
 - Corrected recipient suggestions in To, Cc, and Bcc so user names display accented characters correctly and no HTML tags are shown.
 

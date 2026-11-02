@@ -1,6 +1,10 @@
 # Email templates
 
+Saving a new, duplicated or imported template creates a separate template record. Saving changes to an existing template keeps its identity and related settings.
+
 EMAILMaker templates can include record fields and can use display conditions to control when configured content is shown.
+
+Selecting a module is optional. Leave **Module** unselected for a template without a specific record module; select a module when you need its record fields. The usual template editing and sharing permissions still apply.
 
 When composing an e-mail, type at least three characters in the **To**, **Cc**, or **Bcc** field to find matching users and CRM records by name or e-mail address. Recipient names display with normal accented characters and without formatting tags.
 
@@ -19,6 +23,8 @@ In the **Display conditions** section of a template (**Edit Conditions**), the m
 Open **Product block templates** (Settings, Inventory section) to manage reusable Inventory Item layouts. Choose the inventory document module, then create or edit a block and select the columns it should contain. The same templates are available in EMAILMaker, PDFMaker, and PDFMaker Pro. A new empty installation includes basic and detailed starter layouts.
 
 # Attachment images
+
+Company images and images in starter templates use consistent CRM addresses whether the configured CRM URL ends with a slash or not.
 
 Images inserted from CRM records remain available when the physical attachment directory is outside the public web directory. Templates reference them through the CRM attachment endpoint instead of exposing the server filesystem path.
 

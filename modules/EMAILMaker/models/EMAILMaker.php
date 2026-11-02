@@ -198,12 +198,8 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return ["detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result];
     }
 
-    public function isTemplateCreatable(string $moduleName, bool $isTheme): bool
+    public function isTemplateCreatable(string $moduleName): bool
     {
-        if (!$isTheme && empty($moduleName)) {
-            return false;
-        }
-
         return true === $this->returnTemplatePermissionsData($moduleName)['edit'];
     }
 

@@ -17,8 +17,7 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Core_Controller_Action
     {
         $emailMaker = EMAILMaker_EMAILMaker_Model::getInstance();
         $templateId = (int)$request->get('templateid');
-        $isTheme = '1' === (string)$request->get('is_theme');
-        $isPermitted = $emailMaker->isTemplateCreatable((string)$request->get('modulename'), $isTheme);
+        $isPermitted = $emailMaker->isTemplateCreatable((string)$request->get('modulename'));
 
         if (!$request->isEmpty('templateid') && $isPermitted) {
             $isPermitted = $emailMaker->isTemplateEditable($templateId);

@@ -28,7 +28,6 @@ class EMAILMaker_Import_Action extends Vtiger_Save_Action
             fclose($fh);
 
             $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-            $adb = PearDatabase::getInstance();
             $xml = new SimpleXMLElement($xml_content);
 
             foreach ($xml->template as $data) {
@@ -47,11 +46,17 @@ class EMAILMaker_Import_Action extends Vtiger_Save_Action
                     if ($is_theme == "0") {
                         $is_theme = "0";
                     }
-                    $templateid = $adb->getUniqueID('vtiger_emakertemplates');
-                    $adb->pquery(
-                        "insert into vtiger_emakertemplates (templatename,subject,module,description,body,deleted,templateid,is_listview,is_theme) values (?,?,?,?,?,?,?,?,?)",
-                        [$templatename, $subject, $modulename, $description, $body, 0, $templateid, $is_listview, $is_theme]
-                    );
+                    EMAILMaker_Record_Model::saveTemplate([
+                        'templatename' => $templatename,
+                        'subject' => $subject,
+                        'module' => $modulename,
+                        'description' => $description,
+                        'body' => $body,
+                        'deleted' => 0,
+                        'is_listview' => $is_listview,
+                        'is_theme' => $is_theme,
+                    ], null);
+
                     $EMAILMaker->AddLinks($modulename);
                 }
             }

@@ -4,6 +4,8 @@ Administrators can open `index.php?module=Core&view=StyleGuide` to review the co
 
 # External links
 
+Image and file addresses inserted through the editor's file browser and generated short links work with CRM addresses configured with or without a trailing slash, including CRM installations in a subdirectory.
+
 Defalto website, documentation, store, community, social, and release links pass through the CRM redirect page. This keeps destinations consistent across the application and in generated emails or documents. Legacy links to upstream vtiger websites are not shown.
 
 # Read-only records
