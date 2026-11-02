@@ -39,6 +39,8 @@
 
 # Attachment images
 
+- Company image URLs in `Record::getCompanyImages()` and `[site_URL]` expansion in `Edit` trim the base URL's trailing slash before appending a slash-prefixed path.
+
 - Browser-visible user, contact, product, record and company images use `Core_Storage_Model::getAttachmentPublicUrl()` instead of exposing `vtiger_attachments.path`, so templates work with attachment storage outside the web directory.
 - PDFMaker renders from resolved physical paths; do not replace those with browser URLs without validating the PDF renderer.
 

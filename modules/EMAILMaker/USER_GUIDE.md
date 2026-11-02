@@ -24,6 +24,8 @@ Open **Product block templates** (Settings, Inventory section) to manage reusabl
 
 # Attachment images
 
+Company images and images in starter templates use consistent CRM addresses whether the configured CRM URL ends with a slash or not.
+
 Images inserted from CRM records remain available when the physical attachment directory is outside the public web directory. Templates reference them through the CRM attachment endpoint instead of exposing the server filesystem path.
 
 # Sending options and PDF attachments

@@ -135,7 +135,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
                     $theme_content = file_get_contents($theme_path);
 
                     if (file_exists($theme_path)) {
-                        $emailTemplateResult['body'] = str_replace('[site_URL]', $site_URL, $theme_content);
+                        $emailTemplateResult['body'] = str_replace('[site_URL]', rtrim($site_URL, '/'), $theme_content);
                     }
                 }
             }
