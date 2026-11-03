@@ -31,3 +31,7 @@ Installed extensions have Settings links for requirements, license details, and 
 Extension packages use the Defalto application structure. Installable files are limited to the `modules`, `layouts`, and `languages` directories and must belong to the packaged module. An optional package manifest belongs at `modules/<Module>/manifest.xml`; when present, its module, version, and compatibility information are validated. Cron handlers belong inside `modules/<Module>/cron`; a package cannot install files into the application's root `cron` directory.
 
 An extension package can include `modules/<Module>/CHANGELOG.md`. Its newest version must match the packaged module version. If a legacy package has no changelog, Installer clearly indicates that no changelog is available and still allows installation.
+
+If an extension installation fails, the progress dialog shows the specific package error, such as the path of a file that is not writable. The error appears first in a red alert. Expand the technical log below it to inspect the installation steps, including when the server returns an HTTP error. Correct the reported issue before retrying.
+
+Installation logs use a Markdown-style list with one step per item. Errors are emphasized in red; server output is displayed as text.

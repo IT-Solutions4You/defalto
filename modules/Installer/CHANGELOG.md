@@ -1,5 +1,11 @@
 # Installer changelog
 
+## 1.62 - 2026-11-03
+
+- Displays installation logs as a readable Markdown-style list with emphasized errors.
+
+- Shows the specific installation error in a prominent alert, with the expandable technical log below it, including when the request fails.
+
 ## 1.61 - 2026-10-27
 
 - Adds complete Installer and Settings translations for every language included with Defalto.

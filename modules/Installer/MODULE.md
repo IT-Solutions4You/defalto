@@ -95,3 +95,9 @@ Installer manages licenses, Defalto system updates and extension packages. The i
 - Run `php -l` on every touched PHP file and any available focused Installer checks; without standalone tests, use manual PHP scenarios for catalog normalization, public downloads, multiple-license merging and entitlement rejection.
 - After changing `layouts/d1/modules/Installer/resources/*.js`, run a JavaScript syntax check and the application scripts validator, and confirm the expected `Installer_<Script>_Js` class is present.
 - For functional Installer changes bump both the application patch in `version.php` and the final component of `Installer::$moduleVersion` once. Documentation-only changes need neither.
+
+- Extension installation uses a module-local AJAX request to retain progress output on HTTP errors; the shared app.request wrapper discards that body. The dialog reads the final Installer error log entry as plain text and preserves failed response logs as text. Exceptions still reach the central WebUI handler.
+
+- Index.js showInstallationLog renders system and extension progress as a Markdown-style list using text nodes, emphasizes error entries, and preserves extension completion metadata for the existing redirect flow.
+
+- Extension failures show a role=alert Bootstrap danger status above the collapsed log disclosure; both HTTP failures and responses missing the completion marker use showInstallationError.
