@@ -853,7 +853,10 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
             if (in_array($dataType, $nonRawValueDataTypes) || in_array($uiType, $nonRawValueUITypes)) {
                 return $fieldValue;
             }
-            if (in_array($dataType, ['reference', 'multireference'])) {
+            if ('multireference' === $dataType) {
+                return $fieldInstance->getUITypeModel()->getEditViewDisplayValue($rawValue);
+            }
+            if ('reference' === $dataType) {
                 $recordName = Vtiger_Util_Helper::getRecordName($rawValue);
                 if ($recordName) {
                     return $recordName;

@@ -74,6 +74,30 @@ class Core_Relation_Model extends Vtiger_Base_Model
         return true;
     }
 
+    /**
+     * Removes a deleted record from the multi reference fields (uitype 34, values like 12;15) that point to it.
+     * Unlike saveDependencies() nothing is stored for the restore, because the restore would overwrite the whole value.
+     *
+     * @param int    $id             Deleted record id
+     * @param string $field          Multi reference column
+     * @param string $referenceTable Table of the column
+     * @return void
+     */
+    public static function deleteMultiReferenceDependencies(int $id, string $field, string $referenceTable): void
+    {
+        $db = PearDatabase::getInstance();
+        $db->pquery(
+            sprintf(
+                "UPDATE %s SET %s = NULLIF(TRIM(BOTH ';' FROM REPLACE(CONCAT(';', %s, ';'), CONCAT(';', ?, ';'), ';')), '') WHERE FIND_IN_SET(?, REPLACE(%s, ';', ','))",
+                $referenceTable,
+                $field,
+                $field,
+                $field
+            ),
+            [$id, $id]
+        );
+    }
+
     public static function saveEntityDependencies($id, $table, $tableIndex, $relationTable, $relationIndex, $relationColumn): bool
     {
         $db = PearDatabase::getInstance();

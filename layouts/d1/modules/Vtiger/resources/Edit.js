@@ -333,9 +333,141 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
         this.registerReferenceCreate(form);
         this.referenceModulePopupRegisterEvent(form);
         this.registerPostReferenceEvent(this.getEditViewContainer());
+        this.registerMultiReferenceFields(form);
         this.registerCKEditor(form);
         vtUtils.registerNumberFormating(form);
     },
+    /**
+     * Registers the search, popup selection and value sync of multi reference fields (uitype 34).
+     * @param {jQuery} form
+     */
+    registerMultiReferenceFields: function (form) {
+        const self = this;
+
+        form.find('.js-multireference-field').each(function (index, element) {
+            const wrapper = jQuery(element),
+                sourceField = wrapper.find('input.sourceField'),
+                selectElement = wrapper.find('.js-multireference-select');
+
+            if (selectElement.data('select2')) {
+                return;
+            }
+
+            selectElement.select2(self.getMultiReferenceSelectConfig(form, wrapper, selectElement));
+            selectElement.on('change', function () {
+                self.updateMultiReferenceValue(sourceField, selectElement);
+            });
+            // The popup sends the chosen records only in this event ({id: {name}}); its multi selection event is empty
+            sourceField.on(Vtiger_Edit_Js.postReferenceSelectionEvent, function (event, result) {
+                self.addMultiReferenceOptions(selectElement, self.getMultiReferencePopupRecords(result.data));
+            });
+        });
+    },
+
+    /**
+     * Returns the select2 options of a multi reference field, searching in the module chosen next to the field.
+     * @param {jQuery} form
+     * @param {jQuery} wrapper
+     * @param {jQuery} selectElement
+     * @returns {Object}
+     */
+    getMultiReferenceSelectConfig: function (form, wrapper, selectElement) {
+        const self = this;
+
+        return {
+            multiple: true,
+            theme: 'bootstrap-5',
+            width: '100%',
+            minimumInputLength: 2,
+            maximumSelectionLength: parseInt(selectElement.data('maximumRecords')) || 0,
+            language: selectElement.data('maximumRecordsMessage') ? {
+                maximumSelected: function () {
+                    return selectElement.data('maximumRecordsMessage');
+                }
+            } : undefined,
+            placeholder: selectElement.data('placeholder'),
+            ajax: {
+                delay: 250,
+                transport: function (params, success, failure) {
+                    const searchParams = self.getReferenceSearchParams(wrapper.find('input[name="popupReferenceModule"]'));
+
+                    searchParams.module = form.find('[name="module"]').val() || app.getModuleName();
+                    searchParams.search_value = params.data.term;
+                    self.searchModuleNames(searchParams).then(success, failure);
+                },
+                processResults: function (data) {
+                    return {
+                        results: jQuery.map(data || [], function (item) {
+                            return {id: item.id, text: item.label};
+                        })
+                    };
+                }
+            }
+        };
+    },
+
+    /**
+     * Converts the popup selection ({id: {name}} or a single {id, name}) into a list of records.
+     * @param {Object} data
+     * @returns {Array} [{id, name}]
+     */
+    getMultiReferencePopupRecords: function (data) {
+        if (!data) {
+            return [];
+        }
+
+        if (typeof data.id !== 'undefined') {
+            return [{id: data.id, name: data.name || data.label}];
+        }
+
+        return jQuery.map(data, function (record, recordId) {
+            return {id: recordId, name: record.name};
+        });
+    },
+
+    /**
+     * Adds records chosen in the popup to a multi reference field.
+     * @param {jQuery} selectElement
+     * @param {Array} records [{id, name}]
+     */
+    addMultiReferenceOptions: function (selectElement, records) {
+        const maximumRecords = parseInt(selectElement.data('maximumRecords')) || 0;
+        let isLimitReached = false;
+
+        jQuery.each(records || [], function (index, record) {
+            if (selectElement.find('option[value="' + record.id + '"]').length) {
+                return;
+            }
+
+            if (maximumRecords && selectElement.find('option:selected').length >= maximumRecords) {
+                isLimitReached = true;
+
+                return;
+            }
+
+            selectElement.append(new Option(record.name, record.id, true, true));
+        });
+
+        selectElement.trigger('change');
+
+        if (isLimitReached && selectElement.data('maximumRecordsMessage')) {
+            app.helper.showErrorNotification({message: selectElement.data('maximumRecordsMessage')});
+        }
+    },
+
+    /**
+     * Writes the selected record ids into the hidden field value (12;15).
+     * @param {jQuery} sourceField
+     * @param {jQuery} selectElement
+     */
+    updateMultiReferenceValue: function (sourceField, selectElement) {
+        const recordIds = jQuery.grep(selectElement.val() || [], function (recordId) {
+            return jQuery.isNumeric(recordId);
+        });
+
+        sourceField.val(recordIds.join(';')).trigger('change');
+    },
+
     registerCKEditor: function (form) {
         let ckeditorInstance = new Vtiger_CkEditor_Js();
 

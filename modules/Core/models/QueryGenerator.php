@@ -278,6 +278,129 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
     {
         return $value !== '' && preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $value) === 1;
     }
+
+    /**
+     * Multi reference fields (uitype 34) store record ids (12;15), so their conditions compare the name and
+     * the record number of the referenced records. The parent query prefixes each returned fragment with the column.
+     *
+     * @inheritDoc
+     */
+    protected function getConditionValue($value, $operator, $field)
+    {
+        if (Vtiger_Field_Model::MULTI_REFERENCE_TYPE !== $field->getFieldDataType()) {
+            return parent::getConditionValue($value, $operator, $field);
+        }
+
+        return $this->getMultiReferenceConditionValues($value, strtolower((string)$operator), $field);
+    }
+
+    /**
+     * Returns the condition fragments of a multi reference field, each one following "table.column".
+     *
+     * @param mixed           $value    Searched value, comma separated values or an array
+     * @param string          $operator Filter operator (e, n, c, k, s, ew, y, ny)
+     * @param WebserviceField $field    Multi reference field
+     * @return array
+     */
+    protected function getMultiReferenceConditionValues(mixed $value, string $operator, WebserviceField $field): array
+    {
+        $column = $this->getQualifiedColumn($field->getTableName(), $field->getColumnName());
+
+        if (self::EMPTY === $operator) {
+            return ["IS NULL OR $column = ''"];
+        }
+
+        if (self::NOT_EMPTY === $operator) {
+            return ["IS NOT NULL AND $column <> ''"];
+        }
+
+        $values = is_array($value) ? $value : explode(',', (string)$value);
+        $isNegated = in_array($operator, ['n', 'k'], true);
+        $fragments = [];
+
+        foreach ($values as $searchValue) {
+            $searchValue = trim(decode_html((string)$searchValue));
+            $condition = $this->getMultiReferenceExistsSql($column, $this->getMultiReferencePattern($searchValue, $operator), $field);
+            $fragments[] = $isNegated ? "IS NULL OR NOT $condition" : "IS NOT NULL AND $condition";
+        }
+
+        return $fragments;
+    }
+
+    /**
+     * Returns the LIKE pattern for a searched value and operator, with the LIKE wildcards of the value escaped.
+     *
+     * @param string $value    Searched value
+     * @param string $operator Filter operator
+     * @return string
+     */
+    protected function getMultiReferencePattern(string $value, string $operator): string
+    {
+        $value = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
+
+        return match ($operator) {
+            'e', 'n' => $value,
+            's' => $value . '%',
+            'ew' => '%' . $value,
+            default => '%' . $value . '%',
+        };
+    }
+
+    /**
+     * Returns an EXISTS condition matching a referenced record of the column by its name or record number.
+     *
+     * @param string          $column  Qualified multi reference column
+     * @param string          $pattern LIKE pattern
+     * @param WebserviceField $field   Multi reference field
+     * @return string
+     */
+    protected function getMultiReferenceExistsSql(string $column, string $pattern, WebserviceField $field): string
+    {
+        $db = PearDatabase::getInstance();
+        $quotedPattern = $db->sql_escape_string($pattern);
+        $matches = ["multiref.label LIKE '$quotedPattern'"];
+
+        foreach ($this->getMultiReferenceNumberColumns($field) as [$tableName, $indexColumn, $numberColumn]) {
+            $matches[] = "multiref.crmid IN (SELECT $tableName.$indexColumn FROM $tableName WHERE $tableName.$numberColumn LIKE '$quotedPattern')";
+        }
+
+        return "EXISTS (SELECT 1 FROM vtiger_crmentity AS multiref WHERE multiref.deleted = 0"
+            . " AND FIND_IN_SET(multiref.crmid, REPLACE($column, ';', ','))"
+            . ' AND (' . implode(' OR ', $matches) . '))';
+    }
+
+    /**
+     * Returns the record number columns (uitype 4) of the modules a multi reference field points to.
+     *
+     * @param WebserviceField $field Multi reference field
+     * @return array [[table, index column, number column], ...]
+     */
+    protected function getMultiReferenceNumberColumns(WebserviceField $field): array
+    {
+        $numberColumns = [];
+
+        foreach ($field->getReferenceList(false) as $moduleName) {
+            $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+            $entity = $moduleModel ? CRMEntity::getInstance($moduleName) : null;
+
+            if (!$entity) {
+                continue;
+            }
+
+            foreach ($moduleModel->getFields() as $fieldModel) {
+                $tableName = (string)$fieldModel->get('table');
+                $indexColumn = (string)($entity->tab_name_index[$tableName] ?? '');
+                $numberColumn = (string)$fieldModel->get('column');
+
+                if (Vtiger_Field_Model::UITYPE_RECORD_NO === (int)$fieldModel->get('uitype')
+                    && $this->isSqlIdentifier($tableName) && $this->isSqlIdentifier($indexColumn) && $this->isSqlIdentifier($numberColumn)) {
+                    $numberColumns[] = [$tableName, $indexColumn, $numberColumn];
+                }
+            }
+        }
+
+        return $numberColumns;
+    }
     public function getBaseTableIndex()
     {
         $baseTable = $this->meta->getEntityBaseTable();

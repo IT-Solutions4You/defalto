@@ -15,6 +15,7 @@ class Vtiger_Install_Model extends Core_Install_Model
         [Vtiger_Field_Model::UITYPE_REGION, 'region'],
         [Vtiger_Field_Model::UITYPE_TAX, 'tax'],
         [Vtiger_Field_Model::UITYPE_COUNTRY, 'country'],
+        [Vtiger_Field_Model::UITYPE_MULTI_REFERENCE, Vtiger_Field_Model::MULTI_REFERENCE_TYPE],
     ];
 
     /**

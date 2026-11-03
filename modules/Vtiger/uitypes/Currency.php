@@ -63,6 +63,23 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
     }
 
     /**
+     * Returns the value for the edit form: rounded to the user's number of currency decimals, with a dot as the
+     * decimal separator and no grouping, because the edit inputs accept only that format (replaceCommaWithDot).
+     * The stored value is not converted to another currency.
+     *
+     * @param mixed $value Stored value
+     * @return string
+     */
+    public function getEditViewDisplayValue($value)
+    {
+        if (null === $value || '' === trim((string)$value) || !is_numeric($value)) {
+            return (string)$value;
+        }
+
+        return (string)self::transformEditViewDisplayValue($value, null, true);
+    }
+
+    /**
      * Function to get the Template name for the current UI Type object
      * @return <String> - Template Name
      */

@@ -312,7 +312,8 @@ class WebserviceField
             }
             $fieldTypeData = WebserviceField::$fieldTypeMapping[$this->getUIType()];
             $referenceTypes = [];
-            if ($this->getUIType() != $this->genericUIType) {
+            // Uitype 34 (Vtiger_Field_Model::UITYPE_MULTI_REFERENCE) takes its modules from the field like the generic uitype 10
+            if (!in_array((int)$this->getUIType(), [(int)$this->genericUIType, 34], true)) {
                 $sql = "select type from vtiger_ws_referencetype where fieldtypeid=?";
                 $params = [isset($fieldTypeData['fieldtypeid']) ? $fieldTypeData['fieldtypeid'] : 0];
             } else {

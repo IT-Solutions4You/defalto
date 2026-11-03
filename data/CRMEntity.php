@@ -1576,7 +1576,7 @@ class CRMEntity extends CRMExtension
         global $log;
 
         $fieldRes = $this->db->pquery(
-            'SELECT tabid, tablename, columnname FROM vtiger_field WHERE fieldid IN (
+            'SELECT tabid, tablename, columnname, uitype FROM vtiger_field WHERE fieldid IN (
 			SELECT fieldid FROM vtiger_fieldmodulerel WHERE relmodule=?)',
             [$module]
         );
@@ -1585,6 +1585,13 @@ class CRMEntity extends CRMExtension
             $tabId = $this->db->query_result($fieldRes, $i, 'tabid');
             $tableName = $this->db->query_result($fieldRes, $i, 'tablename');
             $columnName = $this->db->query_result($fieldRes, $i, 'columnname');
+
+            // Uitype 34 (Vtiger_Field_Model::UITYPE_MULTI_REFERENCE) keeps the other records of the value
+            if (34 === (int)$this->db->query_result($fieldRes, $i, 'uitype')) {
+                Core_Relation_Model::deleteMultiReferenceDependencies((int)$id, $columnName, $tableName);
+
+                continue;
+            }
 
             $relatedModule = vtlib_getModuleNameById($tabId);
             $focusObj = CRMEntity::getInstance($relatedModule);
@@ -2254,14 +2261,15 @@ class CRMEntity extends CRMExtension
             $relationFieldId = $this->db->query_result($result, 0, 'relationfieldid');
         }
 
+        // Uitype 34 (Vtiger_Field_Model::UITYPE_MULTI_REFERENCE) holds several record ids, e.g. 12;15
         if (empty($relationFieldId)) {
             $dependentFieldSql = $this->db->pquery(
-                "SELECT tabid, fieldname, columnname,tablename FROM vtiger_field WHERE uitype=10 AND fieldid IN (SELECT fieldid FROM vtiger_fieldmodulerel WHERE relmodule=? AND module=?)",
+                "SELECT tabid, fieldname, columnname,tablename,uitype FROM vtiger_field WHERE uitype IN (10,34) AND fieldid IN (SELECT fieldid FROM vtiger_fieldmodulerel WHERE relmodule=? AND module=?)",
                 [$currentModule, $related_module]
             );
         } else {
             $dependentFieldSql = $this->db->pquery(
-                "SELECT tabid, fieldname, columnname,tablename FROM vtiger_field WHERE uitype=10 AND fieldid IN (SELECT relationfieldid FROM vtiger_relatedlists WHERE relation_id=?)",
+                "SELECT tabid, fieldname, columnname,tablename,uitype FROM vtiger_field WHERE uitype IN (10,34) AND fieldid IN (SELECT relationfieldid FROM vtiger_relatedlists WHERE relation_id=?)",
                 [$relationId]
             );
         }
@@ -2273,6 +2281,11 @@ class CRMEntity extends CRMExtension
         $dependentColumn = $this->db->query_result($dependentFieldSql, 0, 'columnname');
         $dependentField = $this->db->query_result($dependentFieldSql, 0, 'fieldname');
         $dependentTableName = $this->db->query_result($dependentFieldSql, 0, 'tablename');
+        $dependentJoin = "$this->table_name$this->moduleName.$this->table_index = $dependentTableName.$dependentColumn";
+
+        if (34 === (int)$this->db->query_result($dependentFieldSql, 0, 'uitype')) {
+            $dependentJoin = "FIND_IN_SET($this->table_name$this->moduleName.$this->table_index, REPLACE($dependentTableName.$dependentColumn, ';', ','))";
+        }
 
         $button .= '<input type="hidden" name="' . $dependentColumn . '" id="' . $dependentColumn . '" value="' . $id . '">';
         $button .= '<input type="hidden" name="' . $dependentColumn . '_type" id="' . $dependentColumn . '_type" value="' . $currentModule . '">';
@@ -2319,7 +2332,7 @@ class CRMEntity extends CRMExtension
         $query .= " FROM $other->table_name";
         $query .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index";
         $query .= $more_relation;
-        $query .= " INNER JOIN $this->table_name AS $this->table_name$this->moduleName ON $this->table_name$this->moduleName.$this->table_index = $dependentTableName.$dependentColumn";
+        $query .= " INNER JOIN $this->table_name AS $this->table_name$this->moduleName ON $dependentJoin";
         $query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.assigned_user_id";
         $query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.assigned_user_id";
 

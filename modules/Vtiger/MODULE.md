@@ -86,6 +86,10 @@ This module holds shared base behavior inherited by other modules. It has no sta
 - `RecentActivities.tpl` uses the ModTracker-owned `Workflow.tpl` partial for workflow create/update entries; history persistence, workflow lookup and administrator-only links belong to ModTracker. For those entries the heading holds only the ModTracker workflow dropdown (the actor is inside it) and the timeline icon is `fa-cogs` instead of the actor icon or avatar; ordinary entries keep their actor and action text.
 - `VTEntityDelta::getDataDelta()` exposes the existing field comparison for ModTracker's independent audit snapshots; workflow condition deltas keep their own original save baseline.
 
+## Currency fields
+
+- `Vtiger_Currency_UIType::getEditViewDisplayValue()` formats a stored amount (uitypes 71 and 72) for the edit, quick create and inline edit inputs with `CurrencyField::convertToUserFormatForEdit()` and `$skipConversion`: rounded to the user's `no_of_currency_decimals`, dot as the decimal separator, no grouping. The inputs accept only that format (`replaceCommaWithDot`, `allowOnlyNumbers`), so do not use the display format with grouping there. Before this, the edit inputs showed the raw column value (4 or 8 decimals).
+
 ## Validation
 
 - PHP lint of touched files; the JavaScript syntax check and the ITS4You ScriptsValidator for touched resources.

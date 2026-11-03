@@ -35,6 +35,7 @@ class Vtiger_Field_Model extends Vtiger_Field
     }
 
     const REFERENCE_TYPE = 'reference';
+    const MULTI_REFERENCE_TYPE = 'multireference';
     const OWNER_TYPE = 'owner';
     const OWNERGROUP_TYPE = 'group';
     const CURRENCY_LIST = 'currencyList';
@@ -93,6 +94,7 @@ class Vtiger_Field_Model extends Vtiger_Field
     const UITYPE_CKEDITOR = 31;
     const UITYPE_MAILMANAGER_REFERENCE = 32;
     const UITYPE_MULTI_SELECT = 33;
+    const UITYPE_MULTI_REFERENCE = 34; //several records of the modules set on the field, stored as 12;15
     const UITYPE_ACCOUNT_REFERENCE = 51;
     const UITYPE_USER_REFERENCE = 52;//e.g. assigned to
     const UITYPE_ASSIGNED_TO_PICKLIST = 53;
@@ -699,7 +701,7 @@ class Vtiger_Field_Model extends Vtiger_Field
      */
     public function isAjaxEditable()
     {
-        if ($this->isRecordActionLocked()) {
+        if ($this->isRecordActionLocked() || $this->isMultiReferenceField()) {
             return false;
         }
 
@@ -780,7 +782,7 @@ class Vtiger_Field_Model extends Vtiger_Field
         $fieldType = $fieldTypeOfData[0];
 
         //Special condition need for reference field as they should be treated as string field
-        if ($this->getFieldDataType() == 'reference') {
+        if ($this->isReferenceField() || $this->isMultiReferenceField()) {
             $fieldType = 'V';
         } else {
             $fieldType = ChangeTypeOfData_Filter($tableName, $columnName, $fieldType);
@@ -812,7 +814,7 @@ class Vtiger_Field_Model extends Vtiger_Field
 
         $fieldTypeOfData = explode('~', $typeOfData);
         $fieldType = $fieldTypeOfData[0];
-        if ($this->getFieldDataType() == 'reference') {
+        if ($this->isReferenceField() || $this->isMultiReferenceField()) {
             $fieldType = 'V';
         } else {
             $fieldType = ChangeTypeOfData_Filter($tableName, $columnName, $fieldType);
@@ -929,7 +931,7 @@ class Vtiger_Field_Model extends Vtiger_Field
             $this->fieldInfo['picklistvalues'] = $groupList;
         }
 
-        if ($this->getFieldDataType() == 'reference') {
+        if ($this->isReferenceField() || $this->isMultiReferenceField()) {
             $this->fieldInfo['referencemodules'] = $this->getReferenceList();
         }
 
@@ -1699,7 +1701,7 @@ class Vtiger_Field_Model extends Vtiger_Field
 
     public function isMassEditable()
     {
-        return $this->masseditable == 1;
+        return $this->masseditable == 1 && !$this->isMultiReferenceField();
     }
 
     /**
@@ -1713,6 +1715,17 @@ class Vtiger_Field_Model extends Vtiger_Field
     public function isReferenceField()
     {
         return ($this->getFieldDataType() == self::REFERENCE_TYPE) ? true : false;
+    }
+
+    /**
+     * Checks whether the field holds several records (uitype 34, values stored as 12;15).
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isMultiReferenceField(): bool
+    {
+        return self::MULTI_REFERENCE_TYPE === $this->getFieldDataType();
     }
 
     public function isOwnerField()

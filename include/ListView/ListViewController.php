@@ -437,6 +437,10 @@ class ListViewController
                     } else {
                         $value = '--';
                     }
+                } elseif ($fieldDataType == 'multireference') {
+                    // Links to several records, not shortened by textlength_check() because the value is HTML
+                    $fieldModel = !empty($rawValue) ? Vtiger_Field_Model::getInstance($field->getFieldId()) : false;
+                    $value = $fieldModel ? $fieldModel->getDisplayValue($rawValue, $baseRecordId) : '';
                 } elseif ($fieldDataType == 'owner' || $fieldDataType == 'ownergroup') {
                     $value = textlength_check($this->ownerNameList[$fieldName][$value] ?? '');
                 } elseif ($field->getUIType() == 25) {
