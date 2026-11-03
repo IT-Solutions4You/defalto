@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Zapisz',
     'LBL_FIELDS_NOTE' => 'Gdy integracja jest aktywna, pole kwoty zapłaconej dokumentu jest tylko do odczytu i obliczane z otrzymanych płatności. Brakujące pola zapłacono i saldo są tworzone automatycznie.',
     'LBL_NO_MODULES' => 'Brak dostępnego modułu magazynowego do integracji.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Próg niedopłaty',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Dokument, którego saldo wynosi najwyżej tę kwotę, otrzymuje status opłacony. Kwota jest porównywana w walucie dokumentu bez przeliczania, a saldo nadal pokazuje rzeczywistą niedopłatę. 0 oznacza tylko w pełni opłacone dokumenty.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Próg niedopłaty musi być liczbą 0 lub większą.',
 ];
 
 $jsLanguageStrings = [

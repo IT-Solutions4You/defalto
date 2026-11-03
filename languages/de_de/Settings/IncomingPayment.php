@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Speichern',
     'LBL_FIELDS_NOTE' => 'Solange eine Integration aktiv ist, ist das Feld des bezahlten Betrags schreibgeschützt und wird aus den eingegangenen Zahlungen berechnet. Fehlende Felder für bezahlten und offenen Betrag werden automatisch angelegt.',
     'LBL_NO_MODULES' => 'Für die Integration ist kein Lagermodul verfügbar.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Grenze für Unterzahlung',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Ein Beleg, dessen Restbetrag höchstens diesem Betrag entspricht, erhält den Status bezahlt. Der Betrag wird ohne Umrechnung in der Währung des Belegs verglichen, der Restbetrag zeigt weiterhin die tatsächliche Unterzahlung. 0 bedeutet nur vollständig bezahlte Belege.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Die Grenze für Unterzahlung muss eine Zahl von 0 oder größer sein.',
 ];
 
 $jsLanguageStrings = [

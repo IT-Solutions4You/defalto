@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Mentés',
     'LBL_FIELDS_NOTE' => 'Amíg az integráció aktív, a bizonylat kifizetett összeg mezője csak olvasható, és a beérkezett fizetésekből számítódik. A hiányzó kifizetett és egyenleg mezők automatikusan jönnek létre.',
     'LBL_NO_MODULES' => 'Nincs elérhető készletmodul az integrációhoz.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Alulfizetési határ',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Az a bizonylat, amelynek egyenlege legfeljebb ennyi, fizetett állapotot kap. Az összehasonlítás átváltás nélkül a bizonylat pénznemében történik, az egyenleg továbbra is a valós hátralékot mutatja. A 0 csak a teljesen kifizetett bizonylatokat jelenti.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Az alulfizetési határnak 0 vagy annál nagyobb számnak kell lennie.',
 ];
 
 $jsLanguageStrings = [

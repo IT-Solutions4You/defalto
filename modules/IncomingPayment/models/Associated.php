@@ -140,6 +140,23 @@ class IncomingPayment_Associated_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Returns the ids of all documents that have a payment applied.
+     *
+     * @return int[]
+     */
+    public function fetchAllRecordIds(): array
+    {
+        $result = $this->getDB()->pquery('SELECT DISTINCT record_id FROM ' . $this->table, []);
+        $recordIds = [];
+
+        while ($row = $this->getDB()->fetchByAssoc($result)) {
+            $recordIds[] = (int)$row['record_id'];
+        }
+
+        return $recordIds;
+    }
+
+    /**
      * Counts the documents among the given records that have payments, and those payments (deleted payments excluded).
      *
      * @param int[] $recordIds Document record ids

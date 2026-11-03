@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Enregistrer',
     'LBL_FIELDS_NOTE' => 'Tant qu\'une intégration est active, le champ du montant payé du document est en lecture seule et calculé à partir des paiements reçus. Les champs payé et solde manquants sont créés automatiquement.',
     'LBL_NO_MODULES' => 'Aucun module d\'inventaire n\'est disponible pour l\'intégration.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Seuil de paiement insuffisant',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Un document dont le solde est au plus égal à ce montant reçoit le statut payé. Le montant est comparé dans la devise du document sans conversion et le solde conserve le montant réellement impayé. 0 signifie uniquement les documents entièrement payés.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Le seuil de paiement insuffisant doit être un nombre supérieur ou égal à 0.',
 ];
 
 $jsLanguageStrings = [

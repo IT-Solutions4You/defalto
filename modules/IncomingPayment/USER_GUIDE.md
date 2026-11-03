@@ -32,7 +32,7 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 
 - **Received** shows the sum of received payments in the invoice currency; payments in other currencies are converted with their exchange rate.
 - **Balance** is the invoice total minus the received amount. An overpaid invoice shows a negative balance.
-- When the balance reaches zero, the invoice status changes to **Paid**. If a payment is deleted or its date moves to the future, the status returns to **Created**.
+- When the balance reaches zero, or drops to the underpayment threshold set in Settings, the invoice status changes to **Paid**. The balance still shows the real underpayment. If a payment is deleted or its date moves to the future, the status returns to **Created**.
 - While the integration is active, the **Received** field of the invoice is read-only; edit the payments instead.
 - When you delete an invoice that has payments, the confirmation tells you how many payments are linked. The payments stay, only their link to the deleted invoice is removed, and their **Reference** becomes empty. Restoring the invoice from the recycle bin does not link the payments again.
 
@@ -42,7 +42,7 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 
 ## Settings
 
-Administrators configure the integration in **Settings → Incoming Payments Integration** (also available from the gear menu of the Incoming Payments list). For each document module you choose whether it is active, which status field and values are used when the document becomes fully paid or unpaid again, and which fields hold the organization, the total, the paid amount and the balance. Every inventory module is listed automatically, including modules added later: quotes, sales orders, purchase orders and invoices today. Invoices are active by default, the others can be switched on. Status values are empty for them until you choose them, so their status does not change on payment until then.
+Administrators configure the integration in **Settings → Incoming Payments Integration** (also available from the gear menu of the Incoming Payments list). The **Underpayment threshold** at the top applies to all modules: an invoice whose balance is at most this amount counts as paid, for example 1 to ignore small differences. The amount is compared in the invoice currency without conversion; 0 means only fully paid invoices. Changing it updates the statuses of all invoices with payments. For each document module you choose whether it is active, which status field and values are used when the document becomes fully paid or unpaid again, and which fields hold the organization, the total, the paid amount and the balance. Every inventory module is listed automatically, including modules added later: quotes, sales orders, purchase orders and invoices today. Invoices are active by default, the others can be switched on. Status values are empty for them until you choose them, so their status does not change on payment until then.
 
 ## Tips
 

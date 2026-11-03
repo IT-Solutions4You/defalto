@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Kaydet',
     'LBL_FIELDS_NOTE' => 'Bir entegrasyon etkinken belgenin ödenen tutar alanı salt okunurdur ve alınan ödemelerden hesaplanır. Eksik ödenen ve bakiye alanları otomatik olarak oluşturulur.',
     'LBL_NO_MODULES' => 'Entegrasyon için kullanılabilir envanter modülü yok.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Eksik ödeme sınırı',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Bakiyesi en fazla bu tutar olan belge ödendi durumunu alır. Tutar, belgenin para biriminde dönüştürülmeden karşılaştırılır ve bakiye gerçek eksik ödemeyi göstermeye devam eder. 0 yalnızca tamamen ödenmiş belgeler anlamına gelir.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Eksik ödeme sınırı 0 veya daha büyük bir sayı olmalıdır.',
 ];
 
 $jsLanguageStrings = [

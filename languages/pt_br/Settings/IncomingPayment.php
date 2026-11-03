@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Salvar',
     'LBL_FIELDS_NOTE' => 'Enquanto uma integração estiver ativa, o campo do valor pago do documento é somente leitura e calculado a partir dos pagamentos recebidos. Os campos de pago e saldo ausentes são criados automaticamente.',
     'LBL_NO_MODULES' => 'Nenhum módulo de estoque está disponível para a integração.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Limite de pagamento a menor',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Um documento cujo saldo seja no máximo este valor recebe o status pago. O valor é comparado na moeda do documento sem conversão e o saldo mantém o valor real em aberto. 0 significa apenas documentos totalmente pagos.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'O limite de pagamento a menor deve ser um número maior ou igual a 0.',
 ];
 
 $jsLanguageStrings = [

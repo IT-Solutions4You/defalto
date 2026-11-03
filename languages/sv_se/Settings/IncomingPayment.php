@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Spara',
     'LBL_FIELDS_NOTE' => 'Så länge en integration är aktiv är dokumentets fält för betalt belopp skrivskyddat och beräknas från mottagna betalningar. Saknade fält för betalt och saldo skapas automatiskt.',
     'LBL_NO_MODULES' => 'Ingen lagermodul är tillgänglig för integrationen.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Gräns för underbetalning',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Ett dokument vars saldo är högst detta belopp får statusen betald. Beloppet jämförs i dokumentets valuta utan omräkning och saldot visar fortfarande den verkliga underbetalningen. 0 betyder endast helt betalda dokument.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Gränsen för underbetalning måste vara ett tal som är 0 eller större.',
 ];
 
 $jsLanguageStrings = [

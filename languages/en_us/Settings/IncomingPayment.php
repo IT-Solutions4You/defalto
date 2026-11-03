@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Save',
     'LBL_FIELDS_NOTE' => 'While an integration is active, the paid amount field of the document is read-only and is calculated from the received payments. Missing paid and balance fields are created automatically.',
     'LBL_NO_MODULES' => 'No inventory module is available for the integration.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Underpayment threshold',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'A document whose balance is at most this amount gets the paid status. The amount is compared in the document currency without conversion and the balance keeps the real underpayment. 0 means only fully paid documents.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'The underpayment threshold must be a number of 0 or more.',
 ];
 
 $jsLanguageStrings = [

@@ -562,6 +562,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
             IncomingPayment_Config_Helper::TABLE_CF,
             IncomingPayment_Config_Helper::TABLE_INTEGRATION,
             IncomingPayment_Config_Helper::TABLE_ASSOCIATED,
+            IncomingPayment_Config_Helper::TABLE_SETTING,
         ];
     }
 
@@ -623,6 +624,12 @@ class IncomingPayment_Install_Model extends Core_Install_Model
             ->createColumn('partial_amount', $amountType)
             ->createKey('KEY IF NOT EXISTS `df_incomingpayment_associated_payment_idx` (`payment_id`)')
             ->createKey('KEY IF NOT EXISTS `df_incomingpayment_associated_record_idx` (`record_id`)');
+
+        $this->getTable(IncomingPayment_Config_Helper::TABLE_SETTING, 'id')
+            ->createTable()
+            ->createColumn('name', 'varchar(100) NOT NULL')
+            ->createColumn('value', 'text DEFAULT NULL')
+            ->createKey('UNIQUE KEY IF NOT EXISTS `df_incomingpayment_setting_name` (`name`)');
     }
 
     /**

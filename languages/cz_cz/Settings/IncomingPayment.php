@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Uložit',
     'LBL_FIELDS_NOTE' => 'Dokud je integrace aktivní, pole zaplacené částky dokladu je pouze pro čtení a počítá se z přijatých plateb. Chybějící pole zaplaceno a zůstatek se vytvoří automaticky.',
     'LBL_NO_MODULES' => 'Pro integraci není k dispozici žádný skladový modul.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Hranice nedoplatku',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Doklad, jehož zůstatek je nejvýše tato částka, dostane stav uhrazený. Částka se porovnává v měně dokladu bez přepočtu a v zůstatku zůstává skutečný nedoplatek. 0 znamená jen zcela uhrazené doklady.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Hranice nedoplatku musí být číslo 0 nebo větší.',
 ];
 
 $jsLanguageStrings = [

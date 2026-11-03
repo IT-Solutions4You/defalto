@@ -21,6 +21,13 @@
                     <div class="alert alert-info mb-0">{vtranslate('LBL_NO_MODULES', $QUALIFIED_MODULE)}</div>
                 {else}
                     <form class="incomingPaymentIntegrationForm">
+                        <div class="row g-2 align-items-center mb-3">
+                            <label class="col-auto col-form-label fw-semibold" for="underpaymentThreshold">{vtranslate('LBL_UNDERPAYMENT_THRESHOLD', $QUALIFIED_MODULE)}</label>
+                            <div class="col-auto">
+                                <input type="number" min="0" step="0.01" class="form-control" id="underpaymentThreshold" name="underpayment_threshold" value="{$UNDERPAYMENT_THRESHOLD|escape}">
+                            </div>
+                            <div class="col-12 form-text mt-0">{vtranslate('LBL_UNDERPAYMENT_THRESHOLD_HELP', $QUALIFIED_MODULE)}</div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table align-middle">
                                 <thead>

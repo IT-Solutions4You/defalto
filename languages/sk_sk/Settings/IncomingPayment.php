@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Uložiť',
     'LBL_FIELDS_NOTE' => 'Kým je integrácia aktívna, pole zaplatenej sumy dokladu je len na čítanie a počíta sa z prijatých platieb. Chýbajúce polia zaplatené a zostatok sa vytvoria automaticky.',
     'LBL_NO_MODULES' => 'Pre integráciu nie je dostupný žiadny skladový modul.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Hranica nedoplatku',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Doklad, ktorého zostatok je najviac táto suma, dostane stav uhradený. Suma sa porovnáva v mene dokladu bez prepočtu a v zostatku ostáva skutočný nedoplatok. 0 znamená len úplne uhradené doklady.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Hranica nedoplatku musí byť číslo 0 alebo väčšie.',
 ];
 
 $jsLanguageStrings = [

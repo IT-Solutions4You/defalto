@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Guardar',
     'LBL_FIELDS_NOTE' => 'Mientras una integración está activa, el campo de importe pagado del documento es de solo lectura y se calcula a partir de los pagos recibidos. Los campos de pagado y saldo que falten se crean automáticamente.',
     'LBL_NO_MODULES' => 'No hay ningún módulo de inventario disponible para la integración.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Umbral de pago insuficiente',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Un documento cuyo saldo sea como máximo este importe recibe el estado pagado. El importe se compara en la moneda del documento sin conversión y el saldo conserva el importe pendiente real. 0 significa solo documentos pagados por completo.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'El umbral de pago insuficiente debe ser un número igual o mayor que 0.',
 ];
 
 $jsLanguageStrings = [

@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Opslaan',
     'LBL_FIELDS_NOTE' => 'Zolang een integratie actief is, is het veld betaald bedrag van het document alleen-lezen en wordt het berekend uit de ontvangen betalingen. Ontbrekende velden voor betaald en saldo worden automatisch aangemaakt.',
     'LBL_NO_MODULES' => 'Er is geen voorraadmodule beschikbaar voor de integratie.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Drempel voor onderbetaling',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Een document waarvan het saldo hoogstens dit bedrag is, krijgt de status betaald. Het bedrag wordt zonder omrekening in de valuta van het document vergeleken en het saldo blijft de werkelijke onderbetaling tonen. 0 betekent alleen volledig betaalde documenten.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'De drempel voor onderbetaling moet een getal van 0 of hoger zijn.',
 ];
 
 $jsLanguageStrings = [

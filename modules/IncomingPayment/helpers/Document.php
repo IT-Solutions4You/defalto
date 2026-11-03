@@ -60,9 +60,27 @@ class IncomingPayment_Document_Helper
     }
 
     /**
+     * Tells whether a document counts as paid: something was received and the balance is at most the underpayment
+     * threshold. The balance itself keeps the real underpayment. A document without a received payment is never paid,
+     * even when its total is below the threshold.
+     *
+     * @param float $paid      Paid amount in the document currency
+     * @param float $balance   Open amount in the document currency
+     * @param float $total     Document total in the document currency
+     * @param float $threshold Underpayment that still counts as paid, in the document currency
+     * @return bool
+     */
+    public static function isPaid(float $paid, float $balance, float $total, float $threshold): bool
+    {
+        $epsilon = IncomingPayment_Calculation_Helper::EPSILON;
+
+        return $paid > $epsilon && $balance <= $threshold + $epsilon && $paid + $threshold + $epsilon >= $total;
+    }
+
+    /**
      * Returns the status the document should get, or null when the status must stay as it is.
-     * Fully paid documents get the configured paid status; a document that is no longer paid
-     * and still carries the paid status falls back to the configured previous status.
+     * Paid documents (isPaid(), with the underpayment threshold) get the configured paid status; a document
+     * that is no longer paid and still carries the paid status falls back to the configured previous status.
      *
      * @param Vtiger_Record_Model $recordModel Document record
      * @param array               $config      Integration configuration
@@ -82,10 +100,9 @@ class IncomingPayment_Document_Helper
         }
 
         $currentStatus = (string)$recordModel->get($statusField);
-        $epsilon = IncomingPayment_Calculation_Helper::EPSILON;
-        $isPaid = $paid > $epsilon && $balance <= $epsilon && $paid + $epsilon >= $total;
+        $threshold = IncomingPayment_Setting_Model::getInstance()->getUnderpaymentThreshold();
 
-        if ($isPaid) {
+        if (self::isPaid($paid, $balance, $total, $threshold)) {
             return $currentStatus === $paidStatus ? null : $paidStatus;
         }
 

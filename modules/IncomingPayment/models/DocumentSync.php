@@ -153,6 +153,17 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Recalculates every document that has a payment, for example after the underpayment threshold changed.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function recalculateAllDocuments(): void
+    {
+        $this->recalculateDocuments(IncomingPayment_Associated_Model::getInstance()->fetchAllRecordIds());
+    }
+
+    /**
      * Recalculates the given documents; ids of deleted or unknown records are skipped.
      *
      * @param array $recordIds Document record ids

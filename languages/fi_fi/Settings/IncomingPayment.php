@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Tallenna',
     'LBL_FIELDS_NOTE' => 'Kun integraatio on aktiivinen, asiakirjan maksetun summan kenttä on vain luku -tilassa ja se lasketaan vastaanotetuista maksuista. Puuttuvat maksettu- ja saldokentät luodaan automaattisesti.',
     'LBL_NO_MODULES' => 'Integraatiota varten ei ole käytettävissä varastomoduulia.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Vajaamaksun raja',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Asiakirja, jonka saldo on enintään tämä summa, saa tilan maksettu. Summaa verrataan asiakirjan valuutassa ilman muuntoa, ja saldo näyttää edelleen todellisen vajaamaksun. 0 tarkoittaa vain kokonaan maksettuja asiakirjoja.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Vajaamaksun rajan on oltava luku, joka on 0 tai suurempi.',
 ];
 
 $jsLanguageStrings = [

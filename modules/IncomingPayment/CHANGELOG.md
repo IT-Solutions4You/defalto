@@ -8,4 +8,5 @@
 - The detail view of a payment lists its documents in a tab for every integrated module.
 - Deleting an invoice with payments warns about the linked payments and removes the link from them.
 - Integration into document modules is configured in Settings → Incoming Payments Integration, which lists every inventory module automatically.
+- An underpayment threshold in the settings marks documents with a small remaining balance as paid while the balance keeps the real amount.
 - A daily job updates payment statuses when payment or due dates arrive.

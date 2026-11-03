@@ -27,6 +27,7 @@ class Settings_IncomingPayment_Index_View extends Settings_Vtiger_Index_View
             ->assign('QUALIFIED_MODULE', $qualifiedModuleName)
             ->assign('INTEGRATION_ROWS', $rows)
             ->assign('INTEGRATION_COLUMNS', IncomingPayment_Config_Helper::INTEGRATION_COLUMNS)
+            ->assign('UNDERPAYMENT_THRESHOLD', IncomingPayment_Setting_Model::getInstance()->getUnderpaymentThreshold())
             ->view('Index.tpl', $qualifiedModuleName);
     }
 }

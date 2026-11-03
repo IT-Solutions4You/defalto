@@ -26,6 +26,9 @@ $languageStrings = [
     'LBL_SAVE' => 'Salvează',
     'LBL_FIELDS_NOTE' => 'Cât timp o integrare este activă, câmpul sumei plătite al documentului este doar în citire și se calculează din plățile primite. Câmpurile lipsă plătit și sold se creează automat.',
     'LBL_NO_MODULES' => 'Niciun modul de inventar nu este disponibil pentru integrare.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'Prag de plată insuficientă',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Un document al cărui sold este cel mult această sumă primește starea plătit. Suma se compară în moneda documentului fără conversie, iar soldul păstrează suma reală neplătită. 0 înseamnă doar documentele plătite integral.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Pragul de plată insuficientă trebuie să fie un număr mai mare sau egal cu 0.',
 ];
 
 $jsLanguageStrings = [
