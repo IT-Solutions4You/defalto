@@ -50,6 +50,10 @@ class IncomingPayment_Config_Helper
     public const WIDGET_URL = 'module=IncomingPayment&view=Widget&mode=showPayments&sourceModule=$MODULE$&sourceRecord=$RECORD$&relatedModule=IncomingPayment&relatedField=relationid';
     public const RELATED_SAVE_HANDLER = 'IncomingPayment_RelatedSave_Handler';
     public const RELATED_SAVE_HANDLER_FILE = 'modules/IncomingPayment/handlers/RelatedSave.php';
+    public const RELATED_DELETE_HANDLER = 'IncomingPayment_RelatedDelete_Handler';
+    public const RELATED_DELETE_HANDLER_FILE = 'modules/IncomingPayment/handlers/RelatedDelete.php';
+    public const DELETE_WARNINGS_MODIFIABLE = 'DeleteWarningsAction';
+    public const DELETE_WARNINGS_MODIFIER = 'IncomingPayment_DeleteWarnings_Modifier';
 
     public const EVENT_BEFORE_SAVE = 'vtiger.entity.beforesave';
     public const EVENT_AFTER_SAVE_FINAL = 'vtiger.entity.aftersave.final';

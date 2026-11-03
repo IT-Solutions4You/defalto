@@ -34,6 +34,7 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 - **Balance** is the invoice total minus the received amount. An overpaid invoice shows a negative balance.
 - When the balance reaches zero, the invoice status changes to **Paid**. If a payment is deleted or its date moves to the future, the status returns to **Created**.
 - While the integration is active, the **Received** field of the invoice is read-only; edit the payments instead.
+- When you delete an invoice that has payments, the confirmation tells you how many payments are linked. The payments stay, only their link to the deleted invoice is removed, and their **Reference** becomes empty. Restoring the invoice from the recycle bin does not link the payments again.
 
 ## Other fields
 

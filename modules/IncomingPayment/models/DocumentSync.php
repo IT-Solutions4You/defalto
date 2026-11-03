@@ -120,6 +120,27 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Removes a deleted document from its payments: drops the associations and refreshes the reference numbers.
+     * The core already removed the document from the payments' Reference field (CRMEntity::unlinkDependencies()).
+     *
+     * @param int $recordId Deleted document record id
+     * @return void
+     * @throws Exception
+     */
+    public function handleDocumentDelete(int $recordId): void
+    {
+        $associated = IncomingPayment_Associated_Model::getInstance();
+        $paymentIds = $associated->fetchPaymentIds($recordId);
+        $associated->deleteByRecord($recordId);
+
+        foreach ($paymentIds as $paymentId) {
+            if (isRecordExists($paymentId)) {
+                $this->updateReadonlyValues(Vtiger_Record_Model::getInstanceById($paymentId, IncomingPayment_Config_Helper::MODULE));
+            }
+        }
+    }
+
+    /**
      * Recalculates every document a payment is applied to, after the payment was deleted or restored.
      *
      * @param int $paymentId Payment record id

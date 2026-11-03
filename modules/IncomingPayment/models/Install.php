@@ -250,8 +250,16 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                 '',
                 $modules,
             ];
+            $this->registerEventHandler[] = [
+                [IncomingPayment_Config_Helper::EVENT_AFTER_DELETE],
+                IncomingPayment_Config_Helper::RELATED_DELETE_HANDLER_FILE,
+                IncomingPayment_Config_Helper::RELATED_DELETE_HANDLER,
+                '',
+                $modules,
+            ];
         }
 
+        $this->updateDeleteWarnings($modules, $register);
         $this->updateRelatedList($register);
         $this->updateCustomLinks($register);
         $this->updateEventHandler($register);
@@ -265,6 +273,35 @@ class IncomingPayment_Install_Model extends Core_Install_Model
             $this->registerSummaryWidgets,
             $this->registerEventHandler,
         ] = $ownRegistrations;
+    }
+
+    /**
+     * Registers or removes the warning about linked payments in the delete confirmation of document modules.
+     *
+     * @param string[] $modules  Document module names
+     * @param bool     $register true to register, false to remove
+     * @return void
+     * @throws Exception
+     */
+    private function updateDeleteWarnings(array $modules, bool $register): void
+    {
+        foreach ($modules as $moduleName) {
+            if ($register) {
+                Core_Modifiers_Model::registerModifier(
+                    $moduleName,
+                    IncomingPayment_Config_Helper::MODULE,
+                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIABLE,
+                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIER
+                );
+            } else {
+                Core_Modifiers_Model::deregisterModifier(
+                    $moduleName,
+                    IncomingPayment_Config_Helper::MODULE,
+                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIABLE,
+                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIER
+                );
+            }
+        }
     }
 
     /**

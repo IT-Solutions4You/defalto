@@ -121,6 +121,60 @@ class IncomingPayment_Associated_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Returns the ids of the payments applied to a document.
+     *
+     * @param int $recordId Document record id
+     * @return int[]
+     */
+    public function fetchPaymentIds(int $recordId): array
+    {
+        $table = $this->getAssociatedTable();
+        $result = $table->selectResult(['payment_id'], ['record_id' => $recordId]);
+        $paymentIds = [];
+
+        while ($row = $table->getDB()->fetchByAssoc($result)) {
+            $paymentIds[] = (int)$row['payment_id'];
+        }
+
+        return $paymentIds;
+    }
+
+    /**
+     * Counts the documents among the given records that have payments, and those payments (deleted payments excluded).
+     *
+     * @param int[] $recordIds Document record ids
+     * @return array ['documents' => int, 'payments' => int]
+     */
+    public function countForDocuments(array $recordIds): array
+    {
+        if (!$recordIds) {
+            return ['documents' => 0, 'payments' => 0];
+        }
+
+        $result = $this->getDB()->pquery(
+            'SELECT COUNT(DISTINCT associated.record_id) AS documents, COUNT(DISTINCT associated.payment_id) AS payments
+            FROM ' . $this->table . ' associated
+            INNER JOIN vtiger_crmentity payment_entity ON payment_entity.crmid = associated.payment_id AND payment_entity.deleted = 0
+            WHERE associated.record_id IN (' . generateQuestionMarks($recordIds) . ')',
+            $recordIds
+        );
+        $row = $this->getDB()->fetchByAssoc($result);
+
+        return ['documents' => (int)($row['documents'] ?? 0), 'payments' => (int)($row['payments'] ?? 0)];
+    }
+
+    /**
+     * Removes every association of a document, for example after the document was deleted.
+     *
+     * @param int $recordId Document record id
+     * @return void
+     */
+    public function deleteByRecord(int $recordId): void
+    {
+        $this->getAssociatedTable()->deleteData(['record_id' => $recordId]);
+    }
+
+    /**
      * Removes every association of a payment.
      *
      * @param int $paymentId Payment record id
