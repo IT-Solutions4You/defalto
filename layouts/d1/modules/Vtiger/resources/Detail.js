@@ -1787,17 +1787,14 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
         container.off('click' + eventNamespace, '.createRecord').on('click' + eventNamespace, '.createRecord', function (e) {
             let currentElement = jQuery(e.currentTarget),
-                form = currentElement.closest('form'),
-                recordElement = form.find('[name=record]'),
-                moduleElement = form.find('[name=module]'),
                 summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
 
             self.setWidgetContainer(summaryWidgetContainer);
 
             let referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
                 referenceFieldName = summaryWidgetContainer.find('[name="relatedField"]').val(),
-                recordId = recordElement.val(),
-                module = moduleElement.val(),
+                recordId = app.getRecordId(),
+                module = app.getModuleName(),
                 quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + referenceModuleName + '"]'),
                 fieldName = referenceFieldName ?? self.referenceFieldNames[module],
                 customUrl = currentElement.data('url'),
@@ -1807,7 +1804,9 @@ Vtiger.Class("Vtiger_Detail_Js", {
                 customParams = app.convertUrlToDataParams(customUrl);
             }
 
-            customParams[fieldName] = recordId;
+            if (fieldName) {
+                customParams[fieldName] = recordId;
+            }
 
             if (quickCreateNode.length <= 0) {
                 app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));

@@ -86,6 +86,8 @@
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
+                            {elseif $DETAIL_VIEW_LINK->isTemplate()}
+                                {include file=$DETAIL_VIEW_LINK->getTemplate()}
                             {else}
                                 <li id="{$MODULE_NAME}_detailView_moreAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_LINK->getLabel())}">
                                     <a class="dropdown-item text-secondary" href='{$DETAIL_VIEW_LINK->getUrl()}{if !$DETAIL_VIEW_LINK->getUrl()|strstr:"javascript"}&app={$SELECTED_MENU_CATEGORY}{/if}'>
