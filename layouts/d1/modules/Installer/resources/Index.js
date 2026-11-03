@@ -311,6 +311,8 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
         })
     },
     registerDownloadLog(container) {
+        const self = this;
+
         container.on('click', '.downloadSystem', function (e) {
             if (3 !== $('.updateValidation:checked', container).length) {
                 app.helper.showErrorNotification({message: app.vtranslate('JS_PLEASE_CONFIRM_BACKUP_DATABASE_AND_SOURCE_CODE')});
@@ -324,7 +326,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
 
             app.request.post({data: params}).then(function (error, data) {
                 if(!error) {
-                    downloadLogElement.html(data);
+                    self.showInstallationLog(downloadLogElement, data);
 
                     container.find('.modal-body').animate({scrollTop: downloadLogElement.height()});
                     container.find('a.finish').removeClass('hide');
@@ -333,7 +335,75 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
             });
         })
     },
+    requestExtensionInstallation(params) {
+        const deferred = $.Deferred();
+
+        // Preserve progress output on HTTP errors; app.request discards the response body.
+        $.ajax({url: 'index.php', method: 'POST', data: params})
+            .done(function (response) {
+                if (response && typeof response === 'object' && response.error) {
+                    deferred.resolve(response.error, '');
+                } else {
+                    deferred.resolve(null, response);
+                }
+            })
+            .fail(function (xhr) {
+                deferred.resolve({message: ''}, xhr.responseText || '');
+            });
+
+        return deferred.promise();
+    },
+    getInstallationErrorMessage(response, error) {
+        const content = $('<div>').append($.parseHTML(typeof response === 'string' ? response : '') || []),
+            logError = content.find('pre').filter(function () {
+                return this.style.color === 'indianred';
+            }).last().text().trim();
+
+        return logError || (error && error.message) || app.vtranslate('JS_INSTALLATION_FAILED');
+    },
+    showInstallationError(container, message) {
+        container.find('[data-install-status]')
+            .addClass('alert alert-danger text-start')
+            .attr('role', 'alert')
+            .text(message);
+        container.find('.extensionInstallLogDetails').prop('open', false);
+        container.find('[data-bs-dismiss="modal"]').removeClass('hide');
+    },
+    showInstallationLog(container, response) {
+        const content = $('<div>').append($.parseHTML(typeof response === 'string' ? response : '') || []),
+            entries = content.find('pre'),
+            list = $('<ul class="list-unstyled font-monospace small mb-0"></ul>'),
+            result = content.find('.installerExtensionResult').first();
+
+        entries.each(function () {
+            const entry = $(this),
+                isError = this.style.color === 'indianred',
+                row = $('<li class="mb-2 d-flex gap-2"></li>'),
+                marker = $('<span aria-hidden="true"></span>').text(isError ? '✗' : '•'),
+                message = $(isError ? '<strong>' : '<span>').text(entry.text());
+
+            row.toggleClass('text-danger', isError).append(marker, message);
+            list.append(row);
+        });
+
+        container.empty();
+
+        if (entries.length) {
+            container.append(list);
+        } else {
+            container.append($('<pre class="bg-body-tertiary border rounded p-3 text-wrap"></pre>').text(content.text()));
+        }
+
+        // Preserve completion metadata without rendering server-provided HTML.
+        if (result.length) {
+            container.append($('<div class="installerExtensionResult hide"></div>')
+                .attr('data-status', result.attr('data-status'))
+                .attr('data-redirect', result.attr('data-redirect')));
+        }
+    },
     registerDownloadExtension() {
+        const self = this;
+
         this.getMainContainer().on('click', '[data-download-extension]', function (e) {
             const button = $(this),
                 version = button.attr('data-download-extension');
@@ -377,7 +447,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                             container.find('.extensionChangelog').addClass('hide');
                             container.find('.extensionInstallProgress').removeClass('hide');
 
-                            app.request.post({data: installParams}).then(function (installError, installData) {
+                            self.requestExtensionInstallation(installParams).then(function (installError, installData) {
                                 const progressBar = container.find('.progress-bar'),
                                     statusElement = container.find('[data-install-status]'),
                                     spinner = container.find('.extensionInstallSpinner');
@@ -386,22 +456,18 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                                 spinner.addClass('hide');
 
                                 if (installError) {
-                                    const errorMessage = installError.message || app.vtranslate('JS_INSTALLATION_FAILED');
+                                    const errorMessage = self.getInstallationErrorMessage(installData, installError);
 
                                     progressBar.removeClass('bg-primary').addClass('bg-danger');
-                                    statusElement.text(app.vtranslate('JS_INSTALLATION_FAILED'));
-                                    downloadLogElement.empty().append(
-                                        $('<div class="alert alert-danger"></div>').text(errorMessage)
-                                    );
-                                    container.find('.extensionInstallLogDetails').prop('open', true);
-                                    container.find('[data-bs-dismiss="modal"]').removeClass('hide');
+                                    self.showInstallationLog(downloadLogElement, installData);
+                                    self.showInstallationError(container, errorMessage);
 
                                     return;
                                 }
 
                                 progressBar.removeClass('bg-primary').addClass('bg-success');
                                 statusElement.text(app.vtranslate('JS_INSTALLED'));
-                                downloadLogElement.html(installData);
+                                self.showInstallationLog(downloadLogElement, installData);
 
                                 const result = downloadLogElement.find('.installerExtensionResult');
 
@@ -412,9 +478,7 @@ Vtiger_Index_Js('Installer_Index_Js', {}, {
                                         .removeClass('hide');
                                 } else {
                                     progressBar.removeClass('bg-success').addClass('bg-danger');
-                                    statusElement.text(app.vtranslate('JS_INSTALLATION_FAILED'));
-                                    container.find('.extensionInstallLogDetails').prop('open', true);
-                                    container.find('[data-bs-dismiss="modal"]').removeClass('hide');
+                                    self.showInstallationError(container, self.getInstallationErrorMessage(installData, null));
                                 }
                             });
                         });
