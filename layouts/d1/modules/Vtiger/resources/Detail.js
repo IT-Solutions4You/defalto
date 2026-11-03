@@ -139,7 +139,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
         handler.pending = true;
 
-        return app.helper.showConfirmationBox({message: app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function () {
+        return app.helper.showDeleteConfirmationBox(params, app.vtranslate('LBL_DELETE_CONFIRMATION')).then(function () {
             // The handler's target can disappear or change while confirmation remains open.
             if (handler.hasRecord && !handler.hasRecord(params)) {
                 handler.pending = false;

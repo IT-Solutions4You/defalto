@@ -41,6 +41,10 @@ Deleting requires confirmation. Cancelling or a failed deletion leaves the previ
 
 An unsuccessful preview request shows an error instead of opening an empty window. Previous/next navigation is available for the source module's standard list, not for unrelated module references or custom board ordering.
 
+# Delete confirmation
+
+Before records are deleted, the confirmation can add warnings from installed extensions, for example how many payments are linked to the invoices you delete. This works for a single record, a record in the quick preview and a list selection.
+
 # Translated messages
 
 Validation messages that the server sends to on-screen notifications are displayed in the current user's language.

@@ -231,6 +231,39 @@ jQuery.Class("Vtiger_Helper_Js",{
 
         return aDeferred.promise();
     },
+
+    /**
+     * Shows the delete confirmation together with the warnings other modules add for the records
+     * (Core_DeleteWarnings_Action). The confirmation is shown even when the warnings cannot be loaded.
+     * @param {object} params module and record, or the list selection parameters of a mass delete
+     * @param {string} message confirmation text
+     * @returns {Promise} resolved when the user confirms, rejected when the user cancels
+     */
+    showDeleteConfirmationBox: function (params, message) {
+        const self = this,
+            aDeferred = jQuery.Deferred(),
+            data = jQuery.extend({}, params, {action: 'DeleteWarnings'});
+
+        delete data.view;
+        delete data.mode;
+
+        if (data.record && !data.selected_ids) {
+            data.selected_ids = JSON.stringify([data.record]);
+        }
+
+        app.request.post({data: data}).then(function (error, result) {
+            const warnings = !error && result && Array.isArray(result.warnings) ? result.warnings : [];
+            let text = message;
+
+            warnings.forEach(function (warning) {
+                text += '<br><br>' + jQuery('<div>').text(warning).html();
+            });
+
+            self.showConfirmationBox({message: text}).then(aDeferred.resolve, aDeferred.reject);
+        });
+
+        return aDeferred.promise();
+    },
     setBootboxIndex: function () {
         $('.bootbox').css('z-index', app.helper.getZIndex());
     },

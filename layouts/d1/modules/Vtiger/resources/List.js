@@ -357,7 +357,8 @@ Vtiger.Class("Vtiger_List_Js", {
         listSelectParams = jQuery.extend(listSelectParams, params);
         if (listSelectParams) {
             var message = app.vtranslate('LBL_MASS_DELETE_CONFIRMATION');
-            app.helper.showConfirmationBox({'message': message}).then(function (e) {
+            const warningParams = jQuery.extend({}, listSelectParams, {module: app.getModuleName()});
+            app.helper.showDeleteConfirmationBox(warningParams, message).then(function (e) {
                 listSelectParams['module'] = app.getModuleName();
                 listSelectParams['action'] = 'MassDelete';
                 listSelectParams['search_params'] = JSON.stringify(listInstance.getListSearchParams());
@@ -2019,9 +2020,10 @@ Vtiger.Class("Vtiger_List_Js", {
     },
     deleteRecord: function (recordId, extraParams) {
         let thisInstance = this,
-            message = app.vtranslate('LBL_DELETE_CONFIRMATION');
+            message = app.vtranslate('LBL_DELETE_CONFIRMATION'),
+            warningParams = {module: (extraParams && extraParams.module) || app.getModuleName(), record: recordId};
 
-        app.helper.showConfirmationBox({'message': message}).then(function () {
+        app.helper.showDeleteConfirmationBox(warningParams, message).then(function () {
             thisInstance._deleteRecord(recordId, extraParams);
         });
     },
