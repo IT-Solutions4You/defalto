@@ -392,16 +392,20 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
                     const searchParams = self.getReferenceSearchParams(wrapper.find('input[name="popupReferenceModule"]'));
 
                     searchParams.module = form.find('[name="module"]').val() || app.getModuleName();
+                    searchParams.action = 'MultireferenceSearch';
                     searchParams.search_value = params.data.term;
                     self.searchModuleNames(searchParams).then(success, failure);
                 },
                 processResults: function (data) {
                     return {
                         results: jQuery.map(data || [], function (item) {
-                            return {id: item.id, text: item.label};
+                            return {id: item.id, text: item.label, number: item.number};
                         })
                     };
                 }
+            },
+            templateResult: function (item) {
+                return item.number ? item.number + ' - ' + item.text : item.text;
             }
         };
     },
