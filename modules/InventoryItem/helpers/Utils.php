@@ -214,6 +214,8 @@ class InventoryItem_Utils_Helper
             return $label;
         }
 
+        require_once 'modules/PickList/PickListUtils.php';
+
         $units = array_merge(array_keys(getAllPickListValues('usageunit')), array_keys(getAllPickListValues('service_usageunit')));
 
         if (in_array($label, $units, true)) {
