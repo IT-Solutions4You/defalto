@@ -26,6 +26,7 @@ class Installer_Download_Model
     protected string $expectedChecksum = '';
     protected string $workspace = '';
     protected array $allowedRoots = [];
+    protected string $allowedModuleName = '';
     protected array $requiredWritablePaths = ['cache', 'modules', 'layouts', 'languages'];
     protected mixed $lockHandle = null;
     protected ?Installer_ZipArchive_Model $archive = null;
@@ -178,6 +179,11 @@ class Installer_Download_Model
             $this->success('Zip file opened successfully');
             $this->success('Expected ZIP source folder: ' . $this->escapeLogValue($this->folder));
             $this->archive->setAllowedRoots($this->allowedRoots);
+
+            if ($this->allowedModuleName !== '') {
+                $this->archive->setAllowedModuleName($this->allowedModuleName);
+            }
+
             $sourceFolder = $this->archive->resolveSourceFolder($this->folder);
 
             if ($sourceFolder !== trim(str_replace('\\', '/', $this->folder), '/')) {
@@ -257,6 +263,51 @@ class Installer_Download_Model
         }
     }
 
+    /**
+     * Download and validate a package without applying its files.
+     *
+     * @param array<string> $requestedFiles
+     *
+     * @return array{paths: array<string>, contents: array<string, string>}
+     */
+    public function inspectPackage(array $requestedFiles): array
+    {
+        $this->start();
+        $this->retrieve();
+        $this->download();
+        $this->archive = new Installer_ZipArchive_Model();
+        $result = $this->archive->open($this->getZipFile());
+
+        if (true !== $result) {
+            throw new RuntimeException('Downloaded ZIP file cannot be opened (code ' . (string)$result . ')');
+        }
+
+        $this->archive->setAllowedRoots($this->allowedRoots);
+
+        if ('' !== $this->allowedModuleName) {
+            $this->archive->setAllowedModuleName($this->allowedModuleName);
+        }
+
+        $sourceFolder = $this->archive->resolveSourceFolder($this->folder);
+        $paths = $this->archive->validatePackage($sourceFolder);
+        $contents = [];
+
+        foreach (array_unique($requestedFiles) as $requestedFile) {
+            $requestedFile = str_replace('\\', '/', (string)$requestedFile);
+
+            if (in_array($requestedFile, $paths, true)) {
+                $contents[$requestedFile] = $this->archive->getFileContent($sourceFolder, $requestedFile);
+            }
+        }
+
+        $this->discard();
+
+        return [
+            'paths' => $paths,
+            'contents' => $contents,
+        ];
+    }
+
     public function commit(): void
     {
         if ($this->finalized) {
@@ -268,6 +319,19 @@ class Installer_Download_Model
         $this->releaseLock();
         $this->finalized = true;
         $this->success('Package files committed');
+    }
+
+    public function discard(): void
+    {
+        if ($this->finalized) {
+            return;
+        }
+
+        $this->archive?->close();
+        $this->archive = null;
+        $this->removeWorkspace();
+        $this->releaseLock();
+        $this->finalized = true;
     }
 
     public function rollback(): void
@@ -292,6 +356,8 @@ class Installer_Download_Model
             }
         }
 
+        $this->archive?->close();
+        $this->archive = null;
         $this->removeWorkspace();
         $this->releaseLock();
         $this->finalized = true;
@@ -328,6 +394,14 @@ class Installer_Download_Model
         return $this;
     }
 
+    public function setAllowedModuleName(string $moduleName): static
+    {
+        Installer_ExtensionInstall_Model::validateModuleName($moduleName);
+        $this->allowedModuleName = $moduleName;
+
+        return $this;
+    }
+
     public function setRequiredWritablePaths(array $paths): static
     {
         $this->requiredWritablePaths = array_values(array_unique(array_filter(array_map('strval', $paths))));
@@ -346,6 +420,28 @@ class Installer_Download_Model
         $this->expectedChecksum = $checksum;
 
         return $this;
+    }
+
+    public function hasCopiedFile(string $relativePath): bool
+    {
+        if (!$this->archive) {
+            return false;
+        }
+
+        $rootDirectory = rtrim(
+            str_replace(['/', '\\'], DIRECTORY_SEPARATOR, Core_Utils_Helper::getRootDirectory()),
+            DIRECTORY_SEPARATOR
+        );
+        $targetFile = $rootDirectory . DIRECTORY_SEPARATOR
+            . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, ltrim($relativePath, '/\\'));
+        $copiedFiles = $this->archive->getCopiedFiles();
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $targetFile = strtolower($targetFile);
+            $copiedFiles = array_map('strtolower', $copiedFiles);
+        }
+
+        return in_array($targetFile, $copiedFiles, true);
     }
 
     protected function validateDownloadUrl(string $url): void

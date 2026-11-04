@@ -112,6 +112,9 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View
             foreach ($fieldNames as $fieldName) {
                 if (in_array($fieldName, $getRawFields)) {
                     $taskObject->$fieldName = $request->getRaw($fieldName);
+                } elseif ($request->has($fieldName . '[]')) {
+                    // Multi-select fields are posted as "<field>[]"
+                    $taskObject->$fieldName = (array)$request->get($fieldName . '[]');
                 } elseif (($request->get('taskType') === 'AddSharing' || $request->get(
                             'taskType'
                         ) === 'RemoveSharing') && ($fieldName === 'memberViewList' || $fieldName === 'memberEditList')) {

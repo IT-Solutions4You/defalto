@@ -27,5 +27,9 @@ $max_mailboxes = 3;
  */
 $runtime_connectors = [];
 
+// Physical directory for persisted attachment files.
+// Use an absolute path to keep document files outside the public web directory.
+// $storage_directory = '/srv/defalto-data/storage/';
+
 //Password Regex for validation
 $validation_regex = ['password_regex' => '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})'];

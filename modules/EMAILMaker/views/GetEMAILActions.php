@@ -41,6 +41,19 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
 
         $single_record = true;
         $record = $request->get('record');
+        $denyReason = !empty($record)
+            ? Core_RecordActionPermission_Model::getInstance()->getDenyReason((int)$record, Core_RecordActionPermission_Model::ACTION_EMAIL_SEND)
+            : null;
+
+        // Sending emails for the record is denied by a record action rule: a disabled button with the reason
+        if (null !== $denyReason) {
+            $viewer->assign('DENY_REASON', $denyReason);
+            $viewer->assign('CONTAINER_ID', 'EMAILMakerContentDiv');
+            $viewer->assign('BUTTON_LABEL', vtranslate('LBL_SEND_EMAILMAKER_EMAIL', 'EMAILMaker'));
+            $viewer->view('getButtons' === $request->get('mode') ? 'RecordActionDeniedButton.tpl' : 'RecordActionDenied.tpl', 'Core');
+
+            return;
+        }
         $relmodule = getSalesEntityType($record);
         $viewer->assign('MODULE', $relmodule);
         $viewer->assign('ID', $record);

@@ -31,21 +31,10 @@ class RecycleBin_RecycleBinAjax_Action extends Vtiger_Mass_Action
      */
     public function checkPermission(Vtiger_Request $request): bool
     {
-        if ($request->get('mode') == 'emptyRecycleBin') {
-            //Only admin user can empty the recycle bin, so this check is mandatory
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            if (!$currentUserModel->isAdminUser()) {
-                throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
-            }
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-            return true;
-        }
-        $targetModuleName = $request->get('sourceModule', $request->get('module'));
-        $moduleModel = Vtiger_Module_Model::getInstance($targetModuleName);
-
-        $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-        if (!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Delete')) {
-            throw new Exception(getTranslatedString('LBL_PERMISSION_DENIED'));
+        if (!$currentUserModel->isAdminUser()) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
         }
 
         return true;
@@ -56,6 +45,48 @@ class RecycleBin_RecycleBinAjax_Action extends Vtiger_Mass_Action
      */
     public function postProcess(Vtiger_Request $request): void
     {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getRecordsListFromRequest(Vtiger_Request $request, $model = false)
+    {
+        $selectedIds = $request->get('selected_ids');
+        $sourceModule = $request->get('sourceModule');
+
+        if (!$request->has('selected_ids') || !$this->hasValidSelectionState($selectedIds) || !$this->isValidSourceModule($sourceModule)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        if ($selectedIds === 'all' && !$this->isSourceModuleView($request->get('viewname'), $sourceModule)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        return parent::getRecordsListFromRequest($request, $model);
+    }
+
+    protected function hasValidSelectionState($selectedIds): bool
+    {
+        return $selectedIds === 'all' || (is_array($selectedIds) && !empty($selectedIds));
+    }
+
+    protected function isValidSourceModule(string $sourceModule): bool
+    {
+        $recycleBinModule = new RecycleBin_Module_Model();
+
+        return $recycleBinModule->isSourceModuleAllowed($sourceModule);
+    }
+
+    protected function isSourceModuleView($viewId, string $sourceModule): bool
+    {
+        if (empty($viewId) || $viewId === 'undefined') {
+            $viewId = CustomView_Record_Model::getAllFilterByModule($sourceModule)->getId();
+        }
+
+        $customViewModel = CustomView_Record_Model::getInstanceById($viewId);
+
+        return $customViewModel && $customViewModel->getModule()->getName() === $sourceModule;
     }
 
     public function process(Vtiger_Request $request)
@@ -126,9 +157,10 @@ class RecycleBin_RecycleBinAjax_Action extends Vtiger_Mass_Action
 
         $response = new Vtiger_Response();
         if ($recordIds) {
-            $recycleBinModule->deleteRecords($recordIds);
-            $response->setResult([true]);
-            $response->emit();
+            $recycleBinModule->deleteRecords($recordIds, $request->get('sourceModule'));
         }
+
+        $response->setResult([true]);
+        $response->emit();
     }
 }

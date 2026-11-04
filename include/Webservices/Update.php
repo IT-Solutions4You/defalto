@@ -91,6 +91,13 @@ function vtws_update($element, $user)
         }
     }
 
+    // Fields locked and status values denied by record action rules cannot be changed through the API
+    $denyReason = Core_RecordActionPermission_Model::getInstance()->getWebserviceDenyReason((int)$idList[1], (string)$entityName, $element);
+
+    if (null !== $denyReason) {
+        throw new WebServiceException(WebServiceErrorCode::$ACCESSDENIED, $denyReason);
+    }
+
     $meta->hasMandatoryFields($element);
 
     $ownerFields = $meta->getOwnerFields();

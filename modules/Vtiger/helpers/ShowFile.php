@@ -36,7 +36,6 @@ class Vtiger_ShowFile_Helper
         if ($result && $db->num_rows($result)) {
             $resultData = $db->fetch_array($result);
             $fileId = $resultData['attachmentsid'];
-            $filePath = $resultData['path'];
             $fileName = $resultData['name'];
             $storedFileName = $resultData['storedname'];
             $fileType = $resultData['type'];
@@ -48,19 +47,26 @@ class Vtiger_ShowFile_Helper
              */
             if (md5($fileName) == $encFileName || md5($sanitizedFileName) == $encFileName) {
                 if (!empty($storedFileName)) {
-                    $finalFilePath = $filePath . $fileId . '_' . $storedFileName;
+                    $resultData['storedname'] = $storedFileName;
                 } elseif (is_null($storedFileName)) {
-                    $finalFilePath = $filePath . $fileId . '_' . $encFileName;
+                    $resultData['storedname'] = $encFileName;
                 }
+
+                $storageModel = Core_Storage_Model::getInstance();
+                $finalFilePath = $storageModel->getAttachmentFilePath($resultData);
                 $isFileExist = false;
+
                 if (file_exists($finalFilePath)) {
                     $isFileExist = true;
                 } else {
-                    $finalFilePath = $filePath . $fileId . '_' . $sanitizedFileName;
+                    $resultData['storedname'] = $sanitizedFileName;
+                    $finalFilePath = $storageModel->getAttachmentFilePath($resultData);
+
                     if (file_exists($finalFilePath)) {
                         $isFileExist = true;
                     }
                 }
+
                 if ($isFileExist) {
                     Vtiger_ShowFile_Helper::show($finalFilePath, $fileType, $sanitizedFileName);
                 }

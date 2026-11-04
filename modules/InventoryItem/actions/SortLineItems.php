@@ -10,6 +10,33 @@
 
 class InventoryItem_SortLineItems_Action extends Core_Controller_Action
 {
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+
+        $data = $request->get('data');
+        $itemIds = is_array($data) ? array_column($data, 'id') : [];
+
+        if (!is_array($data) || count($itemIds) !== count($data)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        $itemParentIds = InventoryItem_Module_Model::fetchParentIds($itemIds);
+
+        if (count($itemParentIds) !== count(array_unique(array_map('intval', $itemIds)))) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        foreach (array_unique($itemParentIds) as $parentId) {
+            InventoryItem_ParentEntity_Model::requireEditableParent($parentId);
+        }
+
+        return true;
+    }
+
     public function process(Vtiger_Request $request)
     {
         $response = new Vtiger_Response();

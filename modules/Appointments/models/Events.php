@@ -72,20 +72,35 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
     /**
      * @return void
+     * @throws Exception
      */
     public function delete()
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        $this->adb->pquery(
-            'DELETE FROM its4you_calendar_default_types WHERE id=?',
-            [$this->getId()]
-        );
+        if (!$this->isDeletableBy($currentUser)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
 
-        $this->adb->pquery(
-            'DELETE FROM its4you_calendar_user_types WHERE default_id=? AND user_id=?',
-            [$this->getId(), $currentUser->getId()]
-        );
+        if ($this->isDefault()) {
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_user_types WHERE default_id=?',
+                [$this->getId()]
+            );
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_default_types WHERE id=?',
+                [$this->getId()]
+            );
+        } else {
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_user_types WHERE default_id=? AND user_id=?',
+                [$this->getId(), $currentUser->getId()]
+            );
+            $this->adb->pquery(
+                'DELETE FROM its4you_calendar_default_types WHERE id=? AND is_default=0 AND NOT EXISTS (SELECT id FROM its4you_calendar_user_types WHERE default_id=?)',
+                [$this->getId(), $this->getId()]
+            );
+        }
     }
 
     /**
@@ -378,11 +393,15 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         $timeFields = [];
         $recordModel = $this->getRecordModel();
         $userModel = Users_Privileges_Model::getCurrentUserModel();
+        $isAppointmentsAllDay = $recordModel instanceof Appointments_Record_Model && $recordModel->isAllDayEvent();
+        $isAllDay = $isAppointmentsAllDay || 1 === (int)$recordModel->get('is_all_day');
 
         foreach ($this->get('fields') as $fieldName) {
             $fieldDateTime = $recordModel->get($fieldName);
 
-            if (2 === php7_count(explode(' ', $fieldDateTime))) {
+            if ($isAppointmentsAllDay) {
+                $dateFields[] = Vtiger_Date_UIType::getDisplayDateValue($recordModel->getAllDayDate($fieldName));
+            } elseif (2 === php7_count(explode(' ', $fieldDateTime))) {
                 $timeValue = DateTimeField::convertToUserTimeZone($fieldDateTime)->format('H:i');
 
                 if (12 === (int)$userModel->get('hour_format')) {
@@ -390,14 +409,15 @@ class Appointments_Events_Model extends Vtiger_Base_Model
                 }
 
                 $timeFields[] = $timeValue;
+                $dateFields[] = Vtiger_Util_Helper::formatDateIntoStrings($fieldDateTime);
+            } else {
+                $dateFields[] = Vtiger_Util_Helper::formatDateIntoStrings($fieldDateTime);
             }
-
-            $dateFields[] = Vtiger_Util_Helper::formatDateIntoStrings($fieldDateTime);
         }
 
         $value = implode(' - ', array_unique($dateFields));
 
-        if (1 !== (int)$recordModel->get('is_all_day')) {
+        if (!$isAllDay) {
             $value .= ' • ' . implode(' - ', array_unique($timeFields));
         }
 
@@ -579,7 +599,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             return [];
         }
 
-        $startDate = $this->getDate($recordModel->get($startField));
+        $isAllDay = $this->isCalendar() && $recordModel->isAllDayEvent();
+        $startDate = $isAllDay
+            ? $recordModel->getAllDayDate($startField)
+            : $this->getDate($recordModel->get($startField));
 
         if (in_array($startField, self::$repeatableFields)) {
             $startDate = preg_replace('/(\d{4})/', date('Y'), $startDate);
@@ -601,14 +624,20 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         ];
 
         if (!empty($endField)) {
-            $endDate = $this->getDate($recordModel->get($endField));
+            $endDate = $isAllDay
+                ? $recordModel->getAllDayStorageDate($endField)
+                : $this->getDate($recordModel->get($endField));
 
-            [$endDateDate, $endDateTime] = explode(' ', $endDate);
-
-            if (empty($endDateTime)) {
-                $record['end'] = date('Y-m-d', strtotime($endDateDate) + 86400);
+            if ($isAllDay) {
+                $record['end'] = (new DateTimeImmutable($endDate))->modify('+1 day')->format('Y-m-d');
             } else {
-                $record['end'] = $endDate;
+                [$endDateDate, $endDateTime] = array_pad(explode(' ', $endDate), 2, '');
+
+                if (empty($endDateTime)) {
+                    $record['end'] = date('Y-m-d', strtotime($endDateDate) + 86400);
+                } else {
+                    $record['end'] = $endDate;
+                }
             }
         }
 
@@ -616,12 +645,36 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             $recordModel->set('is_all_day', 1);
         }
 
-        if (1 === (int)$recordModel->get('is_all_day')) {
+        $recordIsAllDay = $recordModel instanceof Appointments_Record_Model
+            ? $recordModel->isAllDayEvent()
+            : 1 === (int)$recordModel->get('is_all_day');
+
+        if ($recordIsAllDay) {
             $record['allDay'] = 1;
-            $record['end'] = date('Y-m-d', strtotime($record['end']) + 86400);
+
+            if (!($recordModel instanceof Appointments_Record_Model)) {
+                $record['end'] = date('Y-m-d', strtotime($record['end']) + 86400);
+            }
         }
 
         return $record;
+    }
+
+    /**
+     * @param int $recordId
+     *
+     * @return Vtiger_Record_Model
+     * @throws Exception
+     */
+    public static function getViewableRecordModel(int $recordId): Vtiger_Record_Model
+    {
+        $moduleName = getSalesEntityType($recordId);
+
+        if (!isRecordExists($recordId) || empty($moduleName) || !Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        return Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
     }
 
     /**
@@ -708,6 +761,61 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         );
 
         return (bool)$this->adb->num_rows($result);
+    }
+
+    /**
+     * @param Users_Record_Model $user
+     *
+     * @return bool
+     */
+    public function isDeletableBy(Users_Record_Model $user): bool
+    {
+        if ($this->isEmptyId()) {
+            return false;
+        }
+
+        if ($this->isDefault()) {
+            return $user->isAdminUser();
+        }
+
+        return $this->hasUserAssociation($user);
+    }
+
+    /**
+     * @param Users_Record_Model $user
+     *
+     * @return bool
+     */
+    public function isEditableBy(Users_Record_Model $user): bool
+    {
+        if ($this->isEmptyId() || $this->isDefault()) {
+            return true;
+        }
+
+        return $this->hasUserAssociation($user);
+    }
+
+    /**
+     * @param Users_Record_Model $user
+     *
+     * @return bool
+     */
+    protected function hasUserAssociation(Users_Record_Model $user): bool
+    {
+        $result = $this->adb->pquery(
+            'SELECT id FROM its4you_calendar_user_types WHERE default_id=? AND user_id=?',
+            [$this->getId(), $user->getId()]
+        );
+
+        return (bool)$this->adb->num_rows($result);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return (bool)$this->get('is_default');
     }
 
     /**
@@ -815,6 +923,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             $this->set('range_field', $fields[1]);
             $this->set('color', !empty($row['color']) ? $row['color'] : $row['default_color']);
             $this->set('visible', 1 === $row['visible'] || null === $row['visible']);
+            $this->set('is_default', 1 === (int)$row['is_default']);
         }
     }
 
@@ -828,8 +937,23 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
         [$startField, $endField] = $fields;
 
-        /** @var EnhancedQueryGenerator $queryGenerator */
+        /** @var EnhancedQueryGenerator|Appointments_QueryGenerator_Model $queryGenerator */
         $queryGenerator = $this->listViewModel->get('query_generator');
+
+        if ($this->isCalendar() && $queryGenerator instanceof Appointments_QueryGenerator_Model) {
+            [$utcStart, $utcEnd] = Appointments_Dates_Helper::getDatabaseRangeForUser(
+                $this->get('start_date'),
+                $this->get('end_date')
+            );
+            $queryGenerator->addCalendarRangeCondition(
+                $this->get('start_date'),
+                $this->get('end_date'),
+                $utcStart,
+                $utcEnd
+            );
+
+            return;
+        }
 
         $queryGenerator->startGroup('');
         $queryGenerator->addCondition($startField, $betweenValue, 'bw', $queryGenerator::$OR);
@@ -866,11 +990,12 @@ class Appointments_Events_Model extends Vtiger_Base_Model
 
         while ($row = $adb->fetchByAssoc($result)) {
             self::$eventTypes[$row['id']] = [
-                'id'      => $row['id'],
-                'module'  => $row['module'],
-                'fields'  => (array)array_unique(json_decode(decode_html($row['fields']))),
-                'color'   => !empty($row['color']) ? $row['color'] : $row['default_color'],
-                'visible' => 1 === (int)$row['visible'],
+                'id'         => $row['id'],
+                'module'     => $row['module'],
+                'fields'     => (array)array_unique(json_decode(decode_html($row['fields']))),
+                'color'      => !empty($row['color']) ? $row['color'] : $row['default_color'],
+                'visible'    => 1 === (int)$row['visible'],
+                'is_default' => 1 === (int)$row['is_default'],
             ];
         }
     }
@@ -945,7 +1070,9 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         $module = $this->getModule();
         $user = Users_Record_Model::getCurrentUserModel();
 
-        $queryGenerator = new EnhancedQueryGenerator($module, $user);
+        $queryGenerator = $this->isCalendar()
+            ? new Appointments_QueryGenerator_Model($module, $user)
+            : new EnhancedQueryGenerator($module, $user);
         $queryGenerator->setFields($this->getListFields());
 
         $moduleSpecificControllerPath = 'modules/' . $module . '/controllers/ListViewController.php';

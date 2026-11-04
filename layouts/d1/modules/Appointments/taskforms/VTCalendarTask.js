@@ -40,7 +40,7 @@ Vtiger.Class('VTCalendarTask', {
             endTimeRow.hide();
 
             startTime.val('00:00');
-            endTime.val('23:59');
+            endTime.val('00:00');
         } else {
             startTimeRow.show();
             endTimeRow.show();

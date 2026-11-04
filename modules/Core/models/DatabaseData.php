@@ -23,7 +23,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     protected array $columns = [];
 
     /**
-     * @param $search
+     * @param $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return mixed
      * @throws Exception
@@ -33,7 +33,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         $this->requireTable('Table is empty for delete data');
 
         $query = $this->getDeleteQuery($this->get('table'), $search);
-        $params = $search;
+        $params = $this->getSearchParams((array)$search);
 
         $this->retrieveDB();
 
@@ -42,17 +42,71 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param $table
-     * @param $search
+     * @param $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return string
+     * @throws Exception for an empty array of values in $search
      */
     public function getDeleteQuery($table, $search): string
     {
-        return sprintf(
-            'DELETE FROM %s WHERE %s=?',
-            $table,
-            implode('=? AND ', array_keys($search)),
-        );
+        // no search keeps the former statement, which the database refuses — never a delete of all rows
+        if (empty($search)) {
+            return sprintf('DELETE FROM %s WHERE %s=?', $table, implode('=? AND ', array_keys((array)$search)));
+        }
+
+        return sprintf('DELETE FROM %s WHERE %s', $table, $this->getSearchCondition((array)$search));
+    }
+
+    /**
+     * The WHERE condition of a search: a value that is not an array is `column=?`, an array of
+     * values is `column IN (?,…)`. An empty array is badly prepared data — the query is not built
+     * and never runs; the caller handles an empty list itself.
+     *
+     * @param array $search column => value or array of values
+     *
+     * @return string the conditions joined with AND
+     * @throws Exception for an empty array of values
+     */
+    public function getSearchCondition(array $search): string
+    {
+        $conditions = [];
+
+        foreach ($search as $column => $value) {
+            if (!is_array($value)) {
+                $conditions[] = $column . '=?';
+            } elseif (empty($value)) {
+                throw new Exception('Empty list of values for column ' . $column . ' in the search');
+            } else {
+                $conditions[] = $column . ' IN (' . generateQuestionMarks($value) . ')';
+            }
+        }
+
+        return implode(' AND ', $conditions);
+    }
+
+    /**
+     * @param array $search column => value or array of values
+     *
+     * @return array the parameters of getSearchCondition() in their order
+     */
+    public function getSearchParams(array $search): array
+    {
+        $params = [];
+
+        foreach ($search as $value) {
+            // only an array is a list of values — null, an object or a string stays one parameter
+            if (!is_array($value)) {
+                $params[] = $value;
+
+                continue;
+            }
+
+            foreach ($value as $item) {
+                $params[] = $item;
+            }
+        }
+
+        return $params;
     }
 
     /**
@@ -95,9 +149,10 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
     /**
      * @param string $table
      * @param array  $data
-     * @param array  $search
+     * @param array  $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return string
+     * @throws Exception for an empty array of values in $search
      */
     public function getSelectQuery(string $table, array $data = [], array $search = []): string
     {
@@ -105,24 +160,30 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
             'SELECT %s FROM %s  %s',
             empty($data) ? '*' : implode(',', $data),
             $table,
-            empty($search) ? '' : 'WHERE ' . implode('=? AND ', array_keys($search)) . '=?',
+            empty($search) ? '' : 'WHERE ' . $this->getSearchCondition($search),
         );
     }
 
     /**
      * @param string $table
      * @param array  $data
-     * @param array  $search
+     * @param array  $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return string
+     * @throws Exception for an empty array of values in $search
      */
     public function getUpdateQuery(string $table, array $data, array $search): string
     {
+        // no search keeps the former statement, which the database refuses — never an update of all rows
+        if (empty($search)) {
+            return sprintf('UPDATE %s SET %s=? WHERE %s=?', $table, implode('=?,', array_keys($data)), implode('=? AND ', array_keys($search)));
+        }
+
         return sprintf(
-            'UPDATE %s SET %s=? WHERE %s=?',
+            'UPDATE %s SET %s=? WHERE %s',
             $table,
             implode('=?,', array_keys($data)),
-            implode('=? AND ', array_keys($search)),
+            $this->getSearchCondition($search),
         );
     }
 
@@ -167,7 +228,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param array $data
-     * @param array $search
+     * @param array $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return array|null
      * @throws Exception
@@ -198,7 +259,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         $params = [];
 
         if (!empty($search)) {
-            $params = array_merge($params, $search);
+            $params = array_merge($params, $this->getSearchParams($search));
         }
 
         return $this->db->pquery($query, $params);
@@ -206,7 +267,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
 
     /**
      * @param array $data
-     * @param array $search
+     * @param array $search column => value, or an array of values (IN; an empty array throws an Exception, nothing runs)
      *
      * @return bool
      * @throws Exception
@@ -216,7 +277,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
         $this->requireTable('Table is empty for update data');
 
         $query = $this->getUpdateQuery($this->get('table'), $data, $search);
-        $params = array_merge(array_values($data), array_values($search));
+        $params = array_merge(array_values($data), $this->getSearchParams($search));
         $this->retrieveDB();
 
         return (bool)$this->db->pquery($query, $params);
@@ -325,7 +386,7 @@ class Core_DatabaseData_Model extends Core_DatabaseTable_Model
      *
      * @return self
      */
-    public static function getTableInstance(string $table, string $tableId = null): self
+    public static function getTableInstance(string $table, ?string $tableId = null): self
     {
         return (new self())->getTable($table, $tableId);
     }

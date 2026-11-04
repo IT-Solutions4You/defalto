@@ -69,7 +69,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
                         $fileDetails['fileid'] = $fileDetails['attachmentsid'];
                         $fileDetails['docid'] = $fileDetails['crmid'];
                         $fileDetails['attachment'] = $fileDetails['name'];
-                        $fileDetails['size'] = filesize($fileDetails['path'] . $fileDetails['attachmentsid'] . "_" . $fileDetails['name']);
+                        $fileDetails['size'] = filesize(
+                            Core_Storage_Model::getInstance()->getAttachmentFilePath($fileDetails)
+                        );
                         $attachements[] = $fileDetails;
                     }
                 }
@@ -525,13 +527,39 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
      */
     public function process(Vtiger_Request $request)
     {
+        $skippedMessage = $this->checkSendableRecords($request);
         $this->composeMailData($request);
 
         $viewer = $this->getViewer($request);
+        $viewer->assign('RECORD_ACTION_SKIPPED_MESSAGE', $skippedMessage);
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('ComposeEmailForm.tpl', $request->getModule());
+    }
+
+    /**
+     * Stops composing when record action rules deny sending emails for every source record; records denied
+     * among others are skipped when the email is sent (ITS4YouEmails_MassSaveAjax_View).
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return string message about the records that will be skipped, empty when none
+     * @throws Exception with the reason of the rule
+     */
+    public function checkSendableRecords(Vtiger_Request $request): string
+    {
+        $actionPermission = Core_RecordActionPermission_Model::getInstance();
+        $permission = $actionPermission->getPermittedRecords(
+            (array)$this->getSourceRecords($request),
+            Core_RecordActionPermission_Model::ACTION_EMAIL_SEND
+        );
+
+        if (!empty($permission['skipped']) && empty($permission['permitted'])) {
+            throw new Exception(reset($permission['skipped']));
+        }
+
+        return $actionPermission->getSkippedMessage($permission['skipped']);
     }
 
     /**
@@ -546,7 +574,9 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $fileDetails['docid'] = $fileDetails['crmid'];
         $fileDetails['attachment'] = $fileDetails['name'];
         $fileDetails['nondeletable'] = false;
-        $fileDetails['size'] = filesize(decode_html($fileDetails['path'] . $fileDetails['attachmentsid'] . '_' . $fileDetails['storedname']));
+        $fileDetails['size'] = filesize(
+            decode_html(Core_Storage_Model::getInstance()->getAttachmentFilePath($fileDetails))
+        );
 
         return $fileDetails;
     }
@@ -881,10 +911,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $recordModule);
 
         $subject = decode_html($recordModel->get('subject'));
-
-        if (in_array($mode, ['Reply', 'ReplyAll'])) {
-            $subject = 'Re:' . $subject;
-        }
+        $subject = ITS4YouEmails_Record_Model::getSubjectForMode($subject, $mode);
 
         $request->set('subject', $subject);
         $request->set('body', decode_html($recordModel->get('body')));
@@ -915,14 +942,16 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
     {
         $mode = $request->get('mode');
 
+        $folderName = (string)$request->get('parentFolder');
         $recordModel = new MailManager_Message_Model();
         $recordModel->setUid($recordId);
-        $recordModel->retrieveRecordFromDB();
-        $subject = $recordModel->getSubject();
 
-        if (in_array($mode, ['Reply', 'ReplyAll'])) {
-            $subject = 'Re:' . $subject;
+        if ('' !== $folderName) {
+            $recordModel->setFolder(new MailManager_Folder_Model($folderName));
         }
+
+        $recordModel->retrieveRecordFromDB();
+        $subject = ITS4YouEmails_Record_Model::getSubjectForMode($recordModel->getSubject(), $mode);
 
         $sourceId = $request->get('record', '0');
         $request->set('selected_sourceid', $sourceId);
@@ -950,7 +979,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
 
         $request->set('subject', $subject);
         $request->set('body', $recordModel->getBody());
-        $request->set('attachments', ITS4YouEmails_Utils_Helper::getMailManagerAttachments($recordModel));
+        $request->set('attachments', ITS4YouEmails_Utils_Helper::getMailManagerAttachments($recordModel, $folderName));
 
         if ('Reply' === $mode || 'ReplyAll' === $mode) {
             $emailAddressRecord = !empty($sourceId) ? $sourceId : 'email';
@@ -1233,6 +1262,14 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_Footer_View
         $PDFTemplateIds = array_filter(explode(';', $request->get('pdf_template_ids')));
 
         if (!count($PDFTemplateIds)) {
+            return;
+        }
+
+        $PDFMessage = Core_RecordActionPermission_Model::getInstance()->getPdfAttachmentMessage((array)$this->getSourceRecords($request), $PDFDenied);
+        $viewer->assign('RECORD_ACTION_PDF_SKIPPED_MESSAGE', $PDFMessage);
+
+        // Record action rules deny the PDF export of every source record: the email is composed without PDFs
+        if ($PDFDenied) {
             return;
         }
 

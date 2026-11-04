@@ -345,13 +345,20 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
 
         $mainResult = $this->db->pquery('SELECT * FROM vtiger_activity WHERE activityid=?', [$this->calendarId]);
         $mainData = $this->db->fetchByAssoc($mainResult);
+        $isAllDay = 'Task' === $mainData['activitytype'];
+        $dateTimeStart = $isAllDay
+            ? trim($mainData['date_start']) . ' 00:00:00'
+            : trim($mainData['date_start'] . ' ' . $mainData['time_start']);
+        $dateTimeEnd = $isAllDay
+            ? trim($mainData['due_date']) . ' 00:00:00'
+            : trim($mainData['due_date'] . ' ' . $mainData['time_end']);
         $this->mainParams = [
             'its4you_calendar_id' => $this->calendarId,
             'subject'             => decode_html($mainData['subject']),
             'location'            => decode_html($mainData['location']),
-            'datetime_start'      => trim($mainData['date_start'] . ' ' . $mainData['time_start']),
-            'datetime_end'        => trim($mainData['due_date'] . ' ' . $mainData['time_end']),
-            'is_all_day'          => 'Task' === $mainData['activitytype'] ? '1' : '0',
+            'datetime_start'      => $dateTimeStart,
+            'datetime_end'        => $dateTimeEnd,
+            'is_all_day'          => $isAllDay ? '1' : '0',
             'calendar_status'     => $mainData['status'] ?: $mainData['eventstatus'],
             'calendar_priority'   => $mainData['priority'],
             'calendar_type'       => $mainData['activitytype'],

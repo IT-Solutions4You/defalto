@@ -31,16 +31,18 @@ class CustomerPortal_Utils
         $imageId = $adb->query_result($result, 0, 'attachmentsid');
         $imagePath = $adb->query_result($result, 0, 'path');
         $imageName = $adb->query_result($result, 0, 'name');
+        $storedName = $adb->query_result($result, 0, 'storedname');
         $imageType = $adb->query_result($result, 0, 'type');
         $imageOriginalName = urlencode(decode_html($imageName));
 
         if (!empty($imageName)) {
             $imageDetails[] = [
-                'id'      => $imageId,
-                'orgname' => $imageOriginalName,
-                'path'    => $imagePath . $imageId,
-                'name'    => $imageName,
-                'type'    => $imageType
+                'id'         => $imageId,
+                'orgname'    => $imageOriginalName,
+                'path'       => $imagePath,
+                'name'       => $imageName,
+                'storedname' => $storedName,
+                'type'       => $imageType
             ];
         }
 
@@ -53,8 +55,13 @@ class CustomerPortal_Utils
 
     static function getEncodedImage($imageDetails)
     {
-        global $root_directory;
-        $image = $root_directory . '/' . $imageDetails['path'] . '_' . $imageDetails['name'];
+        $attachment = [
+            'attachmentsid' => $imageDetails['id'],
+            'path'          => $imageDetails['path'],
+            'name'          => $imageDetails['name'],
+            'storedname'    => $imageDetails['storedname'],
+        ];
+        $image = Core_Storage_Model::getInstance()->getAttachmentFilePath($attachment);
         $image_data = file_get_contents($image);
         $encoded_image = base64_encode($image_data);
         $encodedImageData = [];
@@ -203,6 +210,51 @@ class CustomerPortal_Utils
         }
 
         return $fields;
+    }
+
+    public static function getVtqlFilterConditions($fields, array $activeFields, $groupConditionsBy): string
+    {
+        if ($fields === null || $fields === []) {
+            return '';
+        }
+
+        if (!is_array($fields)) {
+            throw new Exception('Invalid filter structure.', 1412);
+        }
+
+        if (empty($groupConditionsBy)) {
+            $groupConditionsBy = 'AND';
+        } elseif (!is_string($groupConditionsBy)) {
+            throw new Exception('Invalid filter condition operator.', 1412);
+        }
+
+        $groupConditionsBy = strtoupper(trim($groupConditionsBy));
+
+        if ($groupConditionsBy !== 'AND') {
+            throw new Exception('Only AND filter conditions are supported.', 1412);
+        }
+
+        $conditions = [];
+
+        foreach ($fields as $field => $value) {
+            if (!is_string($field) || !in_array($field, $activeFields, true)) {
+                throw new Exception($field . ' is not accessible.', 1412);
+            }
+
+            if (!is_scalar($value)) {
+                throw new Exception('Invalid filter value.', 1412);
+            }
+
+            $value = (string)$value;
+
+            if (strpos($value, '\\') !== false) {
+                throw new Exception('Invalid filter value.', 1412);
+            }
+
+            $conditions[] = $field . "='" . str_replace("'", "''", $value) . "'";
+        }
+
+        return implode(' AND ', $conditions);
     }
 
     static function str_replace_last($search, $replace, $str)

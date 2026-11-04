@@ -270,11 +270,12 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
             const startElement = container.find('input[name="datetime_start"]'),
                 endElement = container.find('input[name="datetime_end"]'),
                 endDateElement = container.find('[name="datetime_end_date"]'),
+                isAllDay = container.find('[name="is_all_day"]').is(':checked'),
                 m1 = moment(endElement.val()),
                 m2 = moment(startElement.val()),
                 diff = m1.unix() - m2.unix();
 
-            if (0 >= diff) {
+            if ((isAllDay && m1.isBefore(m2, 'day')) || (!isAllDay && 0 >= diff)) {
                 vtUtils.showValidationMessage(endDateElement, app.vtranslate('JS_CHECK_START_AND_END_DATE'));
             } else {
                 vtUtils.hideValidationMessage(endDateElement);
@@ -309,6 +310,8 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
         if (allDayElement.is(':checked')) {
             startTimeParent.addClass('hide');
             endTimeParent.addClass('hide');
+            startTime.val(self.getFormattedTime('01-01-2001 00:00')).trigger('change');
+            endTime.val(self.getFormattedTime('01-01-2001 00:00')).trigger('change');
         }
 
         allDayElement.on('change', function (e) {
@@ -319,6 +322,7 @@ Vtiger_Edit_Js('Appointments_Edit_Js', {}, {
                 endTimeParent.addClass('hide');
 
                 startTime.val(self.getFormattedTime('01-01-2001 00:00')).trigger('change');
+                endTime.val(self.getFormattedTime('01-01-2001 00:00')).trigger('change');
             } else {
                 startTimeParent.removeClass('hide');
                 endTimeParent.removeClass('hide');

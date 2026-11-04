@@ -147,16 +147,14 @@ class Settings_SMSNotifier_Record_Model extends Settings_Vtiger_Record_Model
     public function save()
     {
         $db = PearDatabase::getInstance();
-
+        $id = $this->getId();
         $password = $this->get('password');
-        if ($id && !Vtiger_Functions::isProtectedText($password)) {
-            $password = Vtiger_Functions::toProtectedText($password);
-        } else {
+
+        if (!Vtiger_Functions::isProtectedText($password)) {
             $password = Vtiger_Functions::toProtectedText($password);
         }
 
         $params = [$this->get('providertype'), $this->get('isactive'), $this->get('username'), $password, $this->get('parameters')];
-        $id = $this->getId();
 
         if ($id) {
             $query = 'UPDATE vtiger_smsnotifier_servers SET providertype = ?, isactive = ?, username = ?, password = ?, parameters = ? WHERE id = ?';

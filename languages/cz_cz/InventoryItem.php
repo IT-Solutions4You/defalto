@@ -55,6 +55,10 @@ $languageStrings = [
     'Parent' => 'Nadřazený záznam',
     'Discount Type' => 'Typ slevy',
     'Price Book' => 'Ceník',
+    'LBL_CONVERSION_TITLE' => 'Kontrola položek',
+    'LBL_CONVERSION_INVALID_ITEM' => 'Položka nepatří ke zdrojovému záznamu.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'Množství a cena musí být čísla.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Musí zůstat alespoň jedna položka.',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Chyba při ukládání řádku produktu',

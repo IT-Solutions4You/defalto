@@ -67,6 +67,11 @@ class Vtiger_NoteBook_Action extends Core_Controller_Action
             $tabId = $defaultTab['id'];
         }
 
+        $dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
+        if (!$dashBoardModel->getTabInfo($tabId)) {
+            throw new Exception('Invalid dashboard tab');
+        }
+
         $date_var = date("Y-m-d H:i:s");
         $date = $adb->formatDate($date_var, true);
 

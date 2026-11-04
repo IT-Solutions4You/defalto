@@ -280,6 +280,11 @@ class MailManager_Relation_View extends MailManager_Abstract_View
 
             case 'ModComments':
                 $relatedTo = !$request->isEmpty('related_to') ? $request->get('related_to') : $parent;
+                $relatedTo = $recordModel->getModule()->getPermittedRelatedRecordId($relatedTo);
+
+                if (false === $relatedTo) {
+                    throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+                }
 
                 $recordModel->set('assigned_user_id', $currentUserModel->getId());
                 $recordModel->set('commentcontent', $request->getRaw('commentcontent'));

@@ -216,10 +216,10 @@ $languageStrings = [
     'LBL_REQUIRES_AUTHENTICATION'            => 'Kräver Autentisering',
     'LBL_OUTGOING_SERVER'                    => 'Utgående Server',
     'LBL_OUTGOING_SERVER_DESC'               => 'Konfigurera dina utgående serverinställningar',
-    'LBL_DEFAULT'                            => 'Som förvalt är SMTP kontoinställningar för utgående server konfigurerad att od1.vtiger.com postserver. För att undvika att utgående e-post få filtreras bort av spamfilter på din mottagare ISP e-postserver, rekommenderar vi att du genomför ett av följande.',
+    'LBL_DEFAULT'                            => 'Som förvalt är SMTP kontoinställningar för utgående server konfigurerad att defalto.com postserver. För att undvika att utgående e-post få filtreras bort av spamfilter på din mottagare ISP e-postserver, rekommenderar vi att du genomför ett av följande.',
     'LBL_OPTIONS1'                           => 'Skicka e-post från e-postservern<br>
 					- Ange SMTP-kontouppgifter (Servernamn, Användarnamn, Lösneord) för samma konto som antecknats i från e-postadress.',
-    'LBL_OPTIONS2'                           => "Lägg vtiger.com server som auktoriserad avsändare av e-post för din domän.<br> 
+    'LBL_OPTIONS2'                           => "Lägg defalto.com server som auktoriserad avsändare av e-post för din domän.<br>
 					-För att säkerställa att din e-post inte avvisas av mottagarens server som SPAM, 
 					nedanstående TXT-post bör läggas till domänens DNS-post",
     'LBL_MAIL_SERVER_SMTP'                   => 'E-postserverinställningar (SMTP)',

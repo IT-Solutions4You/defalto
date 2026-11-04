@@ -842,8 +842,11 @@ var vtUtils = {
                 querySelector = '[data-bs-toggle="tooltip"]';
             }
 
-            const tooltipTriggerList = document.querySelectorAll(querySelector)
-            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+            const tooltipTriggerList = document.querySelectorAll(querySelector);
+
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                bootstrap.Tooltip.getOrCreateInstance(tooltipTriggerEl);
+            });
         });
     },
 

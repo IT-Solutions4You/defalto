@@ -81,7 +81,7 @@ class EMAILMaker_AjaxRequestHandle_Action extends Core_Controller_Action
                 }
                 echo $result;
                 break;
-            case "custom_labels_edit";
+            case "custom_labels_edit":
                 $adb->pquery("DELETE FROM vtiger_emakertemplates_label_vals WHERE label_id=? AND lang_id=?", [$request->get("label_id"), $request->get("lang_id")]);
                 $adb->pquery(
                     "INSERT INTO vtiger_emakertemplates_label_vals(label_id, lang_id, label_value) VALUES(?,?,?)",

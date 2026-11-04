@@ -224,10 +224,10 @@ $languageStrings = [
     'LBL_REQUIRES_AUTHENTICATION' => 'Requires Authentication',
     'LBL_OUTGOING_SERVER' => 'Outgoing Server',
     'LBL_OUTGOING_SERVER_DESC' => 'Configure your Outgoing Mail Server details',
-    'LBL_DEFAULT' => 'By default, SMTP account settings for the outgoing server are configured to od1.vtiger.com mail server. To avoid outgoing emails getting filtered out by spam filters on your recipient ISP mail server, we recommend you implement one of the following.',
+    'LBL_DEFAULT' => 'By default, SMTP account settings for the outgoing server are configured to defalto.com mail server. To avoid outgoing emails getting filtered out by spam filters on your recipient ISP mail server, we recommend you implement one of the following.',
     'LBL_OPTIONS1' => 'Send emails from your mail server<br>
 					- Enter the SMTP account details (Server Name, User Name, Password) for the same account as entered in the FROM email address.',
-    'LBL_OPTIONS2' => 'Add vtiger.com server as an authorized sender of emails for your domain <b>(your_company.com)</b> when you are using your <b>From Email (eg : support@your_company.com)</b>.<br>
+    'LBL_OPTIONS2' => 'Add defalto.com server as an authorized sender of emails for your domain <b>(your_company.com)</b> when you are using your <b>From Email (eg : support@your_company.com)</b>.<br>
 						-To ensure that your emails are not rejected by recipient\'s Server as SPAM, 
 						the below mentioned TXT record should be added to your domain\'s DNS record',
     'LBL_MAIL_SERVER_SMTP' => 'Mail Server Settings (SMTP)',
@@ -393,7 +393,16 @@ $languageStrings = [
     'LBL_CLIENT_ID' => 'Client Id',
     'LBL_CLIENT_SECRET' => 'Client Secret',
     'LBL_CLIENT_TOKEN' => 'Client Token',
+    'LBL_INVALID_IMAGE' => 'Invalid image.',
+    'LBL_WRONG_IMAGE_TYPE' => 'This image type is not supported. Upload a JPEG, PNG, or GIF file.',
+    'LBL_MAXIMUM_SIZE_EXCEEDS' => 'The logo file may be no larger than %s MB.',
+    'LBL_LOGO_FILE_TYPE_MISMATCH' => 'The file extension does not match the actual image format. Save the logo as a JPEG, PNG, or GIF file and try again.',
+    'LBL_LOGO_IMAGE_DIMENSIONS_EXCEED_LIMIT' => 'The logo dimensions are too large. The maximum supported size is 5000 × 5000 pixels.',
+    'LBL_LOGO_SAVE_FAILED' => 'The logo could not be saved. Check the logo directory permissions and try again.',
+    'LBL_REMOVE_COMPANY_LOGO' => 'Remove company logo',
+    'LBL_COMPANY_LOGO_WILL_BE_REMOVED' => 'The current company logo will be removed after you save the changes.',
 ];
+
 $jsLanguageStrings = [
     'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',
     'JS_GROUP_DELETED_SUCCESSFULLY' => 'Group deleted successfully',
@@ -418,7 +427,7 @@ $jsLanguageStrings = [
     'JS_RECORD_NUMBERING_UPDATED_SUCCESSFULLY_FOR' => 'Record Numbering Updated Successfully for',
     'JS_SEQUENCE_NUMBER_MESSAGE' => 'Sequence Number should be greater than or equal to',
     'LBL_WRONG_IMAGE_TYPE' => 'not supported Image type',
-    'LBL_MAXIMUM_SIZE_EXCEEDS' => 'You can upload maximum size of 1MB only',
+    'LBL_MAXIMUM_SIZE_EXCEEDS' => 'The logo file may be no larger than %s MB.',
     'LBL_NO_LOGO_SELECTED' => 'No logo selected',
     'JS_CONFIGURATION_DETAILS_SAVED' => 'Configuration Details Saved',
     'JS_TERMS_AND_CONDITIONS_SAVED' => 'Terms and conditions saved',

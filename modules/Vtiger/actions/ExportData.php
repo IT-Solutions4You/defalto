@@ -139,7 +139,11 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
 
         $orderBy = $request->get('orderby');
         $orderByFieldModel = $fieldInstances[$orderBy] ?? '';
-        $sortOrder = $request->get('sortorder');
+        $sortOrder = '';
+
+        if ($orderBy && $orderByFieldModel) {
+            $sortOrder = $this->validateSortOrder($request->get('sortorder'));
+        }
 
         if ($mode !== 'ExportAllData') {
             $operator = $request->get('operator');
@@ -259,6 +263,21 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
         }
 
         return $query;
+    }
+
+    private function validateSortOrder($sortOrder): string
+    {
+        if (!is_string($sortOrder)) {
+            throw new Exception('Invalid export sort order.');
+        }
+
+        $sortOrder = strtoupper($sortOrder);
+
+        if (!in_array($sortOrder, ['ASC', 'DESC'], true)) {
+            throw new Exception('Invalid export sort order.');
+        }
+
+        return $sortOrder;
     }
 
     /**

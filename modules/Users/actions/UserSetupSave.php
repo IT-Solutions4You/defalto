@@ -18,10 +18,37 @@
 
 class Users_UserSetupSave_Action extends Users_Save_Action
 {
+    protected Users_Module_Model $userModuleModel;
+
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $this->userModuleModel = Users_Module_Model::getInstance($request->getModule());
+        $this->userModuleModel->acquireUserSetupLock();
+
+        if (!$currentUser->isFirstTimeLogin($currentUser->getId())) {
+            $this->userModuleModel->releaseUserSetupLock();
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        $currencyName = $request->get('currency_name');
+
+        if (!empty($currencyName) && !Users_CRMSetup::isFirstUser($currentUser)) {
+            $this->userModuleModel->releaseUserSetupLock();
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+
+        return true;
+    }
+
     public function process(Vtiger_Request $request)
     {
-        $moduleName = $request->getModule();
-        $userModuleModel = Users_Module_Model::getInstance($moduleName);
+        $userModuleModel = $this->userModuleModel;
         $userRecordModel = Users_Record_Model::getCurrentUserModel();
 
         //Handling the user preferences
@@ -39,6 +66,7 @@ class Users_UserSetupSave_Action extends Users_Save_Action
             $userModuleModel->updateBaseCurrency($currencyName);
         }
         $userModuleModel->insertEntryIntoCRMSetup($userRecordModel->getId());
+        $userModuleModel->releaseUserSetupLock();
         //End
 
         header("Location: index.php");

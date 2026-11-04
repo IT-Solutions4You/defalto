@@ -14,7 +14,7 @@ class PDFMaker_SaveAjax_Action extends Core_Controller_Action
     {
         parent::__construct();
 
-        $Methods = ['SaveProductBlock', 'deleteProductBlocks', 'SavePDFBreakline', 'SavePDFImages'];
+        $Methods = ['SavePDFBreakline', 'SavePDFImages'];
 
         foreach ($Methods as $method) {
             $this->exposeMethod($method);

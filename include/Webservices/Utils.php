@@ -1339,7 +1339,7 @@ function vtws_filedetails($fileData)
         $fileName = $fileData['name'];
         $fileType = $fileData['type'];
         $fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-        $filenamewithpath = $fileData['path'] . $fileData['attachmentsid'] . '_' . $fileData['storedname'];
+        $filenamewithpath = Core_Storage_Model::getInstance()->getAttachmentFilePath($fileData);
         $filesize = filesize($filenamewithpath);
         $fileDetails['fileid'] = $fileData['attachmentsid'];
         $fileDetails['filename'] = $fileName;

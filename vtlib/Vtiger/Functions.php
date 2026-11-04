@@ -692,51 +692,7 @@ class Vtiger_Functions
 
     static function initStorageFileDirectory()
     {
-        $filepath = 'storage/';
-
-        $year = date('Y');
-        $month = date('F');
-        $day = date('j');
-        $week = '';
-        $permissions = self::getGroupPermissionsFromConfigFile();
-        if (!is_dir($filepath . $year)) {
-            //create new folder
-            mkdir($filepath . $year);
-            $yearPath = $filepath . $year;
-            exec("chown -R $permissions  $yearPath");
-        }
-
-        if (!is_dir($filepath . $year . "/" . $month)) {
-            //create new folder
-            $monthFilePath = "$year/$month";
-            $monthPath = $filepath . $monthFilePath;
-            mkdir($filepath . $monthFilePath);
-            exec("chown -R $permissions  $monthPath");
-        }
-
-        if ($day > 0 && $day <= 7) {
-            $week = 'week1';
-        } elseif ($day > 7 && $day <= 14) {
-            $week = 'week2';
-        } elseif ($day > 14 && $day <= 21) {
-            $week = 'week3';
-        } elseif ($day > 21 && $day <= 28) {
-            $week = 'week4';
-        } else {
-            $week = 'week5';
-        }
-
-        if (!is_dir($filepath . $year . "/" . $month . "/" . $week)) {
-            //create new folder
-            $weekFilePath = "$year/$month/$week";
-            $weekPath = $filepath . $weekFilePath;
-            mkdir($filepath . $weekFilePath);
-            exec("chown -R $permissions  $weekPath");
-        }
-
-        $filepath = $filepath . $year . "/" . $month . "/" . $week . "/";
-
-        return $filepath;
+        return Core_Storage_Model::getInstance()->initAttachmentFileDirectory();
     }
 
     /**
@@ -747,21 +703,7 @@ class Vtiger_Functions
      */
     static function validateImageMetadata($data, bool $short = true): bool
     {
-        if (is_array($data)) {
-            foreach ($data as $value) {
-                $ok = self::validateImageMetadata($value, $short);
-
-                if (!$ok) {
-                    return false;
-                }
-            }
-        } else {
-            if (stripos($data, $short ? '<?' : '<?php') !== false) { // suspicious dynamic content
-                return false;
-            }
-        }
-
-        return true;
+        return Core_ImageValidation_Helper::validateMetadata($data, $short);
     }
 
     /**
@@ -773,62 +715,7 @@ class Vtiger_Functions
      */
     static function validateImage(array $file_details): bool
     {
-        $allowedImageFormats = Vtiger_Functions::$supportedImageFormats;
-
-        // Determine mime-types based on file-content for generic type (Outlook add-on).
-        if ($file_details['type'] === 'application/octet-stream' && function_exists('mime_content_type')) {
-            $file_details['type'] = mime_content_type($file_details['tmp_name']);
-        }
-
-        $filetype = strtolower(pathinfo($file_details['name'], PATHINFO_EXTENSION));
-
-        if (!in_array($filetype, $allowedImageFormats)) {
-            return false;
-        }
-
-        $mimeType = mime_content_type($file_details['tmp_name']);
-        [$mimeTypeContents, $mimeSubtype] = explode('/', $mimeType);
-
-        if (strtolower($mimeTypeContents) !== 'image' || !in_array($mimeSubtype, $allowedImageFormats)) {
-            return false;
-        }
-
-        $shortTagSupported = (bool)ini_get('short_open_tag');
-
-        $tmpFileName = $file_details['tmp_name'];
-
-        if (in_array($file_details['type'], ['image/jpeg', 'image/tiff'])) {
-            $exifData = @exif_read_data($tmpFileName);
-
-            if ($exifData && !self::validateImageMetadata($exifData, $shortTagSupported)) {
-                return false;
-            }
-
-            if ($file_details['type'] === 'image/jpeg' && extension_loaded('gd') && function_exists('gd_info')) {
-                $img = imagecreatefromjpeg($tmpFileName);
-                imagejpeg($img, $tmpFileName);
-            }
-        }
-
-        $imageContents = file_get_contents($tmpFileName);
-        $shortTag = $shortTagSupported ? '<?' : '<?php';
-
-        if (stripos($imageContents, $shortTag) !== false) {
-            return false;
-        }
-
-        if (in_array('svg+xml', [$filetype, $mimeSubtype])) {
-            // Remove malicious HTML attributes with values from the contents.
-            $imageContents = purifyHtmlEventAttributes($imageContents, true);
-            file_put_contents($tmpFileName, $imageContents);
-        }
-
-        /*
-         * File functions like  filegroup(), fileowner(), filesize(), filetype(), fileperms() and few others,caches file information, we need to clear the cache so it will not return the cache value if we perform/call same function after updating the file
-        */
-        clearstatcache();
-
-        return true;
+        return Core_ImageValidation_Helper::validate($file_details, self::$supportedImageFormats);
     }
 
     static function getMergedDescription($description, $id, $parent_type, $removeTags = false)
@@ -937,97 +824,7 @@ class Vtiger_Functions
 
     static function getRecurringObjValue()
     {
-        $recurring_data = [];
-        if (isset($_REQUEST['recurringtype']) && $_REQUEST['recurringtype'] != null && $_REQUEST['recurringtype'] != '--None--') {
-            if (!empty($_REQUEST['date_start'])) {
-                $startDate = $_REQUEST['date_start'];
-            }
-            if (!empty($_REQUEST['calendar_repeat_limit_date'])) {
-                $endDate = $_REQUEST['calendar_repeat_limit_date'];
-                $recurring_data['recurringenddate'] = $endDate;
-            } elseif (isset($_REQUEST['due_date']) && $_REQUEST['due_date'] != null) {
-                $endDate = $_REQUEST['due_date'];
-            }
-            if (!empty($_REQUEST['time_start'])) {
-                $startTime = $_REQUEST['time_start'];
-            }
-            if (!empty($_REQUEST['time_end'])) {
-                $endTime = $_REQUEST['time_end'];
-            }
-
-            $recurring_data['startdate'] = $startDate;
-            $recurring_data['starttime'] = $startTime;
-            $recurring_data['enddate'] = $endDate;
-            $recurring_data['endtime'] = $endTime;
-
-            $recurring_data['type'] = $_REQUEST['recurringtype'];
-            if ($_REQUEST['recurringtype'] == 'Weekly') {
-                if (isset($_REQUEST['sun_flag']) && $_REQUEST['sun_flag'] != null) {
-                    $recurring_data['sun_flag'] = true;
-                }
-                if (isset($_REQUEST['mon_flag']) && $_REQUEST['mon_flag'] != null) {
-                    $recurring_data['mon_flag'] = true;
-                }
-                if (isset($_REQUEST['tue_flag']) && $_REQUEST['tue_flag'] != null) {
-                    $recurring_data['tue_flag'] = true;
-                }
-                if (isset($_REQUEST['wed_flag']) && $_REQUEST['wed_flag'] != null) {
-                    $recurring_data['wed_flag'] = true;
-                }
-                if (isset($_REQUEST['thu_flag']) && $_REQUEST['thu_flag'] != null) {
-                    $recurring_data['thu_flag'] = true;
-                }
-                if (isset($_REQUEST['fri_flag']) && $_REQUEST['fri_flag'] != null) {
-                    $recurring_data['fri_flag'] = true;
-                }
-                if (isset($_REQUEST['sat_flag']) && $_REQUEST['sat_flag'] != null) {
-                    $recurring_data['sat_flag'] = true;
-                }
-            } elseif ($_REQUEST['recurringtype'] == 'Monthly') {
-                if (isset($_REQUEST['repeatMonth']) && $_REQUEST['repeatMonth'] != null) {
-                    $recurring_data['repeatmonth_type'] = $_REQUEST['repeatMonth'];
-                }
-                if ($recurring_data['repeatmonth_type'] == 'date') {
-                    if (isset($_REQUEST['repeatMonth_date']) && $_REQUEST['repeatMonth_date'] != null) {
-                        $recurring_data['repeatmonth_date'] = $_REQUEST['repeatMonth_date'];
-                    } else {
-                        $recurring_data['repeatmonth_date'] = 1;
-                    }
-                } elseif ($recurring_data['repeatmonth_type'] == 'day') {
-                    $recurring_data['repeatmonth_daytype'] = $_REQUEST['repeatMonth_daytype'];
-                    switch ($_REQUEST['repeatMonth_day']) {
-                        case 0 :
-                            $recurring_data['sun_flag'] = true;
-                            break;
-                        case 1 :
-                            $recurring_data['mon_flag'] = true;
-                            break;
-                        case 2 :
-                            $recurring_data['tue_flag'] = true;
-                            break;
-                        case 3 :
-                            $recurring_data['wed_flag'] = true;
-                            break;
-                        case 4 :
-                            $recurring_data['thu_flag'] = true;
-                            break;
-                        case 5 :
-                            $recurring_data['fri_flag'] = true;
-                            break;
-                        case 6 :
-                            $recurring_data['sat_flag'] = true;
-                            break;
-                    }
-                }
-            }
-            if (isset($_REQUEST['repeat_frequency']) && $_REQUEST['repeat_frequency'] != null) {
-                $recurring_data['repeat_frequency'] = $_REQUEST['repeat_frequency'];
-            }
-
-            $recurObj = RecurringType::fromUserRequest($recurring_data);
-
-            return $recurObj;
-        }
+        return Core_RecurringType_Model::getRecurringObjValue();
     }
 
     static function getTicketComments($ticketid)
@@ -1053,7 +850,7 @@ class Vtiger_Functions
     static function generateRandomPassword()
     {
         $salt = "abcdefghijklmnopqrstuvwxyz0123456789";
-        srand((double)microtime() * 1000000);
+        srand((float)microtime() * 1000000);
         $i = 0;
         while ($i <= 7) {
             $num = rand() % 33;

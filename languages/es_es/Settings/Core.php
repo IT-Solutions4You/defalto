@@ -209,10 +209,10 @@ $languageStrings = [
     'LBL_REQUIRES_AUTHENTICATION'            => '¿Requiere Autentificación?',
     'LBL_OUTGOING_SERVER'                    => 'Servidor de Correo Saliente',
     'LBL_OUTGOING_SERVER_DESC'               => 'Configurar Servidor de Correo Saliente',
-    'LBL_DEFAULT'                            => 'Por defecto, el servidor de correo saliente SMTP es od1.vtiger.com. Para evitar problemas, recomendamos que utilices una de estas opciones.',
+    'LBL_DEFAULT'                            => 'Por defecto, el servidor de correo saliente SMTP es defalto.com. Para evitar problemas, recomendamos que utilices una de estas opciones.',
     'LBL_OPTIONS1'                           => 'Enviar emails desde tu servidor de correo<br>
      				- Introducir la configuración (Servidor, Usuario, Contraseña) de la misma Cuenta de correo utilizada en la Cuenta de respuesta.',
-    'LBL_OPTIONS2'                           => "Añadir servidor vtiger.com como un emisor autorizado de mensajes de correo electrónico para su dominio<b>(your_company.com)</b>.<br>
+    'LBL_OPTIONS2'                           => "Añadir servidor defalto.com como un emisor autorizado de mensajes de correo electrónico para su dominio<b>(your_company.com)</b>.<br>
 					-Para asegurarse de que sus correos electrónicos no sean rechazados por el servidor del destinatario como SPAM, 
 					el registro TXT a continuación se menciona, debe añadirse a registro DNS de tu dominio",
     'LBL_MAIL_SERVER_SMTP'                   => 'Servidor de Correo (SMTP)',

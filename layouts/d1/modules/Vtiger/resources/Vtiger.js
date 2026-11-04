@@ -10,6 +10,7 @@
 Vtiger.Class('Vtiger_Index_Js', {
     files: {},
     hideNC: true,
+    quickPreviewRequestId: 0,
 
     getInstance: function () {
         return new Vtiger_Index_Js();
@@ -1258,105 +1259,103 @@ Vtiger.Class('Vtiger_Index_Js', {
     },
 
     _showInventoryQuickPreviewForId: function (recordId, moduleName, templateId, isReference, mode) {
-        let self = this,
-            params = {};
-
-        if (typeof moduleName === 'undefined') {
-            moduleName = app.module();
-        }
-        params['module'] = moduleName;
-        params['record'] = recordId;
-        params['view'] = 'RecordQuickPreview';
-
-        if (isReference == true) {
-            params['navigation'] = 'false';
-        } else {
-            params['navigation'] = 'true';
-        }
-
-        if (templateId) {
-            params['templateid'] = templateId;
-        }
-
-        if (mode) {
-            params['preview_mode'] = mode;
-        }
-
-        app.helper.showProgress();
-        app.request.post({data: params}).then(function (err, response) {
-            app.helper.hideProgress();
-
-            if (templateId && mode != 'navigation') {
-                jQuery('#pdfViewer').html(response);
-                return;
-            }
-
-            app.helper.loadHelpPageOverlay(response, {
-                cb: function () {
-                    self.registerChangeTemplateEvent(jQuery('#helpPageOverlay'), recordId);
-                    self.registerNavigationEvents(jQuery('#helpPageOverlay'));
-                },
-            });
-
-            app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), {
-                setHeight: "100%",
-                alwaysShowScrollbar: 2,
-                autoExpandScrollbar: true,
-                setTop: 0,
-                scrollInertia: 70,
-                mouseWheel: {preventDefault: true}
-            });
-        });
+        return this.showQuickPreviewForId(recordId, moduleName, app.getAppName(), templateId, isReference, mode);
     },
 
     _showQuickPreviewForId: function (recordId, moduleName, appName, isReference) {
-        let self = this,
-            params = {};
+        return this.showQuickPreviewForId(recordId, moduleName, appName, undefined, isReference);
+    },
 
-        if (typeof moduleName === 'undefined') {
-            moduleName = app.module();
+    isInventoryModule: function (moduleName) {
+        const configured = jQuery('#inventoryModules').val();
+
+        try {
+            const modules = configured ? JSON.parse(configured) : [];
+
+            return Array.isArray(modules) && modules.indexOf(moduleName) !== -1;
+        } catch (error) {
+            // Legacy screens can omit the JSON module list; use the standard record preview.
+            return false;
+        }
+    },
+
+    showQuickPreviewForId: function (recordId, moduleName, appName, templateId, isReference, mode) {
+        const self = this,
+            context = {controller: app.controller(), module: app.getModuleName(), record: app.getRecordId()},
+            requestId = ++Vtiger_Index_Js.quickPreviewRequestId,
+            params = {
+                module: moduleName || context.module,
+                record: recordId,
+                view: 'RecordQuickPreview',
+                app: appName || app.getAppName()
+            },
+            inventory = self.isInventoryModule(params.module);
+
+        // Navigation belongs to the source module's saved list, not another screen's session.
+        params.navigation = !isReference && app.view() === 'List' && context.module === params.module ? 'true' : 'false';
+
+        if (templateId) {
+            params.templateid = templateId;
         }
 
-        params['module'] = moduleName;
-        params['record'] = recordId;
-        params['view'] = 'RecordQuickPreview';
-
-        if (isReference === true) {
-            params['navigation'] = 'false';
-        } else {
-            params['navigation'] = 'true';
+        if (mode) {
+            params.preview_mode = mode;
         }
-
-        params['app'] = appName;
 
         app.helper.showProgress();
-        app.request.post({data: params}).then(function (err, response) {
+
+        return app.request.post({data: params}).then(function (error, response) {
+            if (requestId !== Vtiger_Index_Js.quickPreviewRequestId) {
+                return;
+            }
+
             app.helper.hideProgress();
-            let callBack = function (container) {
-                self.registerMoreRecentUpdatesClickEvent(container, recordId);
-                //Register Navigation Events
-                self.registerNavigationEvents(container);
-            };
+
+            if (error || typeof response !== 'string' || !response.trim()) {
+                self.showQuickPreviewError(error);
+
+                return;
+            }
+
+            if (inventory && templateId && mode !== 'navigation') {
+                jQuery('#helpPageOverlay #pdfViewer').html(response);
+
+                return;
+            }
+
+            // Reject plain-text/error pages before executing returned modal scripts.
+            if (!jQuery('<div>').append(jQuery.parseHTML(response, document, false)).find('.quickPreview').length) {
+                self.showQuickPreviewError();
+
+                return;
+            }
+
+            const previous = jQuery('#helpPageOverlay').data('quickPreviewController');
+
+            if (previous) {
+                previous.dispose();
+            }
 
             app.helper.loadHelpPageOverlay(response, {
-                'cb': callBack,
+                cb: function (container) {
+                    // The view's SCRIPTS load Core QuickPreview inside this modal, after Detail.
+                    if (typeof window.Vtiger_QuickPreview_Js === 'undefined') {
+                        self.showQuickPreviewError();
+                        app.helper.hideHelpPageOverlay();
+
+                        return;
+                    }
+
+                    window.Vtiger_QuickPreview_Js.registerPreview(container, context, params, inventory);
+                }
             });
         });
     },
 
-    isInventoryModule: function (moduleName) {
-        var inventoryModules = jQuery('#inventoryModules').val();
-        return inventoryModules.indexOf(moduleName) !== -1;
-    },
+    showQuickPreviewError: function (error) {
+        const message = typeof error === 'string' ? error : error && error.message;
 
-    showQuickPreviewForId: function (recordId, moduleName, appName, templateId, isReference, mode) {
-        let self = this;
-
-        if (self.isInventoryModule(moduleName)) {
-            self._showInventoryQuickPreviewForId(recordId, moduleName, templateId, isReference, mode);
-        } else {
-            self._showQuickPreviewForId(recordId, moduleName, appName, isReference);
-        }
+        app.helper.showErrorNotification({message: app.vtranslate(message || 'JS_ERROR')});
     },
 
     registerReferencePreviewEvent: function () {

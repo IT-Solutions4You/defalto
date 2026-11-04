@@ -10,15 +10,49 @@
 
 class PBXManager_Install_Model extends Core_Install_Model
 {
+    public array $registerCustomLinks = [
+        [
+            'PBXManager',
+            'HEADERSCRIPT',
+            'Incoming Calls',
+            'modules/PBXManager/resources/PBXManagerJS.js',
+            '',
+            null,
+            [
+                'path' => 'modules/PBXManager/PBXManager.php',
+                'class' => 'PBXManager',
+                'method' => 'checkLinkPermission',
+            ],
+        ],
+    ];
+
+    public array $registerEventHandler = [
+        [
+            ['vtiger.entity.aftersave', 'vtiger.entity.afterdelete', 'vtiger.entity.afterrestore', 'vtiger.lead.convertlead'],
+            'modules/PBXManager/PBXManagerHandler.php',
+            'PBXManagerHandler',
+            '',
+            ['PBXManager'],
+        ],
+        [
+            ['vtiger.batchevent.save', 'vtiger.batchevent.delete'],
+            'modules/PBXManager/PBXManagerHandler.php',
+            'PBXManagerBatchHandler',
+            '',
+            ['PBXManager'],
+        ],
+    ];
 
     public function addCustomLinks(): void
     {
-        // TODO: Implement addCustomLinks() method.
+        $this->updateCustomLinks();
+        $this->updateEventHandler();
     }
 
     public function deleteCustomLinks(): void
     {
-        // TODO: Implement deleteCustomLinks() method.
+        $this->updateEventHandler(false);
+        $this->updateCustomLinks(false);
     }
 
     public function getBlocks(): array

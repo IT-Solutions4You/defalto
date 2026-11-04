@@ -807,25 +807,28 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
                                     if (err) {
                                         app.helper.showErrorNotification({"message": err});
                                     } else {
-                                        var tabid = data["tabid"];
-                                        var tabname = data["tabname"];
-                                        var tabEle = '<li class="dashboardTab" data-tabid="' + tabid + '" data-tabname="' + tabname + '">';
-                                        tabEle += '<a class="nav-link" data-bs-toggle="tab" href="#tab_' + tabid + '">\n\
+                                        const tabid = data["tabid"],
+                                            tabname = data["tabname"],
+                                            tabEle = jQuery('<li class="dashboardTab">');
+                                        tabEle.attr('data-tabid', tabid)
+                                            .attr('data-tabname', tabname)
+                                            .append('<a class="nav-link" data-bs-toggle="tab" href="#tab_' + tabid + '">\n\
 														<div class="d-flex align-items-center">\n\
-															<span class="name text-truncate" value="' + tabname + '">\n\
-															<strong>' + tabname + '</strong>\n\
+														<span class="name text-truncate">\n\
+															<strong></strong>\n\
 															</span>\n\
 															<span class="editTabName hide"><input class="form-control d-inline" type="text" name="tabName"></span>\n\
 															<i class="fa fa-close deleteTab ms-2"></i>\n\
 															<i class="fa fa-bars moveTab ms-2 hide"></i>\n\
 														</div>\n\
-														</a>';
-                                        tabEle += '</li>';
+													</a>');
+                                        tabEle.find('.name')
+                                            .attr('value', tabname)
+                                            .find('strong').text(tabname);
 
                                         var tabContentEle = '<div id="tab_' + tabid + '" class="tab-pane fade" data-tabid="' + tabid + '"></div>';
 
                                         jQuery('.moreSettings').before(tabEle);
-                                        jQuery('.moreSettings').prev().find('.name > strong').text(tabname);
                                         dashBoardContainer.find('.tab-content').append(tabContentEle);
 
                                         // selecting added tab

@@ -120,7 +120,10 @@ class Core_Attachment_Model extends Core_DatabaseData_Model
 
     public function getSaveFile()
     {
-        return sprintf('%s/%s_%s', $this->get('path'), $this->getId(), $this->get('storedname'));
+        $attachment = $this->getData();
+        $attachment['attachmentsid'] = $this->getId();
+
+        return Core_Storage_Model::getInstance()->getAttachmentFilePath($attachment);
     }
 
     public function getAttachmentTable(): self

@@ -15,6 +15,18 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Core_Controller_Action
      */
     public function checkPermission(Vtiger_Request $request): bool
     {
+        $emailMaker = EMAILMaker_EMAILMaker_Model::getInstance();
+        $templateId = (int)$request->get('templateid');
+        $isPermitted = $emailMaker->isTemplateCreatable((string)$request->get('modulename'));
+
+        if (!$request->isEmpty('templateid') && $isPermitted) {
+            $isPermitted = $emailMaker->isTemplateEditable($templateId);
+        }
+
+        if (!$isPermitted) {
+            throw new Exception(vtranslate('LBL_PERMISSION', 'EMAILMaker'));
+        }
+
         return true;
     }
 
@@ -76,6 +88,11 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Core_Controller_Action
         EMAILMaker_Record_Model::saveSharing($templateId, $sharingType, $request->get('members'));
         EMAILMaker_Record_Model::saveDefaultFrom($templateId, $request->get('default_from_email'));
         EMAILMaker_Record_Model::saveDisplayed($templateId, $request->get('displayedValue'), $request->get('display_conditions'));
+
+        // the form had the PDF Maker templates field (PDF Maker active) — otherwise the links stay
+        if ($request->has('pdf_templates_sent')) {
+            EMAILMaker_PDFTemplate_Model::saveLinks((int)$templateId, (string)$moduleName, explode(';', (string)$request->get('pdf_templates')));
+        }
 
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $EMAILMaker->AddLinks($moduleName);

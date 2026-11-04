@@ -32,7 +32,6 @@
 
 require_once 'vtlib/Vtiger/Deprecated.php';
 require_once 'include/utils/utils.php'; //new
-require_once 'include/utils/RecurringType.php';
 require_once 'include/utils/EmailTemplate.php';
 require_once 'include/QueryGenerator/QueryGenerator.php';
 require_once 'include/QueryGenerator/EnhancedQueryGenerator.php';
@@ -189,7 +188,7 @@ function getEntityName($module, $ids_list, $compute = true)
  */
 function decideFilePath()
 {
-    return Vtiger_Functions::initStorageFileDirectory();
+    return Core_Storage_Model::getInstance()->initAttachmentFileDirectory();
 }
 
 /**

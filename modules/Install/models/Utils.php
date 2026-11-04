@@ -248,7 +248,6 @@ class Install_Utils_Model
         $preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = [extension_loaded('mysqli'), true, extension_loaded('mysqli')];
         $preInstallConfig['LBL_OPEN_SSL'] = [extension_loaded('openssl'), true, extension_loaded('openssl')];
         $preInstallConfig['LBL_CURL'] = [extension_loaded('curl'), true, extension_loaded('curl')];
-        $preInstallConfig['LBL_IMAP_SUPPORT'] = [extension_loaded('imap'), true, (extension_loaded('imap') == true)];
         $preInstallConfig['LBL_MB_STRING'] = [extension_loaded('mbstring'), true, (extension_loaded('mbstring') == true)];
 
         $gnInstalled = false;
@@ -739,6 +738,39 @@ class Install_Utils_Model
     }
 
     /**
+     * Add module permissions that could not be initialized before profiles existed.
+     */
+    public static function initProfileModulePermissions(): void
+    {
+        $db = PearDatabase::getInstance();
+        $db->pquery(
+            'INSERT INTO vtiger_profile2tab (profileid, tabid, permissions)
+                SELECT p.profileid, t.tabid, 0
+                FROM vtiger_profile p
+                CROSS JOIN vtiger_tab t
+                LEFT JOIN vtiger_profile2tab p2t
+                    ON p2t.profileid = p.profileid AND p2t.tabid = t.tabid
+                WHERE p2t.profileid IS NULL',
+            []
+        );
+        $db->pquery(
+            'INSERT INTO vtiger_profile2standardpermissions (profileid, tabid, operation, permissions)
+                SELECT p.profileid, t.tabid, a.actionid, 0
+                FROM vtiger_profile p
+                CROSS JOIN vtiger_tab t
+                CROSS JOIN vtiger_actionmapping a
+                LEFT JOIN vtiger_profile2standardpermissions p2sp
+                    ON p2sp.profileid = p.profileid
+                        AND p2sp.tabid = t.tabid
+                        AND p2sp.operation = a.actionid
+                WHERE t.isentitytype = 1
+                    AND a.actionname IN (?, ?, ?, ?, ?, ?)
+                    AND p2sp.profileid IS NULL',
+            ['Save', 'EditView', 'CreateView', 'Delete', 'index', 'DetailView']
+        );
+    }
+
+    /**
      * @return void
      */
     public static function migrateTablesData(): void
@@ -806,16 +838,6 @@ class Install_Utils_Model
         }
     }
 
-    /*
-     * Register installed user detail to inform about product updates and news.
-     */
-    public static function registerUser($name, $email, $industry)
-    {
-        require_once 'vtlib/Vtiger/Net/Client.php';
-        $client = new Vtiger_Net_Client("https://stats.vtiger.com/register.php");
-        @$client->doPost(["name" => $name, "email" => $email, "industry" => $industry], 5);
-    }
-
     /**
      * @param Vtiger_Request $request
      *
@@ -860,22 +882,36 @@ class Install_Utils_Model
      */
     public static function saveInstallerLicenses(): void
     {
-        if (empty($_SESSION['config_file_info']['licenses']) || !is_array($_SESSION['config_file_info']['licenses'])) {
+        $configuredLicenses = $_SESSION['config_file_info']['licenses'] ?? [];
+        $licenseKeys = is_array($configuredLicenses) ? $configuredLicenses : [];
+        $licenseKeys[] = $_SESSION['config_file_info']['license'] ?? '';
+        $normalizedLicenseKeys = [];
+
+        foreach ($licenseKeys as $licenseKey) {
+            if (!is_scalar($licenseKey)) {
+                continue;
+            }
+
+            $licenseKey = trim((string)$licenseKey);
+
+            if ('' !== $licenseKey) {
+                $normalizedLicenseKeys[$licenseKey] = $licenseKey;
+            }
+        }
+
+        if (empty($normalizedLicenseKeys)) {
             Core_Install_Model::logInfo('No licenses found');
 
             return;
         }
 
-        $licenseKeys = array_filter($_SESSION['config_file_info']['licenses']);
+        foreach ($normalizedLicenseKeys as $licenseKey) {
+            $license = Installer_License_Model::getInstanceForActivation($licenseKey);
+            $license->activate();
 
-        foreach ($licenseKeys as $licenseKey) {
-            $licenseInfo = Installer_Api_Model::getInstance()->activateLicenseInfo($licenseKey);
-
-            Core_Install_Model::logInfo('License activated');
-
-            $license = Installer_License_Model::getInstance($licenseKey);
-            $license->setInfo($licenseInfo);
-            $license->save();
+            Core_Install_Model::logInfo(
+                $license->isValidLicense() ? 'License activated' : 'License activation failed'
+            );
         }
 
         Core_Install_Model::logInfo('License activation completed');

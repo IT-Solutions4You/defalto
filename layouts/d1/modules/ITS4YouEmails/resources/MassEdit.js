@@ -10,7 +10,7 @@
 jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     documentClickEventRegistered: false,
     templateClickEventRegistered: false,
-    replyEmail(recordId, recordModule) {
+    replyEmail(recordId, recordModule, parentFolder = '') {
         let params = {
             module: 'ITS4YouEmails',
             view: 'ComposeEmail',
@@ -20,9 +20,13 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             parentModule: recordModule,
         };
 
+        if (parentFolder) {
+            params.parentFolder = parentFolder;
+        }
+
         this.composeEmail(params);
     },
-    replyAllEmail(recordId, recordModule) {
+    replyAllEmail(recordId, recordModule, parentFolder = '') {
         let params = {
             module: 'ITS4YouEmails',
             view: 'ComposeEmail',
@@ -32,9 +36,13 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             parentModule: recordModule,
         };
 
+        if (parentFolder) {
+            params.parentFolder = parentFolder;
+        }
+
         this.composeEmail(params);
     },
-    forwardEmail(recordId, recordModule) {
+    forwardEmail(recordId, recordModule, parentFolder = '') {
         let params = {
             module: 'ITS4YouEmails',
             view: 'ComposeEmail',
@@ -43,6 +51,10 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             parentRecord: recordId,
             parentModule: recordModule,
         };
+
+        if (parentFolder) {
+            params.parentFolder = parentFolder;
+        }
 
         this.composeEmail(params);
     },
@@ -911,31 +923,24 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
         });
     },
     showPopupModal: function (data) {
-        let popupModal = jQuery('.popupModal'),
-            modal = jQuery('.myModal');
-
-        if (data) {
-            popupModal.remove();
-            popupModal.unbind();
-
-            jQuery('body').append(jQuery('<div id="popupModal" class="modal popupModal">' + data + '</div>'));
+        if (!data) {
+            return;
         }
 
-        vtUtils.applyFieldElementsView(popupModal);
+        const modal = this.getMassEmailForm().closest('.modal'),
+            popupModal = app.helper.showPopup(data, {
+                cb: function () {
+                    modal.css('opacity', .5);
+                }
+            });
 
-        popupModal = jQuery('.popupModal');
-        popupModal.one('shown.bs.modal', function () {
-            modal.css('opacity', .5);
-            modal.unbind();
-        });
         popupModal.one('hidden.bs.modal', function () {
-            this.remove();
-
             modal.css('opacity', 1);
-            modal.removeData("modal").modal(app.helper.defaultModalParams());
-            modal.bind();
+
+            if (modal.is(':visible')) {
+                jQuery('body').addClass('modal-open');
+            }
         });
-        popupModal.modal('show');
     },
     getMassEmailForm: function () {
         if (false === this.massEmailForm) {

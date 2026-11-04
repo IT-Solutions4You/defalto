@@ -82,4 +82,31 @@ class InventoryItem_Module_Model extends Vtiger_Module_Model
 
         return $items;
     }
+
+    /**
+     * @param array $itemIds
+     *
+     * @return array parent record id by item id; ids that are not items are missing
+     */
+    public static function fetchParentIds(array $itemIds): array
+    {
+        $itemIds = array_values(array_unique(array_filter(array_map('intval', $itemIds))));
+
+        if (empty($itemIds)) {
+            return [];
+        }
+
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            'SELECT inventoryitemid, parentid FROM df_inventoryitem WHERE inventoryitemid IN (' . generateQuestionMarks($itemIds) . ')',
+            $itemIds
+        );
+        $parentIds = [];
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $parentIds[(int)$row['inventoryitemid']] = (int)$row['parentid'];
+        }
+
+        return $parentIds;
+    }
 }

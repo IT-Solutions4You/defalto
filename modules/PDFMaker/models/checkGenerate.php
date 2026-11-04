@@ -76,6 +76,12 @@ class PDFMaker_checkGenerate_Model extends Vtiger_Module_Model
             $request->set("relmodule", $relmodule);
         }
 
+        $denyReason = $this->PDFMakerModuleModel->getPdfExportDenyReason((int)$record);
+
+        if (null !== $denyReason) {
+            throw new Exception($denyReason);
+        }
+
         $mpdf = "";
 
         $name = $PDFMaker->GetPreparedMPDF($mpdf, $record, $relmodule, $language);

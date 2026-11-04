@@ -27,7 +27,7 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
     /**
      * @throws Exception
      */
-    public function process(Vtiger_Request $request)
+    public function process(Vtiger_Request $request): void
     {
         $this->exposeMethod('licenseSave');
         $this->exposeMethod('licenseDelete');
@@ -54,15 +54,33 @@ class Installer_IndexAjax_Action extends Vtiger_BasicAjax_Action
         $license = Installer_License_Model::getInstanceForActivation($name);
         $license->activate();
 
-        if ($license->isValidLicense()) {
+        if ($license->isValidLicense()
+            && Installer_Api_Model::CONNECTION_ERROR !== $license->getErrorCode()
+        ) {
             $message = vtranslate('LBL_LICENSE_ACTIVATED', 'Installer');
             $status = 'activated';
         } elseif ($license->getErrorMessage()) {
             $message = $license->getErrorMessage();
         }
 
+        $helpSteps = 'activated' === $status ? [] : $license->getErrorHelp();
+        $lastResponse = (array)$license->getInfo('last_response');
+        $debug = (array)($lastResponse['debug'] ?? []);
+        $result = [
+            'success' => true,
+            'status' => $status,
+            'message' => $message,
+            // Keep the original text-array contract for pages with an already loaded script.
+            'help' => array_column($helpSteps, 'description'),
+            'helpSteps' => $helpSteps,
+        ];
+
+        if (!empty($debug)) {
+            $result['debug'] = $debug;
+        }
+
         $response = new Vtiger_Response();
-        $response->setResult(['success' => true, 'status' => $status, 'message' => $message]);
+        $response->setResult($result);
         $response->emit();
     }
 

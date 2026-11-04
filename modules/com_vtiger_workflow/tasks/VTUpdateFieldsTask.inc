@@ -18,6 +18,7 @@
 
 require_once('modules/com_vtiger_workflow/VTEntityCache.inc');
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
+require_once('modules/com_vtiger_workflow/VTSimpleTemplate.inc');
 
 class VTUpdateFieldsTask extends VTTask
 {
@@ -63,6 +64,7 @@ class VTUpdateFieldsTask extends VTTask
             $focus->clearSingletonSaveFields();
 
             $util->loggedInUser();
+            $entityCache = new VTEntityCache($entity->user ?? $current_user);
 
             // The data is transformed from db format to user format, there is a chance that date and currency fields might get tracked for changes which should be avoided
             $focus->column_fields->pauseTracking();
@@ -233,6 +235,8 @@ class VTUpdateFieldsTask extends VTTask
                         $fieldValue = $this->convertValueToUserFormat($fieldInstance, $fieldValue);
                     }
                 } else {
+                    $fieldValue = (new VTSimpleTemplate($fieldValue))->render($entityCache, $entityId);
+
                     if (preg_match('/([^:]+):boolean$/', $fieldValue, $match)) {
                         $fieldValue = $match[1];
                         if ($fieldValue == 'true') {

@@ -50,16 +50,16 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View
         $fileContent = false;
 
         if (!empty($fileDetails)) {
-            $filePath = $fileDetails['path'];
             $fileName = $fileDetails['name'];
             $storedFileName = $fileDetails['storedname'];
             $fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
             $savedFile = $fileDetails['attachmentsid'] . "_" . $storedFileName;
-            $fileSize = filesize($filePath . $savedFile);
+            $filePath = Core_Storage_Model::getInstance()->getFilePath($fileDetails['path'], $savedFile);
+            $fileSize = filesize($filePath);
             $fileSize = $fileSize + ($fileSize % 1024);
 
-            if (fopen($filePath . $savedFile, "r")) {
-                $fileContent = fread(fopen($filePath . $savedFile, "r"), $fileSize);
+            if (fopen($filePath, "r")) {
+                $fileContent = fread(fopen($filePath, "r"), $fileSize);
             }
         }
 

@@ -67,7 +67,7 @@ class SalesOrder_Recurring_Model
 
                 while (strtotime($validNextRecurringDate) <= $currentDateStrTime && $currentDateStrTime <= $endDateStrTime) {
                     $recurringDatesList[] = $validNextRecurringDate;
-                    $nextRecurringDatesInfo = self::getRecurringDate($nextRecurringDate, $recurringFrequency);
+                    $nextRecurringDatesInfo = self::getRecurringDate($nextRecurringDate, $recurringFrequency, $startPeriod);
                     $validNextRecurringDate = $nextRecurringDatesInfo['validDate'];
                     $nextRecurringDate = $nextRecurringDatesInfo['nextRecurringDate'];
                 }
@@ -85,7 +85,7 @@ class SalesOrder_Recurring_Model
             } elseif ($recurringDateStrTime == $currentDateStrTime && $recurringDateStrTime <= $endDateStrTime) {
                 self::dispatchRecurring($salesOrderId, $recurringDate, $paymentDuration, $recurringModule);
 
-                $nextRecurringDatesInfo = self::getRecurringDate($recurringDate, $recurringFrequency);
+                $nextRecurringDatesInfo = self::getRecurringDate($recurringDate, $recurringFrequency, $startPeriod);
                 $nextRecurringDate = $nextRecurringDatesInfo['validDate'];
                 $db->pquery('UPDATE vtiger_invoice_recurring_info SET next_recurring_date = ? WHERE salesorderid = ?', [$nextRecurringDate, $salesOrderId]);
             }
@@ -138,15 +138,18 @@ class SalesOrder_Recurring_Model
     /**
      * @param string $recurringDate
      * @param string $recurringFrequency
+     * @param string $startPeriod
      *
      * @return array{validDate: string, nextRecurringDate: string}
      */
-    private static function getRecurringDate(string $recurringDate, string $recurringFrequency): array
+    private static function getRecurringDate(string $recurringDate, string $recurringFrequency, string $startPeriod): array
     {
         [$y, $m, $d] = explode('-', $recurringDate);
+        [, , $startDay] = explode('-', $startPeriod);
         $y = (int)$y;
         $m = (int)$m;
         $d = (int)$d;
+        $startDay = (int)$startDay;
         $period = false;
 
         switch (strtolower($recurringFrequency)) {
@@ -157,18 +160,23 @@ class SalesOrder_Recurring_Model
                 $period = '+1 week';
                 break;
             case 'monthly':
+                $d = $startDay;
                 $m = $m + 1;
                 break;
             case 'quarterly':
+                $d = $startDay;
                 $m = $m + 3;
                 break;
             case 'every 4 months':
+                $d = $startDay;
                 $m = $m + 4;
                 break;
             case 'half-yearly':
+                $d = $startDay;
                 $m = $m + 6;
                 break;
             case 'yearly':
+                $d = $startDay;
                 $y = $y + 1;
                 break;
         }

@@ -111,10 +111,12 @@
                     <div class="input-group">
                         <input id="{$FIELD_NAME}" name="{$FIELD_NAME}" type="text"
                                class="{$FIELD_NAME} inputElement form-control replaceCommaWithDot allowOnlyNumbers textAlignRight"
-                               value="{if isset($DATA[$FIELD_NAME])}{$DATA[$FIELD_NAME]}{/if}"/>
+                               value="{if isset($DATA[$FIELD_NAME])}{$DATA[$FIELD_NAME]}{/if}"{if $PRICE_READONLY} data-price-readonly="1"{/if}{if $PRICE_LOCKED} readonly="readonly"{/if}/>
+                        {if !$PRICE_READONLY}
                         <span class="input-group-addon input-group-text cursorPointer choosePriceBook" title="{vtranslate('LBL_EDIT',$MODULE)}">
                                                 {Vtiger_Module_Model::getModuleIconPath('PriceBooks')}
                                             </span>
+                        {/if}
                     </div>
                     <input id="pricebookid" name="pricebookid" class="pricebookid" type="hidden" value="{if isset($DATA.pricebookid)}{$DATA.pricebookid}{/if}"/>
                 </div>

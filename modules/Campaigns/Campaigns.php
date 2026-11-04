@@ -22,6 +22,7 @@
  */
 class Campaigns extends CRMEntity
 {
+    public string $moduleVersion = '1.1';
     public string $moduleName = 'Campaigns';
     public string $parentName = 'MARKETING';
     public $table_name = "vtiger_campaign";

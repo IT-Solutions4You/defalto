@@ -116,6 +116,10 @@ class Reporting_Field_Model extends Vtiger_Field_Model
         $option = [];
 
         foreach ($modules as $module) {
+            if (!Reporting_Fields_Model::isModuleViewable($module)) {
+                continue;
+            }
+
             $moduleName = $module->getName();
             $option[$moduleName] = vtranslate($moduleName, $moduleName);
         }

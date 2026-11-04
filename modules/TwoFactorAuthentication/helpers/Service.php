@@ -29,6 +29,7 @@ class TwoFactorAuthentication_Service_Helper
     public const SELF_KEY = 'two_factor_authentication_self';
     public const METHOD_EMAIL = 'email';
     public const METHOD_TOTP = 'totp';
+    private const CHALLENGE_VERSION = 2;
 
     /** Challenge stages (the session state machine). */
     public const STAGE_CHOOSE = 'choose';
@@ -80,11 +81,21 @@ class TwoFactorAuthentication_Service_Helper
     {
         $userid = (int)$userid;
         $allowed = self::getAllowedMethods();
+        $row = self::getUserRow($userid);
+        $remembered = (!empty($row) && !empty($row['method'])) ? (string)$row['method'] : '';
+
+        // An existing factor is the authentication boundary for this login.
+        // Method changes are available only after login on the self-service page.
+        if ($remembered !== '') {
+            $allowed = in_array($remembered, $allowed, true) ? [$remembered] : [];
+        }
 
         $_SESSION[self::SESSION_KEY] = [
             'pending_userid' => $userid,
             'pending_username' => $username,
+            'version' => self::CHALLENGE_VERSION,
             'allowed' => $allowed,
+            'enrollment_allowed' => $remembered === '',
             'stage' => self::STAGE_CHOOSE,
             'method' => '',
             'attempts' => 0,
@@ -97,15 +108,6 @@ class TwoFactorAuthentication_Service_Helper
 
         if (count($allowed) === 1) {
             self::selectMethod($allowed[0]);
-        } else {
-            // Auto-select only when the user has an explicit remembered choice;
-            // a brand-new user (no row) sees the chooser.
-            $row = self::getUserRow($userid);
-            $remembered = (!empty($row) && !empty($row['method'])) ? (string)$row['method'] : '';
-
-            if ($remembered !== '' && in_array($remembered, $allowed, true)) {
-                self::selectMethod($remembered);
-            }
         }
     }
 
@@ -120,14 +122,40 @@ class TwoFactorAuthentication_Service_Helper
     {
         $state = self::getState();
 
-        if (empty($state) || !self::isMethodAllowed($method)) {
+        if (empty($state) || !self::isChallengeMethodAllowed($state, (string)$method)) {
             return false;
         }
 
-        self::rememberMethod((int)$state['pending_userid'], $method);
+        $state['allowed'] = [$method];
+        $_SESSION[self::SESSION_KEY] = $state;
+
+        if ($method !== self::METHOD_TOTP) {
+            self::rememberMethod((int)$state['pending_userid'], $method);
+        }
+
         self::selectMethod($method);
 
         return true;
+    }
+
+    /**
+     * @param array $state
+     * @param string $method
+     * @return bool
+     */
+    private static function isChallengeMethodAllowed(array $state, string $method): bool
+    {
+        if (
+            !in_array($method, $state['allowed'] ?? [], true)
+            || !self::isMethodAllowed($method)
+        ) {
+            return false;
+        }
+
+        $row = self::getUserRow((int)($state['pending_userid'] ?? 0));
+        $remembered = (!empty($row) && !empty($row['method'])) ? (string)$row['method'] : '';
+
+        return $remembered === '' || $remembered === $method;
     }
 
     /**
@@ -190,7 +218,12 @@ class TwoFactorAuthentication_Service_Helper
     {
         $state = self::getState();
 
-        if (empty($state) || ($state['stage'] ?? '') !== self::STAGE_ENROLL) {
+        if (
+            empty($state)
+            || ($state['stage'] ?? '') !== self::STAGE_ENROLL
+            || (int)($state['version'] ?? 0) !== self::CHALLENGE_VERSION
+            || empty($state['enrollment_allowed'])
+        ) {
             return false;
         }
 
@@ -938,6 +971,15 @@ class TwoFactorAuthentication_Service_Helper
             self::setStage(self::STAGE_TOTP);
         } else {
             $state = self::getState();
+
+            if (empty($state['enrollment_allowed'])) {
+                $state['stage'] = self::STAGE_TOTP;
+                $state['enroll_secret'] = '';
+                $_SESSION[self::SESSION_KEY] = $state;
+
+                return;
+            }
+
             $state['enroll_secret'] = TwoFactorAuthentication_TOTP_Helper::generateSecret();
             $state['stage'] = self::STAGE_ENROLL;
             $_SESSION[self::SESSION_KEY] = $state;
@@ -1122,7 +1164,7 @@ class TwoFactorAuthentication_Service_Helper
     {
         $state = self::getState();
 
-        if (empty($state)) {
+        if (empty($state) || count($state['allowed'] ?? []) < 2) {
             return;
         }
 

@@ -26,7 +26,7 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
         $values = [];
 
         $baseModuleModel = $moduleModel = $this->getModule();
-        $blockModelList = $moduleModel->getBlocks();
+        $blockModelList = Core_FilterEditor_Model::getConditionBlocks($moduleModel);
 
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
@@ -74,7 +74,7 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
                     continue;
                 }
                 $moduleModel = Vtiger_Module_Model::getInstance($refModule);
-                $blockModelList = $moduleModel->getBlocks();
+                $blockModelList = Core_FilterEditor_Model::getConditionBlocks($moduleModel);
                 foreach ($blockModelList as $blockLabel => $blockModel) {
                     $fieldModelList = $blockModel->getFields();
                     if (!empty ($fieldModelList)) {

@@ -6,12 +6,14 @@
 - Before changing a module or installable extension, read the nearest `MODULE.md` under its module path (for example, `modules/<Module>/MODULE.md` or `modules/Settings/<Module>/MODULE.md`) and analyze the module's runtime owner, entry points, persistent data, external contracts, UI assets, and install lifecycle.
 - Treat the module's `MODULE.md` as durable extension memory. Create or update it in the same task whenever verified, reusable module knowledge is learned, and update every affected module file for cross-module work. Keep it concise and in English; record ownership boundaries, invariants, data flows, integration points, and validation commands, but never task history, guesses, generated inventories, environment-specific state, credentials, license keys, or other secrets. Remove or correct stale guidance when the implementation changes.
 - Maintain a customer-facing `USER_GUIDE.md` in each affected module when programming a functional module change. Describe what the module does, its user-facing workflow, important features, statuses, related-module actions, and practical usage tips in plain English. Create the file for a new module when needed, and update the guide whenever the change alters visible behavior or the supported workflow. Keep `MODULE.md` limited to technical extension memory and runtime guidance.
+- Maintain a customer-facing `CHANGELOG.md` in every affected installable module. After each functional module change, add concise customer-visible bullet points under a `## <moduleVersion> - YYYY-MM-DD` heading, keep the newest version first, and retain at least the latest three version sections when verified history is available. The first heading must match the module's current `$moduleVersion`. Do not add implementation details, task history, or unverified claims. Documentation-only, comments-only, tests-only, and generated-map-only changes do not require a changelog entry.
 - Keep Installer license checks inside the Installer-owned manual update and scheduled license-check flows. Do not add license hooks to global WebUI startup/login processing or to Users save, deactivate, or delete events; preserve the existing system and Users lifecycle behavior.
 - Keep module PHP code under `modules/<Module>/{actions,models,views,helpers,handlers,dashboards,uitypes}`.
 - Keep module frontend assets under `layouts/d1/modules/<Module>/resources`.
 - Put reusable system behavior into `modules/Core` or an existing shared Vtiger/Core helper.
 - When adding a new custom framework component that could belong to either Vtiger or Core, create it under `modules/Core` with a `Core_...` class name. Do not add new custom framework components under `modules/Vtiger`.
 - Use central language files under `languages/<locale>/<Module>.php` for labels. Do not change technical identifiers only to alter display text.
+- Whenever adding, changing, or removing a user-facing language key, update it in every locale directory present under `languages/` in the same task, creating the module language file when it does not yet exist. Keep both `$languageStrings` and `$jsLanguageStrings` key sets aligned across every `languages/<locale>/<Module>.php` file, translate the values instead of copying the English text unless the value is intentionally language-neutral, and verify that no locale directory is missing the file or retaining missing or stale keys. Shared labels owned by a central module such as Core may remain in that module's language files and must not be duplicated locally.
 - Keep all instructions and example text in `AGENTS.md` and `MODULE.md` in English. Translate user-facing confirmations at response time to the language used by the user in the current request.
 - Whenever you program a functional change, bump the application/resource patch version in `version.php` in the same change.
 - Do not bump the version for documentation-only, comments-only, analysis-only, or generated-map-only changes.
@@ -39,12 +41,21 @@
 - If the change affects rendered or cache-busted browser assets, also bump the application/display patch version in `version.php` so `vresource_url()` invalidates cached resources.
 - Do not bump `version.php` for documentation-only changes, comments-only changes, tests-only changes, generated-map-only changes, or analysis notes that do not alter runtime behavior.
 
+## Commit Messages
+
+- When the user asks for `commits`, create the requested commits and push the current branch after they succeed unless the user explicitly asks not to push.
+- Separate shared Core/Vtiger changes from installable module changes whenever practical, and create a separate commit for each affected installable module.
+- Name commits owned by Core or Vtiger as `Defalto <defaltoVersion>: <short description>`, for example `Defalto 1.10.92: Support module-owned list query rules`. Use the current application version from `version.php`.
+- Name commits owned by an installable module as `<ModuleName> <moduleVersion>: <short description>`, for example `Appointments 1.4: Preserve all-day calendar dates`. Use the module name and its current declared `$moduleVersion`.
+- Keep the description short and customer-readable. Do not add Conventional Commit prefixes such as `feat:`, `fix:`, or `chore:` before the required owner and version.
+- Documentation-only, comments-only, tests-only, and generated-map-only commits still use the applicable owner and current version format, but must not cause a version bump solely for the commit message.
+
 ### Module Versions
 
 - Treat `public string $moduleVersion` in `modules/<Module>/<Module>.php` as the install and update version of that installable module; the install flow persists it to `vtiger_tab.version`.
-- For functional changes owned by an installable module, increment the final numeric component of its `$moduleVersion` exactly once relative to the last committed version in `HEAD`. This includes module PHP, module-specific layout assets, language strings, install or schema behavior, and Settings code owned by that module.
-- Before changing a module version, compare the working-tree value with `HEAD`, including any inherited version when the module has no explicit override. Increment only when the current version is already committed. If the working tree or index already contains an uncommitted version increment, keep that version for subsequent changes; staging does not count as committing. Do not increment again for another task, conversation turn, fix, or review before that version is committed.
-- When reviewing accumulated uncommitted module changes, consolidate accidental repeated increments to one increment above the committed baseline. This rule applies to module versions; application/resource versioning in `version.php` follows its separate rules above.
+- For functional changes owned by an installable module, determine the latest publicly available module version from the canonical public distribution metadata, such as the Installer public extension catalog, and increment its final numeric component exactly once for the next unreleased version. This includes module PHP, module-specific layout assets, language strings, install or schema behavior, and Settings code owned by that module.
+- Before changing a module version, verify the public version instead of deriving the next version only from `HEAD`. If the working tree, index, or current development branch already uses the single next version after the public release, keep it for subsequent unreleased changes and commits. Do not increment it again until that version is publicly available.
+- When reviewing accumulated unreleased module changes, consolidate accidental repeated increments to one increment above the public release. This rule applies to module versions; application/resource versioning in `version.php` follows its separate rules above.
 - When one commit functionally changes multiple installable modules, bump every affected module independently and exactly once, regardless of how many files changed in each module.
 - If a changed path has no root module version, trace its runtime and installer owner and bump the owning installable module. Do not introduce a new `$moduleVersion` only to satisfy this rule.
 - A shared Core or Vtiger change does not require version bumps for every downstream module. Bump only installable modules whose owned runtime code or assets changed, in addition to the applicable `version.php` bump.
@@ -143,12 +154,12 @@
 
 ## PHP / Install Structure Checks
 
-- Use the standard `Exception` class for application errors; do not introduce `AppException`. Let the central WebUI exception handler handle these errors unless a local catch has a concrete recovery purpose.
+- Use the standard `Exception` class for application errors; do not introduce `AppException`. Let the central WebUI exception handler handle these errors.
 
 - Let `Vtiger_Loader` autoload framework component classes whose names and paths follow the `Module_Component_Type` convention, such as `Core_DateFilter_Helper` in `modules/Core/helpers/DateFilter.php`. Do not add manual `require`, `require_once`, `include`, or `include_once` statements for these components; verify the class-to-path mapping before removing a legacy include. Standalone scripts may explicitly bootstrap files when the application autoloader is not initialized.
 - Before completing a new, copied, or renamed module, compare every overridden method with the actual parent class or interface declaration. Match visibility, staticness, parameter types and defaults, reference/variadic markers, and return types; do not rely on the legacy source module's signature.
 - Audit controller lifecycle overrides especially carefully, including `validateRequest()`, `checkPermission()`, `preProcess()`, `postProcess()`, `process()`, `getHeaderScripts()`, and `getHeaderCss()`. An isolated `php -l` does not detect inheritance incompatibilities when the parent class is not loaded, so also load the child with its real parent or an equivalent compatibility harness.
-- Do not add a local `try/catch` in an action or view only to convert an `Exception` into `Vtiger_Response::setError()`. Let the central WebUI exception handler produce the standard action error response. Catch locally only when the code can recover, try a defined fallback, perform required cleanup, or add context before rethrowing; never swallow an exception that the framework should handle.
+- Do not introduce `try`, `catch`, or `finally` in new application code. Never hide, suppress, log-and-continue, or translate an exception into a generic response or template state. Let the central WebUI exception handler expose the original application error. Keep cleanup explicit after successful operations or in the lifecycle of the owning model without intercepting the original error.
 - Keep all runtime database reads and writes in model classes. Helpers orchestrate domain behavior and call model APIs; actions and views validate or present data and must not contain SQL or private database accessors.
 - Prefer `Core_QueryGenerator_Model` for new application-level list and record query generation. Extend its structured query API when a required condition, join, grouping, or ordering feature is missing; do not locate SQL clauses or inject conditions by parsing and rewriting completed SQL strings.
 - Implement query-generator behavior changes in `modules/Core/models/QueryGenerator.php` (`Core_QueryGenerator_Model`), not in legacy files under `include/QueryGenerator/`. When legacy behavior needs modification, port or override the required methods in the Core model and verify that the affected runtime flow uses that model. Preserve existing contracts and do not copy the entire legacy implementation when a focused override is sufficient.
@@ -188,3 +199,16 @@
 - Run `php -l` on touched PHP files.
 - Run the scripts validator when module resource JavaScript changes.
 - Check that `version.php` was bumped when rendered application styles changed.
+
+## Short Change Summary
+
+- Treat the command `summary` as requests for a concise summary of the completed work.
+- Respond in the user's current language with no more than 10 short bullet points.
+- Briefly state what changed and the practical benefit of each change.
+- Avoid implementation details, filenames, test output, commit hashes, and unnecessary introductory text unless the user asks for them.
+
+## Commit Command
+
+- Treat the command `commits` as an explicit request to create commits for the completed work.
+- Review the working tree, preserve unrelated user changes, run the relevant validation, and split commits according to the repository ownership and commit-message rules.
+- After committing, report the created commit hashes and short messages, and list any changes intentionally left uncommitted.

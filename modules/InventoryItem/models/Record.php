@@ -24,6 +24,41 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
         parent::save();
     }
 
+    /**
+     * The rows are shown and printed in the currency of the document, the currency column of the row itself is not maintained.
+     *
+     * @inheritDoc
+     */
+    public function fetchCurrencyId(): int
+    {
+        $parentId = (int)$this->get('parentid');
+
+        if (!$parentId && $this->getId()) {
+            $db = PearDatabase::getInstance();
+            $result = $db->pquery('SELECT parentid FROM df_inventoryitem WHERE inventoryitemid = ?', [$this->getId()]);
+            $parentId = (int)$db->query_result($result, 0, 'parentid');
+        }
+
+        if ($parentId) {
+            $parentModuleName = getSalesEntityType($parentId);
+            $parentFocus = CRMEntity::getInstance($parentModuleName);
+
+            if (columnExists('currency_id', $parentFocus->table_name)) {
+                $db = PearDatabase::getInstance();
+                $result = $db->pquery(
+                    'SELECT currency_id FROM ' . $parentFocus->table_name . ' WHERE ' . $parentFocus->table_index . ' = ?',
+                    [$parentId]
+                );
+
+                if ($db->num_rows($result)) {
+                    return (int)$db->query_result($result, 0, 'currency_id');
+                }
+            }
+        }
+
+        return parent::fetchCurrencyId();
+    }
+
     private function recalculate()
     {
         $quantity = (float)$this->get('quantity');

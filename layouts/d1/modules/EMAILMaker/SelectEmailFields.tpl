@@ -12,6 +12,16 @@
             <div class="modal-content">
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE={vtranslate('LBL_SELECT_EMAIL_IDS', $MODULE)}}
                 <div class="modal-body">
+                    {if !empty($RECORD_ACTION_SKIPPED_MESSAGE)}
+                        <div class="recordActionSkipped alert alert-warning">
+                            <i class="fa-solid fa-lock me-2"></i>{$RECORD_ACTION_SKIPPED_MESSAGE|escape}
+                        </div>
+                    {/if}
+                    {if !empty($RECORD_ACTION_PDF_SKIPPED_MESSAGE)}
+                        <div class="recordActionPdfSkipped alert alert-warning">
+                            <i class="fa-solid fa-file-pdf me-2"></i>{$RECORD_ACTION_PDF_SKIPPED_MESSAGE|escape}
+                        </div>
+                    {/if}
                     <input type="hidden" name="selected_ids" value={ZEND_JSON::encode($SELECTED_IDS)}>
                     <input type="hidden" name="excluded_ids" value={ZEND_JSON::encode($EXCLUDED_IDS)}>
                     <input type="hidden" name="viewname" value="{$VIEWNAME}">
@@ -98,7 +108,7 @@
                                         <span>{vtranslate('LBL_SELECT_EMAIL_TEMPLATE','EMAILMaker')}:</span>
                                     </div>
                                     <div class="col-lg">
-                                        <select id="use_common_email_template" name="email_template_ids" class="form-select">
+                                        <select id="use_common_email_template" name="email_template_ids" class="form-select" data-pdf-templates="{if $EMAIL_PDF_TEMPLATES}{Zend_Json::encode($EMAIL_PDF_TEMPLATES)|escape}{/if}" data-pdf-explicit="{if $PDFTEMPLATEIDS neq ''}1{/if}">
                                             <option value="">{vtranslate('LBL_NONE','EMAILMaker')}</option>
                                             {foreach from=$CRM_TEMPLATES["1"] item="options" key="category_name"}
                                                 <optgroup label="{$category_name}">

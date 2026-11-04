@@ -39,13 +39,13 @@ class Reporting_Grouping_UIType extends Vtiger_Base_UIType
 
         $dateFields = [];
 
-        foreach ($module->getFields() as $field) {
+        foreach (Reporting_Fields_Model::getViewableFields($module) as $field) {
             if (in_array($field->getFieldDataType(), ['date', 'datetime'], true)) {
                 $dateFields[] = $field->get('name');
             }
         }
 
-        foreach ($module->getFieldsByType(['reference', 'owner']) as $field) {
+        foreach (Reporting_Fields_Model::getViewableFieldsByType($module, ['reference', 'owner']) as $field) {
             foreach (Reporting_Fields_Model::getFieldModules($field) as $referenceModuleName) {
                 $referenceModule = Vtiger_Module_Model::getInstance($referenceModuleName);
 
@@ -53,7 +53,7 @@ class Reporting_Grouping_UIType extends Vtiger_Base_UIType
                     continue;
                 }
 
-                foreach ($referenceModule->getFields() as $referenceField) {
+                foreach (Reporting_Fields_Model::getViewableFields($referenceModule) as $referenceField) {
                     if (in_array($referenceField->getFieldDataType(), ['date', 'datetime'], true)) {
                         $dateFields[] = implode(':', [
                             $field->get('name'),

@@ -812,7 +812,6 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
         }
         $fileContent = false;
         if (!empty ($fileDetails)) {
-            $filePath = $fileDetails['path'];
             $fileName = $fileDetails['name'];
             $storedFileName = $fileDetails['storedname'];
             $fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
@@ -822,10 +821,11 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
                 } elseif (is_null($storedFileName)) {
                     $savedFile = $fileDetails['attachmentsid'] . "_" . $fileName;
                 }
-                $fileSize = filesize($filePath . $savedFile);
+                $filePath = Core_Storage_Model::getInstance()->getFilePath($fileDetails['path'], $savedFile);
+                $fileSize = filesize($filePath);
                 $fileSize = $fileSize + ($fileSize % 1024);
-                if (fopen($filePath . $savedFile, "r")) {
-                    $fileContent = fread(fopen($filePath . $savedFile, "r"), $fileSize);
+                if (fopen($filePath, "r")) {
+                    $fileContent = fread(fopen($filePath, "r"), $fileSize);
                     header("Content-type: " . $fileDetails['type']);
                     header("Pragma: public");
                     header("Cache-Control: private");

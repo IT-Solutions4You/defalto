@@ -18,6 +18,11 @@
 
 class Products_Module_Model extends Vtiger_Module_Model
 {
+    /**
+     * Maximum number of records returned by searchRecordsOnNumber()
+     */
+    public const NUMBER_SEARCH_LIMIT = 100;
+
     protected array $numberSearchFields = ['product_no'];
 
 	/**
@@ -192,7 +197,8 @@ class Products_Module_Model extends Vtiger_Module_Model
                     FROM vtiger_crmentity
                         INNER JOIN $tableName ON $tableName.$baseFieldName = vtiger_crmentity.crmid
                     WHERE vtiger_crmentity.deleted = 0 
-                        AND discontinued = 1" . $searchQueryPart;
+                        AND discontinued = 1" . $searchQueryPart . '
+                    LIMIT 0, ' . self::NUMBER_SEARCH_LIMIT;
         $result = $db->pquery($query, $params);
         $matchingRecords = [];
 

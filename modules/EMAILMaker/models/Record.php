@@ -120,7 +120,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         $adb = PearDatabase::getInstance();
         $result = $adb->pquery('SELECT * FROM vtiger_organizationdetails', []);
         $row = $adb->query_result_rowdata($result);
-        $path = $site_URL . '/test/logo/';
+        $path = rtrim($site_URL, '/') . '/test/logo/';
         $images = [
             'logoname'        => decode_html($row['logoname']),
             'headername'      => decode_html($row['headername'] ?? ''),
@@ -154,11 +154,10 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
             $adb->pquery($templateQuery, $templateParams);
         } else {
-            $templateId = $adb->getUniqueID($templateTable);
-            $templateParams[$templateTableId] = $templateId;
             $templateQuery = self::getInsertFromParams($templateParams, $templateTable);
 
             $adb->pquery($templateQuery, $templateParams);
+            $templateId = $adb->getLastInsertID();
         }
 
         return $templateId;

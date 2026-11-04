@@ -25,23 +25,13 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public function saveRecord(Vtiger_Record_Model $recordModel)
     {
-        $db = PearDatabase::getInstance();
-        $templateid = $recordModel->getId();
-        if (empty($templateid)) {
-            $templateid = $db->getUniqueID('vtiger_emakertemplates');
-            $sql = "INSERT INTO vtiger_emakertemplates(templatename, subject, description, body, deleted, templateid) VALUES (?,?,?,?,?,?)";
-        } else {
-            $sql = "UPDATE vtiger_emakertemplates SET templatename=?, subject=?, description=?, body=?, deleted=? WHERE templateid = ?";
-        }
-        $params = [
-            decode_html($recordModel->get('templatename')),
-            decode_html($recordModel->get('subject')),
-            decode_html($recordModel->get('description')),
-            $recordModel->get('body'),
-            0,
-            $templateid
-        ];
-        $db->pquery($sql, $params);
+        $templateid = EMAILMaker_Record_Model::saveTemplate([
+            'templatename' => decode_html($recordModel->get('templatename')),
+            'subject' => decode_html($recordModel->get('subject')),
+            'description' => decode_html($recordModel->get('description')),
+            'body' => $recordModel->get('body'),
+            'deleted' => 0,
+        ], $recordModel->getId());
 
         return $recordModel->setId($templateid);
     }
@@ -51,12 +41,14 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $recordId = $recordModel->getId();
         $db = PearDatabase::getInstance();
         $db->pquery('DELETE FROM vtiger_emakertemplates WHERE templateid = ? ', [$recordId]);
+        EMAILMaker_PDFTemplate_Model::deleteLinks([(int)$recordId]);
     }
 
     public function deleteAllRecords()
     {
         $db = PearDatabase::getInstance();
         $db->pquery('DELETE FROM vtiger_emakertemplates', []);
+        EMAILMaker_PDFTemplate_Model::deleteAllLinks();
     }
 
     public function getAllModuleEmailTemplateFields()
@@ -524,13 +516,13 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                         foreach ($emailFields as $emailField) {
                             $emailFieldValue = $row[$emailField];
                             if ($emailFieldValue) {
-                                $recordLabel = getEntityFieldNameDisplay($moduleName, $nameFields, $row);
+                                $recordLabel = decode_html(getEntityFieldNameDisplay($moduleName, $nameFields, $row));
                                 if (strpos($emailFieldValue, $searchValue) !== false || strpos($recordLabel, $searchValue) !== false) {
                                     $emailsResult[vtranslate($moduleName, $moduleName)][$row[$moduleInstance->table_index]][]
                                         = [
                                         'value'  => $emailFieldValue,
                                         'name'   => $recordLabel,
-                                        'label'  => $recordLabel . ' <b>(' . $emailFieldValue . ')</b>',
+                                        'label'  => $recordLabel . ' (' . $emailFieldValue . ')',
                                         'module' => $moduleName
                                     ];
                                 }
@@ -546,6 +538,14 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public function GetListviewResult($orderby = 'templateid', $dir = 'ASC', $request = null, $all_data = true)
     {
+        $orderby = $this->validateListSortColumn($orderby);
+        $dir = $this->validateListSortOrder($dir);
+
+        if ($orderby === 'order') {
+            $orderby = 'module';
+            $dir = 'ASC';
+        }
+
         $adb = PearDatabase::getInstance();
         $R_Atr = ['0'];
 
@@ -591,19 +591,52 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                 $sql .= implode(" AND ", $Search);
             }
         }
+
         if (!empty($orderby)) {
-            $sql .= " ORDER BY ";
-            if ($orderby == "owner" || $orderby == "sharingtype") {
-                $sql .= "vtiger_pdfmaker_settings";
-            } else {
-                $sql .= "vtiger_pdfmaker";
-            }
-            $sql .= "." . $orderby . " " . $dir;
+            $sql .= ' ORDER BY vtiger_emakertemplates.' . $orderby . ' ' . $dir;
         }
 
         $result = $adb->pquery($sql, $R_Atr);
 
         return $result;
+    }
+
+    public function fetchSelectedExportResult(array $templateIds)
+    {
+        if (empty($templateIds)) {
+            throw new Exception('Invalid EMAILMaker template selection.');
+        }
+
+        $normalizedIds = [];
+
+        foreach ($templateIds as $templateId) {
+            if (!is_int($templateId) && !is_string($templateId)) {
+                throw new Exception('Invalid EMAILMaker template identifier.');
+            }
+
+            if (is_string($templateId) && !ctype_digit($templateId)) {
+                throw new Exception('Invalid EMAILMaker template identifier.');
+            }
+
+            $templateId = filter_var($templateId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+            if (false === $templateId) {
+                throw new Exception('Invalid EMAILMaker template identifier.');
+            }
+
+            $normalizedIds[] = $templateId;
+        }
+
+        $normalizedIds = array_values(array_unique($normalizedIds));
+        $params = ['0'];
+        $query = 'SELECT vtiger_emakertemplates.*
+                  FROM vtiger_emakertemplates
+                  LEFT JOIN vtiger_emakertemplates_displayed USING(templateid)
+                  WHERE vtiger_emakertemplates.deleted = ?';
+        $query .= ' AND vtiger_emakertemplates.templateid IN (' . generateQuestionMarks($normalizedIds) . ')';
+        $params = array_merge($params, $normalizedIds);
+
+        return PearDatabase::getInstance()->pquery($query, $params);
     }
 
     private function getSubRoleUserIds($roleid)
@@ -622,42 +655,19 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     {
         return [
             'vtiger_emakertemplates',
-            'vtiger_emakertemplates_attch',
-            'vtiger_emakertemplates_contents',
             'vtiger_emakertemplates_default_from',
-            'vtiger_emakertemplates_delay',
             'vtiger_emakertemplates_displayed',
             'vtiger_emakertemplates_documents',
-            'vtiger_emakertemplates_drips',
-            'vtiger_emakertemplates_drips_seq',
-            'vtiger_emakertemplates_drip_groups',
-            'vtiger_emakertemplates_drip_groups_seq',
-            'vtiger_emakertemplates_drip_tpls',
-            'vtiger_emakertemplates_drip_tpls_seq',
             'vtiger_emakertemplates_emails',
             'vtiger_emakertemplates_ignorepicklistvalues',
             'vtiger_emakertemplates_images',
             'vtiger_emakertemplates_label_keys',
             'vtiger_emakertemplates_label_vals',
-            'vtiger_emakertemplates_license',
-            'vtiger_emakertemplates_me',
-            'vtiger_emakertemplates_picklists',
-            'vtiger_emakertemplates_productbloc_tpl',
             'vtiger_emakertemplates_profilespermissions',
-            'vtiger_emakertemplates_relblockcol',
-            'vtiger_emakertemplates_relblockcriteria',
-            'vtiger_emakertemplates_relblockcriteria_g',
-            'vtiger_emakertemplates_relblockdatefilter',
-            'vtiger_emakertemplates_relblocks',
-            'vtiger_emakertemplates_relblocksortcol',
-            'vtiger_emakertemplates_relblocks_seq',
             'vtiger_emakertemplates_sent',
-            'vtiger_emakertemplates_seq',
             'vtiger_emakertemplates_settings',
             'vtiger_emakertemplates_sharing',
-            'vtiger_emakertemplates_sharing_drip',
             'vtiger_emakertemplates_userstatus',
-            'vtiger_emakertemplates_version',
         ];
     }
 

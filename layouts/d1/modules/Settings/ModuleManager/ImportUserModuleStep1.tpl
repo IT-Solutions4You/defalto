@@ -22,6 +22,9 @@
 					<div class="alert alert-danger my-3">
 						{vtranslate('LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP', $QUALIFIED_MODULE)}
 					</div>
+					<div class="alert alert-info my-3">
+						{vtranslate('LBL_PACKAGE_STRUCTURE_REQUIREMENT', $QUALIFIED_MODULE)}
+					</div>
 					<div class="my-3">
 						<input type="checkbox" class="form-check-input" name="acceptDisclaimer" /> &nbsp;&nbsp;<b>{vtranslate('LBL_ACCEPT_WITH_THE_DISCLAIMER', $QUALIFIED_MODULE)}</b>
 					</div>

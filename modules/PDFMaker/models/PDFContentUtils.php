@@ -198,10 +198,8 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
             );
             $row = $db->query_result_rowdata($image_res);
             $row = PDFMaker_Module_Model::fixStoredName($row);
-            $image_id = $row['attachmentsid'];
-            $image_path = $row['path'];
             $image_name = $row['storedname'];
-            $imgpath = $image_path . $image_id . '_' . $image_name;
+            $imgpath = Core_Storage_Model::getInstance()->getAttachmentFilePath($row);
 
             if ($image_name != '') {
                 $image = '<img src="' . $imgpath . '" width="250px" border="0">';
@@ -280,8 +278,8 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                 $row = $db->query_result_rowdata($result);
                 $row = PDFMaker_Module_Model::fixStoredName($row);
 
-                $image_src = $row['path'] . $row['attachmentsid'] . '_' . $row['storedname'];
-                $image = "<img src='" . $site_url . "/" . $image_src . "'/>";
+                $image_src = Core_Storage_Model::getInstance()->getAttachmentFilePath($row);
+                $image = "<img src='" . $image_src . "'/>";
 
                 return $image;
             }
@@ -322,9 +320,9 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                 $height = " height='" . $images[$productid . '_' . $sequence]['height'] . "' ";
             }
 
-            $retImage = "<img src='" . $site_url . '/' . $images[$productid . '_' . $sequence]['src'] . "' " . $width . $height . '/>';
+            $retImage = "<img src='" . $images[$productid . '_' . $sequence]['src'] . "' " . $width . $height . '/>';
         } elseif (isset($bacImgs[$productid . '_' . $sequence])) {
-            $retImage = "<img src='" . $site_url . '/' . $bacImgs[$productid . '_' . $sequence]['src'] . "' width='83' />";
+            $retImage = "<img src='" . $bacImgs[$productid . '_' . $sequence]['src'] . "' width='83' />";
         }
 
         return $retImage;
@@ -367,12 +365,18 @@ class PDFMaker_PDFContentUtils_Model extends Core_TemplateContent_Helper
                             $width = $saved_wh[$productid . '_' . $seq]['width'];
                             $height = $saved_wh[$productid . '_' . $seq]['height'];
 
-                            $mainImgs[$productid . '_' . $seq]['src'] = $images['path'] . $attid . '_' . $images['name'];
+                            $mainImgs[$productid . '_' . $seq]['src'] = Core_Storage_Model::getInstance()->getFilePath(
+                                (string)$images['path'],
+                                $attid . '_' . $images['name'],
+                            );
                             $mainImgs[$productid . '_' . $seq]['width'] = $width;
                             $mainImgs[$productid . '_' . $seq]['height'] = $height;
                         }
                     } elseif (!isset($bacImgs[$productid . '_' . $seq])) {   // add only the first backup image
-                        $bacImgs[$productid . '_' . $seq]['src'] = $images['path'] . $attid . '_' . $images['name'];
+                        $bacImgs[$productid . '_' . $seq]['src'] = Core_Storage_Model::getInstance()->getFilePath(
+                            (string)$images['path'],
+                            $attid . '_' . $images['name'],
+                        );
                     }
                 }
             }

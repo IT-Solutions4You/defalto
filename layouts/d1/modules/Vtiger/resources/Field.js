@@ -301,6 +301,7 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js', {}, {
             selectedOptionfound = false,
             data = this.getData(),
             picklistColors = data['picklistColors'],
+            deniedValues = data['recordActionDeniedValues'] || {},
             fieldName = this.getName();
 
         if (typeof pickListValues[' '] === 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] !== 'Select an Option') {
@@ -321,6 +322,9 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js', {}, {
             if (option === selectedOption) {
                 html += ' selected ';
                 selectedOptionfound = true;
+            } else if (deniedValues[option]) {
+                // Denied by a record action rule (StatusChange)
+                html += ' disabled title="' + jQuery('<div>').text(deniedValues[option]).html().replace(/"/g, '&quot;') + '"';
             }
 
             html += '>' + pickListValues[option] + '</option>';

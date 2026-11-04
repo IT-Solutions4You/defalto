@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+class Core_Redirect_Model extends Vtiger_Base_Model
+{
+    public static function getInstance(): self
+    {
+        return new self();
+    }
+
+    public function getUrl(string $mode): string
+    {
+        return match ($mode) {
+            'Web' => 'https://defalto.com/',
+            'Forum' => 'https://defalto.com/forum/',
+            'Blog' => 'https://defalto.com/blog/',
+            'Documentation' => 'https://defalto.com/docs/',
+            'Videos' => 'https://www.youtube.com/@DefaltoCRM',
+            'Releases' => 'https://github.com/IT-Solutions4You/defalto/releases',
+            'Facebook' => 'https://www.facebook.com/defalto.crm',
+            'Youtube' => 'https://www.youtube.com/@DefaltoCRM',
+            'Migration' => 'https://defalto.com/administrator-guide/installation-guide/system-backup-database-and-files/',
+            'SourceForge' => 'https://sourceforge.net/projects/defalto-crm/',
+            'Requirements' => 'https://defalto.com/administrator-guide/installation-guide/system-requirements/',
+            'Buy' => 'https://defalto.com/pricing/',
+            'Store' => 'https://defalto.store/',
+            'Membership' => 'https://defalto.com/services/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=info',
+            'MembershipOrder' => 'https://defalto.store/downloads/membership?utm_source=app&utm_medium=updates_inline&utm_campaign=membership_upsell&utm_content=order',
+            default => 'https://defalto.com/',
+        };
+    }
+
+    public function getRedirectUrl(string $mode, bool $absolute = false): string
+    {
+        $url = 'index.php?module=Core&view=Redirect&mode=' . rawurlencode($mode);
+
+        if (!$absolute) {
+            return $url;
+        }
+
+        return rtrim((string)vglobal('site_URL'), '/') . '/' . $url;
+    }
+}

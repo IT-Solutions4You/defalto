@@ -394,7 +394,7 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model
 
             foreach ($allModules as $id => $moduleModel) {
                 $permissions = [];
-                $permissions['is_permitted'] = Settings_Profiles_Module_Model::IS_PERMITTED_VALUE;
+                $permissions['is_permitted'] = Settings_Profiles_Module_Model::NOT_PERMITTED_VALUE;
                 if (isset($profileTabPermissions[$id])) {
                     $permissions['is_permitted'] = $profileTabPermissions[$id];
                 }

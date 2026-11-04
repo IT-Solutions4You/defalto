@@ -18,6 +18,37 @@
 
 class Users_Module_Model extends Vtiger_Module_Model
 {
+    protected $userSetupLockHandle;
+
+    public function acquireUserSetupLock(): void
+    {
+        if (is_resource($this->userSetupLockHandle)) {
+            return;
+        }
+
+        $installation = Core_Utils_Helper::getRootDirectory();
+        $lockFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'defalto-users-setup-'
+            . hash('sha256', $installation) . '.lock';
+        $this->userSetupLockHandle = @fopen($lockFile, 'c');
+
+        if (!is_resource($this->userSetupLockHandle)
+            || !flock($this->userSetupLockHandle, LOCK_EX | LOCK_NB)
+        ) {
+            $this->releaseUserSetupLock();
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+    }
+
+    public function releaseUserSetupLock(): void
+    {
+        if (is_resource($this->userSetupLockHandle)) {
+            flock($this->userSetupLockHandle, LOCK_UN);
+            fclose($this->userSetupLockHandle);
+        }
+
+        $this->userSetupLockHandle = null;
+    }
+
     /**
      * Function to get list view query for popup window
      *

@@ -38,7 +38,6 @@ $languageStrings = [
     'LBL_GD_LIBRARY'                       => 'Suporte Biblioteca GD',
     'LBL_HOST_NAME'                        => 'Nome Host',
     'LBL_I_AGREE'                          => 'Concordo',
-    'LBL_IMAP_SUPPORT'                     => 'Suporte Imap',
     'LBL_INSTALLATION_IN_PROGRESS'         => 'Instalação em andamento',
     'LBL_INSTALLATION_WIZARD'              => 'Assistente de Instalação',
     'LBL_INSTALL_BUTTON'                   => 'Instalar',

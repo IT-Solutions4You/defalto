@@ -38,21 +38,11 @@ class HelpDesk_Record_Model extends Vtiger_Record_Model
 
     /**
      * Function to get Comments List of this Record
-     * @return <String>
+     * @return array
      */
-    public function getCommentsList()
+    public function getCommentsList(): array
     {
-        $db = PearDatabase::getInstance();
-        $commentsList = [];
-
-        $result = $db->pquery("SELECT commentcontent AS comments FROM vtiger_modcomments WHERE related_to = ?", [$this->getId()]);
-        $numOfRows = $db->num_rows($result);
-
-        for ($i = 0; $i < $numOfRows; $i++) {
-            array_push($commentsList, $db->query_result($result, $i, 'comments'));
-        }
-
-        return $commentsList;
+        return ModComments_Record_Model::getPublicCommentContentsByRecord($this->getId());
     }
 
     public function getTicketTable()

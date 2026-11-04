@@ -571,6 +571,9 @@ $languageStrings = [
     'LBL_CHECK_OPTOUT' => 'Zkontrolovat odhlášení z emailů',
     'LBL_IMPORT_EINVOICE_XML' => 'Importovat XML elektronické faktury',
     'LBL_VARIABLE_PRODUCTCODE' => 'Kód produktu / služby',
+    'LBL_PDF_TEMPLATES' => 'Šablony PDF Maker',
+    'LBL_PDF_TEMPLATES_HINT' => 'Odešlou se s tímto e-mailem jako PDF přílohy: okno odeslání je předvybere a uživatel je může odebrat nebo přidat další. Nabízejí se jen aktivní šablony stejného modulu.',
+    'LBL_SENDING_OPTIONS' => 'Možnosti odeslání',
 ];
 $jsLanguageStrings = [
     'LBL_MISSING_FIELDS' => 'Missing mndatory fields:',

@@ -369,6 +369,9 @@ Vtiger.Class("Vtiger_List_Js", {
                             app.helper.showErrorNotification();
                             return;
                         }
+                        if (result && result.message) {
+                            app.helper.showAlertNotification({'message': jQuery('<div>').text(result.message).html()});
+                        }
                         listInstance.clearList();
                         listInstance.getPageCount().then(function (data) {
                             var pageCount = parseInt(data.page);
@@ -1150,6 +1153,13 @@ Vtiger.Class("Vtiger_List_Js", {
 
         // Double click event - ajax edit
         listViewContentDiv.on('dblclick', '.listViewEntries', function (e) {
+            const editDeniedReason = $(this).find('.listViewEntriesEditDenied').val();
+
+            if (editDeniedReason) {
+                app.helper.showErrorNotification({message: jQuery('<div>').text(editDeniedReason).html()});
+                return;
+            }
+
             if (1 === parseInt($(this).find('.listViewEntriesIsReadonly').val())) {
                 app.helper.showErrorNotification({message: app.vtranslate('JS_RECORD_IS_READONLY')});
                 return;
@@ -1469,6 +1479,9 @@ Vtiger.Class("Vtiger_List_Js", {
                     jQuery('.vt-notification').remove();
                     app.helper.hidePageContentOverlay();
                     window.onbeforeunload = null;
+                    if (data.message) {
+                        app.helper.showAlertNotification({'message': jQuery('<div>').text(data.message).html()});
+                    }
                     app.event.trigger('post.listViewMassEditSave');
                 } else {
                     app.event.trigger('post.save.failed', err);

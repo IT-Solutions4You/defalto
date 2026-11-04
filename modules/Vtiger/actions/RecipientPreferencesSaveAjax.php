@@ -67,12 +67,10 @@ class Vtiger_RecipientPreferencesSaveAjax_Action extends Vtiger_SaveAjax_Action
             $response->setResult(vtranslate('LBL_PREF_RESET_MESSAGE', $request->getModule()));
         } else {
             $recipientPrefModel->set('prefs', $prefs);
-            if ($recipientPrefModel->save()) {
-                $response->setResult(vtranslate('LBL_RECIPIENT_SAVE_MESSAGE', $request->getModule()));
-            } else {
-                $response->setError(vtranslate('LBL_ERROR_SAVING_PREF', $request->getModule()));
-            }
+            $recipientPrefModel->save();
+            $response->setResult(vtranslate('LBL_RECIPIENT_SAVE_MESSAGE', $request->getModule()));
         }
+
         $response->emit();
     }
 }

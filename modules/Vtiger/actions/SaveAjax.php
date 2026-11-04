@@ -108,20 +108,20 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action
             $fieldModelList = $recordModel->getModule()->getFields();
 
             foreach ($fieldModelList as $fieldName => $fieldModel) {
-                //For not converting createdtime and modified time to user format
-                $fieldValue = $fieldModel->getUITypeModel()->getUserRequestValue($recordModel->get($fieldName));
-                // To support Inline Edit in Vtiger7
                 if ($request->has($fieldName)) {
                     $fieldValue = $request->get($fieldName, null);
                 } elseif ($fieldName === $request->get('field')) {
                     $fieldValue = $request->get('value');
+                } else {
+                    continue;
                 }
 
                 $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
 
-                if ($fieldValue !== null) {
+                if (null === $fieldValue) {
+                    Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
+                } else {
                     $fieldValue = $fieldModel->getUiTypeModel()->getRequestValue($fieldValue);
-                    $recordModel->set($fieldName, $fieldValue);
                 }
 
                 $recordModel->set($fieldName, $fieldValue);
@@ -146,7 +146,9 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action
 
                 $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
 
-                if ($fieldValue !== null) {
+                if (null === $fieldValue && $request->has($fieldName)) {
+                    Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
+                } elseif (null !== $fieldValue) {
                     $fieldValue = $fieldModel->getUiTypeModel()->getRequestValue($fieldValue);
                     $recordModel->set($fieldName, $fieldValue);
                 }

@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-<div class="popupUi modal-dialog modal-lg hide" data-backdrop="false">
+<div class="popupUi modal-dialog modal-lg hide{if !empty($ENABLE_TEMPLATE_VARIABLES)} templateVariablesEnabled{/if}{if !empty($RAW_TEXT_ONLY)} rawTextTemplateOnly{/if}" data-backdrop="false">
     <div class="modal-content">
         {assign var=HEADER_TITLE value={vtranslate('LBL_SET_VALUE',$QUALIFIED_MODULE)}}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
@@ -52,6 +52,14 @@
                             {/foreach}
                     </select>
                 </div>
+                {if !empty($ENABLE_TEMPLATE_VARIABLES)}
+                    <div class="col-sm-4 hide useTemplateVariableContainer">
+                        <select class="useTemplateVariable form-select" data-placeholder="{vtranslate('LBL_VARIABLES',$QUALIFIED_MODULE)}" style="min-width: 160px;">
+                            <option></option>
+                            {$ALL_FIELD_OPTIONS}
+                        </select>
+                    </div>
+                {/if}
             </div><br>
             <div class="row fieldValueContainer">
                 <div class="col-sm-12">

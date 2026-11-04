@@ -86,6 +86,14 @@ class Users_Save_Action extends Vtiger_Save_Action
             if (!$requestFieldExists) {
                 continue;
             }
+
+            if (!$currentUserModel->isAdminUser()) {
+                $fieldModel = $recordModel->getField($fieldName);
+                if (!$fieldModel || !$fieldModel->isEditable()) {
+                    continue;
+                }
+            }
+
             $fieldValue = $request->get($fieldName, null);
 
             if ($fieldName === 'is_admin') {

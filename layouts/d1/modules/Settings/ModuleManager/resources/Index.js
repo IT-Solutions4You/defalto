@@ -40,12 +40,47 @@ Settings_Vtiger_Index_Js('Settings_ModuleManager_List_Js', {}, {
         );
         return aDeferred.promise();
     },
+    getErrorMessage: function (error) {
+        var responseError = error && error.error ? error.error : error,
+            message = responseError && (responseError.message || responseError.code);
+
+        if (!message && typeof responseError === 'string') {
+            message = responseError;
+        }
+
+        return app.htmlEncode(message || app.vtranslate('JS_ERROR'));
+    },
+    showPackageInstallError: function (error, container) {
+        var message = '<p>' + app.htmlEncode(app.vtranslate('JS_PACKAGE_INSTALL_ERROR_GUIDANCE')) + '</p>'
+                + '<div class="alert alert-danger mb-0"><strong>'
+                + app.htmlEncode(app.vtranslate('JS_ERROR_DETAILS')) + '</strong><br>'
+                + this.getErrorMessage(error) + '</div>',
+            importUrl = container.data('importUrl');
+
+        app.helper.showConfirmationBox({
+            'title': app.vtranslate('JS_PACKAGE_INSTALL_FAILED'),
+            'message': message,
+            'buttons': {
+                'cancel': {
+                    'label': app.vtranslate('JS_CLOSE'),
+                    'className': 'btn-default confirm-box-btn-pad pull-right'
+                },
+                'confirm': {
+                    'label': app.vtranslate('JS_IMPORT_ANOTHER_PACKAGE'),
+                    'className': 'confirm-box-ok confirm-box-btn-pad btn-primary'
+                }
+            }
+        }).done(function () {
+            window.location.href = importUrl;
+        });
+    },
     registerEventsForImportFromZip: function (container) {
         // Forcefully disable file-input and submit
-        var fileuploadWrap = container.find('.fileUploadBtn').parent();
-        var importFromZip = container.find('[name="importFromZip"]');
-        var moduleZip = container.find('[name="moduleZip"]');
-        var fileDetails = jQuery('#moduleFileDetails');
+        var thisInstance = this,
+            fileuploadWrap = container.find('.fileUploadBtn').parent(),
+            importFromZip = container.find('[name="importFromZip"]'),
+            moduleZip = container.find('[name="moduleZip"]'),
+            fileDetails = jQuery('#moduleFileDetails');
 
         fileuploadWrap.hide();
         importFromZip.attr('disabled', 'disabled');
@@ -78,8 +113,8 @@ Settings_Vtiger_Index_Js('Settings_ModuleManager_List_Js', {}, {
         });
 
         container.on('click', '.importModule, .updateModule', function (e) {
-            var element = jQuery(e.currentTarget);
-            var params = {};
+            var element = jQuery(e.currentTarget),
+                params = {};
             if (element.hasClass('updateModule')) {
                 params = {
                     'module': app.getModuleName(),
@@ -96,8 +131,6 @@ Settings_Vtiger_Index_Js('Settings_ModuleManager_List_Js', {}, {
                 };
             }
             params['module_import_file'] = container.find('[name="module_import_file"]').val();
-            params['module_import_type'] = container.find('[name="module_import_type"]').val();
-            params['module_import_name'] = container.find('[name="module_import_name"]').val();
 
             app.helper.showProgress();
 
@@ -118,21 +151,14 @@ Settings_Vtiger_Index_Js('Settings_ModuleManager_List_Js', {}, {
                     setTimeout(function () {
                         window.location.href = jQuery('[data-name="VTLIB_LBL_MODULE_MANAGER"]').attr('href');
                     }, 3000);
+                },
+                function (error) {
+                    app.helper.hideProgress();
+                    thisInstance.showPackageInstallError(error, container);
                 }
             );
         });
 
-        container.on('click', '.acceptLicense', function (e) {
-            var element = jQuery(e.currentTarget);
-            var saveButton = container.find('[name="saveButton"]')
-            if (element.is(':checked')) {
-                saveButton.removeAttr("disabled");
-            } else {
-                if (typeof saveButton.attr('disabled') == 'undefined') {
-                    saveButton.attr('disabled', "disabled");
-                }
-            }
-        });
     },
     registerEvents: function (e) {
         var thisInstance = this;

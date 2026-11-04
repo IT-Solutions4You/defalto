@@ -7,6 +7,10 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 
+{assign var=ACTIVE_TAB value='fields'}
+{if isset($smarty.request.mode) && ($smarty.request.mode eq 'decimals' || $smarty.request.mode eq 'conversions')}
+    {assign var=ACTIVE_TAB value=$smarty.request.mode}
+{/if}
 <div class="listViewPageDiv detailViewContainer px-4 pb-4" id="listViewContent">
     <div class="bg-body rounded" id="InventoryItemsContainer">
         <div class="p-3 border-bottom">
@@ -14,19 +18,24 @@
         </div>
         <div class="contents tabbable pt-3">
             <ul class="nav nav-tabs massEditTabs border-bottom">
-                <li class="tab-item fieldsTab {if !isset($smarty.request.mode) || $smarty.request.mode neq 'decimals'}active{/if} ms-3">
-                    <a class="nav-link {if !isset($smarty.request.mode) || $smarty.request.mode neq 'decimals'}active{/if}" data-bs-toggle="tab" href="#fields">
+                <li class="tab-item fieldsTab {if $ACTIVE_TAB eq 'fields'}active{/if} ms-3">
+                    <a class="nav-link {if $ACTIVE_TAB eq 'fields'}active{/if}" data-bs-toggle="tab" href="#fields">
                         <strong>{vtranslate('Fields', $QUALIFIED_MODULE)}</strong>
                     </a>
                 </li>
-                <li class="tab-item decimalsTab {if isset($smarty.request.mode) && $smarty.request.mode eq 'decimals'}active{/if} ms-3">
-                    <a class="nav-link {if isset($smarty.request.mode) && $smarty.request.mode eq 'decimals'}active{/if}" data-bs-toggle="tab" href="#decimals">
+                <li class="tab-item decimalsTab {if $ACTIVE_TAB eq 'decimals'}active{/if} ms-3">
+                    <a class="nav-link {if $ACTIVE_TAB eq 'decimals'}active{/if}" data-bs-toggle="tab" href="#decimals">
                         <strong>{vtranslate('Decimals', $QUALIFIED_MODULE)}</strong>
+                    </a>
+                </li>
+                <li class="tab-item conversionsTab {if $ACTIVE_TAB eq 'conversions'}active{/if} ms-3">
+                    <a class="nav-link {if $ACTIVE_TAB eq 'conversions'}active{/if}" data-bs-toggle="tab" href="#conversions">
+                        <strong>{vtranslate('LBL_CONVERSIONS', $QUALIFIED_MODULE)}</strong>
                     </a>
                 </li>
             </ul>
             <div class="tab-content layoutContent pb-3 overflowVisible">
-                <div class="tab-pane {if !isset($smarty.request.mode) || $smarty.request.mode neq 'decimals'}active{/if}" id="fields">
+                <div class="tab-pane {if $ACTIVE_TAB eq 'fields'}active{/if}" id="fields">
                     <form name="inventoryItemFields" id="inventoryItemFields" method="POST">
                         <input type="hidden" name="module" value="InventoryItem">
                         <input type="hidden" name="parent" value="Settings">
@@ -70,7 +79,7 @@
                     </div>
                     </form>
                 </div>
-                <div class="tab-pane {if isset($smarty.request.mode) && $smarty.request.mode eq 'decimals'}active{/if}" id="decimals">
+                <div class="tab-pane {if $ACTIVE_TAB eq 'decimals'}active{/if}" id="decimals">
                     <form name="decimalsForm" id="decimalsForm" method="POST">
                         <input type="hidden" name="module" value="InventoryItem">
                         <input type="hidden" name="parent" value="Settings">
@@ -105,6 +114,66 @@
                             <div class="row">
                                 <div class="col text-end"><a class="btn btn-primary cancelLink" data-bs-dismiss="modal" href="#">{vtranslate('LBL_CANCEL', $MODULE)}</a></div>
                                 <div class="col"><button type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane {if $ACTIVE_TAB eq 'conversions'}active{/if}" id="conversions">
+                    <form name="conversionsForm" id="conversionsForm" method="POST">
+                        <input type="hidden" name="module" value="InventoryItem">
+                        <input type="hidden" name="parent" value="Settings">
+                        <input type="hidden" name="action" value="ConversionsSave">
+                        <div class="detailViewInfo container-fluid pt-3 px-3">
+                            <p class="text-secondary">{vtranslate('LBL_CONVERSIONS_DESCRIPTION', $QUALIFIED_MODULE)}</p>
+                            <div class="table-responsive">
+                                <table class="table align-middle conversionsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>{vtranslate('LBL_CONVERSION', $QUALIFIED_MODULE)}</th>
+                                            <th class="text-center">{vtranslate('LBL_CONVERSION_USE_MODAL', $QUALIFIED_MODULE)}</th>
+                                            <th>{vtranslate('LBL_CONVERSION_ITEM_COLUMNS', $QUALIFIED_MODULE)}</th>
+                                            <th>{vtranslate('LBL_CONVERSION_HEADER_FIELDS', $QUALIFIED_MODULE)}</th>
+                                            <th class="text-center">{vtranslate('LBL_CONVERSION_MAPPING', $QUALIFIED_MODULE)}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {foreach item=CONVERSION from=$CONVERSIONS}
+                                            <tr class="conversionRow">
+                                                <td>
+                                                    <strong>{$CONVERSION.sourceLabel}</strong> <i class="fa fa-arrow-right mx-1 text-secondary"></i> <strong>{$CONVERSION.targetLabel}</strong>
+                                                    <input type="hidden" name="conversions[{$CONVERSION.id}][id]" value="{$CONVERSION.id}">
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="form-check-input conversionUseModal" name="conversions[{$CONVERSION.id}][use_modal]" value="1" {if $CONVERSION.useModal}checked{/if}>
+                                                </td>
+                                                <td style="min-width: 200px;">
+                                                    <select class="select2 form-control conversionColumns" multiple name="conversions[{$CONVERSION.id}][columns][]">
+                                                        {foreach item=COLUMN_NAME from=$CONVERSION_COLUMNS}
+                                                            <option value="{$COLUMN_NAME}" {if in_array($COLUMN_NAME, $CONVERSION.columns)}selected{/if}>{vtranslate($FIELD_MODEL_LIST[$COLUMN_NAME]->get('label'), 'InventoryItem')}</option>
+                                                        {/foreach}
+                                                    </select>
+                                                </td>
+                                                <td style="min-width: 260px;">
+                                                    <select class="select2 form-control conversionHeaderFields" multiple name="conversions[{$CONVERSION.id}][header_fields][]">
+                                                        {foreach key=FIELD_NAME item=FIELD_LABEL from=$CONVERSION.headerFieldOptions}
+                                                            <option value="{$FIELD_NAME}" {if in_array($FIELD_NAME, $CONVERSION.headerFields)}selected{/if}>{$FIELD_LABEL}</option>
+                                                        {/foreach}
+                                                    </select>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm editConversionMapping" data-conversion-id="{$CONVERSION.id}"><i class="fa fa-pencil"></i> {vtranslate('LBL_CONVERSION_MAPPING_EDIT', $QUALIFIED_MODULE)}</button>
+                                                </td>
+                                            </tr>
+                                        {foreachelse}
+                                            <tr><td colspan="5" class="text-secondary">{vtranslate('LBL_NO_CONVERSIONS', $QUALIFIED_MODULE)}</td></tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="container-fluid py-3">
+                            <div class="row">
+                                <div class="col text-center"><button type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button></div>
                             </div>
                         </div>
                     </form>

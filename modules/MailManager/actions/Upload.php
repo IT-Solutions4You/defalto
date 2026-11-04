@@ -137,14 +137,14 @@ class MailManager_UploadFileForm extends qqUploadedFileForm
      * @param String  $path
      *
      * @return Boolean
-     * @global String $root_directory
      */
     public function save($path)
     {
-        global $root_directory;
-        if (is_file($root_directory . "/" . $path)) {
+        $filePath = Core_Storage_Model::getInstance()->getFilePath(dirname($path), basename($path));
+
+        if (is_file($filePath)) {
             return true;
-        } elseif (move_uploaded_file($_FILES['qqfile']['tmp_name'], $path)) {
+        } elseif (move_uploaded_file($_FILES['qqfile']['tmp_name'], $filePath)) {
             return true;
         }
 

@@ -18,6 +18,7 @@
 
 require_once('modules/com_vtiger_workflow/VTEntityCache.inc');
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
+require_once('modules/com_vtiger_workflow/VTSimpleTemplate.inc');
 require_once('data/CRMEntity.php');
 
 class VTCreateEntityTask extends VTTask
@@ -39,6 +40,7 @@ class VTCreateEntityTask extends VTTask
         $admin = $util->adminUser();
         $moduleName = $entity->getModuleName();
         $entityId = $entity->getId();
+        $entityCache = new VTEntityCache($entity->user ?? $current_user);
         $recordId = vtws_getIdComponents($entityId);
         $recordId = $recordId[1];
 
@@ -152,12 +154,17 @@ class VTCreateEntityTask extends VTTask
                         throw $e;
                     }
                     date_default_timezone_set($default_timezone);
-                } elseif (preg_match('/([^:]+):boolean$/', $fieldValue, $match)) {
-                    $fieldValue = $match[1];
-                    if ($fieldValue == 'true') {
-                        $fieldValue = '1';
-                    } else {
-                        $fieldValue = '0';
+                } else {
+                    $fieldValue = (new VTSimpleTemplate($fieldValue))->render($entityCache, $entityId);
+
+                    if (preg_match('/([^:]+):boolean$/', $fieldValue, $match)) {
+                        $fieldValue = $match[1];
+
+                        if ($fieldValue == 'true') {
+                            $fieldValue = '1';
+                        } else {
+                            $fieldValue = '0';
+                        }
                     }
                 }
 

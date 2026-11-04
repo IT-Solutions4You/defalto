@@ -98,6 +98,8 @@ class CRMExtension
 
 class CRMEntity extends CRMExtension
 {
+    protected const ENTITY_REFERENCE_UI_TYPES = [10, 51, 57, 58, 59, 73, 75, 76, 78, 80, 81];
+
     public int $isEntity = 1;
     public int $ownedBy = 0;
 
@@ -317,7 +319,7 @@ class CRMEntity extends CRMExtension
         $filetmp_name = $file_details['tmp_name'];
 
         //get the file path inwhich folder we want to upload the file
-        $upload_file_path = decideFilePath();
+        $upload_file_path = $this->getAttachmentUploadPath();
 
         // upload the file in server
         $encryptFileName = Vtiger_Util_Helper::getEncryptedFileName($binFile);
@@ -375,6 +377,14 @@ class CRMEntity extends CRMExtension
         }
     }
 
+    /**
+     * Return the directory used for a newly uploaded attachment.
+     */
+    protected function getAttachmentUploadPath(): string
+    {
+        return decideFilePath();
+    }
+
     /** Function to insert values in the vtiger_crmentity for the specified module
      *
      * @param $module -- module:: Type varchar
@@ -407,7 +417,9 @@ class CRMEntity extends CRMExtension
         $this->column_fields['label'] = $label;
 
         if ($this->mode == 'edit') {
-            $description_val = from_html($this->column_fields['description'], ($this->mode == 'edit') ? true : false);
+            $description = $this->column_fields['description'];
+            $description_val = from_html($description, ($this->mode == 'edit') ? true : false);
+            $description_val = $this->column_fields->getValueForSave('description', $description_val);
 
             $tabid = getTabid($module);
             $modified_date_var = $adb->formatDate($date_var, true);
@@ -519,6 +531,16 @@ class CRMEntity extends CRMExtension
         } else {
             return $adb->query_result($result, $index, $columnname);
         }
+    }
+
+    /**
+     * @param string $fieldName
+     *
+     * @return bool
+     */
+    protected function requiresDateTimeConversion(string $fieldName): bool
+    {
+        return true;
     }
 
     /** Function to insert values in the specifed table for the specified module
@@ -683,7 +705,7 @@ class CRMEntity extends CRMExtension
                     $fldvalue = $field_list;
                 } elseif ($uitype == 5 || $uitype == 6 || $uitype == 23) {
                     //Added to avoid function call getDBInsertDateValue in ajax save
-                    if (isset($current_user->date_format) && !$ajaxSave) {
+                    if (isset($current_user->date_format) && !$ajaxSave && $this->requiresDateTimeConversion($fieldname)) {
                         $fldvalue = getValidDBInsertDateTimeValue($this->column_fields[$fieldname]);
                     } else {
                         $fldvalue = $this->column_fields[$fieldname];
@@ -847,9 +869,15 @@ class CRMEntity extends CRMExtension
                 if ($uitype != 33 && $uitype != 8) {
                     $fldvalue = from_html($fldvalue, ($insertion_mode == 'edit') ? true : false);
                 }
+
+                $fldvalue = $this->column_fields->getValueForSave($fieldname, $fldvalue);
             } else {
                 $fldvalue = '';
             }
+            if ($this->isEmptyEntityReferenceValue($uitype, $fldvalue)) {
+                $fldvalue = '';
+            }
+
             if ($fldvalue == '') {
                 $fldvalue = $this->get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype);
             }
@@ -895,6 +923,16 @@ class CRMEntity extends CRMExtension
             $sql1 = "insert into $table_name(" . implode(",", $column) . ") values(" . generateQuestionMarks($value) . ")";
             $adb->pquery($sql1, $value);
         }
+    }
+
+    /**
+     * Empty entity selectors can submit 0, but entity records start above 0 and
+     * reference columns with foreign keys require an empty value to be NULL.
+     */
+    protected function isEmptyEntityReferenceValue(int|string $uitype, mixed $value): bool
+    {
+        return in_array((int)$uitype, self::ENTITY_REFERENCE_UI_TYPES, true)
+            && ($value === 0 || $value === '0');
     }
 
     /** Function to delete a record in the specifed table
@@ -1072,6 +1110,8 @@ class CRMEntity extends CRMExtension
                 throw new Exception($app_strings['LBL_RECORD_NOT_FOUND'], -1);
             } else {
                 $resultrow = $adb->query_result_rowdata($result);
+                $rawResultRow = $adb->raw_query_result_rowdata($result);
+
                 if (!$allowDeleted) {
                     if (!empty($resultrow['deleted'])) {
                         throw new Exception($app_strings['LBL_RECORD_DELETE'], 1);
@@ -1080,12 +1120,15 @@ class CRMEntity extends CRMExtension
 
                 foreach ($cachedModuleFields as $fieldinfo) {
                     $fieldvalue = '';
+                    $rawFieldValue = '';
                     $fieldkey = $this->createColumnAliasForField($fieldinfo);
                     //Note : value is retrieved with a tablename+fieldname as we are using alias while building query
                     if (isset($resultrow[$fieldkey])) {
                         $fieldvalue = $resultrow[$fieldkey];
+                        $rawFieldValue = $rawResultRow[$fieldkey];
                     }
-                    $this->column_fields[$fieldinfo['fieldname']] = $fieldvalue;
+
+                    $this->column_fields->setRetrievedValue($fieldinfo['fieldname'], $fieldvalue, $rawFieldValue);
                 }
 
                 $this->column_fields['label'] = !empty($resultrow['label']) ? $resultrow['label'] : Vtiger_Record_Model::generateLabel(
@@ -2849,7 +2892,7 @@ class CRMEntity extends CRMExtension
      * @return string
      * @throws Exception
      */
-    function getSharingAccessControlQuery($user, $scope = '', $current_user_groups): string
+    function getSharingAccessControlQuery($user, $scope, $current_user_groups): string
     {
         $db = PearDatabase::getInstance();
         $result = $db->pquery('SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?', [$user->id]);
@@ -3176,6 +3219,8 @@ class TrackableObject implements ArrayAccess, IteratorAggregate
     private $trackingEnabled = true;
     private $tracking;
     protected $changed;
+    private array $retrievedEncodedValues = [];
+    private array $retrievedRawValues = [];
 
     function __construct($value = [])
     {
@@ -3208,11 +3253,34 @@ class TrackableObject implements ArrayAccess, IteratorAggregate
     public function offsetUnset($key): void
     {
         unset($this->storage[$key]);
+        unset($this->retrievedEncodedValues[$key], $this->retrievedRawValues[$key]);
     }
 
     public function offsetGet(mixed $key): mixed
     {
         return isset($this->storage[$key]) || array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
+    }
+
+    public function setRetrievedValue($key, $value, $rawValue): void
+    {
+        $this->offsetSet($key, $value);
+
+        if ($value !== $rawValue) {
+            $this->retrievedEncodedValues[$key] = $value;
+            $this->retrievedRawValues[$key] = $rawValue;
+        } else {
+            unset($this->retrievedEncodedValues[$key], $this->retrievedRawValues[$key]);
+        }
+    }
+
+    public function getValueForSave($key, $value)
+    {
+        if (array_key_exists($key, $this->retrievedRawValues)
+            && $this->offsetGet($key) === $this->retrievedEncodedValues[$key]) {
+            return $this->retrievedRawValues[$key];
+        }
+
+        return $value;
     }
 
     public function getIterator(): Traversable

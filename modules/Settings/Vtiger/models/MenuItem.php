@@ -57,7 +57,8 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             ['LBL_OPPORTUNITY_MAPPING', 'index.php?parent=Settings&module=Potentials&view=MappingDetail', ''],
         ],
         'LBL_INVENTORY' => [
-            1 => ['INVENTORYTERMSANDCONDITIONS', 'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit', 'LBL_INV_TANDC_DESCRIPTION']
+            1 => ['INVENTORYTERMSANDCONDITIONS', 'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit', 'LBL_INV_TANDC_DESCRIPTION'],
+            ['LBL_PRODUCTBLOCKTPL', 'index.php?module=Core&view=ProductBlocks', 'LBL_PRODUCTBLOCKTPL_DESC'],
         ],
         'LBL_MY_PREFERENCES' => [
             1 => ['My Preferences', 'index.php?module=Users&view=PreferenceDetail&parent=Settings&record=1', ''],

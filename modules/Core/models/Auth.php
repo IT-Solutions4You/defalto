@@ -8,11 +8,18 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Google;
 use League\OAuth2\Client\Grant\RefreshToken;
 
 class Core_Auth_Model extends Vtiger_Base_Model
 {
+    public const PROVIDER_GOOGLE = 'Google';
+    public const PROVIDER_MICROSOFT = 'Microsoft';
+    public const MICROSOFT_DEFAULT_TENANT = 'common';
+    public const MICROSOFT_SCOPES = ['offline_access', 'https://outlook.office.com/IMAP.AccessAsUser.All', 'https://outlook.office.com/SMTP.Send'];
+
     protected $viewer;
 
     public function getAccessExpire()
@@ -63,9 +70,112 @@ class Core_Auth_Model extends Vtiger_Base_Model
 
     public function getProvider()
     {
-        $params = $this->getProviderParams();
+        return self::getProviderInstance((string)$this->getProviderName(), $this->getProviderParams());
+    }
+
+    /**
+     * Returns the League OAuth2 provider for a provider name; Google is the default.
+     *
+     * @param string $providerName Core_Auth_Model::PROVIDER_* constant
+     * @param array  $params       clientId, clientSecret and optionally redirectUri
+     *
+     * @return AbstractProvider
+     */
+    public static function getProviderInstance(string $providerName, array $params): AbstractProvider
+    {
+        if (self::PROVIDER_MICROSOFT === $providerName) {
+            $tenant = rawurlencode(self::getMicrosoftTenant());
+
+            return new GenericProvider(array_merge($params, [
+                'urlAuthorize'            => sprintf('https://login.microsoftonline.com/%s/oauth2/v2.0/authorize', $tenant),
+                'urlAccessToken'          => sprintf('https://login.microsoftonline.com/%s/oauth2/v2.0/token', $tenant),
+                'urlResourceOwnerDetails' => 'https://graph.microsoft.com/oidc/userinfo',
+                'scopes'                  => self::MICROSOFT_SCOPES,
+                'scopeSeparator'          => ' ',
+            ]));
+        }
 
         return new Google($params);
+    }
+
+    /**
+     * Returns the Microsoft Entra tenant used for Microsoft 365 OAuth: $microsoft_oauth_tenant
+     * from config.inc.php (tenant ID or domain, needed for single-tenant app registrations),
+     * otherwise 'common'.
+     *
+     * @return string
+     */
+    public static function getMicrosoftTenant(): string
+    {
+        $tenant = trim((string)vglobal('microsoft_oauth_tenant'));
+
+        return '' !== $tenant ? $tenant : self::MICROSOFT_DEFAULT_TENANT;
+    }
+
+    /**
+     * Returns the OAuth provider name for a mail server, or an empty string when the server
+     * does not use OAuth (single place for all IMAP/SMTP consumers).
+     *
+     * @param string $server host name, optionally with protocol prefix and port
+     *
+     * @return string
+     */
+    public static function getProviderNameByServer(string $server): string
+    {
+        $host = self::getServerHost($server);
+
+        if (self::isHostInDomain($host, 'gmail.com')) {
+            return self::PROVIDER_GOOGLE;
+        }
+
+        if (self::isHostInDomain($host, 'office365.com')) {
+            return self::PROVIDER_MICROSOFT;
+        }
+
+        return '';
+    }
+
+    /**
+     * Returns the host name of a mail server setting, without protocol prefix, port, path
+     * and trailing dot ('ssl://smtp.gmail.com:465' -> 'smtp.gmail.com').
+     *
+     * @param string $server
+     *
+     * @return string
+     */
+    public static function getServerHost(string $server): string
+    {
+        $host = strtolower(trim($server));
+        $host = preg_replace('~^[a-z][a-z0-9+.-]*://~', '', $host);
+        $host = preg_replace('~[:/].*$~s', '', $host);
+
+        return rtrim($host, '.');
+    }
+
+    /**
+     * Tells whether the host is the domain itself or one of its subdomains
+     * ('imap.gmail.com' is in 'gmail.com', 'gmail.com.example.org' and 'xgmail.com' are not).
+     *
+     * @param string $host
+     * @param string $domain
+     *
+     * @return bool
+     */
+    private static function isHostInDomain(string $host, string $domain): bool
+    {
+        return $host === $domain || str_ends_with($host, '.' . $domain);
+    }
+
+    /**
+     * Tells whether the mail server authenticates with an OAuth access token.
+     *
+     * @param string $server host name, optionally with protocol prefix and port
+     *
+     * @return bool
+     */
+    public static function isOAuthServer(string $server): bool
+    {
+        return '' !== self::getProviderNameByServer($server);
     }
 
     public function getProviderName()
@@ -75,6 +185,12 @@ class Core_Auth_Model extends Vtiger_Base_Model
 
     public function getProviderOptions()
     {
+        if (self::PROVIDER_MICROSOFT === $this->getProviderName()) {
+            return [
+                'scope' => self::MICROSOFT_SCOPES,
+            ];
+        }
+
         return [
             'scope' => ['openid email profile https://mail.google.com/'],
         ];
@@ -101,9 +217,21 @@ class Core_Auth_Model extends Vtiger_Base_Model
         return $siteUrl['host'];
     }
 
+    /**
+     * Returns the OAuth redirect URI; Microsoft does not accept query strings in redirect URIs
+     * of personal accounts, auth.php reads the provider from the session anyway.
+     *
+     * @return string
+     */
     public function getRedirectUri(): string
     {
-        return rtrim(vglobal('site_URL'), '/') . '/auth.php?provider=' . $this->getProviderName();
+        $url = rtrim(vglobal('site_URL'), '/') . '/auth.php';
+
+        if (self::PROVIDER_MICROSOFT === $this->getProviderName()) {
+            return $url;
+        }
+
+        return $url . '?provider=' . $this->getProviderName();
     }
 
     public function getSession($name)
@@ -337,8 +465,10 @@ class Core_Auth_Model extends Vtiger_Base_Model
 
     public function setProviderByServer($server)
     {
-        if (str_contains($server, 'gmail.com')) {
-            $this->setProviderName('Google');
+        $providerName = self::getProviderNameByServer((string)$server);
+
+        if (!empty($providerName)) {
+            $this->setProviderName($providerName);
         }
     }
 

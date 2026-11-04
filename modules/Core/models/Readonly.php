@@ -53,6 +53,37 @@ class Core_Readonly_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @param string             $module
+     * @param int                $record
+     * @param Users_Record_Model $currentUser
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public static function isMakeReadonlyPermitted(
+        string $module,
+        int $record,
+        Users_Record_Model $currentUser
+    ): bool
+    {
+        if ($currentUser->isAdminUser()) {
+            return true;
+        }
+
+        if (!$record || getSalesEntityType($record) !== $module) {
+            return false;
+        }
+
+        if (!Users_Privileges_Model::isPermitted($module, 'EditView', $record)) {
+            return false;
+        }
+
+        $recordModel = Vtiger_Record_Model::getInstanceById($record, $module);
+
+        return (int)$currentUser->getId() === (int)$recordModel->get('assigned_user_id');
+    }
+
+    /**
      * @param string $module
      * @param int    $record
      * @param string $mode
@@ -97,6 +128,38 @@ class Core_Readonly_Model extends Vtiger_Base_Model
     public function setReadonly(): void
     {
         $this->db->pquery($this->getReadonlyQuery(), [1, $this->get('record'), $this->get('module')]);
+    }
+
+    /**
+     * Revalidates a manual lock request at the write boundary and binds a non-administrator update to the current
+     * direct owner.
+     *
+     * @param Users_Record_Model $currentUser
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function updateReadonlyForUser(Users_Record_Model $currentUser): bool
+    {
+        $module = (string)$this->get('module');
+        $record = (int)$this->get('record');
+
+        if (!self::isMakeReadonlyPermitted($module, $record, $currentUser)) {
+            return false;
+        }
+
+        if ($currentUser->isAdminUser()) {
+            $this->setReadonly();
+
+            return true;
+        }
+
+        $result = $this->db->pquery(
+            $this->getReadonlyQuery() . ' AND smownerid=?',
+            [1, $record, $module, $currentUser->getId()]
+        );
+
+        return $this->db->getAffectedRowCount($result) === 1;
     }
 
     /**

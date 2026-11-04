@@ -10,7 +10,7 @@
 
 class Appointments extends CRMEntity
 {
-    public string $moduleVersion = '1.3';
+    public string $moduleVersion = '1.4';
     /**
      * @var array
      */
@@ -178,7 +178,7 @@ class Appointments extends CRMEntity
             return;
         }
 
-        $recurringObject = Vtiger_Functions::getRecurringObjValue();
+        $recurringObject = Core_RecurringType_Model::getRecurringObjValue();
         $recordId = (int)$this->id;
 
         if ($recurringObject) {
@@ -195,7 +195,12 @@ class Appointments extends CRMEntity
     {
         $recordId = $this->id;
         $dateTimeStart = $this->column_fields['datetime_start'];
-        $dateTimeStart = DateTimeField::convertToDBTimeZone($dateTimeStart);
+
+        if ($this->isAllDayEvent()) {
+            $dateTimeStart = new DateTime($dateTimeStart);
+        } else {
+            $dateTimeStart = DateTimeField::convertToDBTimeZone($dateTimeStart);
+        }
 
         Appointments_Reminder_Model::saveRecord($recordId, $dateTimeStart->format('Y-m-d H:i:s'));
     }
@@ -216,12 +221,37 @@ class Appointments extends CRMEntity
      */
     public function saveDurationHours()
     {
-        $datetimeEndTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->column_fields['datetime_end']));
-        $datetimeStartTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->column_fields['datetime_start']));
+        if ($this->isAllDayEvent()) {
+            $datetimeEndTime = strtotime($this->column_fields['datetime_end']);
+            $datetimeStartTime = strtotime($this->column_fields['datetime_start']);
+        } else {
+            $datetimeEndTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->column_fields['datetime_end']));
+            $datetimeStartTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->column_fields['datetime_start']));
+        }
+
         $duration = ($datetimeEndTime - $datetimeStartTime) / 60 / 60;
 
         $adb = PearDatabase::getInstance();
         $adb->pquery('UPDATE its4you_calendar SET duration_hours=? WHERE its4you_calendar_id=?', [$duration, $this->id]);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAllDayEvent(): bool
+    {
+        return 'Yes' === $this->column_fields['is_all_day'] || 1 === (int)$this->column_fields['is_all_day'];
+    }
+
+    /**
+     * @param string $fieldName
+     *
+     * @return bool
+     */
+    protected function requiresDateTimeConversion(string $fieldName): bool
+    {
+        return !$this->isAllDayEvent()
+            || !in_array($fieldName, ['datetime_start', 'datetime_end'], true);
     }
 
     /**

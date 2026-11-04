@@ -674,11 +674,35 @@ class Vtiger_Field_Model extends Vtiger_Field
     }
 
     /**
+     * Checks whether a record action rule locks the field for the record (Core_RecordActionPermission_Model::applyLockedFields()).
+     *
+     * @return bool
+     */
+    public function isRecordActionLocked(): bool
+    {
+        return !empty($this->get('record_action_locked'));
+    }
+
+    /**
+     * Returns the reason of the record action rule that locks the field for the record.
+     *
+     * @return string empty when the field is not locked
+     */
+    public function getRecordActionLockedReason(): string
+    {
+        return (string)$this->get('record_action_locked');
+    }
+
+    /**
      * Function to check whether field is ajax editable'
      * @return <Boolean>
      */
     public function isAjaxEditable()
     {
+        if ($this->isRecordActionLocked()) {
+            return false;
+        }
+
         if ($this->block && 'LBL_SYSTEM_INFORMATION' === $this->block->label) {
             $this->ajaxeditable = (int)Users_Record_Model::getCurrentUserModel()->isAdminUser();
         }
@@ -856,6 +880,9 @@ class Vtiger_Field_Model extends Vtiger_Field
             if ($picklistColors) {
                 $this->fieldInfo['picklistColors'] = $picklistColors;
             }
+
+            // Values denied by record action rules (Core_RecordActionPermission_Model::applyLockedFields()) for the inline edit
+            $this->fieldInfo['recordActionDeniedValues'] = (array)$this->get('record_action_denied_values');
         }
 
         if ($fieldDataType == "documentsFolder") {

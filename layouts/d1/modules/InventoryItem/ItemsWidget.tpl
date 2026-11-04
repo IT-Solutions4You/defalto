@@ -6,7 +6,8 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  *}
-<table class="table table-borderless table-hover">
+<div class="inventoryItemSummaryItems">
+<table class="table table-borderless table-hover mb-0">
     {if count($ITEMS)}
     <thead>
     <tr class="border-bottom">
@@ -52,6 +53,7 @@
     </tr>
     </tfoot>
 </table>
+</div>
 {if count($ITEMS)}
 <table class="table table-borderless">
     <tbody>

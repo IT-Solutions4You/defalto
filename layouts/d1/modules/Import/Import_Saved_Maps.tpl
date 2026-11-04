@@ -16,7 +16,7 @@
                 <select name="saved_maps" id="saved_maps" class="select2 form-control" onchange="Vtiger_Import_Js.loadSavedMap();">
                     <option id="-1" value="" selected>--{'LBL_SELECT_SAVED_MAPPING'|@vtranslate:$MODULE}--</option>
                     {foreach key=_MAP_ID item=_MAP from=$SAVED_MAPS}
-                        <option id="{$_MAP_ID}" value="{$_MAP->getStringifiedContent()}">{$_MAP->getValue('name')}</option>
+                        <option id="{$_MAP_ID}" value="{$_MAP->getStringifiedContent()}" data-has-header="{$_MAP->getValue('has_header')}">{$_MAP->getValue('name')}</option>
                     {/foreach}
                 </select>
                 <button type="button" class="btn btn-outline-secondary" id="delete_map_container" onclick="Vtiger_Import_Js.deleteMap('{$FOR_MODULE}');" title="{'LBL_DELETE'|vtranslate:$FOR_MODULE}">

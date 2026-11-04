@@ -553,8 +553,12 @@ class ModComments_Record_Model extends Vtiger_Record_Model
                 $attachmentsList[$i]['fileid'] = $attachmentId;
                 $attachmentsList[$i]['storedname'] = decode_html($storedName);
                 $attachmentsList[$i]['path'] = $path;
-                $saved_filename = $attachmentId . "_" . $filename;
-                $filenamewithpath = $path . $saved_filename;
+                $filenamewithpath = Core_Storage_Model::getInstance()->getAttachmentFilePath([
+                    'attachmentsid' => $attachmentId,
+                    'path' => $path,
+                    'name' => $rawFileName,
+                    'storedname' => $filename,
+                ]);
                 $filesize = filesize($filenamewithpath);
                 $attachmentsList[$i]['filenamewithpath'] = $filenamewithpath;
                 $attachmentsList[$i]['size'] = $filesize;
@@ -593,6 +597,24 @@ class ModComments_Record_Model extends Vtiger_Record_Model
         }
 
         return $data;
+    }
+
+    public static function getPublicCommentContentsByRecord(int $recordId): array
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery(
+            'SELECT commentcontent FROM vtiger_modcomments
+                WHERE related_to = ? AND is_private = ?
+                ORDER BY modcommentsid ASC',
+            [$recordId, 0],
+        );
+        $comments = [];
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $comments[] = $row['commentcontent'];
+        }
+
+        return $comments;
     }
 
     /**

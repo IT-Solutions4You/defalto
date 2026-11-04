@@ -110,6 +110,11 @@ class Webforms_Field_Model
         return $this->data["required"];
     }
 
+    public function isRequiredValueMissing(mixed $value): bool
+    {
+        return (bool)$this->getRequired() && (null === $value || '' === $value || [] === $value);
+    }
+
     static function retrieveNeutralizedField($webformid, $fieldname)
     {
         global $adb;

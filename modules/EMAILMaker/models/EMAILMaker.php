@@ -198,6 +198,40 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return ["detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result];
     }
 
+    public function isTemplateCreatable(string $moduleName): bool
+    {
+        return true === $this->returnTemplatePermissionsData($moduleName)['edit'];
+    }
+
+    public function isTemplateEditable(int $templateId): bool
+    {
+        $template = $this->fetchTemplateAuthorizationData($templateId);
+
+        return !empty($template)
+            && true === $this->returnTemplatePermissionsData($template['module'], $templateId)['edit'];
+    }
+
+    public function isThemeDeletable(int $templateId): bool
+    {
+        $template = $this->fetchTemplateAuthorizationData($templateId);
+
+        return !empty($template)
+            && 1 === (int)$template['is_theme']
+            && true === $this->returnTemplatePermissionsData($template['module'], $templateId)['delete'];
+    }
+
+    private function fetchTemplateAuthorizationData(int $templateId): array
+    {
+        $result = $this->db->pquery(
+            'SELECT module, is_theme FROM vtiger_emakertemplates WHERE templateid = ? AND deleted = ?',
+            [$templateId, 0]
+        );
+
+        $template = $this->db->fetchByAssoc($result);
+
+        return is_array($template) ? $template : [];
+    }
+
     public function CheckSharing($templateId)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
@@ -364,8 +398,53 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         return $this->profilesPermissions;
     }
 
+    public function validateListSortColumn($columnName): string
+    {
+        if (!is_string($columnName)) {
+            throw new Exception('Invalid EMAILMaker list sort column.');
+        }
+
+        $columns = [
+            'name' => 'templatename',
+            'templateid' => 'templateid',
+            'templatename' => 'templatename',
+            'module' => 'module',
+            'category' => 'category',
+            'description' => 'description',
+            'sharingtype' => 'sharingtype',
+            'order' => 'order',
+        ];
+
+        if (!isset($columns[$columnName])) {
+            throw new Exception('Invalid EMAILMaker list sort column.');
+        }
+
+        return $columns[$columnName];
+    }
+
+    public function validateListSortOrder($sortOrder): string
+    {
+        if (!is_string($sortOrder)) {
+            throw new Exception('Invalid EMAILMaker list sort order.');
+        }
+
+        $sortOrder = strtoupper($sortOrder);
+
+        if (!in_array($sortOrder, ['ASC', 'DESC'], true)) {
+            throw new Exception('Invalid EMAILMaker list sort order.');
+        }
+
+        return $sortOrder;
+    }
+
     public function GetListviewData($orderby = 'templateid', $sortorder = 'asc', $formodule = '', $load_body = false, ?Vtiger_Request $request = null)
     {
+        if (!is_string($formodule)) {
+            throw new Exception('Invalid EMAILMaker module filter.');
+        }
+
+        $orderby = $this->validateListSortColumn($orderby);
+        $sortorder = $this->validateListSortOrder($sortorder);
         $MODULE = 'EMAILMaker';
         $current_user = Users_Record_Model::getCurrentUserModel();
         $status_sql = "SELECT * FROM vtiger_emakertemplates_userstatus
@@ -388,7 +467,8 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         $R_Atr = [];
         $sql = "SELECT * FROM vtiger_emakertemplates WHERE is_theme = '0' AND deleted = '0' ";
         if ($formodule != "") {
-            $sql .= "AND (module = '" . $formodule . "' OR module IS NULL OR module = '') ";
+            $sql .= "AND (module = ? OR module IS NULL OR module = '') ";
+            $R_Atr[] = $formodule;
         }
 
         $Search = [];
@@ -518,7 +598,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 
             $tmpArr = [];
             foreach ($modules as $orderArr) {
-                if ($originDir == "asc") {
+                if ($originDir == 'ASC') {
                     asort($orderArr, SORT_NUMERIC);
                 } else {
                     arsort($orderArr, SORT_NUMERIC);
@@ -536,8 +616,8 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
 
     public function GetDetailViewData($templateid, $skipperrmisions = false)
     {
-        $no_img = '&nbsp;<img src="layouts/vlayout/skins/images/no.gif" alt="no" />';
-        $yes_img = '&nbsp;<img src="layouts/vlayout/skins/images/Enable.png" alt="yes" />';
+        $no_img = '&nbsp;<img src="' . vimage_path('Disable.png') . '" alt="no" />';
+        $yes_img = '&nbsp;<img src="' . vimage_path('Enable.png') . '" alt="yes" />';
         $result = $this->db->pquery("SELECT * FROM vtiger_emakertemplates WHERE templateid=? AND deleted = '0'", [$templateid]);
         $emailtemplateResult = $this->db->fetch_array($result);
         if (!$skipperrmisions) {
@@ -611,7 +691,7 @@ class EMAILMaker_EMAILMaker_Model extends Core_TemplateModel_Helper
         $output .= "<div style='border: 3px solid rgb(153, 153, 153); background-color: rgb(255, 255, 255); width: 55%; position: relative; z-index: 10000000;'>
       		<table border='0' cellpadding='5' cellspacing='0' width='98%'>
       		<tbody><tr>
-      		<td rowspan='2' width='11%'><img src='layouts/vlayout/skins/images/denied.gif'></td>
+      		<td rowspan='2' width='11%'><img src='" . vimage_path('denied.gif') . "'></td>
       		<td style='border-bottom: 1px solid rgb(204, 204, 204);' nowrap='nowrap' width='70%'><span class='genHeaderSmall'>" . vtranslate("LBL_PERMISSION", "EMAILMaker") . "</span></td>
       		</tr>
       		<tr>

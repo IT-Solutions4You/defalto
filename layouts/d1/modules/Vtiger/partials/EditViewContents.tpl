@@ -12,6 +12,11 @@
 	{/if}
 
 	<div name="editContent">
+		{if !empty($RECORD_ACTION_DENY_REASON)}
+			<div class="recordActionDenied alert alert-warning mb-3">
+				<i class="fa-solid fa-lock me-2"></i>{$RECORD_ACTION_DENY_REASON|escape}
+			</div>
+		{/if}
 		{if isset($DUPLICATE_RECORDS) && $DUPLICATE_RECORDS}
 			<div class="fieldBlockContainer bg-body rounded-top mb-3 p-3 duplicationMessageContainer">
 				<h4 class="duplicationMessageHeader fw-bold"><b>{vtranslate('LBL_DUPLICATES_DETECTED', $MODULE)}</b></h4>

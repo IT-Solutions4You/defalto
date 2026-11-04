@@ -10,9 +10,6 @@
 
 class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
 {
-    private $moduleInstance;
-    private $focus;
-
     /**
      * @inheritDoc
      */
@@ -29,16 +26,9 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
     public function ExportData(Vtiger_Request $request)
     {
         $adb = PearDatabase::getInstance();
-
-        $moduleName = $request->get('source_module');
-
-        $this->moduleInstance = Vtiger_Module_Model::getInstance($moduleName);
-        $this->focus = CRMEntity::getInstance($moduleName);
-
-        $orderBy = $request->get('orderby');
-        $sortOrder = $request->get('sortorder');
-
         $EMAILMakerModel = Vtiger_Module_Model::getInstance('EMAILMaker');
+        $orderBy = $EMAILMakerModel->validateListSortColumn($request->get('orderby', 'templateid'));
+        $sortOrder = $EMAILMakerModel->validateListSortOrder($request->get('sortorder', 'ASC'));
         $mode = $request->getMode();
 
         if ($mode == "ExportAllData") {
@@ -46,14 +36,15 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
         } elseif ($mode == "ExportCurrentPage") {
             $result = $EMAILMakerModel->GetListviewResult($orderBy, $sortOrder, $request);
         } else {
-            $sql = $this->getExportQuery($request);
+            $recordIds = $this->getRecordsListFromRequest($request);
 
-            if (!empty($orderby)) {
-                $sql .= " ORDER BY vtiger_emakertemplates." . $orderBy . " " . $sortOrder;
+            if (!is_array($recordIds)) {
+                throw new Exception('Invalid EMAILMaker template selection.');
             }
 
-            $result = $adb->pquery($sql, []);
+            $result = $EMAILMakerModel->fetchSelectedExportResult($recordIds);
         }
+
         $entries = [];
         $num_rows = $adb->num_rows($result);
 
@@ -70,20 +61,6 @@ class EMAILMaker_ExportData_Action extends Vtiger_Mass_Action
         }
 
         $this->output($entries);
-    }
-
-    public function getExportQuery(Vtiger_Request $request)
-    {
-        $query = "SELECT vtiger_emakertemplates.* FROM vtiger_emakertemplates LEFT JOIN vtiger_emakertemplates_displayed USING(templateid)";
-        $idList = $this->getRecordsListFromRequest($request);
-
-        $query .= "WHERE vtiger_emakertemplates.deleted = '0'";
-        if (!empty($idList)) {
-            $idList = implode(',', $idList);
-            $query .= 'AND vtiger_emakertemplates.templateid IN (' . $idList . ')';
-        }
-
-        return $query;
     }
 
     public function output($entries)

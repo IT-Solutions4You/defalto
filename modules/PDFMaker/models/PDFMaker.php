@@ -16,6 +16,8 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     private $version_no;
     private $basicModules;
     private $pageFormats;
+    private array $profilesActions;
+    private array $profilesPermissions;
 
     function __construct()
     {
@@ -27,6 +29,12 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         $this->db = PearDatabase::getInstance();
 
         $this->basicModules = ['20', '21', '22', '23'];
+        $this->profilesActions = [
+            'EDIT'   => 'EditView',
+            'DETAIL' => 'DetailView',
+            'DELETE' => 'Delete',
+        ];
+        $this->profilesPermissions = [];
         $this->name = 'PDFMaker';
         $this->id = getTabId($this->name);
 
@@ -436,13 +444,68 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         return new self();
     }
 
-    /**
-     * @param $actionKey
-     * @return true
-     */
-    public function checkPermissions($actionKey)
+    public function checkPermissions(string $actionKey): bool
     {
-        return true;
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        if ($currentUser->isAdminUser() || !isset($this->profilesActions[$actionKey])) {
+            return $currentUser->isAdminUser();
+        }
+
+        $profileIds = getUserProfile($currentUser->getId());
+        $actionId = getActionid($this->profilesActions[$actionKey]);
+        $permissions = $this->getProfilesPermissions();
+
+        return isset($profileIds[0], $permissions[$profileIds[0]][$actionId])
+            && '0' === (string)$permissions[$profileIds[0]][$actionId];
+    }
+
+    public function isTemplateEditable(int $templateId): bool
+    {
+        $userPrivileges = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+
+        if (!$templateId || !$userPrivileges->hasModulePermission($this->id) || !$this->checkPermissions('EDIT')) {
+            return false;
+        }
+
+        $result = $this->db->pquery(
+            'SELECT templateid FROM vtiger_pdfmaker WHERE templateid = ? AND deleted = ?',
+            [$templateId, 0]
+        );
+
+        return 1 === $this->db->num_rows($result);
+    }
+
+    private function getProfilesPermissions(): array
+    {
+        if ($this->profilesPermissions) {
+            return $this->profilesPermissions;
+        }
+
+        $profiles = Settings_Profiles_Record_Model::getAll();
+        $result = $this->db->pquery('SELECT profileid, operation, permissions FROM vtiger_pdfmaker_profilespermissions', []);
+        $permissions = [];
+
+        while ($row = $this->db->fetchByAssoc($result)) {
+            if (isset($profiles[$row['profileid']])) {
+                $permissions[$row['profileid']][$row['operation']] = $row['permissions'];
+            }
+        }
+
+        foreach ($profiles as $profileId => $profileName) {
+            foreach ($this->profilesActions as $actionName) {
+                $actionId = getActionid($actionName);
+
+                if (!isset($permissions[$profileId][$actionId])) {
+                    $permissions[$profileId][$actionId] = '0';
+                }
+            }
+        }
+
+        ksort($permissions);
+        $this->profilesPermissions = $permissions;
+
+        return $this->profilesPermissions;
     }
 
     /**

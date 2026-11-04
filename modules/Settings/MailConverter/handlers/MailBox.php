@@ -101,7 +101,7 @@ class Settings_MailConverter_MailBox_Handler
         $password = $settings['password'];
         $authentication = '';
 
-        if (str_contains($server, 'gmail.com')) {
+        if (Core_Auth_Model::isOAuthServer((string)$server)) {
             $authentication = 'oauth';
             $password = $settings['client_access_token'];
         }

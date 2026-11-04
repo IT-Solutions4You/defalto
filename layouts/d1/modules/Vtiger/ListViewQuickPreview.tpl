@@ -44,49 +44,7 @@
             </div>
             <div class="details">
                 <form method="post" id="detailView" class="clearfix mt-3 MultiFile-intercepted">
-                    {if $FIELDS_INFO neq null}
-                        <script type="text/javascript">
-                            var quick_preview_uimeta = (function () {
-                                var fieldInfo = {$FIELDS_INFO};
-
-                                return {
-                                    field: {
-                                        get: function (name, property) {
-                                            if (name && property === undefined) {
-                                                return fieldInfo[name];
-                                            }
-                                            if (name && property) {
-                                                return fieldInfo[name][property]
-                                            }
-                                        },
-                                        isMandatory: function (name) {
-                                            if (fieldInfo[name]) {
-                                                return fieldInfo[name].mandatory;
-                                            }
-                                            return false;
-                                        },
-                                        getType: function (name) {
-                                            if (fieldInfo[name]) {
-                                                return fieldInfo[name].type
-                                            }
-                                            return false;
-                                        }
-                                    },
-                                };
-                            })();
-                        </script>
-                    {/if}
-                    {foreach key=index item=jsModel from=$SCRIPTS}
-                        <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
-                    {/foreach}
-                    <script type="text/javascript">
-                        let detailInstance = Vtiger_Detail_Js.getInstanceByModuleName("{$MODULE_NAME}");
-
-                        detailInstance.setContainer($('.quickPreview'));
-                        detailInstance.setForm($('.quickPreview form'));
-                        detailInstance.setQuickPreviewDetailMode(true);
-                        detailInstance.registerEvents();
-                    </script>
+                    <input type="hidden" name="quickPreviewFieldInfo" value="{$FIELDS_INFO|escape:'html'}"/>
                     <input type="hidden" name="record" id="recordId" value="{$RECORD->getId()}"/>
                     <input type="hidden" name="module" value="{$RECORD->getModuleName()}"/>
                     <div class="row">
@@ -97,4 +55,7 @@
         </div>
     </div>
 </div>
+{foreach item=jsModel from=$SCRIPTS}
+    <script type="{$jsModel->getType()}" src="{vresource_url($jsModel->getSrc())}"></script>
+{/foreach}
 

@@ -8,7 +8,6 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-use League\OAuth2\Client\Provider\Google as Google;
 use PHPMailer\PHPMailer\OAuth as OAuth;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -105,13 +104,14 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
         }
     }
 
+    /**
+     * @param string $server
+     *
+     * @return string OAuth provider name (Core_Auth_Model::PROVIDER_*) or an empty string
+     */
     public function getProviderByServer($server): string
     {
-        if (str_contains($server, 'gmail.com')) {
-            return 'Google';
-        }
-
-        return '';
+        return Core_Auth_Model::getProviderNameByServer((string)$server);
     }
 
     public function setMailerType($type)
@@ -209,10 +209,10 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
         }
 
         if (!empty($refreshToken)) {
-            if ('Google' === $provider) {
+            if (in_array($provider, [Core_Auth_Model::PROVIDER_GOOGLE, Core_Auth_Model::PROVIDER_MICROSOFT], true)) {
                 $this->AuthType = 'XOAUTH2';
 
-                $provider = new Google([
+                $provider = Core_Auth_Model::getProviderInstance($provider, [
                     'clientId'     => $clientId,
                     'clientSecret' => $clientSecret,
                 ]);

@@ -18,6 +18,8 @@
 
 class Google_Map_Helper
 {
+    protected const SUPPORTED_MODULES = ['Contacts', 'Leads', 'Accounts'];
+
     public function __construct()
     {
         self::initializeSchema();
@@ -90,9 +92,13 @@ class Google_Map_Helper
      */
     static function getLocationFields($module)
     {
+        if (!self::isSupportedModule($module)) {
+            return [];
+        }
+
         self::initializeSchema();
         $db = PearDatabase::getInstance();
-        $result = $db->pquery("SELECT * FROM vtiger_google_map WHERE module='$module'");
+        $result = $db->pquery('SELECT * FROM vtiger_google_map WHERE module = ?', [$module]);
         $number = $db->num_rows($result);
         $retArray = [];
         if ($number >= 1) {
@@ -120,5 +126,10 @@ class Google_Map_Helper
         }
 
         return $retArray;
+    }
+
+    public static function isSupportedModule($module): bool
+    {
+        return in_array($module, self::SUPPORTED_MODULES, true);
     }
 }

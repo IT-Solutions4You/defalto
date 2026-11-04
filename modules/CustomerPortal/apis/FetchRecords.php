@@ -53,7 +53,6 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract
                 }
             }
             $fieldsArray = Zend_Json::decode($fieldsArray);
-            $groupConditionsBy = $request->get('groupConditions');
             $page = $request->get('page');
             if (empty($page)) {
                 $page = 0;
@@ -65,10 +64,6 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract
                 $pageLimit = CustomerPortal_Config::$DEFAULT_PAGE_LIMIT;
             }
 
-            if (empty($groupConditionsBy)) {
-                $groupConditionsBy = 'AND';
-            }
-
             if (!CustomerPortal_Utils::isModuleActive($module)) {
                 throw new Exception("Module not accessible", 1412);
                 exit;
@@ -78,28 +73,17 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract
                 $mode = CustomerPortal_Settings_Utils::getDefaultMode($module);
             }
             $count = null;
-
-            if ($fieldsArray !== null) {
-                foreach ($fieldsArray as $key => $value) {
-                    if (!in_array($key, $activeFields)) {
-                        throw new Exception($key . " is not accessible.", 1412);
-                        exit;
-                    }
-                }
-            }
+            $filterConditions = CustomerPortal_Utils::getVtqlFilterConditions(
+                $fieldsArray,
+                $activeFields,
+                $request->get('groupConditions')
+            );
             $fields = implode(',', $activeFields);
 
             if ($module == 'Faq') {
-                if (!empty($fieldsArray)) {
-                    $countSql = "SELECT COUNT(*) FROM Faq WHERE faqstatus='Published' AND ";
-                    $sql = sprintf('SELECT %s FROM Faq WHERE faqstatus=\'Published\' AND ', $fields);
-
-                    foreach ($fieldsArray as $key => $value) {
-                        $countSql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
-                        $sql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
-                    }
-                    $countSql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, ';', $countSql);
-                    $sql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $sql);
+                if (!empty($filterConditions)) {
+                    $countSql = "SELECT COUNT(*) FROM Faq WHERE faqstatus='Published' AND " . $filterConditions . ';';
+                    $sql = sprintf('SELECT %s FROM Faq WHERE faqstatus=\'Published\' AND %s', $fields, $filterConditions);
                 } else {
                     $countSql = "SELECT COUNT(*) FROM Faq WHERE faqstatus='Published';";
                     $sql = sprintf('SELECT %s FROM Faq WHERE faqstatus=\'Published\'', $fields);
@@ -118,17 +102,9 @@ class CustomerPortal_FetchRecords extends CustomerPortal_API_Abstract
             } else {
                 $relatedId = null;
                 $defaultMode = CustomerPortal_Settings_Utils::getDefaultMode($module);
-                if (!empty($fieldsArray)) {
-                    $countSql = sprintf('SELECT count(*) FROM %s WHERE ', $module);
-                    $sql = sprintf('SELECT %s FROM %s WHERE ', $fields, $module);
-
-                    foreach ($fieldsArray as $key => $value) {
-                        $countSql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
-                        $sql .= $key . '=\'' . $value . "' " . $groupConditionsBy . " ";
-                    }
-
-                    $countSql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $countSql);
-                    $sql = CustomerPortal_Utils::str_replace_last($groupConditionsBy, '', $sql);
+                if (!empty($filterConditions)) {
+                    $countSql = sprintf('SELECT count(*) FROM %s WHERE %s', $module, $filterConditions);
+                    $sql = sprintf('SELECT %s FROM %s WHERE %s', $fields, $module, $filterConditions);
                 } else {
                     $countSql = sprintf('SELECT count(*) FROM %s', $module);
                     $sql = sprintf('SELECT %s FROM %s', $fields, $module);

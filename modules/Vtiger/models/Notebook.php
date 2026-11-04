@@ -32,11 +32,16 @@ class Vtiger_Notebook_Model extends Vtiger_Widget_Model
         return $data['lastSavedOn'];
     }
 
-    public function save($request)
+    public function save(Vtiger_Request $request): void
     {
+        $noteBookId = $this->get('id');
+        if (!$noteBookId) {
+            throw new Exception('Invalid dashboard widget');
+        }
+
         $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
         $content = $request->get('contents');
-        $noteBookId = $request->get('widgetid');
         $date_var = date("Y-m-d H:i:s");
         $date = $db->formatDate($date_var, true);
 
@@ -47,7 +52,10 @@ class Vtiger_Notebook_Model extends Vtiger_Widget_Model
         $data = Zend_Json::encode((object)$dataValue);
         $this->set('data', Vtiger_Util_Helper::toSafeHTML($data));
 
-        $db->pquery('UPDATE vtiger_module_dashboard_widgets SET data=? WHERE id=?', [$data, $noteBookId]);
+        $db->pquery(
+            'UPDATE vtiger_module_dashboard_widgets SET data=? WHERE id=? AND userid=?',
+            [$data, $noteBookId, $currentUser->getId()]
+        );
     }
 
     public static function getUserInstance($widgetId)

@@ -114,13 +114,14 @@ class SMSNotifier_Install_Model extends Core_Install_Model
             ->createColumn('parameters', 'text')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`id`)');
 
-        $this->getTable('vtiger_smsnotifier_status', null)
-            ->createTable('smsnotifierid')
+        $this->getTable('vtiger_smsnotifier_status', 'statusid')
+            ->createTable()
             ->createColumn('tonumber', 'varchar(20) DEFAULT NULL')
             ->createColumn('status', 'varchar(10) DEFAULT NULL')
             ->createColumn('smsmessageid', 'varchar(50) DEFAULT NULL')
             ->createColumn('needlookup', 'int(1) DEFAULT \'1\'')
-            ->createColumn('statusid', 'int(11) NOT NULL')
+            ->createColumn('statusid', 'int(11) NOT NULL AUTO_INCREMENT')
+            ->createColumn('smsnotifierid', 'int(19) DEFAULT NULL')
             ->createColumn('statusmessage', 'varchar(100) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`statusid`)');
     }

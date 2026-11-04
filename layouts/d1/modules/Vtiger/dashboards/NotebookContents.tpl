@@ -22,7 +22,7 @@
 				</div>
 				<div class="pushDown2per col-lg-12">
 					<div class="dashboard_notebookWidget_viewarea boxSizingBorderBox form-control">
-						{$WIDGET->getContent()|nl2br}
+						{$WIDGET->getContent()|escape:'html'|nl2br}
 					</div>
 				</div>
 			</div>
@@ -40,7 +40,7 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<textarea class="dashboard_notebookWidget_textarea boxSizingBorderBox form-control" data-note-book-id="{$WIDGET->get('id')}">
-							{$WIDGET->getContent()}
+							{$WIDGET->getContent()|escape:'html'}
 						</textarea>
 					</div>
 				</div>

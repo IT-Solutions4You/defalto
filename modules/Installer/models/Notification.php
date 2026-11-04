@@ -116,7 +116,7 @@ class Installer_Notification_Model extends Core_DatabaseData_Model
             } elseif (!$license->isValid()) {
                 $this->notifications[] = [
                     'name' => $label,
-                    'description' => 'Invalid license key. Please check your details.',
+                    'description' => 'License inactive',
                     'type' => 'warning',
                     'icon' => 'fa fa-users',
                     'link' => 'index.php?module=Installer#UpdateLicense'

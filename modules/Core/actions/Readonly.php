@@ -11,6 +11,36 @@
 class Core_Readonly_Action extends Core_Controller_Action
 {
     /**
+     * Allows locking to administrators or editable record owners, and restricts unlocking and installation to
+     * administrators.
+     *
+     * @param Vtiger_Request $request
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $mode = (string)$request->getMode();
+        $isPermitted = match ($mode) {
+            'makeReadonly' => Core_Readonly_Model::isMakeReadonlyPermitted(
+                $request->getModule(),
+                (int)$request->get('record'),
+                $currentUser
+            ),
+            'makeEditable', 'install' => $currentUser->isAdminUser(),
+            default => true,
+        };
+
+        if (!$isPermitted) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        return parent::checkPermission($request);
+    }
+
+    /**
      * @param Vtiger_Request $request
      *
      * @return void
@@ -80,7 +110,10 @@ class Core_Readonly_Action extends Core_Controller_Action
         if (!empty($record)) {
             $model = Core_Readonly_Model::getInstance($module);
             $model->setRecord($record);
-            $model->setReadonly();
+
+            if (!$model->updateReadonlyForUser(Users_Record_Model::getCurrentUserModel())) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
 
             $success = true;
         }

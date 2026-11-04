@@ -715,12 +715,16 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $popupSettingsModel = Settings_LayoutEditor_PopupSettings_Model::getInstance();
         $popupSettingsModel->set('moduleName', $this->getName());
         $settings = $popupSettingsModel->getSettings();
+        $moduleFields = $this->getFields();
+        $columns = array_values(array_filter((array)$settings['columnslist'], function ($fieldName) use ($moduleFields) {
+            return is_string($fieldName) && isset($moduleFields[$fieldName]);
+        }));
 
-        if (empty($settings['columnslist'])) {
+        if (empty($columns)) {
             return $this->getNameFields();
         }
 
-        return $settings['columnslist'];
+        return $columns;
     }
 
     /**
@@ -1405,18 +1409,26 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $sharingAccessModel = Settings_SharingAccess_Module_Model::getInstance($this->getName());
         $ownerSql = '';
-        $params = [];
+
+        if (!empty($owner)) {
+            $owner = filter_var($owner, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+            if ($owner === false) {
+                throw new Exception('Invalid dashboard owner.');
+            }
+        }
 
         if (!empty($owner) && $currentUserModel->isAdminUser()) {//If admin user, then allow users data
             $ownerSql = ' assigned_user_id = ' . $owner;
-            $params[] = $owner;
         } elseif (!empty($owner)) {//If not admin user, then check sharing access for that module
             if ($sharingAccessModel->isPrivate()) {
                 $subordinateUserModels = $currentUserModel->getSubordinateUsers();
                 $subordinateUsers = [];
+
                 foreach ($subordinateUserModels as $id => $name) {
                     $subordinateUsers[] = $id;
                 }
+
                 if (in_array($owner, $subordinateUsers)) {
                     $ownerSql = ' assigned_user_id = ' . $owner;
                 } else {
@@ -1430,8 +1442,8 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
                 $subordinateUserModels = $currentUserModel->getSubordinateUsers();
                 foreach ($subordinateUserModels as $id => $name) {
                     $subordinateUsers[] = $id;
-                    $params[] = $id;
                 }
+
                 if ($subordinateUsers) {
                     array_push($subordinateUsers, $currentUserModel->getId());
                     $ownerSql = ' assigned_user_id IN (' . implode(',', $subordinateUsers) . ')';
@@ -2009,15 +2021,17 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     }
 
     /**
-     * function to check if duplicate option is allowed in DetailView
+     * Checks whether the record may be duplicated: the profile permission and the action rules of the record.
      *
-     * @param <string> $action , $recordId
+     * @param string     $action   permission action of the copy (CreateView)
+     * @param int|string $recordId record to duplicate
      *
-     * @return <boolean>
+     * @return bool
      */
     public function isDuplicateOptionAllowed($action, $recordId)
     {
-        return Users_Privileges_Model::isPermitted($this->getName(), $action, $recordId);
+        return Users_Privileges_Model::isPermitted($this->getName(), $action, $recordId)
+            && Core_RecordActionPermission_Model::getInstance()->isActionPermitted((int)$recordId, Core_RecordActionPermission_Model::ACTION_DUPLICATE);
     }
 
     public function isCreateOptionAllowed()

@@ -48,24 +48,24 @@ class Documents_FilePreview_View extends Vtiger_IndexAjax_View
 
         $fileContent = false;
         if (!empty ($fileDetails)) {
-            $filePath = $fileDetails['path'];
             $fileName = $fileDetails['name'];
             $storedFileName = $fileDetails['storedname'];
 
             if ($recordModel->get('filelocationtype') == 'I') {
                 $fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
                 $savedFile = $fileDetails['attachmentsid'] . "_" . $storedFileName;
+                $filePath = Core_Storage_Model::getInstance()->getFilePath($fileDetails['path'], $savedFile);
 
-                $fileSize = filesize($filePath . $savedFile);
+                $fileSize = filesize($filePath);
                 $fileSize = $fileSize + ($fileSize % 1024);
 
-                if (fopen($filePath . $savedFile, "r")) {
-                    $fileContent = fread(fopen($filePath . $savedFile, "r"), $fileSize);
+                if (fopen($filePath, "r")) {
+                    $fileContent = fread(fopen($filePath, "r"), $fileSize);
                 }
             }
         }
 
-        $path = $fileDetails['path'] . $fileDetails['attachmentsid'] . '_' . $fileDetails['name'];
+        $path = Core_Storage_Model::getInstance()->getAttachmentFilePath($fileDetails);
         $type = $fileDetails['type'];
         $contents = $fileContent;
         $filename = $fileDetails['name'];

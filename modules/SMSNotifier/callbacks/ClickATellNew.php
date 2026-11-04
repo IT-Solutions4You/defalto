@@ -17,6 +17,9 @@
  */
 
 chdir(dirname(__FILE__) . '/../../../');
+include_once 'config.php';
+require_once 'vendorCheck.php';
+require_once 'vendor/autoload.php';
 include_once 'includes/main/WebUI.php';
 vimport('includes.http.Request');
 

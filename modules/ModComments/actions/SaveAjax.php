@@ -25,10 +25,28 @@ class ModComments_SaveAjax_Action extends Vtiger_SaveAjax_Action
     {
         $record = $request->get('record');
 
-        //Do not allow ajax edit of existing comments
+        // Do not allow ajax edit of existing comments.
         if ($record) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
         }
+
+        $moduleModel = Vtiger_Module_Model::getInstance('ModComments');
+        $relatedRecordId = $moduleModel->getPermittedRelatedRecordId($request->get('related_to'));
+
+        if (false === $relatedRecordId) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        if ($request->get('relationOperation')) {
+            $sourceRecordId = $moduleModel->getPermittedRelatedRecordId($request->get('sourceRecord'));
+            $sourceModule = getSalesEntityType($relatedRecordId);
+
+            if ($sourceRecordId !== $relatedRecordId || $request->get('sourceModule') !== $sourceModule) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+        }
+
+        $request->set('related_to', $relatedRecordId);
 
         return true;
     }

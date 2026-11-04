@@ -23,19 +23,13 @@ class ITS4YouEmails_DownloadFile_Action extends Core_Controller_Action
             $row = $db->fetchByAssoc($result, 0);
             $fileType = $row["type"];
             $name = $row["name"];
-            $filepath = $row["path"];
             $name = decode_html($name);
-            $storedFileName = $row['storedname'];
-            if (!empty($name)) {
-                if (!empty($storedFileName)) {
-                    $saved_filename = $attachmentId . "_" . $storedFileName;
-                } elseif (is_null($storedFileName)) {
-                    $saved_filename = $attachmentId . "_" . $name;
-                }
 
-                $disk_file_size = filesize($filepath . $saved_filename);
+            if (!empty($name)) {
+                $filePath = Core_Storage_Model::getInstance()->getAttachmentFilePath($row);
+                $disk_file_size = filesize($filePath);
                 $filesize = $disk_file_size + ($disk_file_size % 1024);
-                $fileContent = fread(fopen($filepath . $saved_filename, "r"), $filesize);
+                $fileContent = fread(fopen($filePath, "r"), $filesize);
 
                 header("Content-type: $fileType");
                 header("Pragma: public");

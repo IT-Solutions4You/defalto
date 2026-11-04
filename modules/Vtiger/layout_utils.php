@@ -88,7 +88,7 @@ EOQ;
     if ($show_help == true) {
         $the_form .= "<td class='bodySmall' align='right'>[ <A href='phprint.php?jt=" . session_id(
             ) . $GLOBALS['request_string'] . "'>" . $app_strings['LNK_PRINT'] . "</A> ]</td>\n";
-        $the_form .= "<td class='bodySmall' align='right'>[ <A href='http://www.vtiger.com/products/crm/document.html' target='_blank'>" . $app_strings['LNK_HELP'] . "</A> ]</td>\n";
+        $the_form .= "<td class='bodySmall' align='right'>[ <A href='index.php?module=Core&view=Redirect&mode=Documentation' target='_blank'>" . $app_strings['LNK_HELP'] . "</A> ]</td>\n";
     }
 
     $the_form .= <<<EOQ
@@ -131,7 +131,7 @@ function get_module_title($module, $module_title, $show_help)
 
     if ($show_help) {
 //	$the_title .= "<td class='bodySmall' nowrap align='right'> <A href='phprint.php?jt=".session_id().$GLOBALS['request_string']."'><img align=absmiddle hspace=3 border=0 src='themes/images/print.gif'>".$app_strings['LNK_PRINT']."</A> &nbsp;</td>\n";
-//	$the_title .= "<td class='bodySmall' nowrap align='right'> <A href='http://www.vtiger.com/products/crm/document.html' target='_blank'><img align=absmiddle hspace=3 border=0 src='themes/images/help_icon.gif'>".$app_strings['LNK_HELP']."</A></td>\n";
+//	$the_title .= "<td class='bodySmall' nowrap align='right'> <A href='index.php?module=Core&view=Redirect&mode=Documentation' target='_blank'><img align=absmiddle hspace=3 border=0 src='themes/images/help_icon.gif'>".$app_strings['LNK_HELP']."</A></td>\n";
     } else {
         $the_title .= "<td class='bodySmall' align='right'>&nbsp;</td>\n";
         $the_title .= "<td class='bodySmall' align='right'>&nbsp;</td>\n";

@@ -29,23 +29,25 @@ class SalesOrder_DetailView_Model extends Vtiger_DetailView_Model
         $recordModel = $this->getRecord();
         $invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
         $links = [];
+        $invoiceUrl = $this->getConversionLinkUrl('Invoice', $recordModel->getCreateInvoiceUrl());
 
-        if ($currentUserModel->hasModuleActionPermission($invoiceModuleModel->getId(), 'CreateView')) {
+        if (false !== $invoiceUrl && $currentUserModel->hasModuleActionPermission($invoiceModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
                 'linklabel' => vtranslate('LBL_CREATE') . ' ' . vtranslate($invoiceModuleModel->getSingularLabelKey(), 'Invoice'),
-                'linkurl'   => $recordModel->getCreateInvoiceUrl(),
+                'linkurl'   => $invoiceUrl,
                 'linkicon'  => ''
             ];
         }
 
         $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
+        $purchaseOrderUrl = $this->getConversionLinkUrl('PurchaseOrder', $recordModel->getCreatePurchaseOrderUrl());
 
-        if ($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
+        if (false !== $purchaseOrderUrl && $currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
                 'linklabel' => vtranslate('LBL_CREATE') . ' ' . vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),
-                'linkurl'   => $recordModel->getCreatePurchaseOrderUrl(),
+                'linkurl'   => $purchaseOrderUrl,
                 'linkicon'  => '',
             ];
         }

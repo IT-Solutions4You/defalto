@@ -52,12 +52,9 @@ class Documents_Record_Model extends Vtiger_Record_Model
         if ($downloadType == 'I') {
             $fileDetails = $this->getFileDetails();
             if (!empty ($fileDetails)) {
-                $filePath = $fileDetails['path'];
-                $storedFileName = $fileDetails['storedname'];
+                $filePath = Core_Storage_Model::getInstance()->getAttachmentFilePath($fileDetails);
 
-                $savedFile = $fileDetails['attachmentsid'] . "_" . $storedFileName;
-
-                if (fopen($filePath . $savedFile, "r")) {
+                if (fopen($filePath, "r")) {
                     $returnValue = true;
                 }
             }
@@ -91,7 +88,6 @@ class Documents_Record_Model extends Vtiger_Record_Model
         $fileContent = false;
 
         if (!empty ($fileDetails)) {
-            $filePath = $fileDetails['path'];
             $fileName = $fileDetails['name'];
             $storedFileName = $fileDetails['storedname'];
 
@@ -106,11 +102,12 @@ class Documents_Record_Model extends Vtiger_Record_Model
                     while (ob_get_level()) {
                         ob_end_clean();
                     }
-                    $fileSize = filesize($filePath . $savedFile);
+                    $filePath = Core_Storage_Model::getInstance()->getFilePath($fileDetails['path'], $savedFile);
+                    $fileSize = filesize($filePath);
                     $fileSize = $fileSize + ($fileSize % 1024);
 
-                    if (fopen($filePath . $savedFile, "r")) {
-                        $fileContent = fread(fopen($filePath . $savedFile, "r"), $fileSize);
+                    if (fopen($filePath, "r")) {
+                        $fileContent = fread(fopen($filePath, "r"), $fileSize);
 
                         header("Content-type: " . $fileDetails['type']);
                         header("Pragma: public");

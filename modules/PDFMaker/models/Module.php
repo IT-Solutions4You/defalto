@@ -246,4 +246,22 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
     {
         return sprintf('<i class="fa-solid fa-file-pdf" style="font-size: %s"></i>', $height);
     }
+
+    /**
+     * Returns the reason why a record rule (Core_RecordActionPermission_Model) denies the PDF export of a record.
+     * On a core without the record action layer PDF Maker behaves as before.
+     *
+     * @param int $recordId
+     *
+     * @return string|null translated reason, null when the export is permitted
+     * @throws Exception
+     */
+    public function getPdfExportDenyReason(int $recordId): ?string
+    {
+        if (!$recordId || !class_exists('Core_RecordActionPermission_Model')) {
+            return null;
+        }
+
+        return Core_RecordActionPermission_Model::getInstance()->getDenyReason($recordId, Core_RecordActionPermission_Model::ACTION_PDF_EXPORT);
+    }
 }

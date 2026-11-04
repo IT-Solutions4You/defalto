@@ -1495,26 +1495,89 @@ class Vtiger_Util_Helper
         return $encryptedFileName;
     }
 
-    public static function validateFieldValue($fieldValue, $fieldModel)
+    /**
+     * Validates a field value at the shared server-side request boundary.
+     *
+     * @param mixed              $fieldValue
+     * @param Vtiger_Field_Model $fieldModel
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public static function validateFieldValue(mixed $fieldValue, Vtiger_Field_Model $fieldModel): mixed
     {
         $fieldDataType = $fieldModel->getFieldDataType();
-        $fieldInfo = $fieldModel->getFieldInfo();
-        $editablePicklistValues = isset($fieldInfo['editablepicklistvalues']) ? $fieldInfo['editablepicklistvalues'] : null;
-        if ($fieldValue && $fieldDataType == 'picklist') {
-            if (!empty($editablePicklistValues) && !isset($editablePicklistValues[$fieldValue])) {
-                $fieldValue = null;
-            }
-        } elseif (!empty($fieldValue) && $fieldDataType == 'multipicklist') {
-            if (!empty($editablePicklistValues)) {
-                foreach ($fieldValue as $key => $value) {
-                    if (!isset($editablePicklistValues[$value])) {
-                        unset($fieldValue[$key]);
-                    }
-                }
-            }
+        $fieldLabel = vtranslate($fieldModel->get('label'), $fieldModel->getModuleName());
+
+        if ($fieldModel->isMandatory() && self::isEmptyFieldValue($fieldValue)) {
+            throw new Exception($fieldLabel . ': ' . vtranslate('LBL_MANDATORY_FIELDS_ARE_EMPTY', 'Core'));
+        }
+
+        if (self::isEmptyFieldValue($fieldValue)) {
+            return $fieldValue;
+        }
+
+        $scalarFieldDataTypes = ['currency', 'double', 'email', 'integer', 'multipicklist', 'number', 'percentage', 'picklist'];
+
+        if (in_array($fieldDataType, $scalarFieldDataTypes, true) && !is_scalar($fieldValue)) {
+            throw new Exception($fieldLabel . ': ' . vtranslate('JS_PLEASE_ENTER_VALID_VALUE', 'Core'));
+        }
+
+        if ('email' === $fieldDataType && false === filter_var($fieldValue, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception($fieldLabel . ': ' . vtranslate('JS_PLEASE_ENTER_VALID_EMAIL_ADDRESS', 'Core'));
+        }
+
+        if ('integer' === $fieldDataType && !preg_match('/^[+-]?\d+$/', (string)$fieldValue)) {
+            throw new Exception($fieldLabel . ': ' . vtranslate('JS_PLEASE_ENTER_INTEGER_VALUE', 'Core'));
+        }
+
+        if (in_array($fieldDataType, ['currency', 'double', 'number', 'percentage'], true) && !is_numeric($fieldValue)) {
+            throw new Exception($fieldLabel . ': ' . vtranslate('JS_PLEASE_ENTER_VALID_VALUE', 'Core'));
+        }
+
+        if (in_array($fieldDataType, ['picklist', 'multipicklist'], true)) {
+            self::validatePicklistFieldValue($fieldValue, $fieldModel);
         }
 
         return $fieldValue;
+    }
+
+    /**
+     * @param mixed $fieldValue
+     *
+     * @return bool
+     */
+    protected static function isEmptyFieldValue(mixed $fieldValue): bool
+    {
+        return null === $fieldValue || '' === $fieldValue || [] === $fieldValue;
+    }
+
+    /**
+     * @param mixed              $fieldValue
+     * @param Vtiger_Field_Model $fieldModel
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected static function validatePicklistFieldValue(mixed $fieldValue, Vtiger_Field_Model $fieldModel): void
+    {
+        $allowedValues = $fieldModel->getEditablePicklistValues();
+
+        if (null === $allowedValues) {
+            return;
+        }
+
+        $fieldValues = 'multipicklist' === $fieldModel->getFieldDataType()
+            ? explode(' |##| ', (string)$fieldValue)
+            : [(string)$fieldValue];
+
+        foreach ($fieldValues as $value) {
+            if (!array_key_exists($value, $allowedValues)) {
+                $fieldLabel = vtranslate($fieldModel->get('label'), $fieldModel->getModuleName());
+
+                throw new Exception($fieldLabel . ': ' . vtranslate('JS_PLEASE_ENTER_VALID_VALUE', 'Core'));
+            }
+        }
     }
 
     /**

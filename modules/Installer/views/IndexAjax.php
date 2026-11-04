@@ -82,9 +82,13 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     public function extensionModal(Vtiger_Request $request): void
     {
         $version = $request->get('version');
+        $extension = Installer_ExtensionInstall_Model::getInstance($version);
+        $changelog = $extension->getChangelogPreview();
 
         $viewer = $this->getViewer($request);
-        $viewer->assign('EXTENSION_INSTALL', Installer_ExtensionInstall_Model::getInstance($version));
+        $viewer->assign('QUALIFIED_MODULE', $request->getModule(false));
+        $viewer->assign('EXTENSION_INSTALL', $extension);
+        $viewer->assign('EXTENSION_CHANGELOG', $changelog);
         $viewer->view('ExtensionModal.tpl', $request->getModule());
     }
 

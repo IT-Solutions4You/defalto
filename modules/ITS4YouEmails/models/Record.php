@@ -26,6 +26,25 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public $emailNames = [];
 
     /**
+     * @param string $subject
+     * @param string $mode
+     *
+     * @return string
+     */
+    public static function getSubjectForMode(string $subject, string $mode): string
+    {
+        if (in_array($mode, ['Reply', 'ReplyAll'], true)) {
+            return preg_match('/^\s*(?:re|aw|odp|sv)\s*:/iu', $subject) ? $subject : 'Re: ' . $subject;
+        }
+
+        if ('Forward' === $mode) {
+            return preg_match('/^\s*(?:fwd|fw|tr)\s*:/iu', $subject) ? $subject : 'Fwd: ' . $subject;
+        }
+
+        return $subject;
+    }
+
+    /**
      * @param int    $userId
      * @param string $type
      *
@@ -92,10 +111,8 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $mailer = $this->getMailer();
 
         try {
-            if (!$this->isEmpty('smtp')) {
-                $mailer->retrieveSMTPById($this->get('smtp'));
-            } else {
-                $mailer->retrieveSMTPVtiger();
+            if (!$this->isSMTPRetrievalSkipped()) {
+                $this->retrieveSMTP();
             }
 
             $mailer->isHTML(true);
@@ -614,7 +631,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $mailer = $this->getMailer();
 
         foreach ($this->getAttachments() as $attachment) {
-            $fileNameWithPath = vglobal('root_directory') . $attachment['filenamewithpath'];
+            $fileNameWithPath = $attachment['filenamewithpath'];
 
             if (is_file($fileNameWithPath)) {
                 $mailer->addAttachment($fileNameWithPath, $attachment['attachment']);
@@ -671,7 +688,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                 $fileName = decode_html($row['name']);
                 $storedName = !empty($row['storedname']) ? decode_html($row['storedname']) : $fileName;
                 $path = $row['path'];
-                $fileNameWithPath = $path . $attachmentId . '_' . $storedName;
+                $fileNameWithPath = Core_Storage_Model::getInstance()->getAttachmentFilePath($row);
 
                 $attachments[] = [
                     'attachment'       => $fileName,
@@ -718,7 +735,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                     'attachment'       => $fileName,
                     'storedname'       => $storedName,
                     'size'             => $this->getFormattedFileSize($row['filesize']),
-                    'filenamewithpath' => $row['path'] . $row['attachmentsid'] . '_' . $storedName
+                    'filenamewithpath' => Core_Storage_Model::getInstance()->getAttachmentFilePath($row)
                 ];
             }
         }
@@ -770,8 +787,49 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         }
     }
 
+    /**
+     * Configures the mailer with the record SMTP server or the system outgoing server.
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function retrieveSMTP(): void
+    {
+        $mailer = $this->getMailer();
+
+        if (!$this->isEmpty('smtp')) {
+            $mailer->retrieveSMTPById($this->get('smtp'));
+        } else {
+            $mailer->retrieveSMTPVtiger();
+        }
+    }
+
+    /**
+     * Callers that set their own SMTP server on the mailer (runtime flag skip_smtp_retrieval, for example MailManager Pro shared mailboxes) keep it during send().
+     *
+     * @return bool
+     */
+    public function isSMTPRetrievalSkipped(): bool
+    {
+        return true === $this->get('skip_smtp_retrieval');
+    }
+
+    /**
+     * Callers that set In-Reply-To and References themselves (runtime flag skip_in_reply_to, for example MailManager Pro replies) skip the automatic header.
+     *
+     * @return bool
+     */
+    public function isInReplyToSkipped(): bool
+    {
+        return true === $this->get('skip_in_reply_to');
+    }
+
     public function retrieveInReplyTo()
     {
+        if ($this->isInReplyToSkipped()) {
+            return;
+        }
+
         $toEmailIds = $this->getJsonArray('to_email_ids');
         $toEmailId = reset($toEmailIds);
 
@@ -1292,6 +1350,12 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             return '';
         }
 
-        return '<div style="text-align: center; font-size: 10px;"><a href="https://defalto.com" style="color: silver;">Sent via Defalto CRM</a></div>';
+        $url = htmlspecialchars(
+            Core_Redirect_Model::getInstance()->getRedirectUrl('Web', true),
+            ENT_QUOTES,
+            'UTF-8'
+        );
+
+        return '<div style="text-align: center; font-size: 10px;"><a href="' . $url . '" style="color: silver;">Sent via Defalto CRM</a></div>';
     }
 }

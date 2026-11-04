@@ -92,10 +92,10 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     public static function getInstanceById(
         int $templateId,
         string $language,
-        string $moduleName = null,
-        int $recordId = null,
-        int $recipientRecordId = null,
-        string $recipientModuleName = null
+        ?string $moduleName = null,
+        ?int $recordId = null,
+        ?int $recipientRecordId = null,
+        ?string $recipientModuleName = null
     ): self {
         $self = self::getInstance($moduleName, $recordId, $language, $recipientRecordId, $recipientModuleName);
 
@@ -131,12 +131,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     private function getDecimalData()
     {
-        $result2 = self::$db->pquery("SELECT * FROM vtiger_emakertemplates_settings", []);
-        $data = self::$db->fetch_array($result2);
+        $settings = EMAILMaker_Record_Model::getDecimalSettings();
 
-        self::$decimal_point = html_entity_decode($data["decimal_point"], ENT_QUOTES);
-        self::$thousands_separator = html_entity_decode(($data["thousands_separator"] != "sp" ? $data["thousands_separator"] : " "), ENT_QUOTES);
-        self::$decimals = $data["decimals"];
+        self::$decimal_point = html_entity_decode($settings['point'], ENT_QUOTES);
+        self::$thousands_separator = html_entity_decode($settings['thousands'], ENT_QUOTES);
+        self::$decimals = $settings['decimals'];
     }
 
     /**
@@ -149,7 +148,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
      * @return self
      * @throws Exception
      */
-    public static function getInstance(string $moduleName, int $recordId, string $language, int $recipientRecordId = null, string $recipientModuleName = null): self
+    public static function getInstance(string $moduleName, int $recordId, string $language, ?int $recipientRecordId = null, ?string $recipientModuleName = null): self
     {
         self::$language = $language;
         self::$module = $moduleName;
@@ -251,12 +250,14 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     public function replaceCurrentDate()
     {
-        self::$rep['##DD-MM-YYYY##'] = date('d-m-Y');
-        self::$rep['##DD.MM.YYYY##'] = date('d.m.Y');
-        self::$rep['##MM-DD-YYYY##'] = date('m-d-Y');
-        self::$rep['##YYYY-MM-DD##'] = date('Y-m-d');
-        self::$rep['##HH:II:SS##'] = date('h:i:s');
-        self::$rep['##HH:II##'] = date('h:i');
+        $currentDateTime = DateTimeField::convertToUserTimeZone('now');
+
+        self::$rep['##DD-MM-YYYY##'] = $currentDateTime->format('d-m-Y');
+        self::$rep['##DD.MM.YYYY##'] = $currentDateTime->format('d.m.Y');
+        self::$rep['##MM-DD-YYYY##'] = $currentDateTime->format('m-d-Y');
+        self::$rep['##YYYY-MM-DD##'] = $currentDateTime->format('Y-m-d');
+        self::$rep['##HH:II:SS##'] = $currentDateTime->format('H:i:s');
+        self::$rep['##HH:II##'] = $currentDateTime->format('H:i');
     }
 
     /**

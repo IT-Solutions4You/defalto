@@ -204,7 +204,7 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js", {}, {
         loginOAuth.addClass('hide');
         loginServer.addClass('hide');
 
-        if ('ssl://smtp.gmail.com:465' === serverType.val()) {
+        if (['ssl://smtp.gmail.com:465', 'tls://smtp.office365.com:587'].includes(serverType.val())) {
             loginOAuth.removeClass('hide');
         } else {
             loginServer.removeClass('hide');

@@ -34,6 +34,28 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
             return !in_array($fieldName, InventoryItem_Field_Model::preventDisplay, true);
         }));
         $decimals = InventoryItem_Utils_Helper::fetchDecimals();
+        $conversions = [];
+
+        foreach (InventoryItem_Conversion_Model::getAllConversions() as $conversion) {
+            $sourceModule = $conversion->get('source_module');
+            $targetModule = $conversion->get('target_module');
+            $headerFieldOptions = [];
+
+            foreach (InventoryItem_Conversion_Model::getSelectableHeaderFields($targetModule) as $fieldName => $fieldModel) {
+                $headerFieldOptions[$fieldName] = vtranslate($fieldModel->get('label'), $targetModule);
+            }
+
+            $conversions[] = [
+                'id'                 => $conversion->getId(),
+                'sourceLabel'        => vtranslate($sourceModule, $sourceModule),
+                'targetLabel'        => vtranslate($targetModule, $targetModule),
+                'enabled'            => $conversion->isActionEnabled(),
+                'useModal'           => (bool)$conversion->get('use_modal'),
+                'columns'            => $conversion->getEditableColumns(),
+                'headerFields'       => $conversion->getHeaderFields(),
+                'headerFieldOptions' => $headerFieldOptions,
+            ];
+        }
 
         $viewer = $this->getViewer($request);
         $viewer->assign('MODULE_NAME', $moduleName);
@@ -44,6 +66,8 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('SELECTED_FIELDS', $selectedFields);
         $viewer->assign('MANDATORY_FIELDS', ['productid', 'quantity']);
         $viewer->assign('DECIMALS', $decimals);
+        $viewer->assign('CONVERSIONS', $conversions);
+        $viewer->assign('CONVERSION_COLUMNS', InventoryItem_Conversion_Model::SUPPORTED_COLUMNS);
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 

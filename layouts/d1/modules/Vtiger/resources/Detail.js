@@ -100,9 +100,79 @@ Vtiger.Class("Vtiger_Detail_Js", {
 	 * function to trigger delete record action
 	 * @params: delete record url.
 	 */
-    deleteRecord: function (deleteRecordActionUrl) {
-        var detailInstance = window.app.controller();
-        detailInstance.remove(deleteRecordActionUrl);
+    deleteRecordHandler: false,
+
+    registerDeleteRecordHandler: function (handler) {
+        this.deleteRecordHandler = handler;
+    },
+
+    removeDeleteRecordHandler: function (handler) {
+        if (this.deleteRecordHandler === handler) {
+            this.deleteRecordHandler = false;
+        }
+    },
+
+    /**
+     * Delete through the shared confirmation/request flow.
+     * handler may be a success callback (params, result) or {hasRecord, onSuccess, onError}.
+     * A registered handler applies only to its matching active record.
+     */
+    deleteRecord: function (deleteRecordActionUrl, handler) {
+        const params = app.convertUrlToDataParams(deleteRecordActionUrl),
+            registeredHandler = this.deleteRecordHandler;
+
+        if (!handler && registeredHandler && registeredHandler.hasRecord(params)) {
+            handler = registeredHandler;
+        }
+
+        if (!handler) {
+            return window.app.controller().remove(deleteRecordActionUrl);
+        }
+
+        if (typeof handler === 'function') {
+            handler = {onSuccess: handler};
+        }
+
+        if (handler.pending || (handler.hasRecord && !handler.hasRecord(params))) {
+            return;
+        }
+
+        handler.pending = true;
+
+        return app.helper.showConfirmationBox({message: app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function () {
+            // The handler's target can disappear or change while confirmation remains open.
+            if (handler.hasRecord && !handler.hasRecord(params)) {
+                handler.pending = false;
+
+                return;
+            }
+
+            params.ajaxDelete = true;
+            app.helper.showProgress();
+
+            return app.request.post({data: params}).then(function (error, data) {
+                handler.pending = false;
+                app.helper.hideProgress();
+
+                if (error || (data && typeof data === 'object')) {
+                    const failure = error || data.prototype || data;
+
+                    if (handler.onError) {
+                        handler.onError(failure, params);
+                    } else {
+                        app.helper.showAlertBox({message: failure && failure.message || failure});
+                    }
+
+                    return;
+                }
+
+                if (handler.onSuccess) {
+                    handler.onSuccess(params, data);
+                }
+            });
+        }, function () {
+            handler.pending = false;
+        });
     },
 
 
@@ -245,6 +315,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
     setContentHolder: function (container) {
         this.detailViewContentHolder = container;
+        this.detailViewForm = false;
     },
 
     overlayMode: false,
@@ -366,7 +437,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             var container = jQuery('.relatedContainer');
             container.html(res);
             app.helper.hideProgress();
-            app.event.trigger("post.relatedListLoad.click", container.find(".searchRow"));
+            app.event.trigger("post.relatedListLoad.click", container.find(".searchRow"), self.getContainer());
         });
         return aDeferred.promise();
     },
@@ -437,13 +508,16 @@ Vtiger.Class("Vtiger_Detail_Js", {
      * Function to fetch search params
      */
     getRelatedListSearchParams: function () {
-        var detailViewContainer = this.getContainer();
-        var relatedListTable = detailViewContainer.find('.searchRow');
-        var searchParams = [];
-        var currentSearchParams = [];
-        if (jQuery('#currentSearchParams').val()) {
-            currentSearchParams = JSON.parse(jQuery('#currentSearchParams').val());
+        var detailViewContainer = this.getContainer(),
+            relatedListTable = detailViewContainer.find('.searchRow'),
+            searchParams = [],
+            currentSearchParams = [],
+            currentSearchParamsElement = detailViewContainer.find('#currentSearchParams');
+
+        if (currentSearchParamsElement.val()) {
+            currentSearchParams = JSON.parse(currentSearchParamsElement.val());
         }
+
         relatedListTable.find('.listSearchContributor').each(function (index, domElement) {
             var searchInfo = [];
             var searchContributorElement = jQuery(domElement);
@@ -506,7 +580,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
 
     getTabContainer: function () {
-        return jQuery('div.related-tabs');
+        return this.getContainer().find('div.related-tabs');
     },
 
     getRecordId: function () {
@@ -586,8 +660,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
         });
 
         jQuery('.related-tabs', detailViewContainer).on('click', 'li.more-tab', function (e, urlAttributes) {
-            if (0 !== jQuery('.moreTabElement').length) {
-                jQuery('.moreTabElement').remove();
+            let relatedTabs = self.getTabContainer(),
+                currentMoreTab = relatedTabs.find('.moreTabElement');
+
+            if (0 !== currentMoreTab.length) {
+                currentMoreTab.remove();
             }
 
             let moreTabElement = jQuery(e.currentTarget).clone();
@@ -597,7 +674,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             let moreElementTitle = moreTabElement.find('a').attr('displaylabel')
             moreTabElement.attr('title', moreElementTitle);
             moreTabElement.find('.tab-icon').removeClass('text-truncate');
-            jQuery('.related-tab-more-element').before(moreTabElement);
+            relatedTabs.find('.related-tab-more-element').before(moreTabElement);
             self.loadSelectedTabContents(moreTabElement, urlAttributes);
             self.registerQtipevent(moreTabElement);
         });
@@ -616,16 +693,23 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
         return url;
     },
+    isWindowUrlUpdateAllowed: function () {
+        return !this.getOverlayDetailMode() && !this.getQuickPreviewDetailMode();
+    },
     loadSelectedTabContents: function (tabElement, urlAttributes) {
         let self = this,
             url = self.getTabUrl(tabElement);
 
-        vtUtils.updateWindowUrl(url);
+        if (self.isWindowUrlUpdateAllowed()) {
+            vtUtils.updateWindowUrl(url);
+        }
 
         self.loadContents(url, urlAttributes).then(function (data) {
             self.deSelectAllrelatedTabs();
             self.markRelatedTabAsSelected(tabElement);
-            let container = jQuery('.relatedContainer');
+            let contentHolder = self.getContentHolder(),
+                container = contentHolder.find('.relatedContainer');
+
             app.event.trigger("post.relatedListLoad.click", container.find(".searchRow"));
             // Added this to register pagination events in related list
             let relatedModuleInstance = self.getRelatedController();
@@ -642,7 +726,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
             relatedModuleInstance.initializePaginationEvents();
             //prevent detail view ajax form submissions
-            jQuery('form#detailView').on('submit', function (e) {
+            contentHolder.find('form#detailView').on('submit', function (e) {
                 e.preventDefault();
             });
         });
@@ -651,11 +735,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
         return 1 === parseInt(this.getRollUpComments().attr('rollup-status'))
     },
     getRollUpComments: function () {
-        return jQuery('#rollupcomments');
+        return this.getContentHolder().find('#rollupcomments');
     },
     registerRollupCommentsSwitchEvent: function () {
         let self = this,
-            commentsRelatedContainer = jQuery('.commentsRelatedContainer');
+            commentsRelatedContainer = self.getContentHolder().find('.commentsRelatedContainer');
 
         if (self.getRollUpComments().length > 0 && commentsRelatedContainer.length) {
             app.helper.hideProgress();
@@ -671,6 +755,9 @@ Vtiger.Class("Vtiger_Detail_Js", {
                 self.setRollUpComments(false);
             }
         }
+    },
+    isRelatedListEventForCurrentDetail: function (detailContainer) {
+        return !detailContainer || this.getContainer().is(detailContainer);
     },
 
     /**
@@ -698,7 +785,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
         this.registerEventForSelectingRelatedRecord();
         self.registerScrollForRollupEvents();
 
-        app.event.on("post.relatedListLoad.click", function (event, container) {
+        app.event.on("post.relatedListLoad.click", function (event, container, detailContainer) {
+            if (!self.isRelatedListEventForCurrentDetail(detailContainer)) {
+                return;
+            }
+
             vtUtils.applyFieldElementsView(container);
             vtUtils.enableTooltips();
             Vtiger_Index_Js.getInstance().registerMultiUpload();
@@ -828,24 +919,9 @@ Vtiger.Class("Vtiger_Detail_Js", {
      * @returns {undefined}
      */
     remove: function (deleteRecordActionUrl) {
-        var message = app.vtranslate('LBL_DELETE_CONFIRMATION');
-        app.helper.showConfirmationBox({'message': message}).then(function (data) {
-                var params = app.convertUrlToDataParams(deleteRecordActionUrl + "&ajaxDelete=true");
-                app.request.post({data: params}).then(
-                    function (err, data) {
-                        if (err === null) {
-                            if (typeof data !== 'object') {
-                                var appName = app.getAppName();
-                                window.location.href = data + '&app=' + appName;
-                            } else {
-                                app.helper.showAlertBox({'message': data.prototype.message});
-                            }
-                        } else {
-                            app.helper.showAlertBox({'message': err});
-                        }
-                    });
-            }
-        );
+        return Vtiger_Detail_Js.deleteRecord(deleteRecordActionUrl, function (params, listUrl) {
+            window.location.href = listUrl + '&app=' + app.getAppName();
+        });
     },
 
     /**
@@ -973,7 +1049,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
 
     getRelatedModuleName: function () {
-        return jQuery('.relatedModuleName').val();
+        return this.getContainer().find('.relatedModuleName').val();
     },
 
     getRelatedController: function (relatedModuleName) {
@@ -1112,7 +1188,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             let fieldInfo;
 
             if (true === self.getQuickPreviewDetailMode()) {
-                fieldInfo = quick_preview_uimeta.field.get(fieldName);
+                fieldInfo = self.getContainer().data('quickPreviewFieldInfo')[fieldName];
             } else if (true === self.getOverlayDetailMode()) {
                 fieldInfo = related_uimeta.field.get(fieldName);
             } else {
@@ -1575,7 +1651,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         app.helper.showProgress();
         app.request.post(params).then(function (error, response) {
             detailContentsHolder.html(response);
-            self.detailViewForm = jQuery('#detailView');
+            self.setForm(detailContentsHolder.find('form#detailView').first());
             self.registerBlockStatusCheckOnLoad();
             aDeferred.resolve(response);
             app.helper.hideProgress();
@@ -2322,10 +2398,10 @@ Vtiger.Class("Vtiger_Detail_Js", {
             };
             app.request.get({data: params}).then(function (err, data) {
                 currentTarget.attr('rollup-status', !rollupstatus);
-                jQuery('div.related-tabs li[data-label-key="ModComments"]').trigger('click');
+                self.getTabByLabel('ModComments').trigger('click');
             });
         } else {
-            contents = jQuery('div[data-name="ModComments"] div.widget_contents');
+            contents = self.getContentHolder().find('div[data-name="ModComments"] div.widget_contents');
             params = {
                 module: moduleName,
                 relatedModule: 'ModComments',
@@ -3226,12 +3302,13 @@ Vtiger.Class("Vtiger_Detail_Js", {
         });
     },
     loadAssignedUsers(searchElement) {
-        let params = {
-            module: app.getModuleName(),
-            view: 'DetailAjax',
-            mode: 'searchAssignedUsers',
-            search: searchElement.val()
-        };
+        let form = searchElement.closest('form'),
+            params = {
+                module: form.find('[name="module"]').val() || this.getModuleName(),
+                view: 'DetailAjax',
+                mode: 'searchAssignedUsers',
+                search: searchElement.val()
+            };
 
         app.request.post({data: params}).then(function (error, data) {
             if (!error) {
@@ -3265,9 +3342,10 @@ Vtiger.Class("Vtiger_Detail_Js", {
     },
     saveBootstrapSwitch(element) {
         let message = app.vtranslate('JS_RECORD_UPDATED'),
+            form = element.closest('form'),
             params = {
-                record: app.getRecordId(),
-                module: app.getModuleName(),
+                record: form.find('[name="record"]').val() || this.getRecordId(),
+                module: form.find('[name="module"]').val() || this.getModuleName(),
                 action: 'SaveAjax',
                 value: element.is(':checked') ? 1 : 0,
                 field: element.attr('name'),

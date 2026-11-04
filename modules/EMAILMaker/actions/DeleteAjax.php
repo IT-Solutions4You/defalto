@@ -39,6 +39,7 @@ class EMAILMaker_DeleteAjax_Action extends Vtiger_Save_Action
 
             $EMAILMakerModel->checkTemplatePermissions($checkRow["module"], $templateid);
             $adb->pquery("UPDATE vtiger_emakertemplates SET deleted = ? where templateid=?", ['1', $templateid]);
+            EMAILMaker_PDFTemplate_Model::deleteLinks([(int)$templateid]);
         } else {
             $idlist = $request->get('idlist');
             $id_array = explode(';', $idlist);
@@ -51,6 +52,7 @@ class EMAILMaker_DeleteAjax_Action extends Vtiger_Save_Action
                 $EMAILMakerModel->checkTemplatePermissions($checkArr[$id_array[$i]], $id_array[$i]);
                 $sql = "UPDATE vtiger_emakertemplates SET deleted = ? where templateid=?";
                 $adb->pquery($sql, ['1', $id_array[$i]]);
+                EMAILMaker_PDFTemplate_Model::deleteLinks([(int)$id_array[$i]]);
             }
         }
         $response = new Vtiger_Response();

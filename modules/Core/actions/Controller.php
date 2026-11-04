@@ -106,7 +106,14 @@ abstract class Core_Controller_Action implements Core_Controller_Interface
             }
 
             if (!Users_Privileges_Model::isPermitted($moduleParameter, $permission['action'], $recordParameter)) {
-                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+                // A record action rule explains the denial better than the generic message
+                $denyReason = Core_RecordActionPermission_Model::getPermissionDenyReason(
+                    (string)$moduleParameter,
+                    (string)$permission['action'],
+                    $recordParameter
+                );
+
+                throw new Exception($denyReason ?? vtranslate('LBL_PERMISSION_DENIED'));
             }
         }
 

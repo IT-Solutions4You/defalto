@@ -8,17 +8,21 @@
  *}
 {strip}
     <div class="left-block col-xl-5">
-        {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET']}
-            {if $DETAIL_VIEW_WIDGET->get('sequence') % 2 == 0}
-                {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
-            {/if}
-        {/foreach}
+        {if !empty($DETAILVIEW_LINKS['DETAILVIEWWIDGET'])}
+            {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET']}
+                {if $DETAIL_VIEW_WIDGET->get('sequence') % 2 == 0}
+                    {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
+                {/if}
+            {/foreach}
+        {/if}
     </div>
     <div class="right-block col-xl-7">
-        {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET']}
-            {if $DETAIL_VIEW_WIDGET->get('sequence') % 2 != 0}
-                {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
-            {/if}
-        {/foreach}
+        {if !empty($DETAILVIEW_LINKS['DETAILVIEWWIDGET'])}
+            {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET']}
+                {if $DETAIL_VIEW_WIDGET->get('sequence') % 2 != 0}
+                    {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
+                {/if}
+            {/foreach}
+        {/if}
     </div>
 {/strip}

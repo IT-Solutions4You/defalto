@@ -30,41 +30,50 @@ class Settings_SMSNotifier_SaveAjax_Action extends Settings_Vtiger_Index_Action
         }
 
         $editableFields = $recordModel->getEditableFields();
+
         foreach ($editableFields as $fieldName => $fieldModel) {
             $recordModel->set($fieldName, $request->get($fieldName));
         }
 
         $userName = $request->get('username');
+
         if (isset($userName)) {
             $recordModel->set('username', $request->get('username'));
         }
-        $password = $request->get('username');
+
+        $password = $request->get('password');
+
         if (isset($password)) {
-            $recordModel->set('password', $request->get('password'));
+            $recordModel->set('password', $password);
         }
 
         $parameters = [];
         $selectedProvider = $request->get('providertype');
         $allProviders = $recordModel->getModule()->getAllProviders();
+
         foreach ($allProviders as $provider) {
             if ($provider->getName() === $selectedProvider) {
                 $fieldsInfo = Settings_SMSNotifier_ProviderField_Model::getInstanceByProvider($provider);
+
                 foreach ($fieldsInfo as $fieldInfo) {
                     $recordModel->set($fieldInfo['name'], $request->get($fieldInfo['name']));
                     $parameters[$fieldInfo['name']] = $request->get($fieldInfo['name']);
                 }
+
                 $recordModel->set('parameters', Zend_Json::encode($parameters));
                 break;
             }
         }
 
         $response = new Vtiger_Response();
+
         try {
             $recordModel->save();
             $response->setResult([vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName)]);
         } catch (Exception $e) {
             $response->setError($e->getMessage());
         }
+
         $response->emit();
     }
 

@@ -68,7 +68,9 @@ class Migration_Module_Model extends Vtiger_Module_Model
 
     public function getLatestSourceVersion()
     {
-        return vglobal('vtiger_current_version');
+        global $defalto_current_version;
+
+        return $defalto_current_version;
     }
 
     /**

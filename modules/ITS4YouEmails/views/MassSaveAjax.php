@@ -25,6 +25,12 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     public $subject = '';
     public $smtp = null;
     public $mailAddresses = [];
+
+    /** Records skipped because of record action rules [record id => translated reason] */
+    public array $skippedRecords = [];
+
+    /** Records whose emails are sent without the PDF attachment because of record action rules [record id => translated reason] */
+    public array $pdfSkippedRecords = [];
     private $from_name;
     private $from_email;
     private $from_user;
@@ -100,7 +106,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             'is_merge_templates'      => $request->get('is_merge_templates'),
         ];
 
-        $emailSentId = $this->saveEmails($sendEmails, $this->mailAddresses);
+        // Record action rules left no record to send the email for: show the reason instead of sending
+        $emailSentId = empty($this->mailAddresses['to']) && !empty($this->skippedRecords)
+            ? false
+            : $this->saveEmails($sendEmails, $this->mailAddresses);
 
         $emailsResult = [];
         $success = false;
@@ -114,6 +123,8 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         $viewer->assign('MODULE', $this->moduleName);
         $viewer->assign('QUALIFIED_MODULE', $request->getModule(false));
         $viewer->assign('SUCCESS', $success);
+        $viewer->assign('SKIPPED_MESSAGE', Core_RecordActionPermission_Model::getInstance()->getSkippedMessage($this->skippedRecords));
+        $viewer->assign('PDF_SKIPPED_MESSAGE', Core_RecordActionPermission_Model::getInstance()->getSkippedMessage($this->pdfSkippedRecords, 'LBL_RECORD_ACTION_PDF_SKIPPED'));
         $viewer->assign('TITLE', vtranslate($this->moduleName, $this->moduleName));
         $viewer->assign('RESULT', $emailsResult);
         $viewer->assign('RELATED_LOAD', !$request->isEmpty('related_load'));
@@ -171,6 +182,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             $this->retrieveDocumentsFromExistingAttachments();
         }
 
+        $attachmentModel = ITS4YouEmails_Attachment_Model::getInstance($this->moduleName);
+        $this->documentsIds = $attachmentModel->validateDocumentIds((array)$this->documentsIds);
+        $this->existingAttachments = $attachmentModel->retrieveAccessibleAttachments((array)$this->existingAttachments);
+
         $this->retrieveDocumentsFromFiles();
         $this->retrieveDocumentsFromSavedAttachments();
     }
@@ -179,8 +194,9 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     {
         if (is_array($this->existingAttachments)) {
             foreach ($this->existingAttachments as $index => $existingAttachInfo) {
-                $existingAttachInfo['tmp_name'] = $existingAttachInfo['name'];
-                $this->existingAttachments[$index] = $existingAttachInfo;
+                if (!is_array($existingAttachInfo)) {
+                    throw new Exception('Attachment is not accessible');
+                }
 
                 if (array_key_exists('docid', $existingAttachInfo)) {
                     $this->documentsIds[] = $existingAttachInfo['docid'];
@@ -261,22 +277,14 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         global $upload_badext;
 
         if (is_array($this->existingAttachments)) {
-            foreach ($this->existingAttachments as $existingAttachInfo) {
-                $fileName = $existingAttachInfo['attachment'];
-                $filePath = $existingAttachInfo['path'];
-                $fileId = $existingAttachInfo['fileid'];
-                $oldFileName = $existingAttachInfo['storedname'] ?? $fileName;
-
-                if (!empty ($fileId)) {
-                    $oldFileName = $existingAttachInfo['fileid'] . '_' . $oldFileName;
-                }
-
-                $oldFilePath = rtrim($filePath, '/') . '/' . $oldFileName;
+            foreach ($this->existingAttachments as $sourceAttachment) {
+                $fileName = $sourceAttachment['name'];
+                $oldFilePath = Core_Storage_Model::getInstance()->getAttachmentFilePath($sourceAttachment);
 
                 $attachmentId = $this->db->getUniqueID('vtiger_crmentity');
                 $binFile = sanitizeUploadFileName($fileName, $upload_badext);
                 $fileName = ltrim(basename(' ' . $binFile));
-                $filetype = $existingAttachInfo['type'];
+                $filetype = $sourceAttachment['type'];
                 $upload_file_path = decideFilePath();
                 $newFilePath = $upload_file_path . $attachmentId . '_' . $binFile;
                 $isSavedFile = copy($oldFilePath, $newFilePath);
@@ -339,6 +347,8 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             }
         }
 
+        $getEmails = $this->getSendableRecords($getEmails);
+
         foreach ($getEmails as $sid) {
             foreach ($mailTypes as $mailType) {
                 $n = sprintf('%s%semailinfo', $sid, $mailType);
@@ -352,6 +362,59 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 }
             }
         }
+    }
+
+    /**
+     * Returns whether the PDF attachment may be created for a record; a record whose PDF export is denied by a record
+     * action rule is remembered with the reason, its email is sent without the PDF.
+     *
+     * @param int $recordId related record of the email
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isPdfAttachmentPermitted(int $recordId): bool
+    {
+        if (isset($this->pdfSkippedRecords[$recordId])) {
+            return false;
+        }
+
+        $reason = $recordId
+            ? Core_RecordActionPermission_Model::getInstance()->getDenyReason($recordId, Core_RecordActionPermission_Model::ACTION_PDF_EXPORT)
+            : null;
+
+        if (null !== $reason) {
+            $this->pdfSkippedRecords[$recordId] = $reason;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes the source records whose emails are denied by record action rules; ids that are not records
+     * (0 for addresses without a record) stay. The skipped records and their reasons are kept in $skippedRecords.
+     *
+     * @param array $recordIds
+     *
+     * @return array empty when every source record is denied
+     * @throws Exception
+     */
+    public function getSendableRecords(array $recordIds): array
+    {
+        $permission = Core_RecordActionPermission_Model::getInstance()->getPermittedRecords(
+            $recordIds,
+            Core_RecordActionPermission_Model::ACTION_EMAIL_SEND
+        );
+
+        if (empty($permission['skipped'])) {
+            return $recordIds;
+        }
+
+        $this->skippedRecords += $permission['skipped'];
+
+        return array_values(array_filter($recordIds, static fn($recordId) => !isset($permission['skipped'][(int)$recordId])));
     }
 
     public function getRecordsListFromRequest(Vtiger_Request $request)
@@ -509,6 +572,14 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                         $cloneRecordModelEmails->set('assigned_user_id', $current_user_id);
                         $cloneRecordModelEmails->set('attachment_ids', $sendEmail['attachment_ids']);
                         $cloneRecordModelEmails->set('related_to', $relatedTo);
+
+                        // The PDF is created for the related record, so it follows the PDF export rules of that record;
+                        // set on every clone, the clones share their values with the original model
+                        $cloneRecordModelEmails->set(
+                            'pdf_template_ids',
+                            !empty($sendEmail['pdf_template_ids']) && $this->isPdfAttachmentPermitted((int)$relatedTo) ? $sendEmail['pdf_template_ids'] : ''
+                        );
+
                         $cloneRecordModelEmails->set('to_email', $toEmail);
                         $cloneRecordModelEmails->set('to_email_ids', $toEmailId);
                         $cloneRecordModelEmails->clearRelatedToInfo();

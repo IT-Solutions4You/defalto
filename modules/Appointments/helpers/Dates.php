@@ -10,6 +10,43 @@
 
 class Appointments_Dates_Helper
 {
+    public static function getCurrentDatabaseDatetime(): string
+    {
+        return (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('Y-m-d H:i:s');
+    }
+
+    public static function getTodayDateForUser(): string
+    {
+        return self::getCurrentUserDateTime()->format('Y-m-d');
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    public static function getTodayDatabaseRangeForUser(): array
+    {
+        $date = self::getTodayDateForUser();
+        $endDate = (new DateTimeImmutable($date))->modify('+1 day')->format('Y-m-d');
+
+        return self::getDatabaseRangeForUser($date, $endDate);
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    public static function getDatabaseRangeForUser(string $startDate, string $endDate): array
+    {
+        $timeZone = self::getCurrentUserTimeZone();
+        $start = new DateTimeImmutable($startDate . ' 00:00:00', $timeZone);
+        $end = new DateTimeImmutable($endDate . ' 00:00:00', $timeZone);
+        $databaseTimeZone = new DateTimeZone('UTC');
+
+        return [
+            $start->setTimezone($databaseTimeZone)->format('Y-m-d H:i:s'),
+            $end->setTimezone($databaseTimeZone)->format('Y-m-d H:i:s'),
+        ];
+    }
+
     /**
      * @return string
      */
@@ -67,5 +104,20 @@ class Appointments_Dates_Helper
         $date = DateTimeField::convertToUserTimeZone(self::getTodayEndDatetime());
 
         return $date->format('Y-m-d H:i:s');
+    }
+
+    protected static function getCurrentUserDateTime(): DateTimeImmutable
+    {
+        return new DateTimeImmutable('now', self::getCurrentUserTimeZone());
+    }
+
+    protected static function getCurrentUserTimeZone(): DateTimeZone
+    {
+        global $default_timezone;
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $timeZone = $currentUser->get('time_zone') ?: $default_timezone;
+
+        return new DateTimeZone($timeZone);
     }
 }

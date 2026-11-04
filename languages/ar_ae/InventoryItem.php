@@ -34,6 +34,10 @@ $languageStrings = [
     'Unit' => 'وحدة',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
+    'LBL_CONVERSION_TITLE' => 'مراجعة البنود',
+    'LBL_CONVERSION_INVALID_ITEM' => 'البند لا ينتمي إلى السجل المصدر.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'يجب أن تكون الكمية والسعر أرقامًا.',
+    'LBL_CONVERSION_NO_ITEMS' => 'يجب أن يبقى بند واحد على الأقل.',
 ];
 
 $jsLanguageStrings = [

@@ -18,6 +18,8 @@
 
 class Campaigns_Relation_Model extends Vtiger_Relation_Model
 {
+    private const DEFAULT_RELATION_STATUS_ID = 0;
+
     /**
      * Function to get Email enabled modules list for detail view of record
      * @return <array> List of modules
@@ -115,7 +117,7 @@ class Campaigns_Relation_Model extends Vtiger_Relation_Model
 
         if (!$db->num_rows($checkResult)) {
             $query = sprintf('INSERT INTO %s (campaignid, %s, campaignrelstatusid) VALUES (?, ?, ?)', $tableInfo[0], $tableInfo[1]);
-            $db->pquery($query, [$record, $relationRecord, 1]);
+            $db->pquery($query, [$record, $relationRecord, self::DEFAULT_RELATION_STATUS_ID]);
         }
 
         return true;

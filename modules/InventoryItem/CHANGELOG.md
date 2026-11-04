@@ -1,0 +1,19 @@
+# Changelog
+
+## 1.8 - 2026-10-30
+
+- The Items widget now appears first in the right summary column, uses the user's language for its title, and keeps long item lists compact with visible headings and totals.
+- When a record rule restricts converting a document (record action permissions, for example while a quote waits for approval), the conversion links in the detail view are hidden and the item review dialog and its save refuse the conversion with the reason.
+- When editing a document is restricted, its items block no longer shows the Text / Products / Services buttons, and changing items is refused with the reason of the restriction instead of a general permission message.
+
+## 1.7 - 2026-10-27
+
+- The item review dialog shown before copying items to another document no longer repeats an introductory text above the table, and its table header has the same background as list view headers. When a Purchase Order is created, the billing and shipping address fields are shown without the "Which address should be copied?" selector.
+
+## 1.6 - 2026-10-26
+
+- The Items widget in the summary has an Add menu (Text, Products, Services) that opens the item dialog; after saving only the widget with its totals is reloaded.
+
+## 1.5 - 2026-10-26
+
+- Items of a read-only document (or a document you are not allowed to edit) can no longer be added, changed, deleted, reordered or recalculated. The item dialog does not open and the buttons for changing items, overall discount, adjustment, price book, currency and region are hidden or disabled in the items block.

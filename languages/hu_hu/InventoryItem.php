@@ -34,6 +34,10 @@ $languageStrings = [
     'Unit' => 'Egység',
     'Parent Inventory Item' => 'Parent Inventory Item',
     'Sequence' => 'Sequence',
+    'LBL_CONVERSION_TITLE' => 'Tételek ellenőrzése',
+    'LBL_CONVERSION_INVALID_ITEM' => 'A tétel nem tartozik a forrásrekordhoz.',
+    'LBL_CONVERSION_INVALID_NUMBER' => 'A mennyiségnek és az árnak számnak kell lennie.',
+    'LBL_CONVERSION_NO_ITEMS' => 'Legalább egy tételnek maradnia kell.',
 ];
 
 $jsLanguageStrings = [

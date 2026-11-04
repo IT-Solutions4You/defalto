@@ -11,6 +11,23 @@
 /** Presentation contract for the shared advanced-condition templates. */
 class Core_FilterEditor_Model extends Vtiger_Base_Model
 {
+    public static function getConditionBlocks(Vtiger_Module_Model $module): array
+    {
+        $blocks = $module->getBlocks();
+        $inventoryBlocks = [];
+
+        foreach ($blocks as $blockName => $block) {
+            if ($blockName !== 'LBL_ITEM_DETAILS') {
+                continue;
+            }
+
+            $inventoryBlocks[$blockName] = $block;
+            unset($blocks[$blockName]);
+        }
+
+        return array_merge($blocks, $inventoryBlocks);
+    }
+
     public static function getInstance(string $sourceModule, string $translationModule = '', string $columnNameApi = 'getCustomViewColumnName'): self
     {
         $instance = new static();

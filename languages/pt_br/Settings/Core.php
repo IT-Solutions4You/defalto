@@ -228,12 +228,12 @@ $languageStrings = [
     'LBL_REQUIRES_AUTHENTICATION'            => 'Requer Autenticação',
     'LBL_OUTGOING_SERVER'                    => 'Servidor Envio Mensagens',
     'LBL_OUTGOING_SERVER_DESC'               => 'Configurar detalhes do seu Servidor Envio Mensagens',
-    'LBL_DEFAULT'                            => 'Por padrão, as configurações da conta SMTP para o Servidor de Envio de Mensagens são definidas para o servidor od1.vtiger.com. Para evitar que emails enviados sejam bloqueados pelos filtros de spam no servidor de correio do ISP destinatário, recomendamos que você implemente um dos seguintes:',
+    'LBL_DEFAULT'                            => 'Por padrão, as configurações da conta SMTP para o Servidor de Envio de Mensagens são definidas para o servidor defalto.com. Para evitar que emails enviados sejam bloqueados pelos filtros de spam no servidor de correio do ISP destinatário, recomendamos que você implemente um dos seguintes:',
     'LBL_OPTIONS1'                           => 'Enviar emails a partir do seu Servidor de Mensagens<br>
 					- Digite os detalhes da conta SMTP (Nome Servidor, Usuário e Senha) para a mesma conta digitada no campo "Responder a [Email]".',
-    'LBL_OPTIONS2'                           => "Adicione o servidor od1.vtiger.com como um remetente autorizado para seu dominio.<br>
+    'LBL_OPTIONS2'                           => "Adicione o servidor defalto.com como um remetente autorizado para seu dominio.<br>
 					- Se desejar manter o servdor vtiger como o servidor de envio de mensagens, recomendamos que você configure o registro SFP do domínio para incluir o servidor do vtiger como um remetente válido para seu domínio.
-					  Para instruções adicionais sobre como configurar o registro SFP, por favor envie email para od-support@vtiger.com.",
+					  Para instruções adicionais sobre como configurar o registro SFP, por favor envie email para od-support@defalto.com.",
     'LBL_MAIL_SERVER_SMTP'                   => 'Configurações Servidor Mensagens (SMTP)',
     'LBL_OUTGOING_SERVER_FROM_FIELD'         => 'NOTA: Se o campo "Responder a [Email]" estiver em branco, o endereço de email do Usuário será utilizado.',
     'LBL_TESTMAILSTATUS'                     => 'Status Teste Mensagem: ',

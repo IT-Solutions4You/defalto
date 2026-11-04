@@ -1,38 +1,63 @@
+# Navigation from filtered lists
+
+When opening a record from a filtered list, previous and next record navigation retains the list's conditions, including calendar date ranges. Changing filter values refreshes the available navigation records.
+
+# Header menu
+
+The header menu contains Defalto settings available to administrators, the current user's preferences and sign-out action, and links registered by installed extensions. It does not show links to upstream vtiger feedback, documentation, videos, or marketing pages. Defalto website and help links use the application's redirect page so their destinations stay centrally managed.
+
+# Record actions
+
+Administrators can lock or unlock a record. A non-administrator can lock a record only when it is assigned directly to that user and the user has permission to edit it; unlocking remains available only to administrators.
+
+Related-record widgets on a record use the language of the related module for their title and add action. If a custom widget label exists only for the displayed record's module, that label is used instead, so users never see a technical name. For example, the Appointments widget keeps its translated Appointments label even on another module's record. A record with no summary widgets shows empty widget columns without an error.
+
+Quick-preview actions apply to the displayed record, not the screen underneath. Deleting asks for one confirmation and refreshes the source screen afterwards; if an error occurs, the preview stays open. Editable fields in the preview header have the same controls as the record detail header: use the pencil, the checkbox switch or the Assigned To selector to update the record without leaving the list. Read-only fields and fields you cannot edit stay unchanged. See the Core user guide for the shared preview workflow.
+
+Quick edits and full record saves validate required, email, numeric and dropdown values on the server. Required fields cannot be cleared, and dropdown fields accept only available options. If a value is invalid, the record stays unchanged and the field error is shown.
+
+Opening, paging through or changing roll-up comments and related records from a quick preview loads the requested content only inside that preview. The summary comments, related content and browser address of the record underneath stay unchanged. When the preview has no matching navigation tab, the link opens the displayed record's own destination instead.
+
+Record-header action icons show a label while the mouse is over them, and the label disappears when the mouse leaves, also after clicking an action or cancelling its confirmation. The buttons also have labels for assistive technology.
+
 # Dropdown fields
 
-Searchable dropdowns, including Assigned To, hide already selected values from the list of choices. The current value remains visible in the field. Select another value to replace it. In fields that allow multiple values, remove a selected item to make it available in the choices again.
+Searchable dropdowns, including Assigned To, hide values that are already selected. The current value stays visible in the field; choose another value to replace it. In fields that allow several values, remove a selected item to make it available again.
 
-# Shared record lists
+# Lists and filters
 
-Column settings allow more than 15 fields with no maximum count. Add the fields you need, arrange their order, and save. At least one field must remain selected.
+Column settings allow any number of fields. Add the fields you need, arrange their order and save; at least one field must remain selected.
 
-Advanced search starts with one condition row after a module is selected. Choose a field, comparison and value; use Add condition or Group to expand the search. Selecting another module starts with a fresh condition row for that module.
+Use the list selector to choose a saved view and the funnel beside the columns to add temporary conditions. The quick filter and the saved-list editor offer the same conditions for each field type. Use a date range for a fixed interval, a named period for a moving interval, or a number of days or hours for relative comparisons. Calculated dates and ranges are shown as read-only fields but are still applied and saved; change the selected period to change the range, or choose a custom range to enter dates yourself.
 
-A new saved-list filter starts with one empty condition ready for field selection. Choose a field, comparison and value, then add more conditions as needed.
+After applying conditions, check the result count and use sorting, paging or export as usual. Clear additional filters returns to the saved list's own criteria. Save as filter opens the full editor, where you can name and save the combined criteria.
 
-Each open list keeps its selected saved view and temporary conditions in its own address. You can leave All open in one tab and build conditions in another without changing the first tab, including after a refresh. Switching to another saved view clears temporary conditions. Copy the current address to reopen the same view and conditions.
+Export keeps the selected list sorting in ascending or descending order. Invalid sorting directions are rejected instead of being included in the export query.
 
-Use Add condition inside any group, including a newly added group, to add another condition to that group without reopening the editor.
+Each open list keeps its saved view and temporary conditions in its own address. You can leave All open in one tab and build conditions in another without changing the first tab, also after a refresh. Switching to another saved view clears the temporary conditions. Copy the current address to reopen the same view and conditions later.
 
-Use the outlined Group button below the conditions to add a group when creating or editing a saved list.
+# Condition editor
 
-The small group delete button appears beside the group heading, separated by a short gap.
+Saved lists, advanced search and workflow conditions share one editor.
 
-When reopening a saved filter, the second and subsequent groups also have a delete button. The first group remains available for adding conditions.
+- A new saved list or advanced search starts with one empty condition. Choose a field, a comparison and a value. In advanced search, selecting another module starts with a fresh condition for that module.
+- Use Add condition inside any group, including a newly added group, to add a condition to it without reopening the editor. Use Group to add a group; each click adds one group with an empty condition.
+- Choose AND or OR beside a condition to connect it to the next one; the last condition has no connector. You can mix connectors in one group, and AND takes precedence over OR. Use separate groups to make the grouping explicit. The connector between groups joins the whole groups.
+- Empty groups are ignored. The connector after a populated group joins it to the next populated group, even if an empty group lies between them.
+- When you reopen a saved list, every group after the first has a delete button. The first group stays so you can keep adding conditions.
+- For inventory documents, the field lists show the main record blocks first and the Item Details fields last; the record's edit and detail screens keep their normal layout.
+- Time ranges, and date-only ranges on date-and-time fields, are prepared the same way whether you apply them immediately or load them from a saved list. Module-specific condition options apply in both editors.
 
-Condition groups have a shaded background to distinguish them from the surrounding editor.
+The available comparisons depend on the field and on whether you are editing a list filter or a workflow.
 
-Add and delete buttons have white backgrounds. The AND/OR selector between groups uses the standard control size; the group delete button remains compact.
+# Mass-email recipient fields
 
-In the shared condition editor, each click on the add-group button adds one group with an empty condition. Choose AND or OR beside each condition to connect it to the next row; the last row has no connector. You can combine different connectors in one group. Use separate groups to make the intended grouping explicit. The connector between groups sits directly below the preceding group.
+When starting a mass email, choose which available email fields should receive the message. If you enable the option to remember the selection, the same fields are restored the next time you open the dialog for that module. The preference is saved per user and module, and resetting the selection removes it.
 
-Use the list selector to choose a saved view and the funnel beside the columns to add temporary conditions. The quick filter and saved-list editor offer the same conditions for each field type. Use a date range for a fixed interval, a named period for a moving interval, or a quantity of days/hours for relative comparisons.
+# Attachments
 
-After applying conditions, check the result count and use sorting, paging or export as usual. Clear additional filters to return to the saved list's criteria. Save as filter opens the full editor for naming and saving the combined criteria.
+Record images, previews and downloads keep working when an administrator stores persistent attachments outside the public web directory. Access still follows the usual record and file permissions.
 
-Read-only filter values, including automatically calculated dates and ranges, appear in grey Bootstrap fields. Their values are still included when applying or saving a filter. Change the selected period to change the range, or choose a custom range to enter dates yourself. Editable dates and day/hour quantities use normal input fields.
+# Dashboard
 
-Module-specific condition options apply in both editors. Time ranges and date-only ranges on datetime fields use shared preparation when filtering records, whether applied immediately or loaded from a saved list.
-
-The advanced filter layout is shared with workflow conditions. Groups, AND/OR selectors and add/remove buttons behave consistently. Available comparisons still depend on the field and on whether you are editing a list filter or a workflow.
-Empty condition groups are ignored. The connector after a populated group joins it to the next populated group, even with an empty group between them.
+Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook text are displayed as text, including when they contain characters used by HTML.

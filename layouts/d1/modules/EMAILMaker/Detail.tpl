@@ -63,6 +63,30 @@
                                 </div>
                             </div>
                         </div>
+                        {* sending options: what is sent together with the e-mail *}
+                        {if $PDF_TEMPLATE_DATA.available}
+                            <div class="summaryView rounded bg-body my-3">
+                                <div class="summaryViewHeader p-3 border-bottom">
+                                    <h4>{vtranslate('LBL_SENDING_OPTIONS','EMAILMaker')}</h4>
+                                </div>
+                                <div class="summaryViewFields">
+                                    <div class="recordDetails">
+                                        <div class="container-fluid p-3">
+                                            <div class="row summaryViewEntries py-2">
+                                                <div class="col-4 fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_PDF_TEMPLATES','EMAILMaker')}</label></div>
+                                                <div class="col-lg fieldValue">
+                                                    {foreach from=$PDF_TEMPLATE_DATA.templates item=PDF_TEMPLATE}
+                                                        <span class="badge text-bg-light border me-1">{$PDF_TEMPLATE.name|escape}</span>
+                                                    {foreachelse}
+                                                        <span class="text-muted">{vtranslate('LBL_NONE','EMAILMaker')}</span>
+                                                    {/foreach}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
                         {if $MODULENAME neq ""}
                             <div class="summaryView rounded bg-body my-3">
                                 <div class="summaryViewHeader p-3 border-bottom d-flex">

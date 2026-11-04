@@ -29,12 +29,13 @@ class Invoice_DetailView_Model extends Vtiger_DetailView_Model
         $recordModel = $this->getRecord();
         $links = [];
         $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
+        $purchaseOrderUrl = $this->getConversionLinkUrl('PurchaseOrder', $recordModel->getCreatePurchaseOrderUrl());
 
-        if ($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
+        if (false !== $purchaseOrderUrl && $currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
             $links[] = [
                 'linktype'  => 'DETAILVIEW',
                 'linklabel' => vtranslate('LBL_GENERATE') . ' ' . vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),
-                'linkurl'   => $recordModel->getCreatePurchaseOrderUrl(),
+                'linkurl'   => $purchaseOrderUrl,
                 'linkicon'  => '',
             ];
         }

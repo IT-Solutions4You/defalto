@@ -11,13 +11,30 @@
 class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
 {
     /**
+     * Methods callable from the client through the mode parameter
+     */
+    protected array $allowedModes = ['savePriceBook', 'saveRegion', 'saveOverallDiscount', 'saveAdjustment', 'saveCurrency'];
+
+    /**
+     * @inheritDoc
+     */
+    public function checkPermission(Vtiger_Request $request): bool
+    {
+        parent::checkPermission($request);
+
+        InventoryItem_ParentEntity_Model::requireEditableParent((int)$request->get('for_record'), (string)$request->get('for_module'));
+
+        return true;
+    }
+
+    /**
      * @inheritDoc
      */
     public function process(Vtiger_Request $request)
     {
         $mode = $request->get('mode');
 
-        if (method_exists($this, $mode)) {
+        if (is_string($mode) && in_array($mode, $this->allowedModes, true)) {
             $this->$mode($request);
         }
     }

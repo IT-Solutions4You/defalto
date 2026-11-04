@@ -54,15 +54,23 @@ class Vtiger_MassDelete_Action extends Vtiger_Mass_Action
             $recordIds = $this->getRecordsListFromRequest($request);
         }
         $cvId = $request->get('viewname');
+        $actionPermission = Core_RecordActionPermission_Model::getInstance();
+        $actionPermission->preload($recordIds);
+        $skipped = [];
+
         foreach ($recordIds as $recordId) {
             if (Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
                 $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleModel);
                 $recordModel->delete();
                 deleteRecordFromDetailViewNavigationRecords($recordId, $cvId, $moduleName);
+            } else {
+                $skipped[$recordId] = $actionPermission->getDenyReason((int)$recordId, Core_RecordActionPermission_Model::ACTION_DELETE)
+                    ?? vtranslate('LBL_PERMISSION_DENIED');
             }
         }
+
         $response = new Vtiger_Response();
-        $response->setResult(['viewname' => $cvId, 'module' => $moduleName]);
+        $response->setResult(['viewname' => $cvId, 'module' => $moduleName, 'message' => $actionPermission->getSkippedMessage($skipped)]);
         $response->emit();
     }
 }

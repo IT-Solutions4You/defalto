@@ -22,7 +22,7 @@ class Core_TemplateFields_Helper extends Vtiger_Base_Model
         $block = Core_InventoryItemsBlock_Model::getInstance($moduleName);
 
         return [
-            'PRODUCT_BLOC_TPL' => $block->getAllOptions(),
+            'PRODUCT_BLOC_TPL' => $block->getAllOptions($moduleName),
             'ARTICLE_STRINGS' => $block->getArticleOptions(),
             'SELECT_PRODUCT_FIELD' => $block->getVariableOptions(),
             'PRODUCTS_FIELDS' => $block->getProductVariableOptions(),
