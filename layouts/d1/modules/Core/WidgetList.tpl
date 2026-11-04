@@ -23,7 +23,7 @@
                             {foreach key=FIELD_NAME item=HEADER from=$LIST_HEADERS name=widgetFields}
                                 {assign var=DISPLAY_VALUE value=$ENTRY->get($FIELD_NAME)}
                                 {if $HEADER->getFieldDataType() eq 'currency'}
-                                    {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($ENTRY->getCurrencyId())}
+                                    {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($ENTRY->getFieldCurrencyId($FIELD_NAME))}
                                     {assign var=DISPLAY_VALUE value=CurrencyField::appendCurrencySymbol($DISPLAY_VALUE, $CURRENCY_INFO['symbol'])}
                                 {/if}
                                 <td>

@@ -22,7 +22,7 @@
         <div class="picklist-color d-inline-block me-1 mb-1 py-1 px-2 rounded" {if !empty($PICKLIST_COLOR)} style="background-color: {$PICKLIST_COLOR}; color: {Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)};" {/if}>{trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}</div>
     {/foreach}
 {elseif $FIELD_MODEL->getFieldDataType() eq 'currency'}
-    {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RECORD->getCurrencyId())}
+    {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RECORD->getFieldCurrencyId($FIELD_MODEL->getName()))}
     <span class="currencyValue" data-currency-symbol="{$CURRENCY_INFO['symbol']}">
         {CurrencyField::appendCurrencySymbol($RECORD->getDisplayValue($FIELD_MODEL->getName()), $CURRENCY_INFO['symbol'])}
     </span>

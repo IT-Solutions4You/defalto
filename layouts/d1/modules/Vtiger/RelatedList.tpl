@@ -139,7 +139,7 @@
 												{elseif $RELATED_HEADERNAME eq 'access_count'}
 													{$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'currency'}
-													{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
+													{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getFieldCurrencyId($RELATED_HEADERNAME))}
 													{CurrencyField::appendCurrencySymbol($RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME), $CURRENCY_INFO['symbol'])}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'picklist' && $HEADER_FIELD->isPicklistColorSupported()}
 													{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}

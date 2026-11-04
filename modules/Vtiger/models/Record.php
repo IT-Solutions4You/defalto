@@ -1021,6 +1021,19 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Returns the currency in which a currency field of the record is displayed. Every currency field uses the
+     * currency of the record (getCurrencyId()); a module whose field holds an amount in another currency, such as
+     * an amount in the base currency, overrides this method for that field.
+     *
+     * @param string $fieldName Currency field name
+     * @return int Currency id
+     */
+    public function getFieldCurrencyId(string $fieldName): int
+    {
+        return $this->getCurrencyId();
+    }
+
+    /**
      * @return int
      */
     public function getCurrencyId(): int

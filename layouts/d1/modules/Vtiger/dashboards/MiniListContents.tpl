@@ -28,7 +28,7 @@
 				{foreach item=FIELD key=NAME from=$HEADER_FIELDS name="minilistWidgetModelRowHeaders"}
 					<div class="col-lg-{$SPANSIZE} text-truncate" title="{strip_tags($RECORD->get($NAME))}" style="padding-right: 5px;">
 					   {if $FIELD->getFieldDataType() eq 'currency'}
-							{assign var=CURRENCY_ID value=$RECORD->getCurrencyId()}
+							{assign var=CURRENCY_ID value=$RECORD->getFieldCurrencyId($NAME)}
 							{assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($CURRENCY_ID)}
 							{if !$RECORD->isEmpty($NAME)}
 								{CurrencyField::appendCurrencySymbol($RECORD->get($NAME), $CURRENCY_INFO['symbol'])}

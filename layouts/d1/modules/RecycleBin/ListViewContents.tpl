@@ -100,7 +100,7 @@
                                         <span class="fieldValue">
                                             <span class="value">
                                                 {if $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
-                                                    {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                                                    {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getFieldCurrencyId($LISTVIEW_HEADERNAME))}
                                                     {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
                                                 {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist' and $LISTVIEW_HEADER->isPicklistColorSupported()}
                                                     <span class="py-1 px-2 rounded picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}">{$LISTVIEW_ENTRY_VALUE}</span>

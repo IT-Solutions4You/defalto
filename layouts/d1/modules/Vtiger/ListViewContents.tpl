@@ -152,7 +152,7 @@
                                         {elseif $MODULE_MODEL->getName() eq 'Documents' && $LISTVIEW_HEADERNAME eq 'document_source'}
                                             {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
-                                            {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                                            {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getFieldCurrencyId($LISTVIEW_HEADERNAME))}
                                             <span class="currencyValue" data-currency-symbol="{$CURRENCY_INFO['symbol']}">
                                                 {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
                                             </span>

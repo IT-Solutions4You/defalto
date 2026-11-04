@@ -89,6 +89,7 @@ This module holds shared base behavior inherited by other modules. It has no sta
 ## Currency fields
 
 - `Vtiger_Currency_UIType::getEditViewDisplayValue()` formats a stored amount (uitypes 71 and 72) for the edit, quick create and inline edit inputs with `CurrencyField::convertToUserFormatForEdit()` and `$skipConversion`: rounded to the user's `no_of_currency_decimals`, dot as the decimal separator, no grouping. The inputs accept only that format (`replaceCommaWithDot`, `allowOnlyNumbers`), so do not use the display format with grouping there. Before this, the edit inputs showed the raw column value (4 or 8 decimals).
+- The currency symbol of a displayed currency field comes from `Vtiger_Record_Model::getFieldCurrencyId($fieldName)`, which returns the record currency (`getCurrencyId()`) by default. The detail view (`uitypes/StringDetailView.tpl`), list, popup, related list, recycle bin, Core widget list, dashboard mini list and `Vtiger_Currency_UIType::getRelatedBlockDisplayValue()` use it. A module whose field holds an amount in another currency (e.g. IncomingPayment `payamount_main` in the base currency) overrides it in its record model.
 
 ## Validation
 
