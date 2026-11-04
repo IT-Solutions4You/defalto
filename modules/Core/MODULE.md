@@ -19,6 +19,7 @@
 
 ## Recurrence generation
 
+- Monthly occurrences retain the original user-local start time and convert each complete occurrence independently to the database time zone. Store each generated UTC time alongside its date in `recurringtimes`; Appointments consumes both through `getRecurringTime()` for creation and series edits. Use the previous occurrence's own time when recovering its local month. All-day monthly dates and rule parsing remain floating calendar values without time-zone conversion.
 - `Core_RecurringType_Model` in `modules/Core/models/RecurringType.php` owns shared recurrence request parsing, occurrence generation, and the `getRecurringObjValue()` request factory and is loaded through `Vtiger_Loader`. Runtime callers should use the Core model directly. `Vtiger_Functions::getRecurringObjValue()` remains a delegating compatibility facade. `include/utils/RecurringType.php` contains only the legacy `RecurringType` subclass for old integrations that explicitly include the historical file; never load that facade globally from `CommonUtils`, because doing so creates a parent-class autoload cycle.
 
 ## Style Guide

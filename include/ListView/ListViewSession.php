@@ -113,6 +113,7 @@ class ListViewSession
         }
 
         $list_query = $_SESSION[$currentModule . '_listquery'] ?? '';
+        $queryParameters = $_SESSION[$currentModule . '_listquery_params'] ?? [];
 
         if ($reUseData === false && !empty($list_query)) {
             $recordNavigationInfo = [];
@@ -156,9 +157,9 @@ class ListViewSession
                 $list_query .= " LIMIT $startRecord, $recordCount";
             }
 
-            $resultAllCRMIDlist_query = $adb->pquery($list_query, []);
+            $resultAllCRMIDlist_query = $adb->pquery($list_query, $queryParameters);
             $navigationRecordList = [];
-            while ($forAllCRMID = $adb->fetch_array($resultAllCRMIDlist_query)) {
+            while ($forAllCRMID = $adb->fetchByAssoc($resultAllCRMIDlist_query)) {
                 $navigationRecordList[] = $forAllCRMID[$instance->table_index];
             }
 
@@ -224,14 +225,17 @@ class ListViewSession
         return $start;
     }
 
-    public static function setSessionQuery($currentModule, $query, $viewid)
+    public static function setSessionQuery($currentModule, $query, $viewid, array $queryParameters = [])
     {
         if (isset($_SESSION[$currentModule . '_listquery'])) {
-            if ($_SESSION[$currentModule . '_listquery'] != $query) {
+            if ($_SESSION[$currentModule . '_listquery'] != $query
+                || ($_SESSION[$currentModule . '_listquery_params'] ?? []) !== $queryParameters) {
                 unset($_SESSION[$currentModule . '_DetailView_Navigation' . $viewid]);
             }
         }
+
         $_SESSION[$currentModule . '_listquery'] = $query;
+        $_SESSION[$currentModule . '_listquery_params'] = $queryParameters;
     }
 
     static function hasViewChanged($currentModule)

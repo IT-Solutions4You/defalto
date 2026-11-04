@@ -1,3 +1,7 @@
+# Navigation from filtered lists
+
+When opening a record from a filtered list, previous and next record navigation retains the list's conditions, including calendar date ranges. Changing filter values refreshes the available navigation records.
+
 # Header menu
 
 The header menu contains Defalto settings available to administrators, the current user's preferences and sign-out action, and links registered by installed extensions. It does not show links to upstream vtiger feedback, documentation, videos, or marketing pages. Defalto website and help links use the application's redirect page so their destinations stay centrally managed.
