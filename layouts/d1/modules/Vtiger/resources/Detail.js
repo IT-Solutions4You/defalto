@@ -3550,7 +3550,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
         }
 
         app.helper.showConfirmationBox({message: app.vtranslate(self.getDeleteMessageKey())}).then(function (e) {
+            const relationId = relatedController.getSelectedTabElement().data('relationId');
+
             app.request.post({data: data}).then(function (error, data) {
+                // The deleted record leaves the relation, so the count badge in the navigation is refreshed too.
+                relatedController.updateRelatedRecordsCount(relationId);
                 relatedController.loadRelatedList().then(function () {
                     relatedController.triggerRelationAdditionalActions();
                 });
