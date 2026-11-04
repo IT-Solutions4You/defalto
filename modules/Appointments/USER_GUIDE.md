@@ -18,7 +18,7 @@ Calendar popovers and event refreshes show record information only when the curr
 
 Monthly repetitions stay in the selected calendar month. If the selected date does not exist in a shorter month, the appointment is placed on that month's last day. Rules such as the last Friday of the month also remain within that month in every time zone.
 
-Weekly repetitions stay on the selected weekdays and at the selected local time when daylight-saving time begins or ends.
+Weekly repetitions stay on the selected weekdays and at the selected local time when daylight-saving time begins or ends. Monthly repetitions also retain the selected local time across these changes. Existing saved occurrences are not automatically corrected.
 
 ## Create Calendar Record workflow action
 
