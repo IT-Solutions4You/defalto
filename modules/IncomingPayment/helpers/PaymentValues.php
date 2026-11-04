@@ -16,8 +16,9 @@
 class IncomingPayment_PaymentValues_Helper
 {
     /**
-     * Sets the editable derived values on the entity data of a payment being saved:
-     * currency fallback, conversion rate, organisation and contact of the reference document.
+     * Sets the editable derived values on the entity data of a payment being saved (currency fallback and conversion
+     * rate) and rejects more reference documents than the limit. The organisation and the contact are not taken from
+     * the reference document on save; only a payment created from a document gets them prefilled in the form.
      *
      * @param VTEntityData $entityData Payment entity data of the before-save event
      * @return void
@@ -40,25 +41,6 @@ class IncomingPayment_PaymentValues_Helper
 
         if (count($relationIds) > IncomingPayment_Config_Helper::REFERENCE_LIMIT) {
             throw new Exception(vtranslate(IncomingPayment_Config_Helper::LBL_REFERENCE_LIMIT, IncomingPayment_Config_Helper::MODULE));
-        }
-
-        $relationId = (int)($relationIds[0] ?? 0);
-
-        if ($relationId <= 0 || !isRecordExists($relationId)) {
-            return;
-        }
-
-        $module = (string)getSalesEntityType($relationId);
-        $recordModel = Vtiger_Record_Model::getInstanceById($relationId, $module);
-        $config = IncomingPayment_Integration_Model::getInstance()->retrieveByModule($module);
-        $relatedToField = (string)($config['relatedto_field'] ?? '');
-
-        if (self::getValue($entityData, IncomingPayment_Config_Helper::FIELD_RELATED_TO) === '' && $relatedToField !== '' && $recordModel->getModule()->getField($relatedToField)) {
-            $entityData->set(IncomingPayment_Config_Helper::FIELD_RELATED_TO, $recordModel->get($relatedToField));
-        }
-
-        if (self::getValue($entityData, IncomingPayment_Config_Helper::FIELD_CONTACT) === '' && $recordModel->getModule()->getField('contact_id')) {
-            $entityData->set(IncomingPayment_Config_Helper::FIELD_CONTACT, $recordModel->get('contact_id'));
         }
     }
 
@@ -102,7 +84,7 @@ class IncomingPayment_PaymentValues_Helper
                 IncomingPayment_Status_Helper::normalizeDate($payment->get('paymentdate')),
                 IncomingPayment_Status_Helper::normalizeDate($payment->get('due_date'))
             ),
-            'payamount_main' => IncomingPayment_Calculation_Helper::roundStoredAmount(IncomingPayment_Calculation_Helper::convertToBaseCurrency($amount, $rate)),
+            IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE => IncomingPayment_Calculation_Helper::roundStoredAmount(IncomingPayment_Calculation_Helper::convertToBaseCurrency($amount, $rate)),
             'associated_no' => implode(', ', self::getDocumentNumbers(self::getDocumentIds($payment))),
         ];
 

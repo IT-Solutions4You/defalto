@@ -27,6 +27,7 @@ class IncomingPayment_Config_Helper
     public const FIELD_CONTACT = 'contactid';
     public const FIELD_STATUS = 'payment_status';
     public const FIELD_AMOUNT = 'paymentamount';
+    public const FIELD_AMOUNT_BASE = 'payamount_main';
 
     /**
      * Number of documents one payment may reference; payments to several documents come with the paid version.

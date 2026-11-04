@@ -9,9 +9,9 @@ Incoming Payments records the money your company receives for invoices (and, whe
 1. Open the invoice and click **Add Payment** in the detail view for the quick form, or **More → Add Payment** for the full form with all fields. The **Add** button in the **Incoming Payments** widget of the summary view opens the quick form too; after saving, reload the page to see the new invoice status in the header.
 2. The form is prefilled with the open amount of the invoice, its currency, the due date, the organization and the contact. Change what you need, for example when only a part of the invoice was paid.
 3. Fill in the **Payment Date** when the money arrived. Leave it empty when you only expect the payment.
-4. Save. The payment is listed in the **Incoming Payments** widget and related list of the invoice.
+4. Save. The payment is listed in the **Incoming Payments** widget and related list of the invoice. Organizations, vendors and contacts also have an **Incoming Payments** related list with the payments that name them.
 
-You can also create payments directly in the Incoming Payments module and pick the invoice in the **Reference** field: choose the module next to the field, type at least two characters of the invoice number or name, or use the magnifier to pick it from a list. A payment references one document; saving a payment with more documents shows a message. The **Reference** filter in the payment list finds payments by the document number or name.
+You can also create payments directly in the Incoming Payments module and pick the invoice in the **Reference** field: choose the module next to the field, type at least two characters of the invoice number or name, or use the magnifier to pick it from a list. Choosing the document does not fill in the organization or the contact; enter them yourself when you need them. A payment references one document; saving a payment with more documents shows a message. The **Reference** filter in the payment list finds payments by the document number or name.
 
 The detail view of a payment has a tab for every module integrated in Settings, for example **Invoices**, listing the documents the payment is applied to. To change the document, edit the **Reference** field.
 
@@ -34,7 +34,7 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 - **Balance** is the invoice total minus the received amount. An overpaid invoice shows a negative balance.
 - When the balance reaches zero, or drops to the underpayment threshold set in Settings, the invoice status changes to **Paid**. The balance still shows the real underpayment. If a payment is deleted or its date moves to the future, the status returns to **Created**.
 - While the integration is active, the **Received** field of the invoice is read-only; edit the payments instead.
-- When you delete an invoice that has payments, the confirmation tells you how many payments are linked. The payments stay, only their link to the deleted invoice is removed, and their **Reference** becomes empty. Restoring the invoice from the recycle bin does not link the payments again.
+- When you delete an invoice that has payments, the confirmation tells you how many payments are linked. The payments stay, only their link to the deleted invoice is removed, and their **Reference** becomes empty. Restoring the invoice from the recycle bin does not link the payments again; its received amount, balance and status are recalculated without them.
 
 ## Other fields
 

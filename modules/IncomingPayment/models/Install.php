@@ -35,6 +35,9 @@ class IncomingPayment_Install_Model extends Core_Install_Model
     public array $registerRelatedLists = [
         self::DOCUMENTS_RELATED_LIST,
         self::EMAILS_RELATED_LIST,
+        ['Accounts', 'IncomingPayment', IncomingPayment_Config_Helper::RELATED_LIST_LABEL, 'add', 'get_dependents_list', IncomingPayment_Config_Helper::FIELD_RELATED_TO],
+        ['Vendors', 'IncomingPayment', IncomingPayment_Config_Helper::RELATED_LIST_LABEL, 'add', 'get_dependents_list', IncomingPayment_Config_Helper::FIELD_RELATED_TO],
+        ['Contacts', 'IncomingPayment', IncomingPayment_Config_Helper::RELATED_LIST_LABEL, 'add', 'get_dependents_list', IncomingPayment_Config_Helper::FIELD_CONTACT],
     ];
 
     public array $registerSettingsLinks = [
@@ -85,6 +88,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         'paymethod',
         'relationid',
         'relatedto',
+        'contactid',
         'assigned_user_id',
     ];
     public array $blocksListFields = [
@@ -251,7 +255,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                 $modules,
             ];
             $this->registerEventHandler[] = [
-                [IncomingPayment_Config_Helper::EVENT_AFTER_DELETE],
+                [IncomingPayment_Config_Helper::EVENT_AFTER_DELETE, IncomingPayment_Config_Helper::EVENT_AFTER_RESTORE],
                 IncomingPayment_Config_Helper::RELATED_DELETE_HANDLER_FILE,
                 IncomingPayment_Config_Helper::RELATED_DELETE_HANDLER,
                 '',
@@ -491,7 +495,6 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'columntype' => 'int(19)',
                     'label' => 'Contact Name',
                     'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
                     'related_modules' => ['Contacts'],
                 ],
                 'assigned_user_id' => [
