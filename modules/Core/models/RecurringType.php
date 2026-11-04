@@ -144,6 +144,7 @@ class Core_RecurringType_Model
                 $tempdate = $tempdateObj->get_DB_formatted_date();
                 if ($this->isMonthlyOccurrenceWithinEndDate($tempdateObj)) {
                     $recurringDates[] = $tempdate;
+                    $this->recurringtimes[] = $tempdateObj->get_formatted_time();
                 }
             } elseif ($this->recur_type == 'Yearly') {
                 if (isset($this->recur_freq)) {
@@ -246,8 +247,15 @@ class Core_RecurringType_Model
             $this->startdate->get_DB_formatted_date() . ' ' . $databaseTime
         );
         $userDateTime = DateTimeField::convertToUserTimeZone(
-            $databaseDate->get_DB_formatted_date() . ' ' . $databaseTime
+            $databaseDate->get_DB_formatted_date() . ' ' . $databaseDate->get_formatted_time()
         );
+
+        if ($this->isAllDay) {
+            $userStartDateTime = new DateTime($this->startdate->get_DB_formatted_date(), new DateTimeZone('UTC'));
+            $userDateTime = new DateTime($databaseDate->get_DB_formatted_date(), new DateTimeZone('UTC'));
+            $dayDiff = 0;
+        }
+
         $frequency = max(1, (int)$this->recur_freq);
         $year = (int)$userDateTime->format('Y');
         $month = (int)$userDateTime->format('n');
@@ -258,11 +266,21 @@ class Core_RecurringType_Model
             $candidate = $this->getMonthlyCandidate($year, $month, $dayDiff, $userStartDateTime);
         }
 
-        $databaseCandidate = $this->getDatabaseDateForUserDate($candidate, $databaseTime);
+        $databaseCandidate = new DateTimeImmutable(
+            $candidate->format('Y-m-d') . ' ' . $userStartDateTime->format('H:i:s'),
+            $userStartDateTime->getTimezone()
+        );
+
+        if (!$this->isAllDay) {
+            $databaseCandidate = $databaseCandidate->setTimezone(new DateTimeZone(DateTimeField::getDBTimeZone()));
+        }
+
         $date = [
             'day'   => $databaseCandidate->format('j'),
             'month' => $databaseCandidate->format('n'),
             'year'  => $databaseCandidate->format('Y'),
+            'hour'  => $databaseCandidate->format('H'),
+            'min'   => $databaseCandidate->format('i'),
         ];
 
         return new Core_Datetime_Model($date, true);
@@ -313,28 +331,14 @@ class Core_RecurringType_Model
         return $monthStart->modify('+' . $daysForward . ' days');
     }
 
-    protected function getDatabaseDateForUserDate(
-        DateTimeImmutable $userDate,
-        string $databaseTime
-    ): DateTimeImmutable {
-        foreach ([-1, 0, 1] as $dayOffset) {
-            $databaseDate = $userDate->modify($dayOffset . ' days');
-            $convertedDate = DateTimeField::convertToUserTimeZone(
-                $databaseDate->format('Y-m-d') . ' ' . $databaseTime
-            );
-
-            if ($convertedDate->format('Y-m-d') == $userDate->format('Y-m-d')) {
-                return $databaseDate;
-            }
-        }
-
-        return $userDate;
-    }
-
     protected function isMonthlyOccurrenceWithinEndDate(Core_Datetime_Model $databaseDate): bool
     {
+        if ($this->isAllDay) {
+            return $databaseDate->get_DB_formatted_date() <= $this->enddate->get_DB_formatted_date();
+        }
+
         $userDate = DateTimeField::convertToUserTimeZone(
-            $databaseDate->get_DB_formatted_date() . ' ' . $this->startdate->get_formatted_time()
+            $databaseDate->get_DB_formatted_date() . ' ' . $databaseDate->get_formatted_time()
         );
         $userEndDate = DateTimeField::convertToUserTimeZone(
             $this->enddate->get_DB_formatted_date() . ' ' . $this->enddate->get_formatted_time()
@@ -506,7 +510,9 @@ class Core_RecurringType_Model
                 $requestArray['dayofweek_to_repeat'] = $dbDaysOfWeek;
             }
         } elseif ($requestArray['type'] == 'Monthly') {
-            $userStartDateTime = DateTimeField::convertToUserTimeZone($startDate . ' ' . $startTime);
+            $userStartDateTime = $isAllDay
+                ? new DateTime($startDate . ' ' . $startTime, new DateTimeZone(DateTimeField::getDBTimeZone()))
+                : DateTimeField::convertToUserTimeZone($startDate . ' ' . $startTime);
             if ($requestArray['repeatmonth_type'] == 'date') {
                 $dayOfMonth = $requestArray['repeatmonth_date'];
                 $userStartDateTime->setDate($userStartDateTime->format('Y'), $userStartDateTime->format('m'), $dayOfMonth);

@@ -407,13 +407,13 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model
 
         $_SESSION['lvs'][$moduleName][$viewId]['start'] = $pagingModel->get('page');
 
-        ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId);
-
-        $listQuery .= ' LIMIT ' . $startIndex . ', ' . ($pageLimit + 1);
-
         $queryParameters = method_exists($queryGenerator, 'getQueryParameters')
             ? $queryGenerator->getQueryParameters()
             : [];
+        ListViewSession::setSessionQuery($moduleName, $listQuery, $viewId, $queryParameters);
+
+        $listQuery .= ' LIMIT ' . $startIndex . ', ' . ($pageLimit + 1);
+
         $listResult = $db->pquery($listQuery, $queryParameters);
 
         $listViewRecordModels = [];
