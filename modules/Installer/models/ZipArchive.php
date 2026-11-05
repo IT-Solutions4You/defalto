@@ -12,7 +12,7 @@ class Installer_ZipArchive_Model extends ZipArchive
     public const MAX_FILES = 10000;
     public const MAX_UNCOMPRESSED_SIZE = 209715200;
 
-    public static array $skipFiles = ['.env', 'config.inc.php', 'composer.lock', 'index.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'update.php', 'vtigercron.sh'];
+    public static array $skipFiles = ['.env', 'config.inc.php', 'index.php', 'install.php', 'parent_tabdata.php', 'tabdata.php', 'update.php', 'vtigercron.sh'];
     public static array $skipFolders = [
         'user_privileges',
         'manifest',

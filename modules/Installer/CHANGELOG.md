@@ -2,6 +2,8 @@
 
 ## 1.62 - 2026-11-03
 
+- Keeps dependency requirements and locked versions together during system updates, preventing failures caused by a retained older lock file.
+
 - Displays installation logs as a readable Markdown-style list with emphasized errors.
 
 - Shows the specific installation error in a prominent alert, with the expandable technical log below it, including when the request fails.
