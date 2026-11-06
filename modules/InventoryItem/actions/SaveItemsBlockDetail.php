@@ -129,6 +129,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
 
             if ($changed) {
                 $recordModel->set('mode', 'edit');
+                $recordModel->getEntity()->isWorkFlowFieldUpdate = true;
                 $recordModel->save();
             }
         }
@@ -171,6 +172,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
                     $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
                     $recordModel->set('tax', $tax['percentage']);
                     $recordModel->set('mode', 'edit');
+                    $recordModel->getEntity()->isWorkFlowFieldUpdate = true;
                     $recordModel->save();
                     $recordModel->saveTaxId($tax['taxid']);
                 }
@@ -190,12 +192,18 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
         $recordId = (int)$request->get('for_record');
         $discount = (float)$request->get('overall_discount_percent');
 
+        if (!InventoryItem_ParentEntity_Model::isOverallDiscountEditable($recordId)) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
         $items = InventoryItem_Module_Model::fetchItemsForId($recordId);
 
         foreach ($items as $item) {
             $recordModel = Vtiger_Record_Model::getInstanceById($item['inventoryitemid'], 'InventoryItem');
             $recordModel->set('overall_discount', $discount);
             $recordModel->set('mode', 'edit');
+            // Calculated values of the item are saved even when the profile has them read-only
+            $recordModel->getEntity()->isWorkFlowFieldUpdate = true;
             $recordModel->save();
         }
 
@@ -297,6 +305,7 @@ class InventoryItem_SaveItemsBlockDetail_Action extends Vtiger_SaveAjax_Action
             }
 
             $recordModel->set('mode', 'edit');
+            $recordModel->getEntity()->isWorkFlowFieldUpdate = true;
             $recordModel->save();
         }
 

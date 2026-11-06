@@ -31,3 +31,16 @@ The **Field mapping** button of each conversion lets an administrator decide whi
 If creating another document from a quote, sales order or invoice is restricted (for example while the quote waits for approval), the conversion links are hidden and the item review dialog shows the reason instead of creating the document.
 
 When editing the document itself is restricted, its items cannot be added or changed either: the buttons for adding text, products and services are hidden and any attempt shows the reason of the restriction.
+
+## Discount permissions
+
+Discounts follow the field permissions of the **Inventory Items** module (Settings > Profiles), so a company can choose how discounts work for each profile:
+
+- **No discounts at all:** deactivate the Discount field (or make it invisible in every profile). The discount is hidden in the item dialog and in the items block.
+- **Hidden for some profiles:** make the Discount field invisible for that profile (for example sales representatives). Other profiles, such as a sales manager, still see and enter discounts. Prices and totals still include discounts already given.
+- **Visible but not editable:** set the Discount field to read-only. The user sees the discount but cannot change it.
+- **Anyone can set discounts:** keep the field editable for all profiles (default).
+
+The overall discount button of the items block follows the same rule for the Overall Discount field, together with the Overall Discount field of the document itself. A user who cannot see it does not get the button, and a user who can only view it cannot change it.
+
+Changing the quantity or price of a line never removes its existing discount: the discount stays and the line and totals are recalculated, even if the user cannot edit discounts. New lines take the overall discount already set on the document.

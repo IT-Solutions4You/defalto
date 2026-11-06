@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9 - 2026-11-06
+
+- Discounts in the items block and in the item dialog now follow the profile permissions of the Inventory Items fields: a discount can be hidden completely, shown read-only, or left editable for each profile.
+- The Overall Discount button is hidden or disabled for profiles without permission, and changing the overall discount is refused on the server without it.
+- Changing the quantity or price of a line keeps its existing discount and recalculates the totals, even when the user cannot edit discounts.
+
 ## 1.8 - 2026-10-30
 
 - The Items widget now appears first in the right summary column, uses the user's language for its title, and keeps long item lists compact with visible headings and totals.
