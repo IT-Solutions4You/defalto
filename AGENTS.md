@@ -200,6 +200,10 @@
 - Run the scripts validator when module resource JavaScript changes.
 - Check that `version.php` was bumped when rendered application styles changed.
 
+## Deployment Guidance
+
+- Before changing the deployment workflow or deploying, read the checkout-local `DEPLOYMENT.md` if present. Follow its target, file selection, and verification instructions. After validating a functional change, deploy its runtime files before reporting completion when a local deployment is configured. For documentation-only work, skip runtime deployment.
+
 ## Short Change Summary
 
 - Treat the command `summary` as requests for a concise summary of the completed work.
