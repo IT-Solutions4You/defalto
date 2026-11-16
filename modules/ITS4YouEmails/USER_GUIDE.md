@@ -6,6 +6,10 @@ When membership branding is included in an outgoing email, its Defalto link firs
 
 When replying, the composer adds `Re: ` only when the subject does not already contain a recognized reply prefix. When forwarding, it adds `Fwd: ` unless a recognized forward prefix is already present.
 
+# Browsing and selecting emails
+
+Use the arrows above the list to move between pages. The checkbox in the column header selects the emails on the current page. To select every email that matches the current filters, click the Select All link that appears above the list.
+
 # Attachments
 
 Use the attachment menu in the composer to select a file from all CRM Documents or from Documents related to the current record. The document picker opens above the composer; select the required documents and confirm the selection to attach them without leaving the email.

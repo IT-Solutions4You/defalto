@@ -1,3 +1,7 @@
+## 1.8 - 2026-11-16
+
+- Fixed selecting all emails and moving to the next page in the Emails list.
+
 ## 1.7 - 2026-10-30
 
 - Routed the optional Defalto email branding link through the CRM's centrally managed redirect.
