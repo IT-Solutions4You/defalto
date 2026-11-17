@@ -18,6 +18,22 @@
  */
 
 $languageStrings = [
+    'LBL_AI_SETUP' => 'إعداد الذكاء الاصطناعي',
+    'LBL_AI_ACTIVE_LICENSE' => 'ترخيص نشط',
+    'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'ترخيص Membership نشط في أداة التثبيت',
+    'LBL_AI_INSTALLED_EXTENSION' => 'الإضافة مثبتة',
+    'LBL_AI_INSTALLED_EXTENSION_DESCRIPTION' => 'إضافة الذكاء الاصطناعي على نظام CRM هذا',
+    'LBL_AI_READY' => 'الذكاء الاصطناعي جاهز',
+    'LBL_AI_READY_DESCRIPTION' => 'الإضافة مفعّلة مع مفتاح API مضبوط',
+    'LBL_AI_ACTIVATE_MEMBERSHIP' => 'فعّل ترخيص Membership في أداة التثبيت.',
+    'LBL_AI_INSTALL_EXTENSION' => 'ثبّت إضافة الذكاء الاصطناعي من أداة التثبيت.',
+    'LBL_AI_ENABLE_EXTENSION' => 'فعّل الذكاء الاصطناعي في مدير الوحدات.',
+    'LBL_AI_SETUP_UNVERIFIED' => 'تعذّر التحقق من إعداد الذكاء الاصطناعي.',
+    'LBL_AI_CONFIGURE_KEY' => 'اضبط مفتاح واجهة API للذكاء الاصطناعي.',
+    'LBL_AI_NO_ACCESS' => 'ملفك الشخصي لا يملك صلاحية الوصول إلى الذكاء الاصطناعي.',
+    'LBL_AI_CONTACT_ADMIN' => 'تواصل مع مسؤول نظام CRM.',
+    'LBL_AI_TRY_CHAT' => 'افتح الذكاء الاصطناعي وأرسل رسالة لاختبار الاتصال.',
+    'LBL_AI_OPEN' => 'فتح الذكاء الاصطناعي',
     'LBL_PRODUCTBLOCKTPL' => 'قوالب كتل المنتجات',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'إدارة قوالب كتل المنتجات لبنود المخزون.',
     'LBL_CONDITION' => 'شرط',

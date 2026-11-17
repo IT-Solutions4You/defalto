@@ -8,6 +8,8 @@ The header menu contains Defalto settings available to administrators, the curre
 
 # Record actions
 
+Click the **AI** icon beside the comment box to check the license, installation and setup. If AI is ready and you have access, select **Open AI** to work with your current draft in AI chat. The comment stays in the editor until you post it.
+
 When you click Add in a record's summary widget, Quick Create fills the related-record field with the record you are viewing. For example, a task or milestone added from a project's summary starts with that project selected.
 
 Administrators can lock or unlock a record. A non-administrator can lock a record only when it is assigned directly to that user and the user has permission to edit it; unlocking remains available only to administrators.

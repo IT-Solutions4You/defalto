@@ -36,8 +36,8 @@
                     {/if}
                     <div class="col-12 mt-2 col-sm-auto mt-sm-0 ms-auto">
                         <span class="aiChatCommentContainer">
-                            <button type="button" class="btn btn-primary me-2 aiChatComment" onclick="vtUtils.showLicenseError();">
-                                <i class="bi bi-stars"></i>
+                            <button type="button" class="btn btn-primary me-2 aiChatComment" title="AI" aria-label="AI" aria-haspopup="dialog">
+                                <i class="bi bi-stars" aria-hidden="true"></i>
                             </button>
                         </span>
                         <button class="btn btn-primary active px-5 {$SAVE_BUTTON_CLASS}" type="button" data-mode="add">

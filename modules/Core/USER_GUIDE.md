@@ -1,3 +1,7 @@
+# AI setup
+
+Click **AI** in the top bar to check your Membership license, whether the AI extension is installed, and whether it is enabled and configured. The window shows the next step. Administrators can open Installer, Module Manager or AI settings from the window when needed. If AI is ready and your profile has access, choose **Open AI** and send a message to test the connection.
+
 # Style Guide
 
 Administrators can open `index.php?module=Core&view=StyleGuide` to review the colors and common interface components currently rendered by Defalto. The page includes semantic colors, alerts, buttons, badges, form controls, navigation, cards, lists, tables, progress indicators, loading states, and their common variants. It is a visual reference only and does not change application data or settings.

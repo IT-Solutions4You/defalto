@@ -17,6 +17,22 @@
  */
 
 $languageStrings = [
+    'LBL_AI_SETUP' => 'Настройка ИИ',
+    'LBL_AI_ACTIVE_LICENSE' => 'Активная лицензия',
+    'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Активная лицензия Membership в установщике',
+    'LBL_AI_INSTALLED_EXTENSION' => 'Расширение установлено',
+    'LBL_AI_INSTALLED_EXTENSION_DESCRIPTION' => 'Расширение ИИ в этой CRM',
+    'LBL_AI_READY' => 'ИИ готов к работе',
+    'LBL_AI_READY_DESCRIPTION' => 'Включённое расширение с настроенным ключом API',
+    'LBL_AI_ACTIVATE_MEMBERSHIP' => 'Активируйте лицензию Membership в установщике.',
+    'LBL_AI_INSTALL_EXTENSION' => 'Установите расширение ИИ через установщик.',
+    'LBL_AI_ENABLE_EXTENSION' => 'Включите ИИ в менеджере модулей.',
+    'LBL_AI_SETUP_UNVERIFIED' => 'Не удалось проверить настройки ИИ.',
+    'LBL_AI_CONFIGURE_KEY' => 'Настройте ключ API для ИИ.',
+    'LBL_AI_NO_ACCESS' => 'У вашего профиля нет доступа к ИИ.',
+    'LBL_AI_CONTACT_ADMIN' => 'Обратитесь к администратору CRM.',
+    'LBL_AI_TRY_CHAT' => 'Откройте ИИ и отправьте сообщение, чтобы проверить подключение.',
+    'LBL_AI_OPEN' => 'Открыть ИИ',
     'LBL_PRODUCTBLOCKTPL' => 'Шаблоны товарных блоков',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Управление шаблонами товарных блоков для позиций документа.',
     'LBL_CONDITION' => 'Условие',

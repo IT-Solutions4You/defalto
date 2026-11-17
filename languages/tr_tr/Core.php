@@ -17,6 +17,22 @@
  */
 
 $languageStrings = [
+    'LBL_AI_SETUP' => 'Yapay zekâyı kur',
+    'LBL_AI_ACTIVE_LICENSE' => 'Etkin lisans',
+    'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Yükleyici’de etkin bir Membership lisansı',
+    'LBL_AI_INSTALLED_EXTENSION' => 'Uzantı yüklü',
+    'LBL_AI_INSTALLED_EXTENSION_DESCRIPTION' => 'Bu CRM’deki yapay zekâ uzantısı',
+    'LBL_AI_READY' => 'Yapay zekâ kullanıma hazır',
+    'LBL_AI_READY_DESCRIPTION' => 'Etkin uzantı ve yapılandırılmış API anahtarı',
+    'LBL_AI_ACTIVATE_MEMBERSHIP' => 'Membership lisansınızı Yükleyici’de etkinleştirin.',
+    'LBL_AI_INSTALL_EXTENSION' => 'Yapay zekâ uzantısını Yükleyici’den yükleyin.',
+    'LBL_AI_ENABLE_EXTENSION' => 'Modül Yöneticisi’nde yapay zekâyı etkinleştirin.',
+    'LBL_AI_SETUP_UNVERIFIED' => 'Yapay zekâ kurulumu doğrulanamadı.',
+    'LBL_AI_CONFIGURE_KEY' => 'Yapay zekâ için API anahtarını yapılandırın.',
+    'LBL_AI_NO_ACCESS' => 'Profilinizin yapay zekâya erişimi yok.',
+    'LBL_AI_CONTACT_ADMIN' => 'CRM yöneticinize başvurun.',
+    'LBL_AI_TRY_CHAT' => 'Bağlantıyı sınamak için yapay zekâyı açın ve bir mesaj gönderin.',
+    'LBL_AI_OPEN' => 'Yapay zekâyı aç',
     'LBL_PRODUCTBLOCKTPL' => 'Ürün bloğu şablonları',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Envanter kalemleri için ürün bloğu şablonlarını yönetin.',
     'LBL_CONDITION' => 'Koşul',

@@ -1,5 +1,10 @@
 # Core UI ownership
 
+## AI availability
+
+- `Core_AiAvailability_View` renders the authenticated setup dialog on demand. `Core_AiAvailability_Model` uses the same stored Membership decision as the AI chat and the module's local API-key check when that extension is present. Module registration and enablement are separate. Opening the dialog makes no licensing or AI-provider requests.
+- The dialog reports local readiness. The AI extension owns API-key configuration, chat and provider connectivity. The dialog only offers administrative actions to administrators and checks AI module permissions before offering chat.
+
 ## Read-only query projections
 
 - `Core_QueryGenerator_Model::getProjectedRows()` returns selected values keyed by record ID and field identifier, including related-field identifiers. It shares the configured joins, filters, parameters, sort, and limit with the original query. Projection consumers own extra record-action checks. `getRecords()` still hydrates complete record models.

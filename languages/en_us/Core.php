@@ -18,6 +18,22 @@
  */
 
 $languageStrings = [
+    'LBL_AI_SETUP' => 'Set up AI',
+    'LBL_AI_ACTIVE_LICENSE' => 'Active license',
+    'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'An active Membership license in Installer',
+    'LBL_AI_INSTALLED_EXTENSION' => 'Extension installed',
+    'LBL_AI_INSTALLED_EXTENSION_DESCRIPTION' => 'The AI extension on this CRM instance',
+    'LBL_AI_READY' => 'AI ready',
+    'LBL_AI_READY_DESCRIPTION' => 'An enabled extension with a configured API key',
+    'LBL_AI_ACTIVATE_MEMBERSHIP' => 'Activate your Membership license in Installer.',
+    'LBL_AI_INSTALL_EXTENSION' => 'Install the AI extension in Installer.',
+    'LBL_AI_ENABLE_EXTENSION' => 'Enable AI in Module Manager.',
+    'LBL_AI_SETUP_UNVERIFIED' => 'AI setup could not be verified.',
+    'LBL_AI_CONFIGURE_KEY' => 'Configure the API key for AI.',
+    'LBL_AI_NO_ACCESS' => 'Your profile does not have access to AI.',
+    'LBL_AI_CONTACT_ADMIN' => 'Contact your CRM administrator.',
+    'LBL_AI_TRY_CHAT' => 'Open AI and send a message to test the connection.',
+    'LBL_AI_OPEN' => 'Open AI',
     'LBL_PRODUCTBLOCKTPL' => 'Product block templates',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Manage product block templates for inventory items.',
     'LBL_SAVED_LIST_FILTER_NOTICE' => 'This list already applies saved conditions. Clearing additional filters does not remove them.',
@@ -1921,7 +1937,6 @@ $jsLanguageStrings = [
     'JS_RECORDS_WILL_BE_DELETED' => 'This action will permanently delete records',
     'JS_REQUIRED_PARAMETER_CONFIRMATION' => 'Some of the PHP Settings do not meet the recommended values. This might affect some of the features of Defalto CRM. Are you sure, you want to proceed?',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
-    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Membership license is required to use and install AI extension',
     'JS_YES' => 'Yes',
     'JS_NO' => 'No',
     'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Closing this window will discard all entered data. Do you wish to close the window?'

@@ -9,6 +9,22 @@
  */
 
 $languageStrings = [
+    'LBL_AI_SETUP' => 'Ota tekoäly käyttöön',
+    'LBL_AI_ACTIVE_LICENSE' => 'Aktiivinen lisenssi',
+    'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Voimassa oleva Membership-lisenssi asennusohjelmassa',
+    'LBL_AI_INSTALLED_EXTENSION' => 'Laajennus asennettu',
+    'LBL_AI_INSTALLED_EXTENSION_DESCRIPTION' => 'Tekoälylaajennus tässä CRM-järjestelmässä',
+    'LBL_AI_READY' => 'Tekoäly käyttövalmis',
+    'LBL_AI_READY_DESCRIPTION' => 'Käytössä oleva laajennus ja määritetty API-avain',
+    'LBL_AI_ACTIVATE_MEMBERSHIP' => 'Aktivoi Membership-lisenssi asennusohjelmassa.',
+    'LBL_AI_INSTALL_EXTENSION' => 'Asenna tekoälylaajennus asennusohjelmassa.',
+    'LBL_AI_ENABLE_EXTENSION' => 'Ota tekoäly käyttöön moduulien hallinnassa.',
+    'LBL_AI_SETUP_UNVERIFIED' => 'Tekoälyn asetuksia ei voitu varmistaa.',
+    'LBL_AI_CONFIGURE_KEY' => 'Määritä tekoälyn API-avain.',
+    'LBL_AI_NO_ACCESS' => 'Profiilillasi ei ole oikeutta käyttää tekoälyä.',
+    'LBL_AI_CONTACT_ADMIN' => 'Ota yhteyttä CRM-järjestelmänvalvojaan.',
+    'LBL_AI_TRY_CHAT' => 'Avaa tekoäly ja testaa yhteys lähettämällä viesti.',
+    'LBL_AI_OPEN' => 'Avaa tekoäly',
     'LBL_PRODUCTBLOCKTPL' => 'Tuotelohkomallit',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Hallitse varastorivien tuotelohkomalleja.',
 ];
