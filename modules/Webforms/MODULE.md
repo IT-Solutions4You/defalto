@@ -6,6 +6,8 @@
 - `Webforms_Model` owns persisted form definitions, selected fields, defaults, round-robin assignment, and document creation. `Webforms_Field_Model` owns the configured field metadata and required-value decision.
 - `modules/Settings/Webforms` owns administration and generated form markup; the submitted record is created through `vtws_create()` as the active administrator.
 
+The Settings picklist override carries option colors through the shared d1 Select2 renderer and keeps the target module locked when editing an existing form. This styling is for CRM settings.
+
 ## Submission invariants
 
 - A configured required field accepts `0` as a value but rejects `null`, an empty string, or an empty array.

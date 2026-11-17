@@ -8,6 +8,8 @@ Webforms publish selected CRM fields as an embeddable form. A successful submiss
 2. Choose the target module, owner, fields, defaults, required fields, and optional CAPTCHA or return URL.
 3. Copy the generated form markup to the website where visitors will use it.
 
+In Webforms settings, a colored line on the left marks dropdown options with a configured color. The option text and background follow your CRM theme.
+
 ## Submission validation
 
 Required fields must contain a value. Dropdown and multi-select fields accept only options currently available in the CRM. These checks run on the CRM server even if browser-side validation is bypassed. Invalid submissions do not create a CRM record and return an error to the caller or configured return URL.
