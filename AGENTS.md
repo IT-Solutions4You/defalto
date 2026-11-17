@@ -206,13 +206,62 @@
 
 ## Short Change Summary
 
-- Treat the command `summary` as requests for a concise summary of the completed work.
-- Respond in the user's current language with no more than 10 short bullet points.
-- Briefly state what changed and the practical benefit of each change.
+- Treat the command `summary` as a request for a concise summary of the completed work.
+- Respond in the user's current language and group the summary by affected module, with each module name as a separate heading. Put shared Core/Vtiger changes in their own group.
+- Under each module, use two subsections: added or repaired functionality, and restricted or removed functionality. Keep manual test scenarios exclusively in `testing`, not in `summary`.
+- Under each section, use short bullet points, with one change or restriction per bullet. Do not compress a whole section into one long bullet.
+- As in `testing`, start every change bullet with the place in the application (screen, section, or navigation path), followed by a colon. Use the format `**Place → Screen:** What changed and what users gain, lose, or experience differently.` Describe the completed behavior and its practical effect, not an action for the user to test. Use visible UI labels and include any relevant role or conditions after the location. A brief statement that there are no restrictions or removals does not need a location.
+- Describe added or repaired functionality and its practical benefit. State restrictions or removals explicitly; if none, say so briefly.
+- Keep bullets concise and in customer language, without nested lists or long explanations. Keep changes under the module that owns them.
 - Avoid implementation details, filenames, test output, commit hashes, and unnecessary introductory text unless the user asks for them.
+
+## Manual Testing Checklist Command
+
+- Treat the command `testing` as a request to print a concise manual testing checklist for the completed changes, similar to `summary`. It does not authorize running automated or manual tests, changing files, deploying, committing, or pushing. The pre-commit test-planning and execution rules below remain separate.
+- Respond in the user's current language and group scenarios by affected module, with each module name as a separate heading. Put shared Core/Vtiger scenarios in their own group.
+- When moving test points out of an existing `summary`, include only its original test bullets in `testing`. Preserve their scenario content and module grouping; do not add or expand scenarios unless the user requests it.
+- Derive the checklist from the actual completed changes and their directly affected workflows. Include repaired/new behavior and relevant regression scenarios; do not list unrelated module functionality or every possible test.
+- Use short bullets, one scenario per bullet, without nested lists. Start every bullet with the place in the application (screen, section, or navigation path), followed by a colon, the concrete action to perform, and the expected visible result. Use the format `**Place → Screen:** Perform the action. Expected result.` Put any necessary role, record, or setup prerequisites after the location, before the action.
+- Include normal use and relevant permission, invalid-input, existing-data, repeat-operation, or cross-module cases only when the changes affect those behaviors. Describe each case in customer language using visible UI labels.
+- Present these bullets as checks for the user to perform, not as tests already passed. Omit implementation details, filenames, commands, automated-test output, commit hashes, and unnecessary introductory text unless explicitly requested.
 
 ## Commit Command
 
 - Treat the command `commits` as an explicit request to create commits for the completed work.
-- Review the working tree, preserve unrelated user changes, run the relevant validation, and split commits according to the repository ownership and commit-message rules.
+- Run the `commits` workflow from the terminal. Use shell commands for validation, staging, commits, and push. Prefer existing CLI runners and command-line HTTP checks for relevant behavior. Keep checks that require a browser in the manual `testing` checklist and report them as unverified. Browser access or CRM sign-in is not a prerequisite for `commits`.
+- Review the working tree, preserve unrelated user changes, create and execute the change-based test plan below, and split commits according to the repository ownership and commit-message rules.
 - After committing, report the created commit hashes and short messages, and list any changes intentionally left uncommitted.
+
+## Testing Before Commit
+
+- Before committing functional changes, derive a test plan from the actual intended commit diff and the affected runtime paths. Select checks by changed behavior and risk, not only by file extension or module name. Do not run every repository suite by default.
+- Distinguish staged changes, intended unstaged/new files, and unrelated user changes. Test the code that will actually be committed; a passing result for another snapshot is not evidence for the final commit. For dependent commits, also verify the combined integration path.
+- Use the reusable prompt below to produce the plan. Then execute its required checks, reuse existing relevant results while the tested code and dependencies remain unchanged, and rerun checks invalidated by subsequent edits.
+- Follow the repository's Validation rules for adding tests. When the user requests a new test, use the applicable existing Defalto test runner and cover a meaningful failure or boundary. Do not add tests that merely mirror the implementation or cover documentation-only edits.
+- For touched PHP and language files, run `php -l` when available and review compatibility with the PHP range declared in `composer.json`; a successful lint on a recent PHP version does not prove compatibility with the minimum supported version. Syntax-check touched JavaScript with system Node or the bundled Codex Node runtime. Run `git diff --check` for the intended changes.
+- Distinguish static checks, isolated/mocked tests, real HTTP/browser checks, and live integrations. Syntax checks do not prove behavior; simulated CRM or mailer tests do not prove database installation, browser rendering, or SMTP delivery. Where the changed boundary depends on HTTP, browser parsing, or persistence, plan an appropriate runtime check.
+- Use temporary fixtures or an authorized test environment. Keep customer data intact and do not send real campaigns, delete customer files, or change production configuration merely to obtain a PASS. Existing task authorization still governs test actions; the plan itself grants no additional authority.
+- Before committing, resolve failures introduced by the patch. Report pre-existing failures and unavailable checks separately, with their impact and the smallest missing prerequisite. If a missing check is essential to establish correctness or security, finish the available work and report the commit as blocked; do not silently waive the check or claim verification. Do not introduce a new approval step for routine authorized checks.
+- Documentation-only changes need a focused review of wording, consistency, references and examples, plus the applicable diff check. Do not run unrelated runtime suites, deploy, or increment a version solely for those changes.
+
+Reusable test-planning prompt:
+
+```text
+Create a pre-commit test plan for the intended changes in this checkout.
+Analyze only; do not edit source, run tests, stage, commit, push or deploy while producing the plan.
+
+1. Establish the exact intended diff and base revision. Include relevant new files and dependencies; distinguish unrelated staged or dirty files. Read affected MODULE.md guides and inspect existing tests before selecting coverage.
+2. Explain the behavior that changes, the original failure or requested outcome, the behavior that must remain, and the direct callers/consumers that could regress. Follow data through later decoding, personalization, rendering and delivery where applicable.
+3. Build a compact table: module/runtime path | change and risk | setup/role/data | action or input | expected result | command, runner or UI path | required or conditional. Every scenario must have a concrete observable outcome. Explain important exclusions instead of adding speculative tests.
+4. Select applicable scenarios:
+   - PHP/business logic: original failure, ordinary success, boundary/invalid input, optional modes and relevant supported PHP behavior.
+   - Requests/permissions: permitted and denied roles, own and foreign records, missing/deleted/wrong-module IDs, request method, CSRF and direct endpoint access when affected.
+   - UI/JavaScript/Smarty: actual page-controller startup, resource loading, user interaction, save/reopen/preview, AJAX refresh/repeated registration, escaping and affected layouts.
+   - Persistence/install/update: new and existing data, first installation versus repair/update/enable, repeated runs, retained settings/records, partial failures and restoration of temporary state.
+   - Files/HTML/integrations: authorization and ownership, supported and invalid formats/encodings/paths, temporary versus saved state, concurrent work if affected, linked copies, final output and relevant failure handling. Separate simulated checks from actual upload/download/render/send behavior.
+   - Languages/resources/packaging: changed-key parity and real translations across supported locales and normal/Settings domains; actual asset paths, bundled dependencies and clean compatible installation when packaging changes.
+   - Shared Core/Vtiger mechanisms: representative direct consumers in affected modules, inherited contracts and both branches of changed conditions. Expand coverage only when the dependency trace justifies it.
+   - Documentation-only changes: consistency, references and examples; no unrelated runtime checks.
+5. Identify existing Defalto checks and their CLI or UI entry points. If the user requests a new regression test, choose a meaningful coverage gap. List relevant syntax/diff checks and prerequisites, including PHP extensions, authentication and fixture cleanup.
+6. Order checks from focused syntax and regression checks to affected runtime/integration flows. State acceptance criteria, previously valid evidence that can be reused, untested risks and blockers. Do not present planned or mocked checks as completed end-to-end verification.
+```
