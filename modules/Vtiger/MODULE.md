@@ -2,6 +2,8 @@
 
 This module holds shared base behavior inherited by other modules. It has no standalone installable module version; the sections below only record the invariants that are easy to break.
 
+- `Vtiger_Reference_UIType::getReportDisplayValueFromLabel()` renders a label already fetched by Reporting using the same link markup as normal reference rendering. Reporting must check target visibility before calling it.
+
 ## Summary widgets
 
 - `Vtiger_Link_Model::getTranslatedLabel()` translates a widget label in the module named by the link's `linkName` (links without a related-module or explicit widget-module owner use the source record module). `Vtiger_DetailView_Model::getWidgets()` derives that owner from `relatedModule` or the explicit `module` URL parameter. When the owner does not define the label it falls back to the source module, because custom widget labels are registered there. `SummaryViewWidget.tpl` uses the resolved label for both the heading and the add action.

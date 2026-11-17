@@ -1,5 +1,9 @@
 # Core UI ownership
 
+## Read-only query projections
+
+- `Core_QueryGenerator_Model::getProjectedRows()` returns selected values keyed by record ID and field identifier, including related-field identifiers. It shares the configured joins, filters, parameters, sort, and limit with the original query. Projection consumers own extra record-action checks. `getRecords()` still hydrates complete record models.
+
 ## Editor and short-link URL boundaries
 
 - `Core_Utils_Helper::retrieveKCFinderConfig()` owns the editor file browser's absolute upload base. Trim trailing slashes from `site_URL` before appending `/test/upload`; preserve application subdirectories and the scheme separator. Company logo placeholders in `Core_TemplateContent_Helper` use the same join rule.

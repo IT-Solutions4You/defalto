@@ -243,7 +243,7 @@ function returnPermission(string $permission, string $sharingPermission = 'no'):
  *
  * @returns yes or no. If Yes means this action is allowed for the currently logged in user. If no means this action is not allowed for the currently logged in user
  */
-function isReadPermittedBySharing($module, $tabid, $actionid, $record_id)
+function isReadPermittedBySharing($module, $tabid, $actionid, $record_id, ?array $sharingModuleList = null)
 {
     global $log;
     $log->debug("Entering isReadPermittedBySharing(" . $module . "," . $tabid . "," . $actionid . "," . $record_id . ") method ...");
@@ -254,7 +254,7 @@ function isReadPermittedBySharing($module, $tabid, $actionid, $record_id)
     $ownerid = '';
     $sharePer = 'no';
 
-    $sharingModuleList = getSharingModuleList();
+    $sharingModuleList ??= getSharingModuleList();
     if (!in_array($module, $sharingModuleList)) {
         $sharePer = 'no';
 
