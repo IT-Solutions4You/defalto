@@ -22,6 +22,8 @@ Record-header action icons show a label while the mouse is over them, and the la
 
 # Dropdown fields
 
+When you open a dropdown, a colored line on the left marks an option with a configured color. Option text and backgrounds follow the theme. On saved records, colors still appear as labels in the list, detail and related lists.
+
 Searchable dropdowns, including Assigned To, hide values that are already selected. The current value stays visible in the field; choose another value to replace it. In fields that allow several values, remove a selected item to make it available again.
 
 # Lists and filters
