@@ -606,6 +606,7 @@ jQuery.migrateMute = true;
 
 jQuery(function () {
 	vtUtils.applyFieldElementsView(jQuery('body'));
+	Vtiger_Index_Js.registerAiAvailabilityEvent();
 	window.app.controller();
 	String.prototype.toCamelCase = function () {
 		var value = this.valueOf();

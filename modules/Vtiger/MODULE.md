@@ -2,7 +2,7 @@
 
 This module holds shared base behavior inherited by other modules. It has no standalone installable module version; the sections below only record the invariants that are easy to break.
 
-- The comment AI button and the top bar share the Core availability dialog. The click listener runs before inline handlers because the installed AI extension replaces the top bar control. Keep the comment trigger distinct so opening chat can pass the draft and use the existing comment prompt schema.
+- The comment AI button and the top bar share the Core availability dialog. The common application startup registers `Vtiger_Index_Js`'s delegated click handler for every view. The listener runs before inline handlers because the installed AI extension replaces the top bar control. Keep the comment trigger distinct so opening chat can pass the draft and use the existing comment prompt schema.
 
 - `Vtiger_Reference_UIType::getReportDisplayValueFromLabel()` renders a label already fetched by Reporting using the same link markup as normal reference rendering. Reporting must check target visibility before calling it.
 

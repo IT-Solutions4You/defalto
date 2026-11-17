@@ -1074,14 +1074,3 @@ var vtUtils = {
         });
     },
 }
-
-// The AI extension can replace these controls and supply its own inline click handlers.
-document.addEventListener('click', (event) => {
-    const trigger = event.target.closest?.('#menubar_AI, .aiChatComment');
-
-    if (trigger) {
-        event.preventDefault();
-        event.stopPropagation();
-        vtUtils.showAiAvailability(trigger);
-    }
-}, true);
