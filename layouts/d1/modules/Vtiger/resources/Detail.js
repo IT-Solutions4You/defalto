@@ -1796,8 +1796,8 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
             let referenceModuleName = self.getWidgetRelatedModule(summaryWidgetContainer),
                 referenceFieldName = summaryWidgetContainer.find('[name="relatedField"]').val(),
-                recordId = recordElement.val(),
-                module = moduleElement.val(),
+                recordId = recordElement.val() ?? self.getRecordId(),
+                module = moduleElement.val() ?? self.getModuleName(),
                 quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + referenceModuleName + '"]'),
                 fieldName = referenceFieldName ?? self.referenceFieldNames[module],
                 customUrl = currentElement.data('url'),
