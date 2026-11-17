@@ -219,6 +219,116 @@
     }
 
     /**
+     * Evaluate DetailView for a batch using the normal permission rules.
+     *
+     * @return array<int, bool>
+     */
+    public static function getDetailViewPermissions(string $module, array $recordIds): array
+    {
+        if (!$recordIds) {
+            return [];
+        }
+
+        global $current_user;
+        $is_admin = false;
+        $current_user_groups = [];
+        require('user_privileges/user_privileges_' . $current_user->id . '.php');
+        Core_RecordActionPermission_Model::getInstance()->preload($recordIds);
+        $sharingTypes = [];
+        $sharingModules = null;
+
+        if (!$is_admin && 'Users' !== $module && vtlib_isModuleActive($module)) {
+            $sharingTypes = self::fetchRecordSharingTypes($recordIds, (int)$current_user->id, $current_user_groups ?? []);
+            self::preloadRecordOwners($recordIds);
+            $sharingModules = getSharingModuleList();
+        }
+
+        $permissions = [];
+
+        foreach ($recordIds as $id) {
+            $permissions[$id] = 'yes' === self::getPermissionWithSharing(
+                $module,
+                'DetailView',
+                $id,
+                $sharingTypes[$id] ?? [],
+                $sharingModules
+            );
+        }
+
+        return $permissions;
+    }
+
+    protected static function preloadRecordOwners(array $recordIds): void
+    {
+        $db = PearDatabase::getInstance();
+        $hasGroupColumn = columnExists('smgroupid', 'vtiger_crmentity');
+        $groupColumn = $hasGroupColumn ? ', entity.smgroupid' : '';
+        $result = $db->pquery(
+            'SELECT entity.crmid, entity.assigned_user_id, users.id AS user_id' . $groupColumn
+            . ' FROM vtiger_crmentity entity LEFT JOIN vtiger_users users ON users.id = entity.assigned_user_id'
+            . ' WHERE entity.crmid IN (' . generateQuestionMarks($recordIds) . ')',
+            $recordIds
+        );
+
+        while ($row = $db->fetchByAssoc($result, -1, false)) {
+            VTCacheUtils::updateRecordOwner($row['crmid'], $row['assigned_user_id']);
+            VTCacheUtils::updateOwnerType($row['assigned_user_id'], empty($row['user_id']) ? 0 : 1);
+
+            if ($hasGroupColumn) {
+                VTCacheUtils::updateRecordGroup($row['crmid'], $row['smgroupid']);
+            }
+        }
+    }
+
+    protected static function fetchRecordSharingTypes(array $recordIds, int $userId, array $groups): array
+    {
+        $db = PearDatabase::getInstance();
+        $roleResult = $db->pquery(
+            'SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?',
+            [$userId]
+        );
+        $parentRoles = explode('::', (string)$db->query_result($roleResult, 0, 'parentrole'));
+        $recordCondition = 'crmid IN (' . generateQuestionMarks($recordIds) . ')';
+        $query = 'SELECT crmid,type FROM its4you_sharing_users WHERE userid=? AND ' . $recordCondition;
+        $params = [$userId, ...$recordIds];
+
+        if ($groups) {
+            $query .= ' UNION SELECT crmid,type FROM its4you_sharing_groups WHERE groupid IN ('
+                . generateQuestionMarks($groups) . ') AND ' . $recordCondition;
+            array_push($params, ...$groups, ...$recordIds);
+        }
+
+        $query .= ' UNION SELECT crmid,type FROM its4you_sharing_roles'
+            . ' INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=its4you_sharing_roles.roleid'
+            . ' AND userid=? AND ' . $recordCondition
+            . ' UNION SELECT crmid,type FROM its4you_sharing_rolessubroles'
+            . ' INNER JOIN vtiger_role ON vtiger_role.roleid=its4you_sharing_rolessubroles.roleid'
+            . ' WHERE its4you_sharing_rolessubroles.roleid IN (' . generateQuestionMarks($parentRoles) . ')'
+            . ' AND vtiger_role.parentrole LIKE CONCAT(\'%\', its4you_sharing_rolessubroles.roleid, \'%\')'
+            . ' AND ' . $recordCondition;
+        array_push($params, $userId, ...$recordIds, ...$parentRoles, ...$recordIds);
+        $company = Vtiger_Module_Model::getInstance('ITS4YouMultiCompany');
+        $companyIds = $company && false !== $company->isActive()
+            ? array_keys(ITS4YouMultiCompany_Module_Model::getCompaniesList())
+            : [];
+
+        if ($companyIds) {
+            $query .= ' UNION SELECT crmid,type FROM its4you_sharing_multicompany WHERE companyid IN ('
+                . generateQuestionMarks($companyIds) . ') AND ' . $recordCondition;
+            array_push($params, ...$companyIds, ...$recordIds);
+        }
+
+        $result = $db->pquery($query, $params);
+        $types = [];
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $types[(int)$row['crmid']][] = $row['type'];
+        }
+
+        return $types;
+    }
+
+    /**
      * Resolve the current user's module, action, record ownership, and sharing permission.
      *
      * @param string     $module
@@ -226,6 +336,17 @@
      * @param int|string $record_id
      */
     public static function getPermission($module, $actionname, $record_id = ''): string
+    {
+        return self::getPermissionWithSharing($module, $actionname, $record_id);
+    }
+
+    protected static function getPermissionWithSharing(
+        $module,
+        $actionname,
+        $record_id,
+        ?array $recordSharingTypes = null,
+        ?array $sharingModules = null
+    ): string
     {
         $is_admin = null;
         $current_user_groups = null;
@@ -246,7 +367,6 @@
         global $log;
         $log->debug("Entering isPermitted(" . $module . "," . $actionname . "," . $record_id . ") method ...");
 
-        global $adb;
         global $current_user;
         global $seclog;
         require('user_privileges/user_privileges_' . $current_user->id . '.php');
@@ -288,60 +408,17 @@
             }
 
             if ('' != $record_id) {
-                $result = $adb->pquery(
-                    'SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?',
-                    [$current_user->id]
-                );
-                $parentRole = $adb->query_result($result, 0, 'parentrole');
-                $parentRoleArr = explode('::', $parentRole);
+                $types = $recordSharingTypes ?? (self::fetchRecordSharingTypes(
+                    [(int)$record_id],
+                    (int)$current_user->id,
+                    $current_user_groups ?? []
+                )[(int)$record_id] ?? []);
 
-                foreach ($parentRoleArr as $key => $value) {
-                    $parentRoleArr[$key] = '\'' . $value . '\'';
-                }
-
-                $parentRole = implode(',', $parentRoleArr);
-
-                $query = 'SELECT crmid,type FROM its4you_sharing_users WHERE userid=? AND crmid = ?';
-                $params = [$current_user->id, $record_id];
-
-                if (($current_user_groups === null ? 0 : count($current_user_groups)) > 0) {
-                    $query .= ' UNION
-                            SELECT crmid,type FROM its4you_sharing_groups WHERE groupid in (' . implode(',', $current_user_groups) . ') AND crmid = ?';
-                    $params[] = $record_id;
-                }
-
-                $companyId = [];
-
-                if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
-                    $companyId = array_keys(ITS4YouMultiCompany_Module_Model::getCompaniesList());
-                }
-
-                $query .= ' UNION
-                          SELECT crmid,type FROM its4you_sharing_roles
-                              INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=its4you_sharing_roles.roleid AND userid= ? AND crmid = ?
-                          UNION
-                          SELECT crmid,type FROM its4you_sharing_rolessubroles
-                          INNER JOIN vtiger_role ON vtiger_role.roleid=its4you_sharing_rolessubroles.roleid
-                          WHERE its4you_sharing_rolessubroles.roleid IN (' . $parentRole . ')
-                          AND vtiger_role.parentrole LIKE CONCAT(\'%\', its4you_sharing_rolessubroles.roleid, \'%\') AND crmid = ?
-                          ';
-                array_push($params, $current_user->id, $record_id, $record_id);
-
-                if (!empty($companyId)) {
-                    $query .= ' UNION
-                            SELECT crmid,type FROM its4you_sharing_multicompany WHERE companyid in(' . implode(',', $companyId) . ')
-                            AND crmid = ?
-                            ';
-                    $params[] = $record_id;
-                }
-
-                $result = $adb->pquery($query, $params);
-
-                if ($adb->num_rows($result)) {
-                    $i = 0;
-
-                    while ($type = $adb->query_result($result, $i, 'type')) {
-                        $i++;
+                if ($types) {
+                    foreach ($types as $type) {
+                        if (!$type) {
+                            break;
+                        }
 
                         if (4 == $actionid) {
                             $sharingPermission = 'yes';
@@ -503,7 +580,7 @@
                 return returnPermission($permission, $sharingPermission);
             } elseif ($others_permission_id == 3) {
                 if ($actionid == 3 || $actionid == 4) {
-                    $permission = isReadPermittedBySharing($module, $tabid, $actionid, $record_id);
+                    $permission = isReadPermittedBySharing($module, $tabid, $actionid, $record_id, $sharingModules);
                     $log->debug("Exiting isPermitted method ...");
 
                     return returnPermission($permission, $sharingPermission);

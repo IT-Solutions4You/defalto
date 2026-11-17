@@ -3,6 +3,11 @@
 - ITS4YouEmails owns Emails records, composing, delivery, attachments and open/click tracking. EMAILMaker owns template rendering and MailManager owns IMAP mailboxes (see `modules/EMAILMaker/MODULE.md`); MailManager reply, reply all and forward are composed and sent here.
 - `ITS4YouEmails_Record_Model` prepares content and delivers; `ITS4YouEmails_Mailer_Model` extends PHPMailer. Schema/setup belongs to `ITS4YouEmails_Install_Model`; the root module class declares the install/update version.
 
+# List view
+
+- `ITS4YouEmails_List_View::preProcess()` registers the Emails webservice entity and delegates to `Vtiger_List_View`. The shared controller prepares filter state and paging data for the standard list template. The list filter expects an array even when no filters are applied; an absent value can stop JavaScript before it registers selection and pagination.
+- Check page navigation and the header checkbox followed by Select All with both an unfiltered and a filtered list.
+
 # Email composition and delivery
 
 - `retrieveContent()` resolves EMAILMaker recipient content (when EMAILMaker is active), then assigns the processed HTML body and a separate plain-text `AltBody` to the mailer.

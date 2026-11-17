@@ -10,10 +10,7 @@
 {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 {assign var=SPECIAL_VALIDATOR value=$FIELD_MODEL->getValidator()}
 {assign var=PICKLIST_VALUES value=$FIELD_INFO['editablepicklistvalues']}
-{if !isset($FIELD_INFO['picklistColors'])}
-	{$FIELD_INFO['picklistColors'] = ''}
-{/if}
-{assign var=PICKLIST_COLORS value=$FIELD_INFO['picklistColors']}
+{assign var=PICKLIST_COLORS value=$FIELD_INFO['picklistColors']|default:[]}
 <select data-fieldname="{$FIELD_MODEL->getFieldName()}"
 		data-fieldtype="picklist"
 		class="inputElement select2 form-select {if $OCCUPY_COMPLETE_WIDTH}row{/if}"
@@ -35,8 +32,7 @@
 	{assign var=CURRENT_VALUE_FOUND value=false}
 	{assign var=DENIED_VALUES value=$FIELD_MODEL->get('record_action_denied_values')}
 	{foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-		{assign var=CLASS_NAME value=$FIELD_MODEL->getPicklistOptionClass($PICKLIST_NAME)}
-		<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if isset($PICKLIST_COLORS[$PICKLIST_NAME]) && $PICKLIST_COLORS[$PICKLIST_NAME]}class="{$CLASS_NAME}"{/if} {if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} selected {/if}{if !empty($DENIED_VALUES[$PICKLIST_NAME]) && $CURRENT_VALUE neq php7_trim($PICKLIST_NAME)} disabled title="{$DENIED_VALUES[$PICKLIST_NAME]|escape}"{/if}>{$PICKLIST_VALUE}</option>
+		<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if isset($PICKLIST_COLORS[$PICKLIST_NAME]) && $PICKLIST_COLORS[$PICKLIST_NAME]}data-picklist-color="{$PICKLIST_COLORS[$PICKLIST_NAME]|escape}"{/if} {if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)} selected {/if}{if !empty($DENIED_VALUES[$PICKLIST_NAME]) && $CURRENT_VALUE neq php7_trim($PICKLIST_NAME)} disabled title="{$DENIED_VALUES[$PICKLIST_NAME]|escape}"{/if}>{$PICKLIST_VALUE}</option>
 		{if $CURRENT_VALUE eq php7_trim($PICKLIST_NAME)}
 			{assign var=CURRENT_VALUE_FOUND value=true}
 		{/if}
@@ -48,20 +44,4 @@
 		{/if}
 	{/if}
 </select>
-{if $PICKLIST_COLORS}
-	<style type="text/css">
-		{foreach item=COLOR_VALUE key=COLOR_NAME from=$PICKLIST_COLORS}
-			{if $COLOR_VALUE eq '#ffffff'}{continue}{/if}
-			{assign var=COLOR_RGB value=Vtiger_Functions::hexToRGB($COLOR_VALUE)}
-			{assign var=CLASS_NAME value=$FIELD_MODEL->getPicklistOptionClass($COLOR_NAME)}
-			 .{$CLASS_NAME} {
-				background-color: rgba({$COLOR_RGB},0.1) !important;
-				color: rgba({$COLOR_RGB},1) !important;
-			} ul[id*="select2-{$FIELD_MODEL->getName()}"] li[id*="{$COLOR_NAME}"] {
-				background-color: rgba({$COLOR_RGB},0.1) !important;
-			    color: rgba({$COLOR_RGB},1) !important;
-			}
-		{/foreach}
-	</style>
-{/if}
 {/strip}

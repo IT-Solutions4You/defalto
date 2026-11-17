@@ -103,12 +103,15 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType
         }
 
         $entityNames = getEntityName($referenceModuleName, [$fieldValue]);
-        $recordId = (int)$fieldValue;
-        $recordName = $entityNames[$fieldValue] ?: '';
+        return self::getRecordLink($referenceModule, (int)$fieldValue, $entityNames[$fieldValue] ?? '');
+    }
+
+    public static function getRecordLink(Vtiger_Module_Model $referenceModule, int $recordId, string $recordName): string
+    {
         $moduleIcon = $referenceModule->getModuleIcon();
         $detailViewName = $referenceModule->getDetailViewName();
-        $moduleName = $referenceModuleName;
-        $moduleLabel = vtranslate($referenceModuleName, $referenceModuleName);
+        $moduleName = $referenceModule->getName();
+        $moduleLabel = vtranslate($moduleName, $moduleName);
 
         return sprintf(
             '<a class="js-reference-display-value text-primary" href="index.php?module=%s&view=%s&record=%s" title="%s:%s" data-original-title="%s">%s<span class="ms-2">%s</span></a>',
@@ -121,6 +124,26 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType
             $moduleIcon,
             $recordName,
         );
+    }
+
+    public function getReportDisplayValueFromLabel(
+        Vtiger_Record_Model $record,
+        string $module,
+        int $id,
+        string $label
+    ): string {
+        $referenceModule = Vtiger_Module_Model::getInstance($module);
+        $displayValue = 'Users' === $module
+            ? $label
+            : ($referenceModule && $referenceModule->isEntityModule()
+                ? self::getRecordLink($referenceModule, $id, $label)
+                : '');
+
+        if ($this->isReportValueUrl()) {
+            return sprintf('<a href="%s">%s</a>', $record->getDetailViewUrl(), strip_tags($displayValue));
+        }
+
+        return $displayValue;
     }
 
     /**
