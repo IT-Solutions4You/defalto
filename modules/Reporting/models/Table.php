@@ -36,6 +36,10 @@ class Reporting_Table_Model extends Vtiger_Base_Model
     protected bool $groupByCurrency = false;
     protected bool $recordCount = false;
     protected array $recordCurrencies = [];
+    protected array $referenceMetadata = [];
+    protected array $referencePermissions = [];
+    protected array $referenceLabels = [];
+    protected ?int $baseCurrencyId = null;
 
     /**
      * @return array
@@ -68,6 +72,23 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         return $instance;
     }
 
+    public static function getStorageColumns(CRMEntity $focus, bool $includeLabel): array
+    {
+        $columns = [];
+
+        if ($includeLabel && isset($focus->tab_name_index['vtiger_crmentity'])) {
+            $columns['label'] = ['vtiger_crmentity', 'label'];
+        }
+
+        foreach (['currency_id', 'conversion_rate'] as $column) {
+            if (columnExists($column, $focus->table_name)) {
+                $columns['__stored_' . $column] = [$focus->table_name, $column];
+            }
+        }
+
+        return $columns;
+    }
+
     /**
      * @param int    $recordId
      * @param string $moduleName
@@ -93,7 +114,265 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
     protected function isRecordViewable(int $recordId, string $moduleName): bool
     {
-        return Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
+        return $this->referencePermissions[$moduleName][$recordId]
+            ?? Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
+    }
+
+    /**
+     * Populate related models from the selected JOIN columns after checking their actual type and permissions.
+     */
+    public function preloadReferences(array $records, array $rows, array $queryFields, array $reportFields): void
+    {
+        $relatedFields = [];
+        $referenceFields = [];
+
+        foreach ($queryFields as $name) {
+            if (preg_match('/^\((\w+) ; \((\w+)\) (\w+)\)$/D', $name, $matches)) {
+                [, $source, $module, $field] = $matches;
+                $relatedFields[$source][$module][$field] = $name;
+                continue;
+            }
+
+            if (!in_array($name, $reportFields, true)) {
+                continue;
+            }
+
+            $field = $this->getField($name);
+
+            if ($field && 'reference' === $field->getFieldDataType()) {
+                $referenceFields[$name] = $field->getReferenceList();
+            }
+        }
+
+        $ids = [];
+        $related = [];
+        $userIds = [];
+        $labelIds = [];
+        $requiredFields = [];
+        $currencyParents = [];
+
+        foreach ($records as $id => $record) {
+            if ('InventoryItem' === $this->moduleName) {
+                $parentId = (int)$record->get('parentid');
+
+                if ($parentId) {
+                    $ids[$parentId] = $currencyParents[$parentId] = $parentId;
+                }
+            }
+
+            foreach ($referenceFields as $field => $modules) {
+                foreach (explode(';', (string)$record->get($field)) as $referenceId) {
+                    $referenceId = trim($referenceId);
+
+                    if (ctype_digit($referenceId) && (int)$referenceId > 0) {
+                        $ids[(int)$referenceId] = (int)$referenceId;
+                        $labelIds[$field][(int)$referenceId] = (int)$referenceId;
+
+                        if (in_array('Users', $modules, true)) {
+                            $userIds[(int)$referenceId] = (int)$referenceId;
+                        }
+                    }
+                }
+            }
+
+            foreach ($relatedFields as $source => $modules) {
+                $targetId = (int)$record->get($source);
+
+                if (!$targetId) {
+                    continue;
+                }
+
+                $ids[$targetId] = $targetId;
+
+                foreach ($modules as $module => $fields) {
+                    $related[$module][$targetId] ??= [];
+                    $requiredFields[$module] = ($requiredFields[$module] ?? []) + $fields;
+
+                    if ('Users' === $module) {
+                        $userIds[$targetId] = $targetId;
+                    }
+
+                    foreach ($fields as $field => $projection) {
+                        if (array_key_exists($projection, $rows[$id])) {
+                            $related[$module][$targetId][$field] = $rows[$id][$projection];
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->preloadReferenceMetadata($ids, $userIds);
+        $this->preloadReferenceLabels($labelIds, $referenceFields);
+
+        foreach ($currencyParents as $id) {
+            $module = $this->getReferenceModuleName($id);
+
+            if ($module) {
+                $related[$module][$id] ??= [];
+            }
+        }
+
+        foreach ($related as $module => $recordData) {
+            $fields = $requiredFields[$module] ?? [];
+            $needsCurrency = $this->hasRelatedCurrencyField($fields);
+            $pending = [];
+            $authorized = [];
+
+            foreach ($recordData as $id => $data) {
+                if (!$this->isRecordExists($id, $module) || !$this->isRecordViewable($id, $module)) {
+                    continue;
+                }
+
+                $authorized[$id] = $data + ['id' => $id];
+
+                if ($needsCurrency || isset($currencyParents[$id]) || array_diff_key($fields, $authorized[$id])) {
+                    $pending[$id] = $id;
+                }
+            }
+
+            $loaded = $this->retrieveRelatedRows($module, $fields, $pending);
+
+            foreach ($authorized as $id => $data) {
+                if (isset($pending[$id]) && !isset($loaded[$id])) {
+                    continue;
+                }
+
+                $data = ($loaded[$id] ?? []) + $data;
+
+                if (!array_diff_key($fields, $data)) {
+                    $this->records[$id . ':' . $module] = Vtiger_Record_Model::getCleanInstance($module)->setData($data);
+                }
+            }
+        }
+    }
+
+    protected function hasRelatedCurrencyField(array $fields): bool
+    {
+        foreach ($fields as $queryField) {
+            preg_match('/^\((\w+) ; \((\w+)\) (\w+)\)$/D', $queryField, $matches);
+            [, $source, $module, $name] = $matches;
+
+            if ($this->isCurrencyField(implode(':', [$source, $module, $name]))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function retrieveRelatedRows(string $module, array $fields, array $ids): array
+    {
+        if (!$ids) {
+            return [];
+        }
+
+        $moduleModel = $this->getModule($module);
+        $focus = CRMEntity::getInstance($module);
+        $extraColumns = self::getStorageColumns($focus, isset($fields['label']));
+        $queryFields = array_merge(['id'], array_keys($fields));
+        $rows = [];
+
+        if (isset($extraColumns['label'])) {
+            $queryFields = array_merge($queryFields, $moduleModel->getNameFields());
+        }
+
+        foreach (array_chunk($ids, 500) as $batch) {
+            $query = Core_QueryGenerator_Model::getInstance($module);
+            $query->setFields(array_unique($queryFields));
+            $query->addRecordIdsCondition($batch);
+
+            foreach ($query->getProjectedRows($extraColumns) as $id => $data) {
+                if (isset($extraColumns['label']) && empty($data['label'])) {
+                    $data['label'] = Vtiger_Record_Model::generateLabel($module, $data);
+                }
+
+                $data['id'] = $id;
+                $data['__report_projection'] = true;
+                $rows[$id] = $data;
+            }
+        }
+
+        return $rows;
+    }
+
+    protected function preloadReferenceMetadata(array $ids, array $userIds): void
+    {
+        $db = PearDatabase::getInstance();
+        $byModule = ['Users' => $userIds];
+
+        foreach (array_chunk($ids, 500) as $batch) {
+            foreach ($batch as $id) {
+                $this->referenceMetadata[$id] = [];
+            }
+
+            $result = $db->pquery(
+                'SELECT crmid, setype, deleted FROM vtiger_crmentity WHERE crmid IN (' . generateQuestionMarks($batch) . ')',
+                $batch
+            );
+
+            while ($row = $db->fetchByAssoc($result, -1, false)) {
+                $id = (int)$row['crmid'];
+                $this->referenceMetadata[$id] = $row;
+
+                if (is_string($row['setype']) && '' !== $row['setype']) {
+                    $byModule[$row['setype']][$id] = $id;
+                }
+            }
+        }
+
+        foreach ($byModule as $module => $recordIds) {
+            foreach (array_chunk($recordIds, 500) as $batch) {
+                $permissions = Users_Privileges_Model::getDetailViewPermissions($module, $batch);
+                $this->referencePermissions[$module] = ($this->referencePermissions[$module] ?? []) + $permissions;
+            }
+        }
+    }
+
+    protected function preloadReferenceLabels(array $labelIds, array $referenceFields): void
+    {
+        $idsByModule = [];
+
+        foreach ($labelIds as $field => $ids) {
+            $allowedModules = $referenceFields[$field];
+
+            foreach ($ids as $id) {
+                $target = $this->getReferenceModuleName($id);
+
+                if (!in_array($target, $allowedModules, true)) {
+                    $target = in_array('Users', $allowedModules, true) ? 'Users' : null;
+                }
+
+                if ($target && ($this->referencePermissions[$target][$id] ?? false)) {
+                    $idsByModule[$target][$id] = $id;
+                }
+            }
+        }
+
+        $db = PearDatabase::getInstance();
+
+        foreach ($idsByModule as $module => $ids) {
+            $moduleModel = $this->getModule($module);
+
+            foreach (array_chunk($ids, 500) as $batch) {
+                $labels = [];
+
+                if ('Users' === $module) {
+                    $result = $db->pquery(
+                        'SELECT id, userlabel FROM vtiger_users WHERE id IN (' . generateQuestionMarks($batch) . ')',
+                        $batch
+                    );
+
+                    while ($row = $db->fetchByAssoc($result)) {
+                        $labels[$row['id']] = $row['userlabel'];
+                    }
+                } elseif ($moduleModel && $moduleModel->isEntityModule()) {
+                    $labels = getEntityName($module, $batch);
+                }
+
+                $this->referenceLabels[$module] = ($this->referenceLabels[$module] ?? [])
+                    + $labels + array_fill_keys($batch, '');
+            }
+        }
     }
 
     public function isRecordExists(int $recordId, string $moduleName): bool
@@ -104,6 +383,12 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
         if (empty(getTabid($moduleName))) {
             return false;
+        }
+
+        if (!in_array($moduleName, self::$extensionModules, true) && isset($this->referenceMetadata[$recordId])) {
+            $metadata = $this->referenceMetadata[$recordId];
+
+            return $moduleName === ($metadata['setype'] ?? null) && empty($metadata['deleted']);
         }
 
         if (!in_array($moduleName, self::$extensionModules) && isRecordExists($recordId)) {
@@ -1086,9 +1371,17 @@ class Reporting_Table_Model extends Vtiger_Base_Model
 
         $currencyId = $this->getNumericValue($record->get('currency_id'));
         $conversionRate = $this->getNumericValue($record->get('conversion_rate'));
-        $storedCurrency = (empty($currencyId) || 0 >= $currencyId || null === $conversionRate || 0 >= $conversionRate)
-            ? $this->fetchStoredCurrency($record)
-            : [];
+        $isProjection = $record->has('__report_projection');
+        $storedCurrency = [];
+
+        if ($isProjection) {
+            $storedCurrency = [
+                'currency_id' => $record->get('__stored_currency_id'),
+                'conversion_rate' => $record->get('__stored_conversion_rate'),
+            ];
+        } elseif (empty($currencyId) || 0 >= $currencyId || null === $conversionRate || 0 >= $conversionRate) {
+            $storedCurrency = $this->fetchStoredCurrency($record);
+        }
 
         if (empty($currencyId) || 0 >= $currencyId) {
             $currencyId = $this->getNumericValue($storedCurrency['currency_id'] ?? null);
@@ -1097,7 +1390,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
             $conversionRate = $this->getNumericValue($storedCurrency['conversion_rate'] ?? null);
         }
         if ((empty($currencyId) || 0 >= $currencyId) && method_exists($record, 'getCurrencyId')) {
-            $currencyId = $record->getCurrencyId();
+            $currencyId = $isProjection ? $this->getProjectedCurrencyId($record) : $record->getCurrencyId();
         }
 
         $currencyId = 0 < (int)$currencyId ? (int)$currencyId : 1;
@@ -1116,6 +1409,18 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         ];
     }
 
+    protected function getProjectedCurrencyId(object $record): int
+    {
+        if (!$record->has('__stored_currency_id')) {
+            return 1;
+        }
+
+        $this->baseCurrencyId ??= (int)(CurrencyField::getDBCurrencyId()
+            ?: Users_Record_Model::getCurrentUserModel()->get('currency_id'));
+
+        return $this->baseCurrencyId;
+    }
+
     protected function getCurrencyOwnerRecord(object $record): object
     {
         if (!method_exists($record, 'getModuleName') || 'InventoryItem' !== $record->getModuleName()) {
@@ -1128,7 +1433,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
             return $record;
         }
 
-        $parentModule = getSalesEntityType($parentId);
+        $parentModule = $this->getReferenceModuleName($parentId);
 
         return empty($parentModule) ? $record : $this->getRecord($parentId, $parentModule);
     }
@@ -1577,13 +1882,54 @@ class Reporting_Table_Model extends Vtiger_Base_Model
             return null === $currencyValue ? '' : $this->getFormattedReportingCurrencyValue($currencyValue);
         }
 
-        $fieldValue = $record->getReportDisplayValue($fieldName);
+        $fieldValue = $this->getPreparedReferenceDisplayValue($fieldName, $record)
+            ?? $record->getReportDisplayValue($fieldName);
 
         if (Reporting_Fields_Model::isCustomField($fieldName)) {
             return Reporting_Fields_Model::getCustomFieldValue($record, $fieldName, $fieldValue);
         }
 
         return $fieldValue;
+    }
+
+    protected function getPreparedReferenceDisplayValue(string $fieldName, Vtiger_Record_Model $record): ?string
+    {
+        $value = (string)$record->get($fieldName);
+
+        if (!ctype_digit($value)) {
+            return null;
+        }
+
+        $id = (int)$value;
+
+        if (!isset($this->referenceMetadata[$id])) {
+            return null;
+        }
+
+        $field = $record->getModule()->getField($fieldName);
+
+        if (!$field || 'reference' !== $field->getFieldDataType()) {
+            return null;
+        }
+
+        $uiType = $field->getUITypeModel();
+
+        if (get_class($uiType) !== Vtiger_Reference_UIType::class) {
+            return null;
+        }
+
+        $modules = $field->getReferenceList();
+        $target = $this->getReferenceModuleName($id);
+
+        if (!in_array($target, $modules, true)) {
+            $target = in_array('Users', $modules, true) ? 'Users' : null;
+        }
+
+        if (!$target || !isset($this->referenceLabels[$target][$id])) {
+            return null;
+        }
+
+        return $uiType->getReportDisplayValueFromLabel($record, $target, $id, $this->referenceLabels[$target][$id]);
     }
 
     protected function isDirectReferenceValueViewable(string $fieldName, object $record): bool
@@ -1618,7 +1964,7 @@ class Reporting_Table_Model extends Vtiger_Base_Model
                 return false;
             }
 
-            $referenceModule = $isUserReference ? 'Users' : getSalesEntityType((int)$recordId);
+            $referenceModule = $isUserReference ? 'Users' : $this->getReferenceModuleName((int)$recordId);
 
             if (empty($referenceModule)) {
                 if (!empty(array_diff($referenceModules, $technicalModules))) {
@@ -1638,6 +1984,15 @@ class Reporting_Table_Model extends Vtiger_Base_Model
         }
 
         return true;
+    }
+
+    protected function getReferenceModuleName(int $recordId): ?string
+    {
+        if (isset($this->referenceMetadata[$recordId])) {
+            return $this->referenceMetadata[$recordId]['setype'] ?? null;
+        }
+
+        return getSalesEntityType($recordId);
     }
 
     /**

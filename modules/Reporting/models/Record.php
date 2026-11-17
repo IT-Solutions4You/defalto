@@ -394,7 +394,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         }
 
         $table = Reporting_Table_Model::getInstance($this->getPrimaryModule());
-        $table->setTableRecords($this->getAccessibleRecords($this->query->getRecords()));
+        $table->setTableRecords($this->retrieveReportRecords($table));
         $table->setTableColumns($this->getFields());
         $table->setTableLabels($this->getLabels());
         $table->setTableCalculations($this->getCalculations());
@@ -408,18 +408,48 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         $this->tableModel = $table;
     }
 
-    protected function getAccessibleRecords(array $records): array
+    protected function retrieveReportRecords(Reporting_Table_Model $table): array
     {
         $moduleName = $this->getPrimaryModule();
+        $focus = CRMEntity::getInstance($moduleName);
+        $queryFields = $this->getQueryFields();
+        $extraColumns = Reporting_Table_Model::getStorageColumns($focus, in_array('label', $queryFields, true));
+        $rows = $this->query->getProjectedRows($extraColumns);
+        $records = [];
+        $directFields = array_filter($queryFields, static fn(string $field): bool => !str_starts_with($field, '('));
+        $hasProjectedFields = !$rows || !array_diff($directFields, array_keys(reset($rows)));
 
-        return array_filter(
-            $records,
-            static fn(Vtiger_Record_Model $record): bool => Users_Privileges_Model::isPermitted(
-                $moduleName,
-                'DetailView',
-                $record->getId(),
-            )
-        );
+        foreach (array_chunk(array_keys($rows), 500) as $ids) {
+            $permissions = Users_Privileges_Model::getDetailViewPermissions($moduleName, $ids);
+
+            foreach ($ids as $id) {
+                if (!$permissions[$id]) {
+                    unset($rows[$id]);
+                    continue;
+                }
+
+                if (!$hasProjectedFields) {
+                    // Some extensions expose fields only through their record loader.
+                    $records[$id] = Vtiger_Record_Model::getInstanceById($id, $moduleName);
+                    continue;
+                }
+
+                $record = Vtiger_Record_Model::getCleanInstance($moduleName);
+                $data = array_filter($rows[$id], static fn(string $field): bool => !str_starts_with($field, '('), ARRAY_FILTER_USE_KEY);
+
+                if (isset($extraColumns['label']) && empty($data['label'])) {
+                    $data['label'] = Vtiger_Record_Model::generateLabel($moduleName, $data);
+                }
+
+                $data['id'] = $id;
+                $data['__report_projection'] = true;
+                $records[$id] = $record->setData($data);
+            }
+        }
+
+        $table->preloadReferences($records, $rows, $queryFields, $this->getReportFields());
+
+        return $records;
     }
 
     public function retrieveQueryGenerator(): void
@@ -429,7 +459,18 @@ class Reporting_Record_Model extends Vtiger_Record_Model
         }
 
         $query = Core_QueryGenerator_Model::getInstance($this->getPrimaryModule());
-        $query->setFields($this->getQueryFields());
+        $fields = $this->getQueryFields();
+
+        if (in_array('label', $fields, true)) {
+            $module = Vtiger_Module_Model::getInstance($this->getPrimaryModule());
+            $fields = array_merge($fields, $module->getNameFields());
+        }
+
+        if ('InventoryItem' === $this->getPrimaryModule()) {
+            $fields[] = 'parentid';
+        }
+
+        $query->setFields(array_values(array_unique($fields)));
 
         if (!Users_Privileges_Model::isPermitted($this->getPrimaryModule(), 'DetailView')) {
             $query->addRecordIdsCondition([]);
@@ -444,6 +485,24 @@ class Reporting_Record_Model extends Vtiger_Record_Model
 
     public function getQueryFields(): array
     {
+        $queryFields = [];
+
+        foreach ($this->getReportFields() as $fieldName) {
+            [$fieldName, $referenceModule, $referenceField] = array_pad(explode(':', (string)$fieldName), 3, null);
+
+            if ($referenceModule && $referenceField) {
+                $queryFields[] = $fieldName;
+                $fieldName = sprintf('(%s ; (%s) %s)', $fieldName, $referenceModule, $referenceField);
+            }
+
+            $queryFields[] = $fieldName;
+        }
+
+        return array_values(array_unique(array_filter($queryFields)));
+    }
+
+    protected function getReportFields(): array
+    {
         $fields = array_merge(['id'], $this->getFields(), $this->getCalculationFields());
 
         if ($this->isSummaryReport()) {
@@ -454,20 +513,7 @@ class Reporting_Record_Model extends Vtiger_Record_Model
             );
         }
 
-        $queryFields = [];
-
-        foreach (array_unique($fields) as $fieldName) {
-            $fieldName = (string)$fieldName;
-            [$fieldName, $referenceModule, $referenceField] = array_pad(explode(':', $fieldName), 3, null);
-
-            if ($referenceModule && $referenceField) {
-                $fieldName = sprintf('(%s ; (%s) %s)', $fieldName, $referenceModule, $referenceField);
-            }
-
-            $queryFields[] = $fieldName;
-        }
-
-        return array_values(array_unique(array_filter($queryFields)));
+        return array_unique($fields);
     }
 
     public function getMaxEntries(): int
