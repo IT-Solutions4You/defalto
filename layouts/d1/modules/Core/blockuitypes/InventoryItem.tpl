@@ -26,10 +26,11 @@
                 <div class="row g-2 justify-content-lg-end align-items-start">
                 <div class="col-lg-auto textAlignRight" id="block_line_items_add">
                 </div>
-                <div class="col-sm-6 col-lg-auto textAlignRight" id="block_line_items_overall_discount">
+                {* The overall discount is shown only to profiles that can view it and is changed only by profiles that can edit it *}
+                <div class="col-sm-6 col-lg-auto textAlignRight{if !$OVERALL_DISCOUNT_VIEWABLE} d-none{/if}" id="block_line_items_overall_discount">
                     <div class="btn-group position-relative" role="group">
-                        <button type="button" class="btn btn-primary editOverallDiscount">{vtranslate('Overall Discount', 'InventoryItem')}</button>
-                        <button type="button" class="btn btn-bd-light btn-outline-secondary rounded-end editOverallDiscount">
+                        <button type="button" class="btn btn-primary{if $OVERALL_DISCOUNT_EDITABLE} editOverallDiscount{/if}"{if !$OVERALL_DISCOUNT_EDITABLE} disabled="disabled"{/if}>{vtranslate('Overall Discount', 'InventoryItem')}</button>
+                        <button type="button" class="btn btn-bd-light btn-outline-secondary rounded-end{if $OVERALL_DISCOUNT_EDITABLE} editOverallDiscount{/if}"{if !$OVERALL_DISCOUNT_EDITABLE} disabled="disabled"{/if}>
                             <span class="overallDiscountPercentage">{$OVERALL_DISCOUNT}</span>%&nbsp;&nbsp;{* <i class="fa fa-pencil fa-fw text-secondary"></i> *}
                         </button>
                         <div class="popover lineItemPopover border-1 bs-popover-auto fade" role="tooltip" id="overallDiscountSettingDiv" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; opacity: 1; visibility: visible; transform: translate(-51px, -126px); display: none;" data-popper-placement="left">
@@ -229,7 +230,7 @@
                         <td class="textAlignRight font-bold">{vtranslate('Total', 'InventoryItem')}</td>
                         <td class="textAlignRight font-bold subTotalDisplay">{$SUBTOTAL_DISPLAY}</td>
                     </tr>
-                    <tr {if !$INVENTORY_ITEMS}style="display: none;"{/if}>
+                    <tr {if !$INVENTORY_ITEMS || !$DISCOUNT_VIEWABLE || !$OVERALL_DISCOUNT_VIEWABLE}style="display: none;"{/if}>
                         <td class="textAlignRight font-bold">{vtranslate('Discounts Amount', 'InventoryItem')}</td>
                         <td class="textAlignRight font-bold summaryDiscountDisplay">0,00</td>
                     </tr>

@@ -13,6 +13,7 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
     protected bool $groupByClauseRequired = false;
     protected array $groupByColumns = [];
     protected array $structuredWhereConditions = [];
+    protected ?array $projectedColumns = null;
 
     public const NOT_EMPTY = 'ny';
     public const EMPTY = 'y';
@@ -94,6 +95,70 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
         }
 
         return $records;
+    }
+
+    /**
+     * Return selected values keyed by record ID and query field name, without loading record models.
+     * Additional columns must belong to the base table or the entity table.
+     */
+    public function getProjectedRows(array $additionalColumns = []): array
+    {
+        $query = clone $this;
+        $query->reset();
+        $query->projectedColumns = [];
+        $moduleFields = $query->getModuleFields() ?? [];
+        $query->fields = array_intersect($query->fields, ['id', ...array_keys($moduleFields)]);
+        $aliases = [];
+
+        foreach ($query->fields as $field) {
+            $definition = $moduleFields[$field] ?? false;
+            $query->projectedColumns[$field] = $query->getSQLColumn($field, $definition);
+        }
+
+        foreach ($additionalColumns as $name => [$table, $column]) {
+            $query->projectedColumns[$name] = $query->getQualifiedColumn($table, $column);
+        }
+
+        foreach (array_keys($query->projectedColumns) as $name) {
+            $aliases['df_projection_' . count($aliases)] = $name;
+        }
+
+        $sql = $query->getQuery();
+
+        if ($query->getLimit() > 0) {
+            $sql .= sprintf(' LIMIT %d', $query->getLimit());
+        }
+
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery($sql, $query->getQueryParameters());
+        $rows = [];
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $values = [];
+
+            foreach ($aliases as $alias => $name) {
+                $values[$name] = decode_html($row[$alias] ?? '');
+            }
+
+            $rows[(int)$values['id']] = $values;
+        }
+
+        return $rows;
+    }
+
+    public function getSelectClauseColumnSQL()
+    {
+        if (null === $this->projectedColumns) {
+            return parent::getSelectClauseColumnSQL();
+        }
+
+        $columns = [];
+
+        foreach ($this->projectedColumns as $column) {
+            $columns[] = $column . ' AS df_projection_' . count($columns);
+        }
+
+        return implode(', ', $columns);
     }
 
     public function addColumnCondition(

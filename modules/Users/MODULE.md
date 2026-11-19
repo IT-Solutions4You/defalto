@@ -3,6 +3,7 @@
 - `Users` owns user records in `vtiger_users`; `Users_Install_Model` owns field and schema setup, and `Users::$moduleVersion` is the install/update version.
 - `Users_Privileges_Model::recalculateSharingRules()` rebuilds the privilege and sharing files of every active user. The global `RecalculateSharingRules()` in `include/utils/UserInfoUtil.php` is only a compatibility facade.
 - `Users_Privileges_Model::getPermission()` owns current-user module, action, record ownership and sharing evaluation; `isPermitted()` is its boolean form and the global `isPermitted()` is a compatibility facade. An action permission value of `0` must continue into the record-level ownership and sharing checks; only a missing action entry may take the module-level early-allow path.
+- `getDetailViewPermissions()` evaluates the same rules as individual DetailView checks. It loads explicit grants, action rules, and ownership for the supplied batch. Keep decisions scoped to the call and preserve custom related-sharing rules.
 
 ## Persistence encoding
 

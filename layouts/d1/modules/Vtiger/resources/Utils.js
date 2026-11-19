@@ -161,6 +161,24 @@ var vtUtils = {
             params.id = 's2id_' + selectElement.attr('id');
         }
 
+        const isPicklist = selectElement.is('[data-fieldtype="picklist"], [data-fieldtype="multipicklist"], .PicklistField, .MultiPicklistField')
+            || selectElement.find('option[data-picklist-color]').length > 0;
+
+        if (isPicklist) {
+            const templateResult = params.templateResult;
+            params = jQuery.extend({}, params, {
+                templateResult: function (result, container) {
+                    const color = result.element?.getAttribute('data-picklist-color');
+
+                    if (color && /^#[0-9a-f]{6}$/i.test(color)) {
+                        container.style.borderLeft = '3px solid ' + color;
+                    }
+
+                    return templateResult ? templateResult(result, container) : result.text;
+                }
+            });
+        }
+
         selectElement.select2(params).on('select2:opening', function (e) {
             if (selectElement.data('unselect')) {
                 e.preventDefault();
@@ -180,6 +198,11 @@ var vtUtils = {
 
             instance.dropdown.css('z-index', 1000002);
         });
+
+        if (isPicklist) {
+            const instance = selectElement.data('select2');
+            instance.$container.add(instance.dropdown.$dropdown).addClass('defalto-picklist');
+        }
 
         vtUtils.registerSelect2SelectedResults(selectElement);
 

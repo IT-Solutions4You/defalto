@@ -176,7 +176,15 @@
             <div class="col-lg-2 textAlignRight"></div>
         </div>
 
-        {if $HARD_FORMATTED_RECORD_STRUCTURE.discount neq ''}
+        {if !$DISCOUNT_VIEWABLE || $HARD_FORMATTED_RECORD_STRUCTURE.discount eq ''}
+            {* Discount is hidden for the profile: the values stay in the form, so the item is calculated with them *}
+            <input type="hidden" id="discount_type" name="discount_type" class="discount_type" value="{if isset($DATA.discount_type)}{$DATA.discount_type}{/if}"/>
+            {* The popup calculation takes the amount of a direct discount from the discount input *}
+            <input type="hidden" id="discount" name="discount" class="discount" value="{if isset($DATA.discount_type) && ($DATA.discount_type eq 'Direct' || $DATA.discount_type eq 'Amount') && isset($DATA.discount_amount)}{$DATA.discount_amount}{elseif isset($DATA.discount)}{$DATA.discount}{/if}"/>
+            <input type="hidden" id="discount_amount" name="discount_amount" class="discount_amount" value="{if isset($DATA.discount_amount)}{$DATA.discount_amount}{/if}"/>
+            <input type="hidden" id="price_after_discount" name="price_after_discount" class="price_after_discount" value="{if isset($DATA.price_after_discount)}{$DATA.price_after_discount}{/if}"/>
+        {/if}
+        {if $DISCOUNT_VIEWABLE && $HARD_FORMATTED_RECORD_STRUCTURE.discount neq ''}
             <div class="full_row">
                 <div class="d-flex flex-row py-2">
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.discount.1}
@@ -195,7 +203,7 @@
                         </div>
                     </div>
                     <div class="col-lg-3">
-                        <select name="discount_type" id="discount_type" class="inputElement select2 form-select discount_type">
+                        <select name="discount_type" id="discount_type" class="inputElement select2 form-select discount_type" {if !$DISCOUNT_EDITABLE}disabled="disabled"{/if}>
                             <option value="">{vtranslate('--None--', 'InventoryItem')}</option>
                             <option value="Percentage"
                                     {if isset($DATA.discount_type) && ($DATA.discount_type eq 'Percentage' || $DATA.discount_type eq 'Percent')}selected{/if}>{vtranslate('Percentage', 'InventoryItem')}</option>
@@ -210,7 +218,7 @@
                     <div class="col-lg-3 pe-2 pe-md-0">
                         <div class="input-group">
                             <input type="text" id="{$FIELD_NAME}" name="{$FIELD_NAME}" value="{$DISCOUNT_VALUE}"
-                                   class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot"/>
+                                   class="{$FIELD_NAME} inputElement form-control textAlignRight allowOnlyNumbers replaceCommaWithDot" {if !$DISCOUNT_EDITABLE}readonly="readonly"{/if}/>
                             <span class="input-group-addon input-group-text discountSymbol">{if isset($DATA.discount_type) && ($DATA.discount_type eq 'Percentage' || $DATA.discount_type eq 'Percent')}%{else}{$CURRENCY_SYMBOL}{/if}</span>
                         </div>
                         <input type="hidden" name="currency_symbol" id="currency_symbol" value="{$CURRENCY_SYMBOL}"/>
@@ -227,7 +235,7 @@
             </div>
         {/if}
 
-        {if $HARD_FORMATTED_RECORD_STRUCTURE.price_after_discount neq ''}
+        {if $DISCOUNT_VIEWABLE && $HARD_FORMATTED_RECORD_STRUCTURE.price_after_discount neq ''}
             {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.price_after_discount.1}
             <div class="d-flex flex-row py-2">
                 <div class="col-lg-10 textAlignRight pe-2 pe-md-0">
@@ -243,7 +251,12 @@
             </div>
         {/if}
 
-        {if $HARD_FORMATTED_RECORD_STRUCTURE.overall_discount neq ''}
+        {if !$OVERALL_DISCOUNT_VIEWABLE || $HARD_FORMATTED_RECORD_STRUCTURE.overall_discount eq ''}
+            <input type="hidden" id="overall_discount" name="overall_discount" class="overall_discount" value="{if isset($DATA.overall_discount)}{$DATA.overall_discount}{/if}" readonly="readonly"/>
+            <input type="hidden" id="overall_discount_amount" name="overall_discount_amount" class="overall_discount_amount" value="{if isset($DATA.overall_discount_amount)}{$DATA.overall_discount_amount}{/if}"/>
+            <input type="hidden" id="price_after_overall_discount" name="price_after_overall_discount" class="price_after_overall_discount" value="{if isset($DATA.price_after_overall_discount)}{$DATA.price_after_overall_discount}{/if}"/>
+        {/if}
+        {if $OVERALL_DISCOUNT_VIEWABLE && $HARD_FORMATTED_RECORD_STRUCTURE.overall_discount neq ''}
             <div class="full_row">
                 <div class="d-flex flex-row py-2">
                     {assign var=FIELD value=$HARD_FORMATTED_RECORD_STRUCTURE.overall_discount.1}

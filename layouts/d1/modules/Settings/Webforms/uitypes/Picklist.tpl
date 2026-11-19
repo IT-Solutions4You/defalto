@@ -9,7 +9,7 @@
 {strip}
 	{assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
 	{assign var="PICKLIST_VALUES" value=$FIELD_INFO['picklistvalues']}
-	{assign var=PICKLIST_COLORS value=$FIELD_INFO['picklistColors']}
+	{assign var=PICKLIST_COLORS value=$FIELD_INFO['picklistColors']|default:[]}
 	{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 	<select data-fieldname="{$FIELD_MODEL->getFieldName()}" data-fieldtype="picklist" class="inputElement select2 {if $OCCUPY_COMPLETE_WIDTH} row {/if}" type="picklist" data-field-id= '{$FIELD_MODEL->get('id')}' name="{$FIELD_MODEL->getFieldName()}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if} data-selected-value='{$FIELD_MODEL->get('fieldvalue')}'
 			{if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
@@ -20,21 +20,10 @@
 			>
 		{if $FIELD_MODEL->isEmptyPicklistOptionAllowed()}<option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option>{/if}
 		{foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-			{assign var=CLASS_NAME value="picklistColor_{$FIELD_MODEL->getFieldName()}_{$PICKLIST_NAME|replace:' ':'_'}"}
-			<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if $PICKLIST_COLORS[$PICKLIST_NAME]}class="{$CLASS_NAME}"{/if} {if trim(decode_html($FIELD_MODEL->get('fieldvalue'))) eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
+			<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if !empty($PICKLIST_COLORS[$PICKLIST_NAME])}data-picklist-color="{$PICKLIST_COLORS[$PICKLIST_NAME]|escape}"{/if} {if trim(decode_html($FIELD_MODEL->get('fieldvalue'))) eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
 		{/foreach}
 	</select>
 	{if $FIELD_MODEL->getFieldName() eq 'targetmodule' and $MODE eq 'edit'}
 	<input type="hidden" name="targetmodule" value="{$FIELD_MODEL->get('fieldvalue')}" />
-	{/if}
-	{if $PICKLIST_COLORS}
-		<style type="text/css">
-			{foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-			{assign var=CLASS_NAME value="{$FIELD_MODEL->getFieldName()}_{$PICKLIST_NAME|replace:' ':'_'}"}
-			.picklistColor_{$CLASS_NAME} {
-				background-color: {$PICKLIST_COLORS[$PICKLIST_NAME]} !important;
-			}
-			{/foreach}
-		</style>
 	{/if}
 {/strip}

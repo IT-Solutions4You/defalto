@@ -6,6 +6,8 @@ Report results always follow the permissions of the person viewing or exporting 
 
 This guide uses the English labels shown in the application.
 
+Large reports, including monthly invoice summaries, use the same permissions and totals in the preview, chart, and exports.
+
 ## 1. Choose a report type
 
 | Type | Purpose | Example |

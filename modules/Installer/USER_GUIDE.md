@@ -35,3 +35,5 @@ An extension package can include `modules/<Module>/CHANGELOG.md`. Its newest ver
 If an extension installation fails, the progress dialog shows the specific package error, such as the path of a file that is not writable. The error appears first in a red alert. Expand the technical log below it to inspect the installation steps, including when the server returns an HTTP error. Correct the reported issue before retrying.
 
 Installation logs use a Markdown-style list with one step per item. Errors are emphasized in red; server output is displayed as text.
+
+System updates install the dependency versions supplied with the release, replacing the previous dependency lock file together with the dependency requirements. If an update fails, both files are restored through the update rollback. If the log reports a mismatch between `composer.json` and `composer.lock`, use a corrected complete release package before retrying.

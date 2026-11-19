@@ -8,6 +8,8 @@ The header menu contains Defalto settings available to administrators, the curre
 
 # Record actions
 
+When you click Add in a record's summary widget, Quick Create fills the related-record field with the record you are viewing. For example, a task or milestone added from a project's summary starts with that project selected.
+
 Administrators can lock or unlock a record. A non-administrator can lock a record only when it is assigned directly to that user and the user has permission to edit it; unlocking remains available only to administrators.
 
 Related-record widgets on a record use the language of the related module for their title and add action. The add action opens the quick form with the displayed record already filled in where the widget or module defines the linking field. If a custom widget label exists only for the displayed record's module, that label is used instead, so users never see a technical name. For example, the Appointments widget keeps its translated Appointments label even on another module's record. A record with no summary widgets shows empty widget columns without an error.
@@ -21,6 +23,8 @@ Opening, paging through or changing roll-up comments and related records from a 
 Record-header action icons show a label while the mouse is over them, and the label disappears when the mouse leaves, also after clicking an action or cancelling its confirmation. The buttons also have labels for assistive technology.
 
 # Dropdown fields
+
+When you open a dropdown, a colored line on the left marks an option with a configured color. Option text and backgrounds follow the theme. On saved records, colors still appear as labels in the list, detail and related lists.
 
 Searchable dropdowns, including Assigned To, hide values that are already selected. The current value stays visible in the field; choose another value to replace it. In fields that allow several values, remove a selected item to make it available again.
 

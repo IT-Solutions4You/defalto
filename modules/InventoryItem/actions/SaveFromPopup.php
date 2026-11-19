@@ -64,8 +64,14 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
 
             $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
             $fieldModelList = $moduleModel->getFields();
+            $protectedFields = $this->getProtectedDiscountFields((int)$request->get('source_record'));
 
             foreach ($fieldModelList as $fieldName => $fieldModel) {
+                if (in_array($fieldName, $protectedFields, true) || ($protectedFields && !$fieldModel->isEditable() && !in_array($fieldName, ['price', 'purchase_cost'], true))) {
+                    // Stored values stay as they are, they are only recalculated
+                    continue;
+                }
+
                 $fieldValue = $request->get($fieldName, null);
                 $fieldValue = $fieldModel->getUITypeModel()->getRequestValue($fieldValue);
 
@@ -81,6 +87,13 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
             $itemModel->set('parentid', $request->get('source_record'));
             $itemModel->set('sequence', $this->decideSequence((int)$request->get('sequence'), (int)$request->get('source_record')));
             $this->setReadOnlyPrices($itemModel, $request);
+
+            if ($protectedFields) {
+                $this->setProtectedDiscountDefaults($itemModel, $protectedFields, (int)$request->get('source_record'));
+                // Calculated discount values are written by the system, even when the profile has the discount fields read-only
+                $itemModel->getEntity()->isWorkFlowFieldUpdate = true;
+            }
+
             $itemModel->save();
             $itemModel->saveTaxId((int)$request->get('taxid'));
 
@@ -93,6 +106,48 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
         }
 
         $response->emit();
+    }
+
+    /**
+     * Item fields the profile of the user is not allowed to change; the request values of these fields are ignored.
+     *
+     * @param int $parentId
+     *
+     * @return array
+     */
+    protected function getProtectedDiscountFields(int $parentId): array
+    {
+        $fields = [];
+
+        if (!InventoryItem_ParentEntity_Model::isDiscountEditable()) {
+            $fields = InventoryItem_ParentEntity_Model::itemDiscountFields;
+        }
+
+        if (!InventoryItem_ParentEntity_Model::isOverallDiscountEditable($parentId)) {
+            $fields[] = 'overall_discount';
+        }
+
+        return $fields;
+    }
+
+    /**
+     * A new item takes the overall discount of the document, even when the user cannot change it.
+     *
+     * @param Vtiger_Record_Model $itemModel
+     * @param array               $protectedFields
+     * @param int                 $parentId
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function setProtectedDiscountDefaults(Vtiger_Record_Model $itemModel, array $protectedFields, int $parentId): void
+    {
+        if ($itemModel->getId() || !in_array('overall_discount', $protectedFields, true)) {
+            return;
+        }
+
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, getSalesEntityType($parentId));
+        $itemModel->set('overall_discount', (float)$parentRecordModel->get('overall_discount'));
     }
 
     /**

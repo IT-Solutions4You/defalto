@@ -54,7 +54,7 @@
                 <div class="widgetFilterProjectTask p-3 pb-0">
                     {assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance('ProjectTask')}
                     {assign var=PROGRESS_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField('projecttaskprogress')}
-                    {assign var=STATUS_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField('projecttaskstatus')}modu
+                    {assign var=STATUS_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField('projecttaskstatus')}
                     {if $PROGRESS_FIELD_MODEL->isViewableInDetailView()}
                         <div class="d-inline-block me-2">
                             {assign var=FIELD_INFO value=$PROGRESS_FIELD_MODEL->getFieldInfo()}

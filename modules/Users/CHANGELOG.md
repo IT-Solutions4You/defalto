@@ -1,5 +1,9 @@
 # Users changelog
 
+## 1.12 - 2026-11-17
+
+- Large reports open faster for users with restricted access while respecting their record visibility.
+
 ## 1.10 - 2026-10-27
 
 - Initial setup now restricts base-currency and system configuration changes to the first administrator.

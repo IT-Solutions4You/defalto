@@ -78,6 +78,44 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
             }
         }
 
+        $discountViewable = InventoryItem_ParentEntity_Model::isDiscountViewable();
+        $overallDiscountViewable = InventoryItem_ParentEntity_Model::isOverallDiscountViewable($recordId);
+        $hiddenColumns = [];
+
+        if (!$discountViewable) {
+            $hiddenColumns = array_merge(InventoryItem_ParentEntity_Model::itemDiscountFields, ['price_after_discount']);
+        }
+
+        if (!$overallDiscountViewable) {
+            $hiddenColumns = array_merge($hiddenColumns, ['overall_discount', 'overall_discount_amount', 'price_after_overall_discount']);
+        }
+
+        foreach ($selectedFields as $key => $fieldName) {
+            if (in_array($fieldName, $hiddenColumns, true)) {
+                unset($selectedFields[$key]);
+
+                if (!in_array($fieldName, InventoryItem_Field_Model::preventDisplay)) {
+                    $selectedFieldsCount--;
+                }
+            }
+        }
+
+        // Hidden columns still need their inputs in the table, because totals are recalculated from them
+        foreach (array_merge($hiddenColumns, InventoryItem_ParentEntity_Model::itemCalculatedDiscountFields) as $fieldName) {
+            if (empty($recordStructure[$fieldName])) {
+                $fieldModel = $recordModel->getModule()->getField($fieldName);
+
+                if ($fieldModel) {
+                    $recordStructure[$fieldName] = $fieldModel;
+                }
+            }
+        }
+
+        $viewer->assign('HIDDEN_DISCOUNT_COLUMNS', $hiddenColumns);
+        $viewer->assign('DISCOUNT_VIEWABLE', $discountViewable);
+        $viewer->assign('DISCOUNT_EDITABLE', InventoryItem_ParentEntity_Model::isDiscountEditable());
+        $viewer->assign('OVERALL_DISCOUNT_VIEWABLE', $overallDiscountViewable);
+        $viewer->assign('OVERALL_DISCOUNT_EDITABLE', InventoryItem_ParentEntity_Model::isOverallDiscountEditable($recordId));
         $viewer->assign('INVENTORY_ITEM_COLUMNS', $selectedFields);
         $viewer->assign('FINALS_COLSPAN', $selectedFieldsCount);
         $viewer->assign('INVENTORY_ITEM_RECORD_STRUCTURE', $recordStructure);

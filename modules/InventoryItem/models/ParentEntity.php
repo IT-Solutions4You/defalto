@@ -47,6 +47,96 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
     }
 
     /**
+     * Fields of an item the discount permissions of the item discount (the "Discount" field) control
+     */
+    public const itemDiscountFields = ['discount_type', 'discount', 'discount_amount'];
+
+    /**
+     * Fields that are only calculated from the other fields of an item
+     */
+    public const itemCalculatedDiscountFields = ['price_after_discount', 'overall_discount_amount', 'price_after_overall_discount', 'discounts_amount'];
+
+    /**
+     * @param string $fieldName
+     *
+     * @return Vtiger_Field_Model|null Active field of the InventoryItem module; a deactivated field is not available
+     */
+    protected static function getItemField(string $fieldName): ?Vtiger_Field_Model
+    {
+        $field = Vtiger_Module_Model::getInstance('InventoryItem')->getField($fieldName);
+
+        return $field ?: null;
+    }
+
+    /**
+     * The item discount is shown only when the profile of the user can view the field of the InventoryItem module.
+     *
+     * @return bool
+     */
+    public static function isDiscountViewable(): bool
+    {
+        $field = self::getItemField('discount');
+
+        return $field && $field->isViewable();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isDiscountEditable(): bool
+    {
+        $field = self::getItemField('discount');
+
+        return $field && $field->isEditable();
+    }
+
+    /**
+     * The overall discount is stored in the items and in the parent record, so the permission of both fields counts.
+     *
+     * @param int $parentId
+     *
+     * @return bool
+     */
+    public static function isOverallDiscountViewable(int $parentId): bool
+    {
+        $field = self::getItemField('overall_discount');
+        $parentField = self::getParentOverallDiscountField($parentId);
+
+        return $field && $field->isViewable() && (!$parentField || $parentField->isViewable());
+    }
+
+    /**
+     * @param int $parentId
+     *
+     * @return bool
+     */
+    public static function isOverallDiscountEditable(int $parentId): bool
+    {
+        $field = self::getItemField('overall_discount');
+        $parentField = self::getParentOverallDiscountField($parentId);
+
+        return $field && $field->isEditable() && (!$parentField || $parentField->isEditable());
+    }
+
+    /**
+     * @param int $parentId
+     *
+     * @return Vtiger_Field_Model|null
+     */
+    protected static function getParentOverallDiscountField(int $parentId): ?Vtiger_Field_Model
+    {
+        $parentModuleName = $parentId ? (string)getSalesEntityType($parentId) : '';
+
+        if ('' === $parentModuleName) {
+            return null;
+        }
+
+        $field = Vtiger_Module_Model::getInstance($parentModuleName)->getField('overall_discount');
+
+        return $field ?: null;
+    }
+
+    /**
      * Existing items must belong to the parent record the request is authorized for.
      *
      * @param array $itemIds
@@ -219,6 +309,8 @@ class InventoryItem_ParentEntity_Model extends Vtiger_Base_Model
 
                 if ($changed) {
                     $parentRecordModel->set('mode', 'edit');
+                    // Totals are calculated by the system, so they are saved even when the profile of the user has them read-only
+                    $parentRecordModel->getEntity()->isWorkFlowFieldUpdate = true;
                     $parentRecordModel->save();
                 }
             }

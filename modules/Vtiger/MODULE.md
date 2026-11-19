@@ -2,8 +2,16 @@
 
 This module holds shared base behavior inherited by other modules. It has no standalone installable module version; the sections below only record the invariants that are easy to break.
 
+- `Vtiger_Reference_UIType::getReportDisplayValueFromLabel()` renders a label already fetched by Reporting using the same link markup as normal reference rendering. Reporting must check target visibility before calling it.
+
+## Picklist presentation
+
+- The d1 Picklist and MultiPicklist edit and list search templates and their Field.js factories carry configured colors on the corresponding option as `data-picklist-color`. `vtUtils.showSelect2ElementView()` applies it to the result row's left border only. The theme owns text, background and selected values. The base skin maps the picklist-specific Select2 class to Bootstrap dark-mode variables. Stored record labels use the display path independently.
+- Verify single and multiple selections in both themes through create, edit, quick create, inline edit and filter conditions. Check keyboard highlighting and disabled options, and confirm record labels in lists, details and related lists.
+
 ## Summary widgets
 
+- The shared `.createRecord` handler in `resources/Detail.js` prefers the enclosing form's record and module, then uses the active Detail controller because summary forms may omit both fields. The controller also provides scoped values in quick preview. The widget's `relatedField` takes precedence over the source module's default reference field when building the Quick Create request.
 - `Vtiger_Link_Model::getTranslatedLabel()` translates a widget label in the module named by the link's `linkName` (links without a related-module or explicit widget-module owner use the source record module). `Vtiger_DetailView_Model::getWidgets()` derives that owner from `relatedModule` or the explicit `module` URL parameter. When the owner does not define the label it falls back to the source module, because custom widget labels are registered there. `SummaryViewWidget.tpl` uses the resolved label for both the heading and the add action.
 - A persisted summary-widget URL can set `summaryFirst=1`; `Vtiger_Link_Model::isSummaryFirst()` and `Vtiger_DetailView_Model::getWidgets()` then place it before the other widgets while retaining its stored sequence and therefore its configured column.
 - `SummaryViewWidgets.tpl` treats a missing or empty `DETAILVIEWWIDGET` link group as a valid empty layout. `getDetailViewLinks()` does not guarantee a key for link types without links, so guard the collection before iterating.

@@ -124,6 +124,15 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
             }
         }
 
+        $sourceRecordId = (int)$request->get('source_record');
+        $discountViewable = InventoryItem_ParentEntity_Model::isDiscountViewable();
+        $overallDiscountViewable = InventoryItem_ParentEntity_Model::isOverallDiscountViewable($sourceRecordId);
+
+        // Discount fields the profile only allows to view are shown read-only; the edit structure leaves them out
+        $this->addViewableFields($recordStructure, $recordModel, $discountViewable, InventoryItem_ParentEntity_Model::itemDiscountFields);
+        $this->addViewableFields($recordStructure, $recordModel, $discountViewable, ['price_after_discount']);
+        $this->addViewableFields($recordStructure, $recordModel, $overallDiscountViewable, ['overall_discount', 'overall_discount_amount', 'price_after_overall_discount']);
+
         $hardFormattedRecordStructure = [];
         $processed = [];
 
@@ -199,10 +208,39 @@ class InventoryItem_PopupItemEdit_View extends Vtiger_Footer_View
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
         $viewer->assign('PRICE_READONLY', $priceReadOnly);
         $viewer->assign('PRICE_LOCKED', $priceLocked);
+        $viewer->assign('DISCOUNT_VIEWABLE', $discountViewable);
+        $viewer->assign('DISCOUNT_EDITABLE', InventoryItem_ParentEntity_Model::isDiscountEditable());
+        $viewer->assign('OVERALL_DISCOUNT_VIEWABLE', $overallDiscountViewable);
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'process', $request->getModule(), $viewer, $request);
 
         $viewer->view('PopupEdit.tpl', $moduleName);
+    }
+
+    /**
+     * Adds fields missing in the edit structure, because the profile does not allow to edit them, but allows to view them.
+     *
+     * @param array               $recordStructure
+     * @param Vtiger_Record_Model $recordModel
+     * @param bool                $viewable
+     * @param array               $fieldNames
+     *
+     * @return void
+     */
+    protected function addViewableFields(array &$recordStructure, Vtiger_Record_Model $recordModel, bool $viewable, array $fieldNames): void
+    {
+        if (!$viewable) {
+            return;
+        }
+
+        foreach ($fieldNames as $fieldName) {
+            $fieldModel = $recordStructure[$fieldName] ?? $recordModel->getModule()->getField($fieldName);
+
+            if ($fieldModel && $fieldModel->isViewable()) {
+                $fieldModel->set('fieldvalue', $recordModel->get($fieldName));
+                $recordStructure[$fieldName] = $fieldModel;
+            }
+        }
     }
 
     /**

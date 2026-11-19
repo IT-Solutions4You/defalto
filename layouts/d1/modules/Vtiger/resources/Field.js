@@ -300,9 +300,8 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js', {}, {
             selectedOption = app.htmlDecode(this.getValue()),
             selectedOptionfound = false,
             data = this.getData(),
-            picklistColors = data['picklistColors'],
-            deniedValues = data['recordActionDeniedValues'] || {},
-            fieldName = this.getName();
+            picklistColors = data['picklistColors'] || {},
+            deniedValues = data['recordActionDeniedValues'] || {};
 
         if (typeof pickListValues[' '] === 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] !== 'Select an Option') {
             html += '<option value="">' + app.vtranslate('JS_SELECT_OPTION') + '</option>';
@@ -311,12 +310,10 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js', {}, {
         for (let option in pickListValues) {
             html += '<option value="' + option + '" ';
 
-            if (picklistColors) {
-                let className = '';
-                if (picklistColors[option]) {
-                    className = 'picklistColor_' + fieldName + '_' + option.replace(' ', '_');
-                    html += 'class="' + className + '"';
-                }
+            const color = picklistColors[option];
+
+            if (/^#[0-9a-f]{6}$/i.test(color)) {
+                html += 'data-picklist-color="' + color + '" ';
             }
 
             if (option === selectedOption) {
@@ -335,23 +332,6 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js', {}, {
         }
 
         html += '</select>';
-
-        if (picklistColors) {
-            html += '<style type="text/css">';
-
-            for (let option in picklistColors) {
-                const picklistColor = picklistColors[option];
-                if (picklistColor) {
-                    className = '.picklistColor_' + fieldName + '_' + option.replace(' ', '_');
-                    html += className + '{background-color: ' + picklistColor + ' !important;}';
-
-                    className = className + '.select2-highlighted';
-                    html += className + '{white: #ffffff !important; background-color: #337ab7 !important;}';
-                }
-            }
-
-            html += '</style>';
-        }
 
         const selectContainer = jQuery(html);
         this.addValidationToElement(selectContainer);
@@ -466,21 +446,15 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js', {}, {
             pickListValues = this.getPickListValues(),
             selectedOption = app.htmlDecode(this.getValue()),
             selectedOptionsArray = this.getSelectedOptions(selectedOption),
-            data = this.getData(),
-            picklistColors = data['picklistColors'],
-            fieldName = this.getName(),
-            option
+            picklistColors = this.getData()['picklistColors'] || {};
 
-        for (option in pickListValues) {
+        for (const option in pickListValues) {
             html += '<option value="' + option + '" ';
 
-            if (picklistColors) {
-                let className = '';
+            const color = picklistColors[option];
 
-                if (picklistColors[option]) {
-                    className = 'picklistColor_' + fieldName + '_' + option.replace(' ', '_');
-                    html += 'class="' + className + '"';
-                }
+            if (/^#[0-9a-f]{6}$/i.test(color)) {
+                html += 'data-picklist-color="' + color + '" ';
             }
 
             if (jQuery.inArray(option, selectedOptionsArray) !== -1) {
@@ -491,21 +465,6 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js', {}, {
         }
 
         html += '</select>';
-
-        if (picklistColors) {
-            html += '<style type="text/css">';
-
-            for (option in picklistColors) {
-                let picklistColor = picklistColors[option];
-
-                if (picklistColor) {
-                    className = '.picklistColor_' + fieldName + '_' + option.replace(' ', '_');
-                    html += className + '{background-color: ' + picklistColor + ' !important;}';
-                }
-            }
-
-            html += '<\style>';
-        }
 
         let selectContainer = jQuery(html);
 
