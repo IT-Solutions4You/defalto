@@ -12,6 +12,8 @@ Click the **AI** icon beside the comment box to check the license, installation 
 
 When you click Add in a record's summary widget, Quick Create fills the related-record field with the record you are viewing. For example, a task or milestone added from a project's summary starts with that project selected.
 
+An empty related-record summary widget shows the translated module name in its message, such as Project Tasks or Project Milestones, using your selected language.
+
 Administrators can lock or unlock a record. A non-administrator can lock a record only when it is assigned directly to that user and the user has permission to edit it; unlocking remains available only to administrators.
 
 Related-record widgets on a record use the language of the related module for their title and add action. If a custom widget label exists only for the displayed record's module, that label is used instead, so users never see a technical name. For example, the Appointments widget keeps its translated Appointments label even on another module's record. A record with no summary widgets shows empty widget columns without an error.
