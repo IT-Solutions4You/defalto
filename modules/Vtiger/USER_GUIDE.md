@@ -67,3 +67,7 @@ Record images, previews and downloads keep working when an administrator stores 
 # Dashboard
 
 Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook text are displayed as text, including when they contain characters used by HTML.
+
+# Record forms
+
+Field labels in the full record edit form use the normal theme text color for easier reading, including address labels. This also applies when the same form creates or duplicates a record. Required fields retain their red asterisk, and restricted fields retain their lock indicator.

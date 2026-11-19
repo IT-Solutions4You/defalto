@@ -8,6 +8,8 @@ This module holds shared base behavior inherited by other modules. It has no sta
 
 ## Picklist presentation
 
+- Shared record edit forms render standard fields through `blocks/Fields.tpl`; label containers omit `text-secondary` and inherit normal theme text color. The same template serves full create/edit forms, overlays and mass edit. Address blocks use Core-owned edit templates. Quick Create and summary labels have independent styling.
+
 - The d1 Picklist and MultiPicklist edit and list search templates and their Field.js factories carry configured colors on the corresponding option as `data-picklist-color`. `vtUtils.showSelect2ElementView()` applies it to the result row's left border only. The theme owns text, background and selected values. The base skin maps the picklist-specific Select2 class to Bootstrap dark-mode variables. Stored record labels use the display path independently.
 - Verify single and multiple selections in both themes through create, edit, quick create, inline edit and filter conditions. Check keyboard highlighting and disabled options, and confirm record labels in lists, details and related lists.
 

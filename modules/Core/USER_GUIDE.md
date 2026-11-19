@@ -69,3 +69,7 @@ To set up a restriction, add the workflow task **Restrict record actions** to a 
 # Repeating calendar appointments
 
 Monthly appointments keep the selected local start time when daylight-saving time begins or ends. A date such as the 31st moves to the last day of shorter months. All-day appointments keep their selected calendar dates. Existing saved occurrences are not automatically repaired by this change.
+
+# Address fields
+
+Address labels in the record edit form use the normal theme text color, including the combined postal code and city label.

@@ -1,5 +1,7 @@
 # Core UI ownership
 
+- Address-block label containers in `blockuitypes/AddressEditField.tpl` and `AddressEditFieldPair.tpl` omit `text-secondary` and inherit normal theme text color, matching Vtiger's shared edit fields. Keep lock icons styled independently from labels.
+
 ## AI availability
 
 - `Core_AiAvailability_View` renders the authenticated setup dialog on demand. `Core_AiAvailability_Model` uses the same stored Membership decision as the AI chat and the module's local API-key check when that extension is present. Module registration and enablement are separate. Opening the dialog makes no licensing or AI-provider requests.
