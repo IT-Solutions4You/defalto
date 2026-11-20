@@ -18,7 +18,7 @@ Records in modules with image fields show their picture above the title and key 
 
 In the record header, Assigned To appears first when the key fields wrap on a narrower screen. In the wide, single-row layout it remains the last field.
 
-Full record details show an icon navigation bar below the record header: Summary, Details, Updates, Sharing and Comments, when supported and available. The current view is underlined. Module-specific views, such as project charts, remain available in this bar. On narrow screens, scroll the bar horizontally to reach more views.
+Full record details show an icon navigation bar below the record header: Summary, Details, Updates, Sharing and Comments, when supported and available. The current view is underlined. Module-specific views, such as project charts, remain available in this bar. On narrow screens, scroll the whole bar horizontally to reach more views and the Related records button; all items stay on one row.
 
 The Related modules panel contains the other linked modules and their record counts. The panel is available only on desktop. On mobile, use the Related records dropdown beside the top record tabs. The main record views and Comments are not repeated there. Open a related module to view its records; use the top bar to return to Summary or Details. When no other related modules are available, the content uses the full width. The comment composer in Summary remains available as before.
 

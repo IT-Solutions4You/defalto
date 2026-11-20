@@ -7,8 +7,8 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    <div class="related-tabs record-view-tabs d-flex align-items-center gap-2 px-3 bg-transparent">
-        <ul class="nav nav-underline flex-nowrap text-nowrap overflow-x-auto gap-4" aria-label="{vtranslate('LBL_NAVIGATION', 'Core')|escape}">
+    <div class="related-tabs record-view-tabs d-flex flex-nowrap align-items-center gap-4 px-3 bg-transparent overflow-x-auto">
+        <ul class="nav nav-underline flex-nowrap flex-shrink-0 text-nowrap gap-4" aria-label="{vtranslate('LBL_NAVIGATION', 'Core')|escape}">
             {assign var=ADDITIONAL_RECORD_TABS value=''}
             {foreach item=RECORD_LINK from=$DETAILVIEW_LINKS['DETAILVIEWTAB']|default:[]}
                 {if empty($SELECTED_TAB_LABEL)}
@@ -64,7 +64,7 @@
             {$ADDITIONAL_RECORD_TABS}
         </ul>
         <div class="dropdown record-related-more nav nav-underline flex-shrink-0 d-none">
-            <button type="button" class="nav-link border-3 py-3 px-2 text-body-secondary text-nowrap" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-expanded="false" aria-label="{vtranslate('LBL_RELATED_RECORDS', 'Core')|escape}" title="{vtranslate('LBL_RELATED_RECORDS', 'Core')|escape}">
+            <button type="button" class="nav-link border-3 py-3 px-2 text-body-secondary text-nowrap" data-bs-toggle="dropdown" data-bs-config='{literal}{"popperConfig":{"strategy":"fixed"}}{/literal}' aria-expanded="false" aria-label="{vtranslate('LBL_RELATED_RECORDS', 'Core')|escape}" title="{vtranslate('LBL_RELATED_RECORDS', 'Core')|escape}">
                 <i class="fa-solid fa-bars" aria-hidden="true"></i>
                 <span class="ms-2">{vtranslate('LBL_RELATED_RECORDS', 'Core')|escape}</span>
             </button>

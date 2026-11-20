@@ -8,7 +8,7 @@ The Related records button beside Comments opens a list of related modules with 
 
 Summary, Details, Updates, Sharing, Comments and related-record lists have no extra outer margin below the navigation. Spacing inside their content is retained.
 
-Record details separate the main record views from linked modules. Use the icon tabs below the record header for Summary, Details, Updates, Sharing and Comments, where available. The bar has a transparent background without a surrounding border or divider. The active view is underlined in blue; on a small screen the tab bar scrolls horizontally. Other related modules remain in the Related modules panel on desktop. On mobile, use the Related records dropdown for modules containing linked records. The separate sidebar and its toggle are hidden. Existing module-specific views remain accessible after the main views.
+Record details separate the main record views from linked modules. Use the icon tabs below the record header for Summary, Details, Updates, Sharing and Comments, where available. The bar has a transparent background without a surrounding border or divider. The active view is underlined in blue; on a small screen the entire tab bar, including Related records, scrolls horizontally as one row. Other related modules remain in the Related modules panel on desktop. On mobile, use the Related records dropdown for modules containing linked records. The separate sidebar and its toggle are hidden. Existing module-specific views remain accessible after the main views.
 
 # AI setup
 
