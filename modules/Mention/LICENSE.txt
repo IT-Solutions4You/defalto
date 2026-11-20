@@ -1,0 +1,46 @@
+**************************************************************************************
+*  Module              : Mention Users
+*  Version             : 4.11
+*  Vtiger              : 7.x
+*  Author              : IT-Solutions4You s.r.o - www.its4you.sk
+*  Supported browsers  : Internet Explorer 7 or higher, Mozilla Firefox 3.0 or higher
+***************************************************************************************
+
+LICENSE
+The Mention Users License will be referred to as "The license" in the remainder of this text.
+
+This irrevocable, perpetual license covers all versions of Mention Users.
+
+This license is bought with 1 Year subscription/membership.
+
+Subscription expiration implies the termination of the support,
+update (membership details and product source code) and other download specific services.
+
+IT-Solutions4You s.r.o is not obligated to provide support, access to downloads or any other services
+being offered in the subscription beyond the end of the term indicated by your subscription
+unless you renew your subscription on or before the expiration date by agreement between IT-Solutions4You s.r.o and you.
+
+Using of this license is still "lifetime" also without active subscription.
+The license holder can use this license, activate, deactivate and move to other CRM
+but without claim to support and latest updates.
+
+This license gives the holder right to install Mention Users on ONE productive vtiger CRM
+installationm and ONE develop vtiger CRM installation for unlimeted users.
+
+The license holder is allowed to make modifications to the Mention Users sources but in no
+event will the original copyright holders of this library be held responsible for action
+or actions resulting from any modifications of the source.
+
+The license holder is not required to publicize or otherwise make available any software
+used in conjunction with Mention Users.
+
+The license holder may not re-distribute the library on it's own or versions thereof
+to third party without prior written permission of the copyright holder.
+
+Mention Users License does not allow the library to be redistributed as part of another
+product.
+
+The license may be transferred to another vtiger CRM instalation only with prior
+written permission.
+
+The wording of this license may change without notice for future versions of Mention Users.
