@@ -26,6 +26,7 @@
     "fullcalendar/fullcalendar": "*",
     "google/apiclient": "2.*",
     "defalto/libraries": "*",
+    "jakiestfu/mention": "dev-master",
     "kcfinder/kcfinder": "*",
     "league/oauth2-client": "^2.7",
     "league/oauth2-google": "^4.0",
@@ -64,6 +65,25 @@
     ]
   },
   "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "jakiestfu/mention",
+        "version": "dev-master",
+        "type": "library",
+        "license": "MIT",
+        "source": {
+          "url": "https://github.com/jakiestfu/Mention.js.git",
+          "type": "git",
+          "reference": "1b588ef059bfd4c5164393eb686252abbf8c8ebd"
+        },
+        "dist": {
+          "url": "https://api.github.com/repos/jakiestfu/Mention.js/zipball/1b588ef059bfd4c5164393eb686252abbf8c8ebd",
+          "type": "zip",
+          "reference": "1b588ef059bfd4c5164393eb686252abbf8c8ebd"
+        }
+      }
+    },
     {
       "type": "package",
       "package": {

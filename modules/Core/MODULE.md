@@ -1,5 +1,9 @@
 # Core UI ownership
 
+## Frontend dependency management
+
+- Root Composer metadata owns the Mention.js package (`jakiestfu/mention`), including its bundled Typeahead script. The custom package definition and lockfile pin an immutable upstream revision because the repository has no Composer manifest. Install it under `vendor/jakiestfu/mention` without modifying vendor sources; Mention owns its Bootstrap renderer, matching adapter and stylesheet.
+
 - Address-block label containers in `blockuitypes/AddressEditField.tpl` and `AddressEditFieldPair.tpl` omit `text-secondary` and inherit normal theme text color, matching Vtiger's shared edit fields. Keep lock icons styled independently from labels.
 
 ## AI availability
