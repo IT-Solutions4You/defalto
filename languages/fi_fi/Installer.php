@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Asenna uudelleen',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Uudempi versio asennetaan. Tarkista muutokset ennen jatkamista.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Tämä versio on jo asennettu. Jatkaminen asentaa tiedostot uudelleen ja suorittaa moduulin päivityksen uudelleen.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Olet asentamassa vanhempaa versiota. Nykyiset tiedot eivät välttämättä ole yhteensopivia. Varmuuskopioi tietokanta ja moduulin tiedostot ennen jatkamista.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Muutoslokia ei voitu ladata GitHubista. Voit jatkaa päivitystä.',
     'MyExtension' => 'Oma laajennus',
     'LBL_SYSTEM_REQUIREMENTS' => 'Järjestelmävaatimukset',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Järjestelmätiedot',

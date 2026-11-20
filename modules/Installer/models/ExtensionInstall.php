@@ -350,18 +350,15 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
 
     public function isInstallAvailable(): bool
     {
-        if (!$this->hasDownloadUrl()) {
-            return false;
-        }
+        return $this->hasDownloadUrl();
+    }
 
-        $installedVersion = $this->getVersion();
-        $availableVersion = $this->getUpdateVersion();
-
-        if ('' === $installedVersion) {
-            return true;
-        }
-
-        return '' !== $availableVersion && version_compare($availableVersion, $installedVersion, '>');
+    public function getVersionNotice(): array
+    {
+        return Installer_ModulePackage_Model::getVersionNoticeForVersions(
+            $this->getVersion(),
+            $this->getUpdateVersion()
+        );
     }
 
     public function getIcon(): string
@@ -434,7 +431,7 @@ class Installer_ExtensionInstall_Model extends Core_DatabaseData_Model
             return 'LBL_INSTALL';
         }
 
-        return 'LBL_UPDATE';
+        return $this->hasAvailableUpdate() ? 'LBL_UPDATE' : 'LBL_REINSTALL';
     }
 
     /**

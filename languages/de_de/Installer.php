@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Neu installieren',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Eine neuere Version wird installiert. Prüfen Sie die Änderungen, bevor Sie fortfahren.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Diese Version ist bereits installiert. Beim Fortfahren werden die Dateien erneut installiert und die Modulaktualisierung erneut ausgeführt.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Sie installieren eine ältere Version. Vorhandene Daten sind möglicherweise nicht kompatibel. Sichern Sie vor dem Fortfahren die Datenbank und die Moduldateien.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Das Änderungsprotokoll konnte nicht von GitHub geladen werden. Sie können mit dem Update fortfahren.',
     'ALERT_DOC_TITLE' => 'Der Dokumenttitel darf nicht leer sein.',
     'COPYRIGHT' => ':: IT-Solutions4You',
     'Installer' => 'Installationsprogramm',

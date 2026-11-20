@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Preinštalovať',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Nainštaluje sa novšia verzia. Pred pokračovaním si prezrite zmeny.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Táto verzia je už nainštalovaná. Pokračovaním sa znova nainštalujú jej súbory a opätovne spustí aktualizácia modulu.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Inštalujete staršiu verziu. Existujúce dáta nemusia byť kompatibilné. Pred pokračovaním zálohujte databázu a súbory modulu.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Prehľad zmien sa nepodarilo načítať z GitHubu. V aktualizácii môžete pokračovať.',
     'LBL_INSTALLER_LOGIN' => 'Prihlásenie ITS4You',
     'LBL_EXTENSION_NOT_COMPATABLE' => 'Rozšírenie nie je kompatibilné',
     'LBL_MORE_DETAILS' => 'Viac informácií',

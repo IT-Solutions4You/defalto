@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Reinstalează',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Va fi instalată o versiune mai nouă. Examinați modificările înainte de a continua.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Această versiune este deja instalată. Continuarea reinstalează fișierele și rulează din nou actualizarea modulului.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Instalați o versiune mai veche. Datele existente pot fi incompatibile. Faceți o copie de rezervă a bazei de date și a fișierelor modulului înainte de a continua.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Jurnalul modificărilor nu a putut fi încărcat de pe GitHub. Puteți continua actualizarea.',
     'MyExtension' => 'Extensia mea',
     'LBL_SYSTEM_REQUIREMENTS' => 'Cerințe de sistem',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Informații sistem',

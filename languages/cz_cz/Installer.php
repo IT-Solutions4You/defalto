@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Přeinstalovat',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Nainstaluje se novější verze. Před pokračováním si prohlédněte změny.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Tato verze je již nainstalována. Pokračováním se znovu nainstalují její soubory a opětovně spustí aktualizace modulu.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Instalujete starší verzi. Stávající data nemusí být kompatibilní. Před pokračováním zálohujte databázi a soubory modulu.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Přehled změn se z GitHubu nepodařilo načíst. V aktualizaci můžete pokračovat.',
     'LBL_EMAIL' => 'Email',
     'LBL_OK' => 'OK',
     'LBL_AVAILABLE_LANGUAGES' => 'Jazyky',

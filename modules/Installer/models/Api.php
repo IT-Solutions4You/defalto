@@ -136,6 +136,93 @@ class Installer_Api_Model extends Vtiger_Net_Client
         return new self('');
     }
 
+    public function getSystemRelease(string $version): array
+    {
+        if (!preg_match('/^[0-9]+(?:\.[0-9]+)+$/D', $version)) {
+            throw new Exception('Invalid system release version');
+        }
+
+        foreach ([$version, 'v' . $version] as $tag) {
+            $response = $this->sendGitHubReleaseRequest($tag);
+
+            if (404 === $response['status']) {
+                continue;
+            }
+
+            if (200 !== $response['status']) {
+                return ['status' => 'unavailable', 'body' => ''];
+            }
+
+            $release = json_decode($response['body'], true);
+
+            if (!$this->isSystemReleaseResponse($release, $tag)) {
+                return ['status' => 'unavailable', 'body' => ''];
+            }
+
+            $body = trim((string)($release['body'] ?? ''));
+
+            return ['status' => '' === $body ? 'missing' : 'available', 'body' => $body];
+        }
+
+        return ['status' => 'missing', 'body' => ''];
+    }
+
+    protected function isSystemReleaseResponse(mixed $release, string $tag): bool
+    {
+        return is_array($release)
+            && ($release['tag_name'] ?? null) === $tag
+            && false === ($release['draft'] ?? null)
+            && false === ($release['prerelease'] ?? null)
+            && (!isset($release['body']) || is_string($release['body']))
+            && strlen((string)($release['body'] ?? '')) <= Installer_Changelog_Model::MAX_FILE_SIZE;
+    }
+
+    protected function sendGitHubReleaseRequest(string $tag): array
+    {
+        if (!function_exists('curl_init')) {
+            return ['status' => 0, 'body' => ''];
+        }
+
+        $handle = curl_init(
+            'https://api.github.com/repos/IT-Solutions4You/defalto/releases/tags/' . rawurlencode($tag)
+        );
+
+        if (false === $handle) {
+            return ['status' => 0, 'body' => ''];
+        }
+
+        $body = '';
+        $options = [
+            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_TIMEOUT => 8,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_HTTPHEADER => ['Accept: application/vnd.github+json'],
+            CURLOPT_USERAGENT => 'Defalto-Installer',
+            CURLOPT_WRITEFUNCTION => static function ($handle, string $chunk) use (&$body): int {
+                if (strlen($body) + strlen($chunk) > 262144) {
+                    return 0;
+                }
+
+                $body .= $chunk;
+
+                return strlen($chunk);
+            },
+        ];
+
+        if (defined('CURLSSLOPT_NATIVE_CA')) {
+            $options[CURLOPT_SSL_OPTIONS] = CURLSSLOPT_NATIVE_CA;
+        }
+
+        curl_setopt_array($handle, $options);
+        $success = curl_exec($handle);
+        $status = false === $success ? 0 : (int)curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+        return ['status' => $status, 'body' => $body];
+    }
+
     public function getSiteUrl(): string
     {
         global $site_URL;

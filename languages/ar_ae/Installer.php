@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'إعادة التثبيت',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'سيتم تثبيت إصدار أحدث. راجع التغييرات قبل المتابعة.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'هذا الإصدار مثبت بالفعل. تؤدي المتابعة إلى إعادة تثبيت ملفاته وتشغيل تحديث الوحدة مرة أخرى.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'أنت تثبّت إصدارًا أقدم. قد تكون البيانات الحالية غير متوافقة. أنشئ نسخة احتياطية من قاعدة البيانات وملفات الوحدة قبل المتابعة.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'تعذر تحميل سجل التغييرات من GitHub. يمكنك متابعة التحديث.',
     'MyExtension' => 'امتدادي',
     'LBL_SYSTEM_REQUIREMENTS' => 'متطلبات النظام',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'معلومات النظام',

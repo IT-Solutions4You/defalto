@@ -66,11 +66,14 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     {
         $version = $request->get('version');
         $qualifiedModule = $request->getModule(false);
+        $system = Installer_SystemInstall_Model::getInstance($version);
+        $changelog = $system->getChangelogPreview();
 
         $viewer = $this->getViewer($request);
-        $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
-        $viewer->assign('MODULE', $request->getModule());
-        $viewer->assign('SYSTEM_INSTALL', Installer_SystemInstall_Model::getInstance($version));
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModule)
+            ->assign('MODULE', $request->getModule())
+            ->assign('SYSTEM_INSTALL', $system)
+            ->assign('SYSTEM_CHANGELOG', $changelog);
         $viewer->view('SystemModal.tpl', $qualifiedModule);
     }
 

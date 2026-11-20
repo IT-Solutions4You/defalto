@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Reinstalar',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Uma versão mais recente será instalada. Revise as alterações antes de continuar.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Esta versão já está instalada. Ao continuar, seus arquivos serão reinstalados e a atualização do módulo será executada novamente.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Você está instalando uma versão anterior. Os dados existentes podem ser incompatíveis. Faça backup do banco de dados e dos arquivos do módulo antes de continuar.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Não foi possível carregar o histórico de alterações do GitHub. Você pode continuar com a atualização.',
     'MyExtension' => 'Minha extensão',
     'LBL_SYSTEM_REQUIREMENTS' => 'Requisitos do sistema',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Informações do sistema',

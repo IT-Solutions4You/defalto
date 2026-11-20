@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Yeniden yükle',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Daha yeni bir sürüm yüklenecek. Devam etmeden önce değişiklikleri inceleyin.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Bu sürüm zaten yüklü. Devam edildiğinde dosyalar yeniden yüklenir ve modül güncellemesi tekrar çalıştırılır.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Daha eski bir sürüm yüklüyorsunuz. Mevcut veriler uyumlu olmayabilir. Devam etmeden önce veritabanını ve modül dosyalarını yedekleyin.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Değişiklik günlüğü GitHub üzerinden yüklenemedi. Güncellemeye devam edebilirsiniz.',
     'MyExtension' => 'Uzantım',
     'LBL_SYSTEM_REQUIREMENTS' => 'Sistem gereksinimleri',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Sistem Bilgisi',

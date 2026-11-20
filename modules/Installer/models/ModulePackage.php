@@ -66,6 +66,32 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
         return $this->requiredVersion;
     }
 
+    public function getVersionNotice(): array
+    {
+        return self::getVersionNoticeForVersions($this->getInstalledVersion(), $this->packageVersion);
+    }
+
+    public static function getVersionNoticeForVersions(string $installedVersion, string $packageVersion): array
+    {
+        if ('' === $installedVersion || '' === $packageVersion) {
+            return [];
+        }
+
+        $comparison = version_compare($packageVersion, $installedVersion);
+        $label = match (true) {
+            $comparison > 0 => 'LBL_EXTENSION_NEWER_VERSION_NOTICE',
+            $comparison < 0 => 'LBL_EXTENSION_OLDER_VERSION_NOTICE',
+            default => 'LBL_EXTENSION_SAME_VERSION_NOTICE',
+        };
+
+        return [
+            'label' => $label,
+            'type' => $comparison > 0 ? 'info' : 'warning',
+            'installedVersion' => $installedVersion,
+            'packageVersion' => $packageVersion,
+        ];
+    }
+
     /**
      * @return array<int, array{version: string, date: string, changes: array<string>}>
      */
@@ -138,20 +164,14 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
 
     public function validateInstallation(): void
     {
-        if (!$this->isUpdate()) {
-            if (is_dir('modules/' . $this->moduleName)) {
-                throw new RuntimeException(
-                    'Module files already exist without an installed module: ' . $this->moduleName
-                );
-            }
-
+        if ($this->isUpdate()) {
             return;
         }
 
-        $installedVersion = $this->getInstalledVersion();
-
-        if ($installedVersion !== '' && version_compare($this->packageVersion, $installedVersion, '<=')) {
-            throw new RuntimeException('The package version must be newer than the installed module version');
+        if (is_dir('modules/' . $this->moduleName)) {
+            throw new RuntimeException(
+                'Module files already exist without an installed module: ' . $this->moduleName
+            );
         }
     }
 

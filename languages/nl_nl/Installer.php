@@ -9,6 +9,11 @@
  */
 
 $languageStrings = [
+    'LBL_REINSTALL' => 'Opnieuw installeren',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Er wordt een nieuwere versie geïnstalleerd. Bekijk de wijzigingen voordat u doorgaat.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Deze versie is al geïnstalleerd. Als u doorgaat, worden de bestanden opnieuw geïnstalleerd en wordt de module-update opnieuw uitgevoerd.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'U installeert een oudere versie. Bestaande gegevens zijn mogelijk niet compatibel. Maak een back-up van de database en modulebestanden voordat u doorgaat.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Het wijzigingenoverzicht kon niet worden geladen vanuit GitHub. U kunt doorgaan met de update.',
     'MyExtension' => 'Mijn toestel',
     'LBL_SYSTEM_REQUIREMENTS' => 'Systeemvereisten',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Systeeminformatie',
