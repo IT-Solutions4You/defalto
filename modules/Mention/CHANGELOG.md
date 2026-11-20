@@ -2,6 +2,7 @@
 
 ## 1.0 - 2026-11-20
 
+- Fixed special characters in user and group names in mention suggestions and displayed comments.
 - Updated mention suggestions to match the current Bootstrap interface, including theme colors, avatars and keyboard selection.
 - Added user and group mentions in record comments and list comment editors.
 - Added email notifications with a link to the related record.

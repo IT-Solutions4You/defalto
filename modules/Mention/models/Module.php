@@ -71,7 +71,7 @@ class Mention_Module_Model extends Vtiger_Module_Model
         foreach ($this->getAccessibleGroups($sourceModule) as $groupId => $groupModel) {
             $users[$groupId] = [
                 'username' => $this->formatUserName($this->getGroupName($groupModel)),
-                'name' => $groupModel->getName(),
+                'name' => decode_html($groupModel->getName()),
                 'image' => '',
                 'id' => $groupId,
                 'type' => 'group',
@@ -194,7 +194,7 @@ class Mention_Module_Model extends Vtiger_Module_Model
 
             $users[$id] = [
                 'username' => $this->formatUserName($row['user_name']),
-                'name' => $user->getName(),
+                'name' => decode_html($user->getName()),
                 'image' => $image,
                 'id' => $id,
                 'type' => 'user',

@@ -5,6 +5,7 @@
 - `Mention` is a non-entity extension. `Mention_Module_Model` selects accessible users, groups and active record owners. `Mention_Users_Action` requires an authenticated session, source-module access and record access when a record is supplied.
 - `Mention_Comment_Handler` handles ModComments after-save events and delegates recipient selection and email creation to the module and record models. Delivery uses the existing ITS4YouEmails module and its SMTP configuration.
 - The same candidate list determines suggestions and notification recipients. Group recipients are expanded through Settings Groups and deduplicated by user ID.
+- Candidate display names are decoded once from the framework's HTML-encoded user/group model values before JSON serialization. The frontend inserts suggestions with `.text()` and escapes names when replacing comment HTML; never render decoded names as HTML. Mention usernames and group tokens retain their existing identifiers.
 - Optional source-module selectors use `modules/Mention/models/<SourceModule>Users.php`, class `Mention_<SourceModule>Users_Model`, with `selectUsers($sourceModule, $sourceRecord, array $users): array`. Return candidates with `id`, `username`, `name`, `image`, `type`. Keep customer selectors out of shared packages.
 
 ## Database and lifecycle
