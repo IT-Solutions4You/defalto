@@ -113,6 +113,8 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
 
     public function step3(Vtiger_Request $request)
     {
+        Installer_UpdateRequirement_Model::getInstance(true)->validateInstallation();
+
         $viewer = $this->getViewer($request);
         global $Vtiger_Utils_Log;
         $viewer->assign('VTIGER_UTILS_LOG', $Vtiger_Utils_Log);
