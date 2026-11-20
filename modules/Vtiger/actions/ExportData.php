@@ -441,7 +441,7 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
                 } else {
                     $value = '';
                 }
-            } elseif ($uitype == 72 || $uitype == 71) {
+            } elseif ($uitype == 72 || $uitype == 71 || Core_AmountCurrency_Helper::isAmountCurrencyUIType($uitype)) {
                 $value = CurrencyField::convertToUserFormat($value, null, true, true);
             } elseif ($uitype == 7 && $fieldInfo->get('typeofdata') == 'N~O' || $uitype == 9) {
                 $value = decimalFormat($value);

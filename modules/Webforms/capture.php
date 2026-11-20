@@ -127,7 +127,7 @@ class Webform_Capture
                         if ($defaultValue) {
                             $parameters[$fieldName] = decode_html($defaultValue);
                         }
-                    } elseif ($fieldInstance->get("uitype") == 71 || $fieldInstance->get("uitype") == 72) {
+                    } elseif ($fieldInstance->get("uitype") == 71 || $fieldInstance->get("uitype") == 72 || Core_AmountCurrency_Helper::isAmountCurrencyUIType($fieldInstance->get("uitype"))) {
                         //ignore comma(,) if it is currency field
                         $parameters[$fieldName] = str_replace(",", "", $parameters[$fieldName]);
                     }

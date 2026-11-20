@@ -149,7 +149,7 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
     public function getSelectClauseColumnSQL()
     {
         if (null === $this->projectedColumns) {
-            return parent::getSelectClauseColumnSQL();
+            return parent::getSelectClauseColumnSQL() . $this->getAmountCurrencySelectColumns();
         }
 
         $columns = [];
@@ -159,6 +159,32 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
         }
 
         return implode(', ', $columns);
+    }
+
+    /**
+     * Returns the currency columns of the selected amounts with their own currency (uitype 35), prefixed with
+     * a comma, so list rows know the currency of each amount (Vtiger_Record_Model::getAmountCurrencyId()).
+     *
+     * @return string
+     */
+    protected function getAmountCurrencySelectColumns(): string
+    {
+        $moduleFields = $this->getModuleFields() ?? [];
+        $columns = [];
+
+        foreach ($this->fields as $fieldName) {
+            $field = $moduleFields[$fieldName] ?? null;
+
+            // Fields of a referenced module ("a ; (Module) b") keep the record currency of their own row
+            if ($field && empty($field->parentReferenceField) && Core_AmountCurrency_Helper::isAmountCurrencyUIType($field->getUIType())) {
+                $columns[] = $this->getQualifiedColumn(
+                    $field->getTableName(),
+                    Core_AmountCurrency_Helper::getCurrencyName($field->getColumnName())
+                );
+            }
+        }
+
+        return $columns ? ', ' . implode(', ', $columns) : '';
     }
 
     public function addColumnCondition(
@@ -352,11 +378,127 @@ class Core_QueryGenerator_Model extends EnhancedQueryGenerator
      */
     protected function getConditionValue($value, $operator, $field)
     {
+        if (Core_AmountCurrency_Helper::isAmountCurrencyUIType($field->getUIType())) {
+            $fragments = $this->getAmountCurrencyConditionValues($value, strtolower((string)$operator), $field);
+
+            if (null !== $fragments) {
+                return $fragments;
+            }
+        }
+
         if (Vtiger_Field_Model::MULTI_REFERENCE_TYPE !== $field->getFieldDataType()) {
             return parent::getConditionValue($value, $operator, $field);
         }
 
         return $this->getMultiReferenceConditionValues($value, strtolower((string)$operator), $field);
+    }
+
+    /**
+     * Returns the condition fragments of an amount with its own currency (uitype 35), each following "table.column".
+     * Comparisons use the column with the amount in the base currency; the searched value is entered in the user's
+     * currency and converted to the base currency. "Equals" compares values rounded to the user's currency decimals,
+     * because amounts converted with stored rates rarely match exactly. Returns null for operators that keep the
+     * default handling (text operators such as contains).
+     *
+     * @param mixed           $value    Searched value, "from,to" for between
+     * @param string          $operator Filter operator
+     * @param WebserviceField $field    Amount field, a clone with parentReferenceField when it comes through a reference
+     * @return array|null
+     */
+    protected function getAmountCurrencyConditionValues(mixed $value, string $operator, WebserviceField $field): ?array
+    {
+        if (self::EMPTY === $operator) {
+            return ['IS NULL'];
+        }
+
+        if (self::NOT_EMPTY === $operator) {
+            return ['IS NOT NULL'];
+        }
+
+        // "Equals" or "not equals" an empty value mean "is empty" or "is not empty", as for other fields
+        if (in_array($operator, ['e', 'n'], true) && !is_array($value) && '' === trim((string)$value)) {
+            return ['e' === $operator ? 'IS NULL' : 'IS NOT NULL'];
+        }
+
+        $comparisons = ['e' => '=', 'n' => '<>', 'l' => '<', 'g' => '>', 'm' => '<=', 'h' => '>=', 'bw' => 'BETWEEN'];
+
+        if (!isset($comparisons[$operator])) {
+            return null;
+        }
+
+        $baseColumn = $this->getQualifiedColumn(
+            $this->getAmountCurrencyTableAlias($field),
+            Core_AmountCurrency_Helper::getBaseColumnName($field->getColumnName())
+        );
+        $values = is_array($value) ? array_values($value) : ('bw' === $operator ? explode(',', (string)$value) : [(string)$value]);
+        $numbers = array_map(
+            static fn($searchValue): string => sprintf('%.8F', (float)CurrencyField::convertToDBFormat(trim((string)$searchValue), null, false)),
+            $values
+        );
+
+        if ('bw' === $operator) {
+            return [sprintf('IS NOT NULL AND %s BETWEEN %s AND %s', $baseColumn, $numbers[0], $numbers[1] ?? $numbers[0])];
+        }
+
+        $fragments = [];
+
+        foreach ($numbers as $number) {
+            if (in_array($operator, ['e', 'n'], true)) {
+                $decimals = max(0, (int)($this->user->no_of_currency_decimals ?? 2));
+                $fragments[] = sprintf(
+                    '%s ROUND(%s, %d) %s ROUND(%s, %d)',
+                    'e' === $operator ? 'IS NOT NULL AND' : 'IS NULL OR',
+                    $baseColumn,
+                    $decimals,
+                    $comparisons[$operator],
+                    $number,
+                    $decimals
+                );
+            } else {
+                $fragments[] = sprintf('IS NOT NULL AND %s %s %s', $baseColumn, $comparisons[$operator], $number);
+            }
+        }
+
+        return $fragments;
+    }
+
+    /**
+     * Orders an amount with its own currency (uitype 35) by its amount in the base currency, so amounts in different
+     * currencies compare correctly; every other field keeps the default ordering column.
+     *
+     * @param string $fieldName Field name
+     * @return string
+     */
+    public function getOrderByColumn($fieldName)
+    {
+        $field = $this->getModuleFields()[$fieldName] ?? null;
+
+        if ($field && Core_AmountCurrency_Helper::isAmountCurrencyUIType($field->getUIType())) {
+            return $this->getQualifiedColumn(
+                $this->getAmountCurrencyTableAlias($field),
+                Core_AmountCurrency_Helper::getBaseColumnName($field->getColumnName())
+            );
+        }
+
+        return parent::getOrderByColumn($fieldName);
+    }
+
+    /**
+     * Returns the table alias of an amount field in the query: a field of a referenced module is joined under
+     * <table><reference field name>, as the parent query generator joins it.
+     *
+     * @param WebserviceField $field Amount field, a clone with parentReferenceField when it comes through a reference
+     * @return string
+     */
+    protected function getAmountCurrencyTableAlias(WebserviceField $field): string
+    {
+        $tableName = $field->getTableName();
+
+        if (!empty($field->parentReferenceField)) {
+            $tableName .= $field->parentReferenceField->getFieldName();
+        }
+
+        return $tableName;
     }
 
     /**

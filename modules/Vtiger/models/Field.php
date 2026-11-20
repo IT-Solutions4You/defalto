@@ -95,6 +95,7 @@ class Vtiger_Field_Model extends Vtiger_Field
     const UITYPE_MAILMANAGER_REFERENCE = 32;
     const UITYPE_MULTI_SELECT = 33;
     const UITYPE_MULTI_REFERENCE = 34; //several records of the modules set on the field, stored as 12;15
+    const UITYPE_AMOUNT_CURRENCY = 35; //amount with its own currency, stored in <column>, <column>_currency_id, <column>_conversion_rate and <column>_base
     const UITYPE_ACCOUNT_REFERENCE = 51;
     const UITYPE_USER_REFERENCE = 52;//e.g. assigned to
     const UITYPE_ASSIGNED_TO_PICKLIST = 53;
@@ -914,6 +915,10 @@ class Vtiger_Field_Model extends Vtiger_Field
             $this->fieldInfo['currency_symbol'] = $currentUser->get('currency_symbol');
             $this->fieldInfo['decimal_separator'] = $currentUser->get('currency_decimal_separator');
             $this->fieldInfo['group_separator'] = $currentUser->get('currency_grouping_separator');
+
+            if ($this->isAmountCurrencyField()) {
+                $this->fieldInfo['amount_currencies'] = $this->getAmountCurrencies();
+            }
         }
 
         if ($this->getFieldDataType() == 'owner') {
@@ -1726,6 +1731,48 @@ class Vtiger_Field_Model extends Vtiger_Field
     public function isMultiReferenceField(): bool
     {
         return self::MULTI_REFERENCE_TYPE === $this->getFieldDataType();
+    }
+
+    /**
+     * Checks whether the field is an amount with its own currency (uitype 35). Its data type stays currency.
+     *
+     * @return bool
+     */
+    public function isAmountCurrencyField(): bool
+    {
+        return self::UITYPE_AMOUNT_CURRENCY === (int)$this->get('uitype');
+    }
+
+    /**
+     * Returns the currencies an amount with its own currency can use: the active ones, plus the stored currency
+     * of the record when it is no longer active, so a save never switches the currency silently. Symbols are
+     * returned decoded (the database keeps them as HTML entities, e.g. &euro;).
+     *
+     * @param int $storedCurrencyId Currency stored on the record, or 0
+     * @return array<int, array{id: int, symbol: string, code: string}>
+     */
+    public function getAmountCurrencies(int $storedCurrencyId = 0): array
+    {
+        $currencies = [];
+
+        foreach (getAllCurrencies() as $currency) {
+            $currencies[(int)$currency['curid']] = [
+                'id' => (int)$currency['curid'],
+                'symbol' => decode_html((string)$currency['currencysymbol']),
+                'code' => decode_html((string)$currency['currencycode']),
+            ];
+        }
+
+        if (0 < $storedCurrencyId && !isset($currencies[$storedCurrencyId])) {
+            $currencyInfo = Vtiger_Functions::getCurrencyInfo($storedCurrencyId) ?: [];
+            $currencies[$storedCurrencyId] = [
+                'id' => $storedCurrencyId,
+                'symbol' => decode_html((string)($currencyInfo['currency_symbol'] ?? '')),
+                'code' => decode_html((string)($currencyInfo['currency_code'] ?? '')),
+            ];
+        }
+
+        return array_values($currencies);
     }
 
     public function isOwnerField()

@@ -23,3 +23,4 @@ The Settings picklist override carries option colors through the shared d1 Selec
 
 - Run `php -l modules/Webforms/capture.php` and `php -l modules/Webforms/model/WebformsFieldModel.php`.
 - Submit a valid form and confirm the target record is created; submit an empty required field and unavailable picklist or multipicklist values and confirm no record is created and an error response is returned.
+- Currency values posted by a webform have their commas removed for uitype 71, 72 and 35 (amount with its own currency) in `capture.php`; the currency of a uitype 35 amount defaults to the user currency unless the form posts `<field>_currency_id`.

@@ -207,6 +207,10 @@ class CRMEntity extends CRMExtension
         }
 
         $this->db->startTransaction();
+        // Amounts with their own currency (uitype 35): currency and rate before the write, base amount after it
+        $amountCurrencyModel = Core_AmountCurrency_Model::getInstance();
+        $amountCurrencyModel->prepareRecordValues($this, $module);
+
         foreach ($this->tab_name as $table_name) {
             if ($table_name == "vtiger_crmentity") {
                 $this->insertIntoCrmEntity($module, $fileid);
@@ -214,6 +218,8 @@ class CRMEntity extends CRMExtension
                 $this->insertIntoEntityTable($table_name, $module, $fileid);
             }
         }
+
+        $amountCurrencyModel->saveBaseValues($this, $module);
         $columnFields->restartTracking();
         //Calling the Module specific save code
         $this->save_module($module);
@@ -758,7 +764,7 @@ class CRMEntity extends CRMExtension
                 } elseif ($uitype == 72 && !$ajaxSave) {
                     // Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
                     $fldvalue = Vtiger_Currency_UIType::convertToDBFormat($this->column_fields[$fieldname], null, true);
-                } elseif ($uitype == 71 && !$ajaxSave) {
+                } elseif (($uitype == 71 || Core_AmountCurrency_Helper::isAmountCurrencyUIType($uitype)) && !$ajaxSave) {
                     $fldvalue = Vtiger_Currency_UIType::convertToDBFormat($this->column_fields[$fieldname], null, true);
                 } elseif ($uitype == 69) {
                     $fldvalue = $this->column_fields[$fieldname];

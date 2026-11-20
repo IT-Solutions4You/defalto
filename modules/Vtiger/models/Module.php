@@ -1766,7 +1766,8 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
             $currentUser = Users_Record_Model::getCurrentUserModel();
             $queryGenerator = new QueryGenerator($relatedModuleName, $currentUser);
             $queryGenerator->setFields($relatedListFields);
-            $selectColumnSql = $queryGenerator->getSelectClauseColumnSQL();
+            $selectColumnSql = $queryGenerator->getSelectClauseColumnSQL()
+                . Core_AmountCurrency_Model::getInstance()->getCurrencySelectColumns($relatedModuleName, array_values($relatedListFields));
             $newQuery = preg_split('/FROM/i', $query);
             $selectColumnSql = 'SELECT DISTINCT vtiger_crmentity.crmid,' . $selectColumnSql;
             $query = $selectColumnSql . ' FROM ' . ($newQuery[1] ?? '');
@@ -1986,6 +1987,11 @@ class Vtiger_Module_Model extends Vtiger_Module implements Core_ModuleModel_Inte
     public function getOrderBySql($orderBy)
     {
         $orderByField = $this->getFieldByColumn($orderBy);
+
+        // An amount with its own currency (uitype 35) is ordered by its amount in the base currency
+        if ($orderByField->isAmountCurrencyField()) {
+            $orderBy = Core_AmountCurrency_Helper::getBaseColumnName($orderBy);
+        }
 
         return $orderByField->get('table') . '.' . $orderBy;
     }

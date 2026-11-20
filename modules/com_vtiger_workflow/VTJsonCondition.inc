@@ -263,6 +263,17 @@ class VTJsonCondition
             $value = vtws_getWebserviceEntityId('DocumentFolders', $value);
         }
 
+        // An amount with its own currency (uitype 35) is compared by its amount in the base currency when the
+        // condition holds a typed number; a comparison with another field or an expression keeps the raw amount
+        if ($fieldInstance && 'rawtext' === ($expressionType ?: 'rawtext') && Core_AmountCurrency_Helper::isAmountCurrencyUIType($fieldInstance->getUIType()) && is_numeric($value)) {
+            $recordId = (int)(explode('x', (string)$entityData->getId())[1] ?? 0);
+            $baseValue = $recordId ? Core_AmountCurrency_Model::getInstance()->getBaseValue($entityData->getModuleName(), $recordId, $cond['fieldname']) : null;
+
+            if (null !== $baseValue) {
+                $fieldValue = $baseValue;
+            }
+        }
+
         if (is_numeric($fieldValue) && is_numeric($value)) {
             $fieldValue = round($fieldValue, 8);
             $value = round($value, 8);

@@ -606,7 +606,91 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
             ],
         );
 
+        if (Core_AmountCurrency_Helper::isAmountCurrencyUIType($fieldInstance->uitype)) {
+            $this->createAmountCurrencyFields($fieldInstance, $fieldParams);
+        }
+
         return $fieldInstance;
+    }
+
+    /**
+     * Creates the companion fields and column of an amount with its own currency (uitype 35): the hidden fields
+     * <name>_currency_id (uitype 117) and <name>_conversion_rate, and the column <column>_base with the amount in
+     * the base currency, all in the table of the amount. Safe to run again: existing fields and columns stay.
+     *
+     * @param Vtiger_Field_Model $amountField Saved amount field
+     * @param array              $fieldParams Parameters the amount field was created with
+     * @return void
+     * @throws Exception
+     */
+    public function createAmountCurrencyFields(Vtiger_Field_Model $amountField, array $fieldParams): void
+    {
+        $companionParams = [
+            'table' => $amountField->table,
+            'block' => $fieldParams['block'] ?? $amountField->block,
+            'module' => $fieldParams['module'] ?? null,
+            'displaytype' => 3,
+            'quickcreate' => 1,
+            'masseditable' => 0,
+            'presence' => 2,
+        ];
+
+        $this->createField(Core_AmountCurrency_Helper::getCurrencyName($amountField->name), array_merge($companionParams, [
+            'uitype' => Vtiger_Field_Model::UITYPE_CURRENCY_CODE,
+            'column' => Core_AmountCurrency_Helper::getCurrencyName($amountField->column),
+            'columntype' => 'int(19)',
+            'label' => 'Currency',
+            'typeofdata' => 'I~O',
+        ]));
+        $this->createField(Core_AmountCurrency_Helper::getRateName($amountField->name), array_merge($companionParams, [
+            'uitype' => Vtiger_Field_Model::UITYPE_NUMERIC,
+            'column' => Core_AmountCurrency_Helper::getRateName($amountField->column),
+            'columntype' => 'decimal(12,5)',
+            'label' => 'Conversion Rate',
+            'typeofdata' => 'N~O',
+        ]));
+        $this->getTable($amountField->table, null)->createColumn(
+            Core_AmountCurrency_Helper::getBaseColumnName($amountField->column),
+            'decimal(25,8) DEFAULT NULL'
+        );
+        $this->updateAmountCurrencyValues((string)$amountField->table, (string)$amountField->column);
+        Core_AmountCurrency_Model::clearCache();
+    }
+
+    /**
+     * Fills the currency, the rate and the base amount of existing amounts that have none yet, e.g. after an
+     * existing currency field became uitype 35: missing currency → base currency, missing rate → current rate
+     * of the currency, base amount = amount / rate. Rows with values stay unchanged, so it is safe to run again.
+     * A module that converts a field with a known currency per record sets currency and rate in its migrate().
+     *
+     * @param string $tableName  Table of the amount
+     * @param string $columnName Amount column
+     * @return void
+     */
+    public function updateAmountCurrencyValues(string $tableName, string $columnName): void
+    {
+        $currencyColumn = Core_AmountCurrency_Helper::getCurrencyName($columnName);
+        $rateColumn = Core_AmountCurrency_Helper::getRateName($columnName);
+        $baseColumn = Core_AmountCurrency_Helper::getBaseColumnName($columnName);
+
+        $this->db->pquery(
+            sprintf('UPDATE %s SET %s = ? WHERE %s IS NOT NULL AND (%s IS NULL OR %s = 0)', $tableName, $currencyColumn, $columnName, $currencyColumn, $currencyColumn),
+            [(int)CurrencyField::getDBCurrencyId()]
+        );
+        $this->db->pquery(
+            sprintf(
+                'UPDATE %1$s LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = %1$s.%2$s SET %1$s.%3$s = COALESCE(vtiger_currency_info.conversion_rate, 1) WHERE %1$s.%4$s IS NOT NULL AND (%1$s.%3$s IS NULL OR %1$s.%3$s = 0)',
+                $tableName,
+                $currencyColumn,
+                $rateColumn,
+                $columnName
+            ),
+            []
+        );
+        $this->db->pquery(
+            sprintf('UPDATE %1$s SET %2$s = CASE WHEN %3$s > 0 THEN %4$s / %3$s ELSE %4$s END WHERE %4$s IS NOT NULL AND %2$s IS NULL', $tableName, $baseColumn, $rateColumn, $columnName),
+            []
+        );
     }
 
     /**

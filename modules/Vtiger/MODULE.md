@@ -112,3 +112,4 @@ This module holds shared base behavior inherited by other modules. It has no sta
 # Record action permissions
 
 - `Save`/`SaveAjax` (`saveRecord()`), `MassSave`, `MassDelete`, the list row actions, `Detail` and `Edit` (locked fields in `blocks/Fields.tpl`, denied picklist values in `uitypes/Picklist.tpl`, a denied form shown as `Core/RecordActionDeniedPage.tpl` in the layout, a refused full save shown again in the form) apply `Core_RecordActionPermission_Model` rules; see `modules/Core/MODULE.md` (Record action permissions) for the owner, the checks and the validation scenario.
+- Currency fields: `Vtiger_Currency_UIType` also serves uitype 35 (amount with its own currency, see `modules/Core/MODULE.md`); `Vtiger_Record_Model::getFieldCurrencyId()` returns the field's own currency for it.

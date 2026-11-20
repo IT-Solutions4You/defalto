@@ -23,7 +23,7 @@
     {/foreach}
 {elseif $FIELD_MODEL->getFieldDataType() eq 'currency'}
     {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RECORD->getFieldCurrencyId($FIELD_MODEL->getName()))}
-    <span class="currencyValue" data-currency-symbol="{$CURRENCY_INFO['symbol']}">
+    <span class="currencyValue" data-currency-symbol="{$CURRENCY_INFO['symbol']}" data-currency-id="{$RECORD->getFieldCurrencyId($FIELD_MODEL->getName())}">
         {CurrencyField::appendCurrencySymbol($RECORD->getDisplayValue($FIELD_MODEL->getName()), $CURRENCY_INFO['symbol'])}
     </span>
 {elseif $FIELD_MODEL->get('name') eq 'signature'}

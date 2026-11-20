@@ -552,10 +552,43 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js', {}, {
 
         return value;
     },
+    /**
+     * Returns the currency button with its menu and the hidden currency input of an amount with its own currency
+     * (uitype 35), or an empty string for other currency fields
+     */
+    getAmountCurrencySelectHtml: function () {
+        const currencies = (this.get('amount_currencies') || []).slice(),
+            currencyId = String(this.get('amount_currency_id') || ''),
+            escape = function (text) {
+                return jQuery('<div>').text(String(text)).html();
+            };
+
+        if (!currencies.length) {
+            return '';
+        }
+
+        // Keep a stored currency that is no longer active, so the save does not switch it silently
+        if (currencyId && !currencies.some(currency => String(currency.id) === currencyId)) {
+            currencies.push({id: currencyId, symbol: this.get('amount_currency_symbol') || '', code: ''});
+        }
+
+        const selected = currencies.find(currency => String(currency.id) === currencyId) || {symbol: ''};
+        let html = '<button class="btn btn-outline-secondary dropdown-toggle d-inline-flex align-items-center gap-2 amountCurrencyToggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">' + escape(selected.symbol) + '</button>' +
+            '<ul class="dropdown-menu">';
+
+        jQuery.each(currencies, function (index, currency) {
+            html += '<li><a class="dropdown-item amountCurrencyOption' + (String(currency.id) === currencyId ? ' active' : '') + '" href="#" data-value="' + escape(currency.id) + '" data-symbol="' + escape(currency.symbol) + '">' + escape(currency.symbol + ' ' + currency.code) + '</a></li>';
+        });
+
+        return html + '</ul>' +
+            '<input type="hidden" class="amountCurrencySelect" name="' + this.getName() + '_currency_id" value="' + escape(currencyId) + '" data-value="' + escape(currencyId) + '" data-symbol="' + escape(selected.symbol) + '" />';
+    },
     getUi: function () {
+        const currencySelect = this.getAmountCurrencySelectHtml(),
+            currencyAddon = currencySelect || '<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>';
         let html = '<div class="CurrencyField w-100">' +
                 '<div class="input-group flex-nowrap">' +
-                '<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>' +
+                currencyAddon +
                 '<input class="inputElement form-control currencyField replaceCommaWithDot allowOnlyNumbers" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
                 '</div>' +
                 '</div>',

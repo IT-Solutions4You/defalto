@@ -1021,16 +1021,46 @@ class Vtiger_Record_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * Returns the currency in which a currency field of the record is displayed. Every currency field uses the
-     * currency of the record (getCurrencyId()); a module whose field holds an amount in another currency, such as
-     * an amount in the base currency, overrides this method for that field.
+     * Returns the currency in which a currency field of the record is displayed. An amount with its own currency
+     * (uitype 35) uses its hidden currency field; every other currency field uses the currency of the record
+     * (getCurrencyId()). A module whose field holds an amount in another currency, such as an amount in the base
+     * currency, overrides this method for that field.
      *
      * @param string $fieldName Currency field name
      * @return int Currency id
      */
     public function getFieldCurrencyId(string $fieldName): int
     {
-        return $this->getCurrencyId();
+        $currencyId = $this->getAmountCurrencyId($fieldName);
+
+        return $currencyId ?: $this->getCurrencyId();
+    }
+
+    /**
+     * Returns the stored currency of an amount with its own currency (uitype 35), or 0 for any other field.
+     * List rows carry the currency column in their raw data (Core_QueryGenerator_Model adds it to the select);
+     * a fully loaded record carries it as the value of the hidden currency field.
+     *
+     * @param string $fieldName Field name
+     * @return int Currency id, or 0
+     */
+    public function getAmountCurrencyId(string $fieldName): int
+    {
+        $moduleModel = $this->getModule();
+        $fieldModel = $moduleModel ? $moduleModel->getField($fieldName) : false;
+
+        if (!$fieldModel || !$fieldModel->isAmountCurrencyField()) {
+            return 0;
+        }
+
+        $currencyId = (int)$this->getRaw(Core_AmountCurrency_Helper::getCurrencyName((string)$fieldModel->get('column')));
+        $currencyValue = $this->get(Core_AmountCurrency_Helper::getCurrencyName($fieldName));
+
+        if (!$currencyId && is_numeric($currencyValue)) {
+            $currencyId = (int)$currencyValue;
+        }
+
+        return $currencyId;
     }
 
     /**

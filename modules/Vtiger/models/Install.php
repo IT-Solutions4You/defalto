@@ -16,6 +16,7 @@ class Vtiger_Install_Model extends Core_Install_Model
         [Vtiger_Field_Model::UITYPE_TAX, 'tax'],
         [Vtiger_Field_Model::UITYPE_COUNTRY, 'country'],
         [Vtiger_Field_Model::UITYPE_MULTI_REFERENCE, Vtiger_Field_Model::MULTI_REFERENCE_TYPE],
+        [Vtiger_Field_Model::UITYPE_AMOUNT_CURRENCY, 'currency'],
     ];
 
     /**
@@ -27,6 +28,7 @@ class Vtiger_Install_Model extends Core_Install_Model
         ['RecurringInvoice', 'cron/modules/SalesOrder/RecurringInvoice.php', 3600, 'SalesOrder', 2, 'Recommended frequency for RecurringInvoice is 1 hour'],
         ['SendReminder', 'cron/SendReminder.php', 900, 'Appointments', 3, 'Recommended frequency for SendReminder is 15 mins'],
         ['MailScanner', 'cron/MailScanner.php', 900, 'Settings', 4, 'Recommended frequency for MailScanner is 15 mins'],
+        ['PaymentStatus', 'cron/PaymentStatus.php', 86400, 'Core', 5, 'Updates payment statuses by payment date and due date'],
     ];
 
     public function addCustomLinks(): void

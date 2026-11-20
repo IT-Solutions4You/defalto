@@ -365,8 +365,30 @@ Vtiger.Class('Vtiger_Index_Js', {
         //reference preview event registeration
         this.registerReferencePreviewEvent();
         this.registerEventForPostSaveFail();
+        this.registerAmountCurrencyEvents();
 
         vtUtils.enableTooltips();
+    },
+
+    /**
+     * Currency menu of an amount with its own currency (uitype 35): the chosen currency goes to the hidden currency
+     * input and its symbol to the button. One delegated handler serves edit forms, quick create and inline edit.
+     */
+    registerAmountCurrencyEvents: function () {
+        jQuery(document).off('click.amountCurrency').on('click.amountCurrency', '.amountCurrencyOption', function (e) {
+            e.preventDefault();
+
+            const option = jQuery(this),
+                inputGroup = option.closest('.input-group');
+
+            inputGroup.find('.amountCurrencySelect')
+                .val(option.data('value'))
+                .attr('data-symbol', option.data('symbol'))
+                .trigger('change');
+            inputGroup.find('.amountCurrencyToggle').text(option.data('symbol'));
+            inputGroup.find('.amountCurrencyOption').removeClass('active');
+            option.addClass('active');
+        });
     },
 
     addBodyScroll: function () {

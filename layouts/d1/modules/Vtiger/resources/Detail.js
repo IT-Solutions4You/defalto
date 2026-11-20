@@ -1195,6 +1195,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
                 fieldInfo = uimeta.field.get(fieldName);
             }
 
+            if (fieldInfo && fieldInfo.amount_currencies) {
+                fieldInfo['amount_currency_id'] = jQuery('.currencyValue', detailViewValue).data('currency-id');
+                fieldInfo['amount_currency_symbol'] = jQuery('.currencyValue', detailViewValue).data('currency-symbol');
+            }
+
             if ('boolean' === fieldType) {
                 if (0 == rawValue) {
                     fieldInfo['value'] = "No";
@@ -1346,9 +1351,12 @@ Vtiger.Class("Vtiger_Detail_Js", {
             }
 
             var fieldValue = ajaxEditNewValue;
+            // An amount with its own currency (uitype 35) also saves its currency select
+            const amountCurrencySelect = jQuery('.amountCurrencySelect', editElement),
+                isAmountCurrencyChanged = amountCurrencySelect.length > 0 && String(amountCurrencySelect.val()) !== String(amountCurrencySelect.data('value'));
 
             //Before saving ajax edit values we need to check if the value is changed then only we have to save
-            if (previousValue === ajaxEditNewValue || undefined === ajaxEditNewValue) {
+            if ((previousValue === ajaxEditNewValue || undefined === ajaxEditNewValue) && !isAmountCurrencyChanged) {
                 detailViewValue.css('display', 'inline-block');
                 editElement.addClass('hide');
                 editElement.removeClass('ajaxEdited');
@@ -1362,6 +1370,10 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
                 fieldNameValueMap['value'] = fieldValue;
                 fieldNameValueMap['field'] = fieldName;
+
+                if (amountCurrencySelect.length) {
+                    fieldNameValueMap[amountCurrencySelect.attr('name')] = amountCurrencySelect.val();
+                }
 
                 if (recordElement.length) {
                     fieldNameValueMap['record'] = recordElement.val();
@@ -1433,6 +1445,17 @@ Vtiger.Class("Vtiger_Detail_Js", {
                                 detailViewValue.html(picklistHtml);
                             } else if (fieldBasicData.data('type') == 'currency' && app.getModuleName() != 'Users') {
                                 detailViewValue.find('.currencyValue').html(postSaveRecordDetails[fieldName].display_value);
+
+                                if (isAmountCurrencyChanged) {
+                                    const currencySymbol = amountCurrencySelect.attr('data-symbol');
+
+                                    amountCurrencySelect.data('value', amountCurrencySelect.val());
+                                    detailViewValue.find('.currencyValue')
+                                        .attr('data-currency-symbol', currencySymbol)
+                                        .attr('data-currency-id', amountCurrencySelect.val())
+                                        .data('currency-id', amountCurrencySelect.val())
+                                        .html(currencySymbol + ' ' + postSaveRecordDetails[fieldName].display_value);
+                                }
                             } else {
                                 detailViewValue.html(postSaveRecordDetails[fieldName].display_value);
                             }
