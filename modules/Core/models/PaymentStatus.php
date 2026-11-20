@@ -9,18 +9,16 @@
  */
 
 /**
- * Daily update of payment statuses that change with the calendar (Waiting → Pending, Waiting → Received).
+ * Daily update of payment statuses that change with the calendar (Waiting → Pending, Waiting → Paid).
  * The core cron PaymentStatus runs it always; without an active payment module it does nothing.
  */
 class Core_PaymentStatus_Model
 {
     /**
-     * Payment modules and the model whose updateOpenStatuses() re-saves their open payments.
+     * Payment modules; the document synchronisation model of each (Core_PaymentConfig_Helper::getDocumentSyncModel())
+     * re-saves their open payments.
      */
-    public const PAYMENT_MODULES = [
-        'IncomingPayment' => 'IncomingPayment_DocumentSync_Model',
-        'OutgoingPayment' => 'OutgoingPayment_DocumentSync_Model',
-    ];
+    public const PAYMENT_MODULES = ['IncomingPayment', 'OutgoingPayment'];
 
     /**
      * Returns a new instance.
@@ -48,15 +46,16 @@ class Core_PaymentStatus_Model
     /**
      * Returns the status models of the installed and active payment modules.
      *
-     * @return array<string, object>
+     * @return array<string, Core_PaymentDocumentSync_Model>
+     * @throws Exception
      */
     public function getActiveStatusModels(): array
     {
         $models = [];
 
-        foreach (self::PAYMENT_MODULES as $moduleName => $className) {
-            if (vtlib_isModuleActive($moduleName) && class_exists($className)) {
-                $models[$moduleName] = $className::getInstance();
+        foreach (self::PAYMENT_MODULES as $moduleName) {
+            if (vtlib_isModuleActive($moduleName) && class_exists($moduleName . '_Config_Helper')) {
+                $models[$moduleName] = Core_PaymentConfig_Helper::getInstance($moduleName)->getDocumentSyncModel();
             }
         }
 
