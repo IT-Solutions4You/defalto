@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'حدّث Installer قبل تثبيت النظام أو أي إضافات.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'تعذر التحقق من أحدث إصدار من Installer. أعد البحث عن التحديثات قبل تثبيت النظام أو الإضافات.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'استخدم حزمة Installer بإصدار لا يقل عن الإصدار المثبت وأحدث إصدار متاح.',
     'LBL_REINSTALL' => 'إعادة التثبيت',
     'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'سيتم تثبيت إصدار أحدث. راجع التغييرات قبل المتابعة.',
     'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'هذا الإصدار مثبت بالفعل. تؤدي المتابعة إلى إعادة تثبيت ملفاته وتشغيل تحديث الوحدة مرة أخرى.',

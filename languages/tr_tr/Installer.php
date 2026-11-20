@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'Sistemi veya eklentileri yüklemeden önce Installer uygulamasını güncelleyin.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'En son Installer sürümü doğrulanamadı. Sistemi veya eklentileri yüklemeden önce güncelleme denetimini tekrarlayın.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'En az yüklü sürüm ve kullanılabilir en son sürüm kadar yeni bir Installer paketi kullanın.',
     'LBL_REINSTALL' => 'Yeniden yükle',
     'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Daha yeni bir sürüm yüklenecek. Devam etmeden önce değişiklikleri inceleyin.',
     'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Bu sürüm zaten yüklü. Devam edildiğinde dosyalar yeniden yüklenir ve modül güncellemesi tekrar çalıştırılır.',

@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'Werk Installer bij voordat u het systeem of extensies installeert.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'De nieuwste Installer-versie kon niet worden gecontroleerd. Controleer opnieuw op updates voordat u het systeem of extensies installeert.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'Gebruik een Installer-pakket dat minstens zo recent is als de geïnstalleerde en de nieuwste beschikbare versie.',
     'LBL_REINSTALL' => 'Opnieuw installeren',
     'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Er wordt een nieuwere versie geïnstalleerd. Bekijk de wijzigingen voordat u doorgaat.',
     'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Deze versie is al geïnstalleerd. Als u doorgaat, worden de bestanden opnieuw geïnstalleerd en wordt de module-update opnieuw uitgevoerd.',

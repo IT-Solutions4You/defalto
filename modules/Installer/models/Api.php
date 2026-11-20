@@ -20,6 +20,7 @@ class Installer_Api_Model extends Vtiger_Net_Client
     public const INVALID_USER_COUNT = 'invalid_user_count';
     public string $apiUrl = 'https://its4you.sk/en/api_defalto';
     protected array $lastRequestDiagnostics = [];
+    protected static ?array $publicExtensions = null;
 
     public function activateLicenseInfo(string $license, mixed $userCount = null): array
     {
@@ -68,8 +69,12 @@ class Installer_Api_Model extends Vtiger_Net_Client
     /**
      * @throws Exception
      */
-    public function getExtensionInstall(): array
+    public function getPublicExtensionInstall(bool $refresh = false): array
     {
+        if (!$refresh && null !== self::$publicExtensions) {
+            return self::$publicExtensions;
+        }
+
         // Download metadata returned without a license identifies public packages.
         $extensions = self::transformExtensionResponse($this->sendJsonRequest('/extension/v1', []));
 
@@ -79,6 +84,15 @@ class Installer_Api_Model extends Vtiger_Net_Client
         }
 
         unset($extensionInfo);
+
+        self::$publicExtensions = $extensions;
+
+        return $extensions;
+    }
+
+    public function getExtensionInstall(): array
+    {
+        $extensions = $this->getPublicExtensionInstall();
 
         foreach (Installer_License_Model::getAll() as $license) {
             $license->check();

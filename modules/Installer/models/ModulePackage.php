@@ -107,6 +107,8 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
 
     public function install(): Vtiger_Module_Model
     {
+        Installer_UpdateRequirement_Model::getInstance()->validateInstallation($this->moduleName, $this->packageVersion);
+
         $isNewModule = !$this->isUpdate();
         $this->validateInstallation();
 
@@ -227,6 +229,8 @@ class Installer_ModulePackage_Model extends Vtiger_Base_Model
         if ($this->packageVersion === '') {
             throw new RuntimeException('Module package has no valid moduleVersion');
         }
+
+        Installer_UpdateRequirement_Model::getInstance()->validateInstallation($this->moduleName, $this->packageVersion);
 
         if (in_array($manifestPath, $packagePaths, true)) {
             $manifestSource = $this->archive->getFileContent($this->sourceFolder, $manifestPath);

@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'Aktualisieren Sie Installer, bevor Sie das System oder Erweiterungen installieren.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'Die neueste Installer-Version konnte nicht geprüft werden. Wiederholen Sie die Update-Prüfung, bevor Sie das System oder Erweiterungen installieren.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'Verwenden Sie ein Installer-Paket, dessen Version mindestens der installierten und der neuesten verfügbaren Version entspricht.',
     'LBL_REINSTALL' => 'Neu installieren',
     'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Eine neuere Version wird installiert. Prüfen Sie die Änderungen, bevor Sie fortfahren.',
     'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Diese Version ist bereits installiert. Beim Fortfahren werden die Dateien erneut installiert und die Modulaktualisierung erneut ausgeführt.',

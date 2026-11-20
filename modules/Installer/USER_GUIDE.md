@@ -7,6 +7,18 @@ Installer follows the CRM language selected by the user, including its Settings 
 
 ## Browse and install extensions
 
+When Installer is current, its available version and up-to-date status appear together on one line below its name.
+
+Hover over a disabled system or extension installation button, or focus its tooltip with the keyboard, to see why installation is blocked. The message explains that Installer must be updated first or that its latest version could not be verified.
+
+The Installer update section follows the System section design: a status icon and installed version on the left, with the available version below it and actions on the right. When installation is blocked, a compact red badge beside the Installer name shows that an update is available or verification is unavailable. Hover over the badge to read the full prerequisite message; screen readers receive the same explanation. A green check means current, an up arrow indicates an update, and a warning triangle means verification is unavailable. Actions move below the version information on smaller screens.
+
+Extensions can use versions such as `1.1` or `1.1.1`. Installer displays the full version and compares each part: `1.1.1` is newer than `1.1`, and `1.1.10` is newer than `1.1.9`. Catalog downloads and uploaded ZIP packages support both formats. Package publishers must use the same version in the module declaration, catalog, optional manifest and latest changelog heading.
+
+The Installer section above System shows the installed and latest available Installer versions. Update Installer first when prompted. Until Installer is current, system updates and extension installation, update and reinstall actions are blocked, including ZIP packages uploaded through Module Manager. License management remains available. Use Check for updates to retry if the latest version cannot be verified. A local version newer than the public release is also accepted.
+
+Installer updates remain available while other installations are blocked. Installer cannot be downgraded below its installed or latest known public version. If the catalog is unavailable, a validated Installer ZIP at least as recent as the installed version can be uploaded through Module Manager to repair it. Close the successful installation dialog to reload the page before starting another installation. System update packages preserve Installer files and cannot replace the separately updated Installer.
+
 The Modules list shows extensions published in the public download catalog. Use the search box together with All, Updates, or Not installed to narrow the list; the filter counts always describe the complete loaded catalog. Each row separates its installed and available versions and shows whether an update is available, the module is up to date, it is not installed, or its package is unavailable.
 
 A license can unlock a product that is already in the catalog, but it cannot add other modules to the list. Local custom modules, including those created with Module Builder, are not shown merely because they are installed. Catalog products such as Module Builder remain visible when their package requires a license. The installed version is read from the extension's base module file.

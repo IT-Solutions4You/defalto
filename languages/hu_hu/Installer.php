@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'A rendszer vagy a bővítmények telepítése előtt frissítse az Installert.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'Nem sikerült ellenőrizni az Installer legújabb verzióját. A rendszer vagy a bővítmények telepítése előtt ismételje meg a frissítések keresését.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'Használjon olyan Installer-csomagot, amely legalább olyan új, mint a telepített és a legújabb elérhető verzió.',
     'LBL_REINSTALL' => 'Újratelepítés',
     'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Újabb verzió lesz telepítve. A folytatás előtt tekintse át a változásokat.',
     'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Ez a verzió már telepítve van. A folytatással a fájlok újratelepülnek, és a modul frissítése ismét lefut.',

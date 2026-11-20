@@ -95,6 +95,30 @@
             </div>
         </section>
 
+        <section class="bg-body border rounded mb-3" aria-labelledby="installerUpdateHeading">
+            <div class="px-3 py-2 border-bottom"><h4 id="installerUpdateHeading" class="m-0 fw-bold">{vtranslate('Installer', $MODULE)}</h4></div>
+            <div class="row g-3 p-3 align-items-center">
+                <div class="col-12 col-lg d-flex align-items-center gap-3">
+                    <div class="fs-2 lh-1 {if $INSTALLER_UPDATE->isCurrent()}text-success{elseif $INSTALLER_UPDATE->getAvailableVersion()}text-primary{else}text-warning{/if}"><i class="fa-solid {if $INSTALLER_UPDATE->isCurrent()}fa-circle-check{elseif $INSTALLER_UPDATE->getAvailableVersion()}fa-circle-up{else}fa-triangle-exclamation{/if}" aria-hidden="true"></i></div>
+                    <div>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <span class="fs-5 fw-bold">{vtranslate('Installer', $MODULE)} v{$INSTALLER_UPDATE->getInstalledVersion()|escape:'html'}</span>
+                            {if !$INSTALLER_UPDATE->isCurrent()}
+                                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle" title="{$INSTALLER_UPDATE->getBlockingMessage()|escape:'html'}" aria-label="{$INSTALLER_UPDATE->getBlockingMessage()|escape:'html'}">{if $INSTALLER_UPDATE->getAvailableVersion()}{vtranslate('LBL_UPDATE_AVAILABLE', $MODULE)}{else}{vtranslate('LBL_UNAVAILABLE', $MODULE)}{/if}</span>
+                            {/if}
+                        </div>
+                        <div class="text-secondary text-nowrap">{vtranslate('LBL_AVAILABLE_VERSION', $MODULE)}: {if $INSTALLER_UPDATE->getAvailableVersion()}{$INSTALLER_UPDATE->getAvailableVersion()|escape:'html'}{else}{vtranslate('LBL_UNAVAILABLE', $MODULE)}{/if}{if $INSTALLER_UPDATE->isCurrent()} · {vtranslate('LBL_MODULE_UP_TO_DATE', $MODULE)}{/if}</div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-auto d-flex flex-wrap justify-content-lg-end gap-2">
+                    {if !$INSTALLER_UPDATE->isCurrent() && $INSTALLER_EXTENSION && $INSTALLER_EXTENSION->isInstallAvailable()}
+                        <button type="button" class="btn fw-bold active btn-success bg-success text-white border-success" data-download-extension="Installer"><i class="fa-solid fa-download me-2" aria-hidden="true"></i>{vtranslate('LBL_UPDATE', $MODULE)}</button>
+                    {/if}
+                    <a class="btn fw-bold btn-outline-primary" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation"><i class="fa-solid fa-arrows-rotate me-2" aria-hidden="true"></i>{vtranslate('LBL_CHECK_FOR_UPDATES', $MODULE)}</a>
+                </div>
+            </div>
+        </section>
+
         <div class="sectionTagContainer"><div class="sectionTag" id="UpdateDefalto"></div></div>
         <section class="bg-body border rounded mb-3" aria-labelledby="installerSystemHeading">
             <div class="px-3 py-2 border-bottom"><h4 id="installerSystemHeading" class="m-0 fw-bold">{vtranslate('LBL_SYSTEM', $QUALIFIED_MODULE)}</h4></div>
@@ -111,7 +135,9 @@
                         {if $SYSTEM_MODEL->isNewestVersion()}
                             {if $SYSTEM_MODEL->isCacheRefreshAllowed()}<a class="btn fw-bold btn-outline-primary" data-update-information="system" href="index.php?module=Installer&view=IndexAjax&mode=updateInformation"><i class="fa-solid fa-arrows-rotate me-2" aria-hidden="true"></i>{vtranslate('LBL_CHECK_FOR_UPDATES', $MODULE)}</a>{/if}
                         {elseif $SYSTEM_MODEL->hasDownloadUrl()}
-                            <button type="button" class="btn fw-bold active btn-success bg-success text-white border-success" data-download-system="{$SYSTEM_MODEL->getVersion()}"><i class="fa-solid fa-download me-2" aria-hidden="true"></i>{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</button>
+                            {if !$INSTALLER_UPDATE->isCurrent()}<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" title="{$INSTALLER_UPDATE->getBlockingMessage()|escape:'html'}" aria-label="{$INSTALLER_UPDATE->getBlockingMessage()|escape:'html'}">{/if}
+                                <button type="button" class="btn fw-bold active btn-success bg-success text-white border-success{if !$INSTALLER_UPDATE->isCurrent()} pe-none{/if}" data-download-system="{$SYSTEM_MODEL->getVersion()}" {if !$INSTALLER_UPDATE->isCurrent()}disabled{/if}><i class="fa-solid fa-download me-2" aria-hidden="true"></i>{vtranslate('LBL_UPDATE', $QUALIFIED_MODULE)}</button>
+                            {if !$INSTALLER_UPDATE->isCurrent()}</span>{/if}
                         {else}
                             <a class="btn fw-bold btn-primary" target="_blank" rel="noopener noreferrer" href="index.php?module=Installer&view=Redirect&mode=SourceForge"><i class="fa-solid fa-download me-2" aria-hidden="true"></i>{vtranslate('LBL_DOWNLOAD', $QUALIFIED_MODULE)}</a>
                         {/if}
@@ -149,7 +175,16 @@
                                 <td class="px-3 py-2">{if 'update_available' === $EXTENSION_STATUS}<span class="badge fs-6 fw-bold px-3 py-2 bg-success-subtle text-success-emphasis border border-success-subtle"><i class="fa-solid fa-arrow-up me-2" aria-hidden="true"></i>{vtranslate('LBL_UPDATE_AVAILABLE', $QUALIFIED_MODULE)}</span>{elseif 'not_installed' === $EXTENSION_STATUS}<span class="badge fs-6 fw-bold px-3 py-2 bg-primary-subtle text-primary-emphasis border border-primary-subtle"><i class="fa-solid fa-plus me-2" aria-hidden="true"></i>{vtranslate('LBL_NOT_INSTALLED', $QUALIFIED_MODULE)}</span>{elseif 'up_to_date' === $EXTENSION_STATUS}<span class="badge fs-6 fw-bold px-3 py-2 bg-body-secondary text-body-secondary"><i class="fa-solid fa-check me-2" aria-hidden="true"></i>{vtranslate('LBL_MODULE_UP_TO_DATE', $QUALIFIED_MODULE)}</span>{else}<span class="badge fs-6 fw-bold px-3 py-2 bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="fa-solid fa-triangle-exclamation me-2" aria-hidden="true"></i>{vtranslate('LBL_UNAVAILABLE', $QUALIFIED_MODULE)}</span>{/if}</td>
                                 <td class="px-3 py-2">
                                     <div class="row g-2 align-items-center flex-nowrap">
-                                        <div class="col-6">{if $EXTENSION_MODEL->isInstallAvailable()}<button type="button" class="btn fw-bold active {if $EXTENSION_MODEL->isInstalled()}btn-success bg-success text-white border-success{else}btn-primary{/if}" data-download-extension="{$EXTENSION_MODEL->getName()}"><i class="fa-solid {if $EXTENSION_MODEL->isInstalled()}fa-download{else}fa-plus{/if} me-2" aria-hidden="true"></i>{vtranslate($EXTENSION_MODEL->getDownloadLabel(), $QUALIFIED_MODULE)}</button>{elseif 'unavailable' === $EXTENSION_STATUS}<span class="small text-secondary">{vtranslate('LBL_LICENSE_DOWNLOAD_UNAVAILABLE', $QUALIFIED_MODULE)}</span>{/if}</div>
+                                        <div class="col-6">
+                                            {if $EXTENSION_MODEL->isInstallAvailable()}
+                                                {assign var=EXTENSION_INSTALL_BLOCKED value=(!$INSTALLER_UPDATE->isCurrent() && 'Installer' !== $EXTENSION_NAME)}
+                                                {if $EXTENSION_INSTALL_BLOCKED}<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-placement="top" title="{$INSTALLER_UPDATE->getBlockingMessage()|escape:'html'}" aria-label="{$INSTALLER_UPDATE->getBlockingMessage()|escape:'html'}">{/if}
+                                                    <button type="button" class="btn fw-bold active {if $EXTENSION_MODEL->isInstalled()}btn-success bg-success text-white border-success{else}btn-primary{/if}{if $EXTENSION_INSTALL_BLOCKED} pe-none{/if}" data-download-extension="{$EXTENSION_MODEL->getName()}" {if $EXTENSION_INSTALL_BLOCKED}disabled{/if}><i class="fa-solid {if $EXTENSION_MODEL->isInstalled()}fa-download{else}fa-plus{/if} me-2" aria-hidden="true"></i>{vtranslate($EXTENSION_MODEL->getDownloadLabel(), $QUALIFIED_MODULE)}</button>
+                                                {if $EXTENSION_INSTALL_BLOCKED}</span>{/if}
+                                            {elseif 'unavailable' === $EXTENSION_STATUS}
+                                                <span class="small text-secondary">{vtranslate('LBL_LICENSE_DOWNLOAD_UNAVAILABLE', $QUALIFIED_MODULE)}</span>
+                                            {/if}
+                                        </div>
                                         <div class="col-6 text-end">{if $EXTENSION_LINKS && $EXTENSION_MODEL->isInstalled()}<div class="dropdown"><button class="btn fw-bold btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-gear me-2" aria-hidden="true"></i>{vtranslate('LBL_SETTINGS', $QUALIFIED_MODULE)}</button><ul class="dropdown-menu dropdown-menu-end">{foreach from=$EXTENSION_LINKS item=LINK}<li><a class="dropdown-item" href="{$LINK->getUrl()}">{vtranslate($LINK->getLabel(), $EXTENSION_NAME, $EXTENSION_LABEL)}</a></li>{/foreach}</ul></div>{/if}</div>
                                     </div>
                                 </td>

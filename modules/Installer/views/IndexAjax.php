@@ -64,6 +64,8 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
      */
     public function systemModal(Vtiger_Request $request): void
     {
+        Installer_UpdateRequirement_Model::getInstance()->validateInstallation();
+
         $version = $request->get('version');
         $qualifiedModule = $request->getModule(false);
         $system = Installer_SystemInstall_Model::getInstance($version);
@@ -190,6 +192,8 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
     {
         vglobal('debug', true);
 
+        Installer_UpdateRequirement_Model::getInstance(true)->validateInstallation();
+
         $license = Installer_License_Model::getMembershipLicense();
 
         if (!$license) {
@@ -202,7 +206,10 @@ class Installer_IndexAjax_View extends Vtiger_BasicAjax_View
             throw new Exception($license->getErrorMessage() ?: vtranslate('LBL_LICENSE_INACTIVE', 'Installer'));
         }
 
-        foreach ((array)$license->getInfo('extensions') as $extension) {
+        // Installer is updated separately before the system, never from its ZIP.
+        $preservedExtensions = array_unique(array_merge(['Installer'], (array)$license->getInfo('extensions')));
+
+        foreach ($preservedExtensions as $extension) {
             if ($extension) {
                 Installer_ZipArchive_Model::$skipFiles[] = $extension . '.php';
                 Installer_ZipArchive_Model::$skipFolders[] = 'modules/' . $extension;

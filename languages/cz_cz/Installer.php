@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'Před instalací systému nebo rozšíření aktualizujte Instalátor.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'Nejnovější verzi Instalátoru se nepodařilo ověřit. Před instalací systému nebo rozšíření zopakujte kontrolu aktualizací.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'Použijte balíček Instalátoru, který není starší než nainstalovaná ani nejnovější dostupná verze.',
     'LBL_REINSTALL' => 'Přeinstalovat',
     'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Nainstaluje se novější verze. Před pokračováním si prohlédněte změny.',
     'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Tato verze je již nainstalována. Pokračováním se znovu nainstalují její soubory a opětovně spustí aktualizace modulu.',

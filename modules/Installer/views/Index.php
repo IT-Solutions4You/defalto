@@ -62,11 +62,20 @@ class Installer_Index_View extends Vtiger_Index_View
             $license->check(false);
         }
 
+        $installerUpdate = Installer_UpdateRequirement_Model::getInstance();
+
+        if (!$installerUpdate->isCurrent()) {
+            Installer_ExtensionInstall_Model::clearCache();
+        }
+
         $systemModels = Installer_SystemInstall_Model::getAll();
         $extensions = Installer_ExtensionInstall_Model::getInstallerModules();
+        $installerExtension = $extensions['Installer'] ?? null;
 
         $viewer = $this->getViewer($request);
         $viewer->assign('LICENSE_MODELS', $licenses)
+            ->assign('INSTALLER_UPDATE', $installerUpdate)
+            ->assign('INSTALLER_EXTENSION', $installerExtension)
             ->assign('LICENSE_MODEL', Installer_License_Model::getMembershipLicense())
             ->assign('SYSTEM_MODELS', $systemModels)
             ->assign('EXTENSION_MODELS', $extensions)
