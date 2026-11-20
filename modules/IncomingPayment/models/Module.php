@@ -29,4 +29,50 @@ class IncomingPayment_Module_Model extends Vtiger_Module_Model
 
         return $settingsLinks;
     }
+
+    /**
+     * Returns the list the module title in the page header links to.
+     * While the Payments list is available, it links there, because payments are browsed in Payments.
+     *
+     * @param string $category Menu app of the page
+     * @return string
+     */
+    public function getCustomViewUrl(string $category = ''): string
+    {
+        $paymentsModule = Vtiger_Module_Model::getInstance(IncomingPayment_Config_Helper::PAYMENTS_LIST_MODULE);
+
+        if ($this->isPaymentsListAvailable($paymentsModule)) {
+            return $paymentsModule->getCustomViewUrl($category);
+        }
+
+        return parent::getCustomViewUrl($category);
+    }
+
+    /**
+     * Returns the module name shown in the page header of a payment: Payments while that list is available,
+     * otherwise an empty string, which keeps the module's own name.
+     *
+     * @return string
+     */
+    public function getBreadcrumbLabel(): string
+    {
+        $paymentsModule = Vtiger_Module_Model::getInstance(IncomingPayment_Config_Helper::PAYMENTS_LIST_MODULE);
+
+        if (!$this->isPaymentsListAvailable($paymentsModule)) {
+            return '';
+        }
+
+        return vtranslate(IncomingPayment_Config_Helper::PAYMENTS_LIST_MODULE, IncomingPayment_Config_Helper::PAYMENTS_LIST_MODULE);
+    }
+
+    /**
+     * Tells whether the Payments list is installed, active and open to the current user.
+     *
+     * @param Vtiger_Module_Model|false $paymentsModule Payments module model, or false when it is not installed
+     * @return bool
+     */
+    public function isPaymentsListAvailable($paymentsModule): bool
+    {
+        return $paymentsModule && $paymentsModule->isActive() && $paymentsModule->isPermitted('index');
+    }
 }

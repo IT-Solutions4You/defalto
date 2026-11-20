@@ -10,4 +10,5 @@
 - Deleting an invoice with payments warns about the linked payments and removes the link from them; a restored invoice recalculates its received amount and balance without them.
 - Integration into document modules is configured in Settings → Incoming Payments Integration, which lists every inventory module automatically.
 - An underpayment threshold in the settings marks documents with a small remaining balance as paid while the balance keeps the real amount.
-- A daily job updates payment statuses when payment or due dates arrive.
+- With the Payments list installed, the header of a payment shows Payments and leads back to the Payments list.
+- The daily system task PaymentStatus, shared by all payment modules, updates payment statuses when payment or due dates arrive.

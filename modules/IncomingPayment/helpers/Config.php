@@ -22,6 +22,7 @@ class IncomingPayment_Config_Helper
     public const TABLE_SETTING = 'df_incomingpayment_setting';
     public const SETTING_UNDERPAYMENT_THRESHOLD = 'underpayment_threshold';
 
+    public const PAYMENTS_LIST_MODULE = 'Payments';
     public const FIELD_RELATION = 'relationid';
     public const FIELD_RELATED_TO = 'relatedto';
     public const FIELD_CONTACT = 'contactid';

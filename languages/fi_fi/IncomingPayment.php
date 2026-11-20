@@ -50,7 +50,6 @@ $languageStrings = [
     'LBL_NO_PAYMENTS' => 'Tälle tietueelle ei ole vielä kirjattu maksuja.',
     'LBL_INTEGRATION_INACTIVE' => 'Saapuvia maksuja ei ole integroitu tähän moduuliin.',
     'LBL_INCOMING_PAYMENT_INTEGRATION' => 'Saapuvien maksujen integraatio',
-    'IncomingPaymentStatus' => 'Saapuvien maksujen tilan päivitys',
 ];
 
 $jsLanguageStrings = [

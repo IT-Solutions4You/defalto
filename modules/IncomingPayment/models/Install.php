@@ -29,6 +29,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
      * Index of the reference column while it was an int column (uitype 10).
      */
     private const LEGACY_RELATION_INDEX = 'df_incomingpayment_relationid_idx';
+    private const LEGACY_STATUS_CRON = 'IncomingPaymentStatus';
 
     protected string $moduleNumbering = 'PAYIN';
 
@@ -44,9 +45,6 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         ['LBL_INCOMING_PAYMENT_INTEGRATION', 'index.php?module=IncomingPayment&parent=Settings&view=Index', 'LBL_EXTENSIONS'],
     ];
 
-    public array $registerCron = [
-        ['IncomingPaymentStatus', 'modules/IncomingPayment/cron/Status.php', 86400, 'IncomingPayment', 0, 'Updates incoming payment statuses by payment date and due date'],
-    ];
 
     public array $registerEventHandler = [
         [
@@ -119,7 +117,6 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         $this->updateComments();
         $this->updateRelatedList();
         $this->updateSettingsLinks();
-        $this->updateCron();
         $this->updateEventHandler();
         IncomingPayment_Integration_Model::getInstance()->installDefaults();
         $this->updateIntegrations();
@@ -135,7 +132,6 @@ class IncomingPayment_Install_Model extends Core_Install_Model
     {
         $this->updateIntegrations(false);
         $this->updateEventHandler(false);
-        $this->updateCron(false);
         $this->updateSettingsLinks(false);
         $this->updateRelatedList(false);
         $this->updateComments(false);
@@ -650,6 +646,17 @@ class IncomingPayment_Install_Model extends Core_Install_Model
 
         $this->migrateAccountingBlock();
         $this->migrateRelationField();
+        $this->migrateStatusCron();
+    }
+
+    /**
+     * Removes the former module cron; statuses are updated by the core cron PaymentStatus (Core_PaymentStatus_Model).
+     *
+     * @return void
+     */
+    private function migrateStatusCron(): void
+    {
+        Vtiger_Cron::deregister(self::LEGACY_STATUS_CRON);
     }
 
     /**

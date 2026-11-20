@@ -50,7 +50,6 @@ $languageStrings = [
     'LBL_NO_PAYMENTS' => 'Ingen betalning har registrerats för denna post ännu.',
     'LBL_INTEGRATION_INACTIVE' => 'Inkommande betalningar är inte integrerade i denna modul.',
     'LBL_INCOMING_PAYMENT_INTEGRATION' => 'Integration av inkommande betalningar',
-    'IncomingPaymentStatus' => 'Statusuppdatering av inkommande betalningar',
 ];
 
 $jsLanguageStrings = [

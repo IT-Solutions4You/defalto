@@ -51,3 +51,4 @@ Administrators configure the integration in **Settings → Incoming Payments Int
 - Filters on **Payment Status** and **Due Date** show expected and overdue payments.
 - Payments created by Import get their status and update their invoices the same way as payments entered by hand.
 - After changing the payment date directly in the detail view, reload the page to see the new status in the header.
+- When the Payments list is installed, the top of a payment shows Payments, and clicking it opens the Payments list with your last filter, page and sorting.

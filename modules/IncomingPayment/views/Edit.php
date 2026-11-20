@@ -11,6 +11,25 @@
 class IncomingPayment_Edit_View extends Vtiger_Edit_View
 {
     /**
+     * Shows Payments as the module name in the page header while the Payments list is available,
+     * then renders the standard edit header.
+     *
+     * @param Vtiger_Request $request
+     * @param bool           $display Whether to render the header template
+     * @return void
+     */
+    public function preProcess(Vtiger_Request $request, bool $display = true): void
+    {
+        $breadcrumbLabel = Vtiger_Module_Model::getInstance($request->getModule())->getBreadcrumbLabel();
+
+        if ($breadcrumbLabel !== '') {
+            $this->getViewer($request)->assign('MODULE_BREADCRUMB_LABEL', $breadcrumbLabel);
+        }
+
+        parent::preProcess($request, $display);
+    }
+
+    /**
      * Prefills a new payment created from a document (open amount, currency, due date, organisation, contact)
      * and renders the standard edit view.
      *
