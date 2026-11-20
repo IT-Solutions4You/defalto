@@ -215,6 +215,7 @@
 - Describe added or repaired functionality and its practical benefit. State restrictions or removals explicitly; if none, say so briefly.
 - Keep bullets concise and in customer language, without nested lists or long explanations. Keep changes under the module that owns them.
 - Avoid implementation details, filenames, test output, commit hashes, and unnecessary introductory text unless the user asks for them.
+- When responding to `summary`, append the relevant completed commits after the module groups. For each commit, show its full commit title followed by its full GitHub commit URL in a separate fenced `text` code block so the URL is directly copyable. Use verified commit URLs and include only commits belonging to the summarized work. Omit this section when the summarized work has no completed commits.
 
 ## Manual Testing Checklist Command
 
