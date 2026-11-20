@@ -22,8 +22,8 @@
         {assign var=CURRENCY_SYMBOL value=$CURRENCY_INFO['symbol']}
         {* The currency select of uitype 35 is saved only by the record forms; filters, mass edit and settings keep the amount input *}
         {if $FIELD_MODEL->get('uitype') eq '35' && in_array($REQUEST_INSTANCE.view, ['Edit', 'QuickCreateAjax'])}
-            {assign var=AMOUNT_CURRENCY_ID value=0}
-            {if isset($RECORD) && $RECORD}
+            {assign var=AMOUNT_CURRENCY_ID value=$FIELD_MODEL->get('amount_currency_id')}
+            {if !$AMOUNT_CURRENCY_ID && isset($RECORD) && $RECORD}
                 {assign var=AMOUNT_CURRENCY_ID value=$RECORD->getAmountCurrencyId($FIELD_NAME)}
             {/if}
             {if !$AMOUNT_CURRENCY_ID}

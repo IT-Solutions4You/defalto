@@ -54,6 +54,27 @@ class Core_AmountCurrency_Helper
     }
 
     /**
+     * Sets the currencies of the amounts with their own currency from a request on a record shown in a form, e.g. a
+     * new record prefilled from another one. The form views set only editable fields from the request, and the hidden
+     * currency field is not editable, so without this the form would offer the user's currency.
+     *
+     * @param Vtiger_Record_Model $recordModel Record of the form
+     * @param Vtiger_Request      $request     Request of the edit or quick create view
+     * @return void
+     */
+    public static function setRequestCurrencies(Vtiger_Record_Model $recordModel, Vtiger_Request $request): void
+    {
+        foreach ($recordModel->getModule()->getFields() as $fieldName => $fieldModel) {
+            $currencyName = self::getCurrencyName((string)$fieldName);
+            $currencyId = (int)$request->get($currencyName);
+
+            if (0 < $currencyId && $fieldModel->isAmountCurrencyField() && $fieldModel->isEditable()) {
+                $recordModel->set($currencyName, $currencyId);
+            }
+        }
+    }
+
+    /**
      * Returns the column with the amount in the base currency.
      *
      * @param string $columnName Amount column name

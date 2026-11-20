@@ -27,6 +27,34 @@ class Import_Utils_Helper
     static $supportedDelimiters = [',' => 'comma', ';' => 'semicolon', '|' => 'Pipe', '^' => 'Caret'];
     static $supportedFileExtensions = ['csv', 'vcf'];
 
+    /**
+     * Returns the id of an available currency given by its id, code (USD) or name (USA, Dollars), case-insensitive;
+     * 0 when no currency matches.
+     *
+     * @param string $value Imported currency value
+     * @return int
+     */
+    public static function getCurrencyIdFromValue(string $value): int
+    {
+        $value = trim(decode_html($value));
+
+        if ('' === $value) {
+            return 0;
+        }
+
+        foreach (getAllCurrencies() as $currency) {
+            $currencyValues = [(string)$currency['curid'], (string)$currency['currencycode'], decode_html((string)$currency['currencylabel'])];
+
+            foreach ($currencyValues as $currencyValue) {
+                if (0 === strcasecmp($value, $currencyValue)) {
+                    return (int)$currency['curid'];
+                }
+            }
+        }
+
+        return 0;
+    }
+
     public static function getSupportedFileExtensions()
     {
         return self::$supportedFileExtensions;

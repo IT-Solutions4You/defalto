@@ -216,6 +216,8 @@ class Vtiger_Edit_View extends Vtiger_Index_View
             }
         }
 
+        Core_AmountCurrency_Helper::setRequestCurrencies($recordModel, $request);
+
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
         $picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 

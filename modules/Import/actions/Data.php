@@ -638,10 +638,14 @@ class Import_Data_Action extends Core_Controller_Action
                 } else {
                     $fieldData[$fieldName] = $picklistDetails[$picklistValueInLowerCase] ?? '';
                 }
+            } elseif ($fieldDataType == 'currencyList') {
+                // The export writes the currency id; a currency code (USD) or name (USA, Dollars) is accepted too
+                $fieldData[$fieldName] = Import_Utils_Helper::getCurrencyIdFromValue((string)$fieldValue) ?: '';
             } elseif ($fieldDataType == 'currency') {
                 // While exporting we are exporting as user format, we should import as db format while importing
-                if ($fieldInstance->getUIType() == 72 || $fieldName == 'listprice') {
+                if ($fieldInstance->getUIType() == 72 || Core_AmountCurrency_Helper::isAmountCurrencyUIType($fieldInstance->getUIType()) || $fieldName == 'listprice') {
                     // if It is line item field we should not convert the value just map that as selected currency
+                    // An amount with its own currency (uitype 35) is exported unformatted in its own currency, so it is not converted either
                     $fieldData[$fieldName] = $fieldValue;
                 } else {
                     if (!empty($fieldValue)) {

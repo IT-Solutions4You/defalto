@@ -50,6 +50,11 @@ class Vtiger_QuickCreateRecordStructure_Model extends Vtiger_RecordStructure_Mod
                 }
             }
 
+            // The quick create template has no record, so the amount with its own currency carries its currency
+            if ($fieldModel->isAmountCurrencyField()) {
+                $fieldModel->set('amount_currency_id', $recordModel->getAmountCurrencyId($fieldName));
+            }
+
             $values[$fieldName] = $fieldModel;
         }
 

@@ -47,6 +47,8 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View
             }
         }
 
+        Core_AmountCurrency_Helper::setRequestCurrencies($recordModel, $request);
+
         $fieldsInfo = [];
         foreach ($fieldList as $name => $model) {
             $fieldsInfo[$name] = $model->getFieldInfo();
