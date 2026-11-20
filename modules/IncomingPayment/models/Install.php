@@ -8,13 +8,12 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class IncomingPayment_Install_Model extends Core_Install_Model
+/**
+ * Installation of incoming payments. Fields, tables and registrations are shared by the payment modules
+ * (Core_PaymentInstall_Model); this model adds the migrations of earlier IncomingPayment installations.
+ */
+class IncomingPayment_Install_Model extends Core_PaymentInstall_Model
 {
-    /**
-     * Block holding the payment fields.
-     */
-    private const MAIN_BLOCK = 'LBL_INCOMING_PAYMENT_INFORMATION';
-
     /**
      * Block of earlier installations, removed by migrate() once its fields are moved.
      */
@@ -66,581 +65,23 @@ class IncomingPayment_Install_Model extends Core_Install_Model
      */
     private const FILTER_TABLES = ['vtiger_cvcolumnlist', 'vtiger_cvadvfilter', 'vtiger_cvstdfilter'];
 
-    protected string $moduleNumbering = 'PAYIN';
-
-    public array $registerRelatedLists = [
-        self::DOCUMENTS_RELATED_LIST,
-        self::EMAILS_RELATED_LIST,
-        ['Accounts', 'IncomingPayment', IncomingPayment_Config_Helper::RELATED_LIST_LABEL, 'add', 'get_dependents_list', IncomingPayment_Config_Helper::FIELD_RELATED_TO],
-        ['Vendors', 'IncomingPayment', IncomingPayment_Config_Helper::RELATED_LIST_LABEL, 'add', 'get_dependents_list', IncomingPayment_Config_Helper::FIELD_RELATED_TO],
-        ['Contacts', 'IncomingPayment', IncomingPayment_Config_Helper::RELATED_LIST_LABEL, 'add', 'get_dependents_list', IncomingPayment_Config_Helper::FIELD_CONTACT],
-    ];
-
-    public array $registerSettingsLinks = [
-        ['LBL_INCOMING_PAYMENT_INTEGRATION', 'index.php?module=IncomingPayment&parent=Settings&view=Index', 'LBL_EXTENSIONS'],
-    ];
-
-
-    public array $registerEventHandler = [
-        [
-            [IncomingPayment_Config_Helper::EVENT_BEFORE_SAVE],
-            'modules/IncomingPayment/handlers/PaymentSave.php',
-            'IncomingPayment_PaymentSave_Handler',
-            '',
-            ['IncomingPayment'],
-        ],
-        [
-            [IncomingPayment_Config_Helper::EVENT_AFTER_DELETE, IncomingPayment_Config_Helper::EVENT_AFTER_RESTORE],
-            'modules/IncomingPayment/handlers/PaymentDelete.php',
-            'IncomingPayment_PaymentDelete_Handler',
-            '',
-            ['IncomingPayment'],
-        ],
-    ];
-
-    public array $blocksHeaderFields = ['payment_status', 'payment_amount', 'payment_date', 'reference_id'];
-    public array $blocksSummaryFields = [
-        'payment_no',
-        'payment_name',
-        'payment_status',
-        'payment_amount',
-        'payment_date',
-        'due_date',
-        'payment_method',
-        'reference_id',
-        'related_to',
-        'assigned_user_id',
-    ];
-    public array $blocksQuickCreateFields = [
-        'payment_name',
-        'payment_amount',
-        'payment_date',
-        'due_date',
-        'payment_method',
-        'reference_id',
-        'related_to',
-        'contact_id',
-        'assigned_user_id',
-    ];
-    public array $blocksListFields = [
-        'payment_no',
-        'payment_name',
-        'reference_id',
-        'related_to',
-        'payment_amount',
-        'payment_date',
-        'due_date',
-        'payment_status',
-        'assigned_user_id',
-    ];
-    public array $relatedListFields = [['payment_no', 'payment_name', 'payment_date', 'payment_amount', 'payment_status'], 'payment_date', 'DESC'];
-    public array $popupFields = ['payment_no', 'payment_name', 'payment_amount', 'payment_status', 'related_to'];
+    /**
+     * Final payment status of earlier installations, replaced by the status shared by all payment modules.
+     */
+    private const LEGACY_PAID_STATUS = 'Received';
 
     /**
-     * Registers numbering, history, comments, related lists, settings link, cron, handlers and document integrations.
+     * Renames the fields and the final status of earlier installations before the tables and fields are updated;
+     * a module update (mode=update) does not call migrate() and keeps the uitype of existing fields.
      *
      * @return void
      * @throws Exception
      */
-    public function addCustomLinks(): void
+    protected function preInstallTables(): void
     {
-        $this->updateToCustomModule();
-        $this->updateNumbering();
-        $this->updateHistory();
-        $this->updateComments();
-        $this->updateRelatedList();
-        $this->updateSettingsLinks();
-        $this->updateEventHandler();
-        IncomingPayment_Integration_Model::getInstance()->installDefaults();
-        $this->updateIntegrations();
-    }
-
-    /**
-     * Removes everything addCustomLinks() registered, before an update, a disable or an uninstall.
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function deleteCustomLinks(): void
-    {
-        $this->updateIntegrations(false);
-        $this->updateEventHandler(false);
-        $this->updateSettingsLinks(false);
-        $this->updateRelatedList(false);
-        $this->updateComments(false);
-        $this->updateHistory(false);
-    }
-
-    /**
-     * Keeps the module marked as a custom (installable) module, so the Installer may uninstall it.
-     * Core's updateToStandardModule() would clear the source flag the Installer checks.
-     *
-     * @return void
-     */
-    public function updateToCustomModule(): void
-    {
-        $this->db->pquery('UPDATE vtiger_tab SET customized = 1, source = ? WHERE name = ?', ['custom', $this->moduleName]);
-    }
-
-    /**
-     * Removes the integrations, links, handlers and cron before the core drops the module.
-     * The pre-uninstall event fires only later, inside parent::deleteModule(), when the field rows are already
-     * gone and the document modules could no longer be removed from the reference field. deleteCustomLinks()
-     * therefore runs twice on this path and must stay idempotent.
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function deleteModule(): void
-    {
-        $this->updateSummaryWidgets(false);
-        $this->deleteCustomLinks();
-        parent::deleteModule();
-    }
-
-    /**
-     * Registers the module's own summary widgets again after the module cache was cleared.
-     * On the first install the default widgets registered by install() were missing,
-     * because they depend on the module state cached earlier in the same request.
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function postInstall(): void
-    {
-        parent::postInstall();
-        $this->updateSummaryWidgets();
-    }
-
-    /**
-     * Registers or removes the links, widgets, related lists and handlers in the integrated document modules.
-     * With $register = true only active integrations are registered; with false every available module is cleaned.
-     *
-     * @param bool $register true to register, false to remove
-     * @return void
-     * @throws Exception
-     */
-    public function updateIntegrations(bool $register = true): void
-    {
-        $integrationModel = IncomingPayment_Integration_Model::getInstance();
-        $modules = $register ? $integrationModel->getActiveModules() : $integrationModel->getAvailableModules();
-        $paymentModule = IncomingPayment_Config_Helper::MODULE;
-        $ownRegistrations = [
-            $this->registerRelatedLists,
-            $this->registerCustomLinks,
-            $this->registerSummaryWidgets,
-            $this->registerEventHandler,
-        ];
-        $this->registerRelatedLists = [];
-        $this->registerCustomLinks = [];
-        $this->registerSummaryWidgets = [];
-        $this->registerEventHandler = [];
-
-        foreach ($modules as $moduleName) {
-            $this->deleteLegacyAddLink($moduleName);
-            $this->registerRelatedLists[] = [
-                $moduleName,
-                $paymentModule,
-                IncomingPayment_Config_Helper::RELATED_LIST_LABEL,
-                'add',
-                'get_dependents_list',
-                IncomingPayment_Config_Helper::FIELD_RELATION,
-            ];
-            $this->registerRelatedLists[] = [
-                $paymentModule,
-                $moduleName,
-                $moduleName,
-                '',
-                IncomingPayment_Config_Helper::RELATED_DOCUMENTS_FUNCTION,
-            ];
-            $this->registerCustomLinks[] = [
-                $moduleName,
-                Vtiger_DetailView_Model::LINK_ADVANCED,
-                IncomingPayment_Config_Helper::ADD_LINK_LABEL,
-                IncomingPayment_Config_Helper::ADD_LINK_TEMPLATE,
-            ];
-
-            $this->registerCustomLinks[] = [
-                $moduleName,
-                'DETAILVIEW',
-                IncomingPayment_Config_Helper::ADD_LINK_LABEL,
-                IncomingPayment_Config_Helper::ADD_MORE_LINK_TEMPLATE,
-            ];
-            $this->registerSummaryWidgets[] = [
-                $moduleName,
-                IncomingPayment_Config_Helper::WIDGET_LABEL,
-                IncomingPayment_Config_Helper::WIDGET_URL,
-                '',
-                6,
-            ];
-        }
-
-        if (!empty($modules)) {
-            $this->registerEventHandler[] = [
-                [IncomingPayment_Config_Helper::EVENT_AFTER_SAVE_FINAL],
-                IncomingPayment_Config_Helper::RELATED_SAVE_HANDLER_FILE,
-                IncomingPayment_Config_Helper::RELATED_SAVE_HANDLER,
-                '',
-                $modules,
-            ];
-            $this->registerEventHandler[] = [
-                [IncomingPayment_Config_Helper::EVENT_AFTER_DELETE, IncomingPayment_Config_Helper::EVENT_AFTER_RESTORE],
-                IncomingPayment_Config_Helper::RELATED_DELETE_HANDLER_FILE,
-                IncomingPayment_Config_Helper::RELATED_DELETE_HANDLER,
-                '',
-                $modules,
-            ];
-        }
-
-        $this->updateDeleteWarnings($modules, $register);
-        $this->updateRelatedList($register);
-        $this->updateCustomLinks($register);
-        $this->updateEventHandler($register);
-        $this->registerDefaultSummaryWidgets = false;
-        $this->updateSummaryWidgets($register);
-        $this->registerDefaultSummaryWidgets = true;
-        $integrationModel->updateModules($modules, $register);
-        [
-            $this->registerRelatedLists,
-            $this->registerCustomLinks,
-            $this->registerSummaryWidgets,
-            $this->registerEventHandler,
-        ] = $ownRegistrations;
-    }
-
-    /**
-     * Registers or removes the warning about linked payments in the delete confirmation of document modules.
-     *
-     * @param string[] $modules  Document module names
-     * @param bool     $register true to register, false to remove
-     * @return void
-     * @throws Exception
-     */
-    private function updateDeleteWarnings(array $modules, bool $register): void
-    {
-        foreach ($modules as $moduleName) {
-            if ($register) {
-                Core_Modifiers_Model::registerModifier(
-                    $moduleName,
-                    IncomingPayment_Config_Helper::MODULE,
-                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIABLE,
-                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIER
-                );
-            } else {
-                Core_Modifiers_Model::deregisterModifier(
-                    $moduleName,
-                    IncomingPayment_Config_Helper::MODULE,
-                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIABLE,
-                    IncomingPayment_Config_Helper::DELETE_WARNINGS_MODIFIER
-                );
-            }
-        }
-    }
-
-    /**
-     * Removes the Add Payment button from the left side of the toolbar, where earlier versions registered it.
-     * A module update only registers the current links, so the older row would show a second button.
-     *
-     * @param string $moduleName Document module name
-     * @return void
-     */
-    private function deleteLegacyAddLink(string $moduleName): void
-    {
-        $module = Vtiger_Module::getInstance($moduleName);
-
-        if ($module) {
-            $module->deleteLink(Vtiger_DetailView_Model::LINK_BASIC, IncomingPayment_Config_Helper::ADD_LINK_LABEL);
-        }
-    }
-
-    /**
-     * Returns the block and field definitions of the module layout.
-     *
-     * @return array [BLOCK_LABEL => [fieldname => field parameters]]
-     */
-    public function getBlocks(): array
-    {
-        $table = IncomingPayment_Config_Helper::TABLE;
-        $amountType = 'decimal(25,8)';
-
-        return [
-            self::MAIN_BLOCK => [
-                'payment_name' => [
-                    'uitype' => 2,
-                    'column' => 'payment_name',
-                    'table' => $table,
-                    'columntype' => 'varchar(255)',
-                    'label' => 'Payment Name',
-                    'typeofdata' => 'V~M',
-                    'quickcreate' => 2,
-                    'entity_identifier' => 1,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 2,
-                ],
-                'payment_status' => [
-                    'uitype' => 15,
-                    'column' => 'payment_status',
-                    'table' => $table,
-                    'columntype' => 'varchar(255)',
-                    'label' => 'Payment Status',
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'quickcreate' => 1,
-                    'masseditable' => 0,
-                    'ajaxeditable' => 0,
-                    'summaryfield' => 1,
-                    'headerfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 6,
-                    'picklist_values' => [
-                        [IncomingPayment_Config_Helper::STATUS_CREATED, '#D1D5DB'],
-                        [IncomingPayment_Config_Helper::STATUS_WAITING, '#F0D98B'],
-                        [IncomingPayment_Config_Helper::STATUS_PENDING, '#F5587D'],
-                        [IncomingPayment_Config_Helper::STATUS_RECEIVED, '#5CE573'],
-                    ],
-                ],
-                // The core adds the hidden currency and rate fields and the base amount column (uitype 35)
-                IncomingPayment_Config_Helper::FIELD_AMOUNT => [
-                    'uitype' => Vtiger_Field_Model::UITYPE_AMOUNT_CURRENCY,
-                    'column' => IncomingPayment_Config_Helper::FIELD_AMOUNT,
-                    'table' => $table,
-                    'columntype' => $amountType,
-                    'label' => 'Amount',
-                    'typeofdata' => 'N~M',
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                    'headerfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 3,
-                ],
-                IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE => [
-                    'uitype' => 72,
-                    'column' => IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE,
-                    'table' => $table,
-                    'columntype' => $amountType,
-                    'label' => 'Amount in Base Currency',
-                    'typeofdata' => 'N~O',
-                    'displaytype' => 2,
-                    'quickcreate' => 1,
-                    'masseditable' => 0,
-                    'ajaxeditable' => 0,
-                ],
-                IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE => [
-                    'uitype' => 5,
-                    'column' => IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE,
-                    'table' => $table,
-                    'columntype' => 'date',
-                    'label' => 'Payment Date',
-                    'typeofdata' => 'D~O',
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                    'headerfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 4,
-                ],
-                'due_date' => [
-                    'uitype' => 5,
-                    'column' => 'due_date',
-                    'table' => $table,
-                    'columntype' => 'date',
-                    'label' => 'Due Date',
-                    'typeofdata' => 'D~M',
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 5,
-                ],
-                IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD => [
-                    'uitype' => 15,
-                    'column' => IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD,
-                    'table' => $table,
-                    'columntype' => 'varchar(255)',
-                    'label' => 'Payment Method',
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                    'picklist_values' => ['Bank Transfer', 'Cash', 'Credit card', 'Paypal', 'Wire transfer', 'Other'],
-                ],
-                IncomingPayment_Config_Helper::FIELD_TRANSACTION_ID => [
-                    'uitype' => 1,
-                    'column' => IncomingPayment_Config_Helper::FIELD_TRANSACTION_ID,
-                    'table' => $table,
-                    'columntype' => 'varchar(100)',
-                    'label' => 'Transaction ID',
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                ],
-                IncomingPayment_Config_Helper::FIELD_RELATION => [
-                    'uitype' => Vtiger_Field_Model::UITYPE_MULTI_REFERENCE,
-                    'column' => IncomingPayment_Config_Helper::FIELD_RELATION,
-                    'table' => $table,
-                    'columntype' => 'text',
-                    'label' => 'Reference',
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                    'headerfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 7,
-                    'related_modules' => ['Invoice'],
-                ],
-                IncomingPayment_Config_Helper::FIELD_RELATED_TO => [
-                    'uitype' => 10,
-                    'column' => IncomingPayment_Config_Helper::FIELD_RELATED_TO,
-                    'table' => $table,
-                    'columntype' => 'int(19)',
-                    'label' => 'Related To',
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                    'related_modules' => IncomingPayment_Config_Helper::RELATED_TO_MODULES,
-                ],
-                IncomingPayment_Config_Helper::FIELD_CONTACT => [
-                    'uitype' => 10,
-                    'column' => IncomingPayment_Config_Helper::FIELD_CONTACT,
-                    'table' => $table,
-                    'columntype' => 'int(19)',
-                    'label' => 'Contact Name',
-                    'typeofdata' => 'V~O',
-                    'related_modules' => ['Contacts'],
-                ],
-                'assigned_user_id' => [
-                    'uitype' => 53,
-                    'column' => 'assigned_user_id',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Assigned To',
-                    'typeofdata' => 'V~M',
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 8,
-                ],
-                IncomingPayment_Config_Helper::FIELD_REFERENCE_NO => [
-                    'uitype' => 1,
-                    'column' => IncomingPayment_Config_Helper::FIELD_REFERENCE_NO,
-                    'table' => $table,
-                    'columntype' => 'varchar(255)',
-                    'label' => 'Reference No',
-                    'typeofdata' => 'V~O',
-                    'displaytype' => 2,
-                    'quickcreate' => 1,
-                    'masseditable' => 0,
-                    'ajaxeditable' => 0,
-                ],
-            ],
-            'LBL_CUSTOM_INFORMATION' => [],
-            'LBL_DESCRIPTION_INFORMATION' => [
-                'description' => [
-                    'uitype' => 19,
-                    'column' => 'description',
-                    'table' => 'vtiger_crmentity',
-                    'label' => 'Description',
-                    'typeofdata' => 'V~O',
-                    'quickcreate' => 1,
-                ],
-            ],
-            'LBL_SYSTEM_INFORMATION' => [
-                'payment_no' => [
-                    'uitype' => 4,
-                    'column' => 'payment_no',
-                    'table' => $table,
-                    'columntype' => 'varchar(100)',
-                    'label' => 'Payment No',
-                    'typeofdata' => 'V~O',
-                    'presence' => 0,
-                    'quickcreate' => 3,
-                    'masseditable' => 0,
-                    'ajaxeditable' => 0,
-                    'summaryfield' => 1,
-                    'headerfield' => 1,
-                    'filter' => 1,
-                    'filter_sequence' => 1,
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Lists every table this module owns; deleteModule() drops them.
-     *
-     * @return array
-     */
-    public function getTables(): array
-    {
-        return [
-            IncomingPayment_Config_Helper::TABLE,
-            IncomingPayment_Config_Helper::TABLE_CF,
-            IncomingPayment_Config_Helper::TABLE_INTEGRATION,
-            IncomingPayment_Config_Helper::TABLE_ASSOCIATED,
-            IncomingPayment_Config_Helper::TABLE_SETTING,
-        ];
-    }
-
-    /**
-     * Creates or updates the module tables; safe to run repeatedly.
-     *
-     * @return void
-     * @throws Exception
-     */
-    public function installTables(): void
-    {
-        $index = IncomingPayment_Config_Helper::TABLE_INDEX;
-        $amountType = 'decimal(25,8) DEFAULT NULL';
-
         $this->dropLegacyRelationIndex();
         $this->renameLegacyFields();
-        // The hidden currency and rate columns of the amount are created with its field (Core_Install_Model::createField())
-        $this->getTable(IncomingPayment_Config_Helper::TABLE, null)
-            ->createTable($index)
-            ->createColumn('payment_name', 'varchar(255) DEFAULT NULL')
-            ->createColumn('payment_no', 'varchar(100) DEFAULT NULL')
-            ->createColumn('payment_status', 'varchar(255) DEFAULT NULL')
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_AMOUNT, $amountType)
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE, $amountType)
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE, 'date DEFAULT NULL')
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_DUE_DATE, 'date DEFAULT NULL')
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD, 'varchar(255) DEFAULT NULL')
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_TRANSACTION_ID, 'varchar(100) DEFAULT NULL')
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_RELATION, 'text DEFAULT NULL')
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_RELATED_TO, self::$COLUMN_INT)
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_CONTACT, self::$COLUMN_INT)
-            ->createColumn(IncomingPayment_Config_Helper::FIELD_REFERENCE_NO, 'varchar(255) DEFAULT NULL')
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`' . $index . '`)')
-            ->createKey('KEY IF NOT EXISTS `df_incomingpayment_related_to_idx` (`' . IncomingPayment_Config_Helper::FIELD_RELATED_TO . '`)')
-            ->createKey('KEY IF NOT EXISTS `df_incomingpayment_status_idx` (`payment_status`)')
-            ->createKey('CONSTRAINT `fk_crmid_df_incomingpayment` FOREIGN KEY IF NOT EXISTS (`' . $index . '`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
-
-        $this->getTable(IncomingPayment_Config_Helper::TABLE_CF, null)
-            ->createTable($index)
-            ->createKey('PRIMARY KEY IF NOT EXISTS (`' . $index . '`)');
-
-        $this->getTable(IncomingPayment_Config_Helper::TABLE_INTEGRATION, 'id')
-            ->createTable()
-            ->createColumn('module', 'varchar(100) NOT NULL')
-            ->createColumn('active', 'tinyint(1) NOT NULL DEFAULT 0')
-            ->createColumn('status_field', 'varchar(100) DEFAULT NULL')
-            ->createColumn('status_value', 'varchar(255) DEFAULT NULL')
-            ->createColumn('status_value_back', 'varchar(255) DEFAULT NULL')
-            ->createColumn('relatedto_field', 'varchar(100) DEFAULT NULL')
-            ->createColumn('total_field', 'varchar(100) DEFAULT NULL')
-            ->createColumn('paid_field', 'varchar(100) DEFAULT NULL')
-            ->createColumn('balance_field', 'varchar(100) DEFAULT NULL')
-            ->createKey('UNIQUE KEY IF NOT EXISTS `df_incomingpayment_integration_module` (`module`)');
-
-        $this->getTable(IncomingPayment_Config_Helper::TABLE_ASSOCIATED, 'id')
-            ->createTable()
-            ->createColumn('payment_id', 'int(19) NOT NULL')
-            ->createColumn('record_id', 'int(19) NOT NULL')
-            ->createColumn('partial_amount', $amountType)
-            ->createKey('KEY IF NOT EXISTS `df_incomingpayment_associated_payment_idx` (`payment_id`)')
-            ->createKey('KEY IF NOT EXISTS `df_incomingpayment_associated_record_idx` (`record_id`)');
-
-        $this->getTable(IncomingPayment_Config_Helper::TABLE_SETTING, 'id')
-            ->createTable()
-            ->createColumn('name', 'varchar(100) NOT NULL')
-            ->createColumn('value', 'text DEFAULT NULL')
-            ->createKey('UNIQUE KEY IF NOT EXISTS `df_incomingpayment_setting_name` (`name`)');
+        $this->migratePaidStatus();
     }
 
     /**
@@ -657,6 +98,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         }
 
         $this->renameLegacyFields();
+        $this->migratePaidStatus();
         $this->migrateAccountingBlock();
         $this->migrateRelationField();
         $this->migrateStatusCron();
@@ -880,20 +322,6 @@ class IncomingPayment_Install_Model extends Core_Install_Model
     }
 
     /**
-     * Tells whether a field of another module uses the picklist of the same name.
-     *
-     * @param int    $tabId     Tab id of this module
-     * @param string $fieldName Picklist field name
-     * @return bool
-     */
-    private function isPicklistUsedByOtherModule(int $tabId, string $fieldName): bool
-    {
-        $result = $this->db->pquery('SELECT 1 FROM vtiger_field WHERE fieldname = ? AND tabid != ? LIMIT 1', [$fieldName, $tabId]);
-
-        return 0 < $this->db->num_rows($result);
-    }
-
-    /**
      * Returns the id, name and column of a field of this module, or an empty array.
      *
      * @param int    $tabId     Tab id of the module
@@ -974,7 +402,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         }
 
         $legacyBlock = Vtiger_Block::getInstance(self::LEGACY_ACCOUNTING_BLOCK, $moduleInstance);
-        $mainBlock = Vtiger_Block::getInstance(self::MAIN_BLOCK, $moduleInstance);
+        $mainBlock = Vtiger_Block::getInstance(IncomingPayment_Config_Helper::MAIN_BLOCK, $moduleInstance);
 
         if (!$legacyBlock || !$mainBlock) {
             return;
@@ -982,7 +410,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
 
         $sequence = 0;
 
-        foreach ($this->getBlocks()[self::MAIN_BLOCK] as $fieldName => $fieldParams) {
+        foreach ($this->getBlocks()[IncomingPayment_Config_Helper::MAIN_BLOCK] as $fieldName => $fieldParams) {
             $sequence++;
             $field = Vtiger_Field::getInstance($fieldName, $moduleInstance);
 
@@ -1002,5 +430,150 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         }
 
         $legacyBlock->delete(false);
+    }
+
+    /**
+     * Replaces the final status Received of earlier installations with Paid, the final status shared by all payment
+     * modules: the payments, the history and the conditions of saved filters and workflows, and last the picklist
+     * value, renamed in place so its id, order, color and role assignments stay. Runs only while Received is in the
+     * picklist, so a repeated run does nothing and an interrupted one is completed by the next run.
+     *
+     * @return void
+     */
+    private function migratePaidStatus(): void
+    {
+        $statusField = IncomingPayment_Config_Helper::FIELD_STATUS;
+        $picklistTable = 'vtiger_' . $statusField;
+        $paidStatus = IncomingPayment_Config_Helper::STATUS_PAID;
+
+        if (!getTabid($this->getModuleName()) || !Vtiger_Utils::CheckTable($picklistTable) || !$this->hasStatusValue(self::LEGACY_PAID_STATUS)) {
+            return;
+        }
+
+        $this->db->pquery(
+            sprintf('UPDATE %s SET %s = ? WHERE %s = ?', IncomingPayment_Config_Helper::TABLE, $statusField, $statusField),
+            [$paidStatus, self::LEGACY_PAID_STATUS]
+        );
+
+        foreach (['prevalue', 'postvalue'] as $column) {
+            $this->db->pquery(
+                sprintf(
+                    'UPDATE vtiger_modtracker_detail
+                    INNER JOIN vtiger_modtracker_basic ON vtiger_modtracker_basic.id = vtiger_modtracker_detail.id
+                    SET vtiger_modtracker_detail.%1$s = ?
+                    WHERE vtiger_modtracker_basic.module = ? AND vtiger_modtracker_detail.fieldname = ? AND vtiger_modtracker_detail.%1$s = ?',
+                    $column
+                ),
+                [$paidStatus, $this->getModuleName(), $statusField, self::LEGACY_PAID_STATUS]
+            );
+        }
+
+        $this->migratePaidStatusFilters();
+        $this->migratePaidStatusWorkflows();
+
+        // The picklist value is changed last: the check above runs again until every step is done.
+        if ($this->hasStatusValue($paidStatus)) {
+            $this->db->pquery(sprintf('DELETE FROM %s WHERE %s = ?', $picklistTable, $statusField), [self::LEGACY_PAID_STATUS]);
+        } else {
+            $this->db->pquery(sprintf('UPDATE %s SET %s = ? WHERE %s = ?', $picklistTable, $statusField, $statusField), [$paidStatus, self::LEGACY_PAID_STATUS]);
+        }
+
+        Vtiger_Cache::flushPicklistCache($statusField);
+    }
+
+    /**
+     * Tells whether the payment status picklist has a value.
+     *
+     * @param string $value Picklist value
+     * @return bool
+     */
+    private function hasStatusValue(string $value): bool
+    {
+        $statusField = IncomingPayment_Config_Helper::FIELD_STATUS;
+        $result = $this->db->pquery(sprintf('SELECT 1 FROM vtiger_%s WHERE %s = ? LIMIT 1', $statusField, $statusField), [$value]);
+
+        return 0 < $this->db->num_rows($result);
+    }
+
+    /**
+     * Replaces the legacy final status in the conditions of saved filters on the payment status, also of the
+     * Payments list, whose filters use the columns of this module. Values are comma separated.
+     *
+     * @return void
+     */
+    private function migratePaidStatusFilters(): void
+    {
+        $statusField = IncomingPayment_Config_Helper::FIELD_STATUS;
+        $result = $this->db->pquery(
+            'SELECT cvid, columnindex, value FROM vtiger_cvadvfilter WHERE columnname LIKE ?',
+            [$this->getFilterColumnPattern($statusField, $statusField)]
+        );
+
+        while ($row = $this->db->fetchByAssoc($result, -1, false)) {
+            $values = explode(',', (string)$row['value']);
+            $newValues = $this->replacePaidStatus($values);
+
+            if ($newValues !== $values) {
+                $this->db->pquery(
+                    'UPDATE vtiger_cvadvfilter SET value = ? WHERE cvid = ? AND columnindex = ?',
+                    [implode(',', $newValues), (int)$row['cvid'], (int)$row['columnindex']]
+                );
+            }
+        }
+    }
+
+    /**
+     * Replaces the legacy final status in the workflow conditions on the payment status.
+     *
+     * @return void
+     */
+    private function migratePaidStatusWorkflows(): void
+    {
+        $statusField = IncomingPayment_Config_Helper::FIELD_STATUS;
+        $result = $this->db->pquery('SELECT workflow_id, test FROM com_vtiger_workflows WHERE module_name = ?', [$this->getModuleName()]);
+
+        while ($row = $this->db->fetchByAssoc($result, -1, false)) {
+            $conditions = json_decode(decode_html((string)$row['test']), true);
+            $isChanged = false;
+
+            if (!is_array($conditions)) {
+                continue;
+            }
+
+            foreach ($conditions as $index => $condition) {
+                if ($statusField !== ($condition['fieldname'] ?? '') || !isset($condition['value'])) {
+                    continue;
+                }
+
+                $values = explode(',', (string)$condition['value']);
+                $newValues = $this->replacePaidStatus($values);
+
+                if ($newValues !== $values) {
+                    $conditions[$index]['value'] = implode(',', $newValues);
+                    $isChanged = true;
+                }
+            }
+
+            if ($isChanged) {
+                $this->db->pquery('UPDATE com_vtiger_workflows SET test = ? WHERE workflow_id = ?', [json_encode($conditions), (int)$row['workflow_id']]);
+            }
+        }
+    }
+
+    /**
+     * Replaces the legacy final status by the shared one in a list of status values.
+     *
+     * @param string[] $values Status values
+     * @return string[]
+     */
+    private function replacePaidStatus(array $values): array
+    {
+        foreach ($values as $index => $value) {
+            if (self::LEGACY_PAID_STATUS === trim($value)) {
+                $values[$index] = IncomingPayment_Config_Helper::STATUS_PAID;
+            }
+        }
+
+        return $values;
     }
 }

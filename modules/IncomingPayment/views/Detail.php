@@ -8,24 +8,9 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class IncomingPayment_Detail_View extends Vtiger_Detail_View
+/**
+ * Detail of an incoming payment; logic in Core_PaymentDetail_View.
+ */
+class IncomingPayment_Detail_View extends Core_PaymentDetail_View
 {
-    /**
-     * Shows Payments as the module name in the page header while the Payments list is available,
-     * then renders the standard detail header.
-     *
-     * @param Vtiger_Request $request
-     * @param bool           $display Whether to render the header template
-     * @return void
-     */
-    public function preProcess(Vtiger_Request $request, bool $display = true): void
-    {
-        $breadcrumbLabel = Vtiger_Module_Model::getInstance($request->getModule())->getBreadcrumbLabel();
-
-        if ($breadcrumbLabel !== '') {
-            $this->getViewer($request)->assign('MODULE_BREADCRUMB_LABEL', $breadcrumbLabel);
-        }
-
-        parent::preProcess($request, $display);
-    }
 }

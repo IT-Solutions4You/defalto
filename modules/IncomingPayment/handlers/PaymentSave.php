@@ -9,27 +9,8 @@
  */
 
 /**
- * Checks the reference documents of a payment before it is saved.
- * The read-only values and the document synchronisation are handled by IncomingPayment::save_module().
+ * Checks an incoming payment before it is saved; logic in Core_PaymentSave_Handler.
  */
-class IncomingPayment_PaymentSave_Handler extends VTEventHandler
+class IncomingPayment_PaymentSave_Handler extends Core_PaymentSave_Handler
 {
-    /**
-     * Handles the before-save event of an incoming payment.
-     *
-     * @param string       $handlerType Event name
-     * @param VTEntityData $entityData  Payment entity data
-     * @return void
-     * @throws Exception
-     */
-    public function handleEvent($handlerType, $entityData)
-    {
-        if ($entityData->getModuleName() !== IncomingPayment_Config_Helper::MODULE) {
-            return;
-        }
-
-        if ($handlerType === IncomingPayment_Config_Helper::EVENT_BEFORE_SAVE) {
-            IncomingPayment_PaymentValues_Helper::validateReferences($entityData);
-        }
-    }
 }

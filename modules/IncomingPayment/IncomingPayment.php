@@ -8,7 +8,11 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class IncomingPayment extends CRMEntity
+/**
+ * Incoming payments: tables and list fields. The payment logic (save, related documents, lifecycle events) is in
+ * Core_PaymentEntity_Model.
+ */
+class IncomingPayment extends Core_PaymentEntity_Model
 {
     public string $moduleVersion = '1.0';
     public string $moduleName = 'IncomingPayment';
@@ -41,46 +45,4 @@ class IncomingPayment extends CRMEntity
     public $def_basicsearch_col = 'payment_name';
     public $def_detailview_recname = 'payment_name';
     public $mandatory_fields = ['payment_name', 'payment_amount', 'due_date', 'assigned_user_id'];
-
-    /**
-     * Writes the derived payment values and synchronises the documents of the payment.
-     * It runs inside saveentity(), so it also covers import (bulk save mode, no events) and workflow field updates,
-     * and it runs before the after-save handlers, so workflows and the history see the new values. The currency,
-     * the rate and the base amount of the amount (uitype 35) are already stored by saveentity() at this point.
-     *
-     * @param string $module Module name
-     * @return void
-     * @throws Exception
-     */
-    public function save_module(string $module)
-    {
-        IncomingPayment_DocumentSync_Model::getInstance()->handlePaymentSave((int)$this->id);
-    }
-
-    /**
-     * Related list of the documents of one module that a payment is applied to.
-     *
-     * @param int $id         Payment record id
-     * @param int $curTabId   Tab id of this module
-     * @param int $relTabId   Tab id of the document module
-     * @param int $relationId Related list id
-     * @return array ['query' => related list query]
-     */
-    public function get_associated_documents($id, $curTabId, $relTabId, $relationId): array
-    {
-        return ['query' => IncomingPayment_Associated_Model::getInstance()->getDocumentsRelationQuery((int)$id, (string)vtlib_getModuleNameById($relTabId))];
-    }
-
-    /**
-     * Delegates vtlib lifecycle events (enable, disable, update, uninstall) to the install model.
-     *
-     * @param string $moduleName Module name
-     * @param string $eventType  vtlib event type, e.g. module.enabled
-     * @return void
-     * @throws Exception
-     */
-    public function vtlib_handler($moduleName, $eventType): void
-    {
-        Core_Install_Model::getInstance((string)$eventType, (string)$moduleName)->install();
-    }
 }

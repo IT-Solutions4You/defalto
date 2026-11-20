@@ -9,9 +9,10 @@
  */
 
 /**
- * Shared identifiers of the Incoming Payment module: module name, tables, fields, statuses and integration defaults.
+ * Configuration of incoming payments: what differs from the other payment directions. The shared identifiers
+ * (fields, statuses, events) and the payment logic are in Core (Core_PaymentConfig_Helper and Core_Payment… classes).
  */
-class IncomingPayment_Config_Helper
+class IncomingPayment_Config_Helper extends Core_PaymentConfig_Helper
 {
     public const MODULE = 'IncomingPayment';
     public const TABLE = 'df_incomingpayment';
@@ -20,98 +21,22 @@ class IncomingPayment_Config_Helper
     public const TABLE_INTEGRATION = 'df_incomingpayment_integration';
     public const TABLE_ASSOCIATED = 'df_incomingpayment_associated';
     public const TABLE_SETTING = 'df_incomingpayment_setting';
-    public const SETTING_UNDERPAYMENT_THRESHOLD = 'underpayment_threshold';
-
-    public const PAYMENTS_LIST_MODULE = 'Payments';
-    public const FIELD_RELATION = 'reference_id';
-    public const FIELD_RELATED_TO = 'related_to';
-    public const FIELD_CONTACT = 'contact_id';
-    public const FIELD_STATUS = 'payment_status';
-    public const FIELD_PAYMENT_DATE = 'payment_date';
-    public const FIELD_DUE_DATE = 'due_date';
-    public const FIELD_REFERENCE_NO = 'reference_no';
-    public const FIELD_PAYMENT_METHOD = 'payment_method';
-    public const FIELD_TRANSACTION_ID = 'transaction_id';
-
-    /**
-     * Amount with its own currency (uitype 35). The core keeps its hidden currency and rate fields and the column
-     * with the amount in the base currency (Core_AmountCurrency_Model); the read-only base amount field shows it.
-     */
-    public const FIELD_AMOUNT = 'payment_amount';
-    public const FIELD_AMOUNT_CURRENCY = 'payment_amount_currency_id';
-    public const FIELD_AMOUNT_RATE = 'payment_amount_conversion_rate';
-    public const FIELD_AMOUNT_BASE = 'payment_amount_base';
-
-    /**
-     * Number of documents one payment may reference; payments to several documents come with the paid version.
-     */
-    public const REFERENCE_LIMIT = 1;
-    public const LBL_REFERENCE_LIMIT = 'LBL_ONE_DOCUMENT_PER_PAYMENT';
-
-    public const STATUS_CREATED = 'Created';
-    public const STATUS_WAITING = 'Waiting';
-    public const STATUS_PENDING = 'Pending';
-    public const STATUS_RECEIVED = 'Received';
-
-    public const WIDGET_LABEL = 'IncomingPayment';
+    public const NUMBERING_PREFIX = 'PAYIN';
+    public const MAIN_BLOCK = 'LBL_INCOMING_PAYMENT_INFORMATION';
     public const RELATED_LIST_LABEL = 'Incoming Payments';
-    public const RELATED_DOCUMENTS_FUNCTION = 'get_associated_documents';
     public const ADD_LINK_LABEL = 'LBL_ADD_INCOMING_PAYMENT';
-    public const ADD_LINK_TEMPLATE = 'template:AddPaymentButton.tpl:IncomingPayment';
-    public const ADD_MORE_LINK_TEMPLATE = 'template:AddPaymentMoreLink.tpl:IncomingPayment';
-    /**
-     * relatedModule makes the core translate the widget title through this module's language file;
-     * relatedField makes its Add action open the quick create form with the document in that field.
-     */
-    public const WIDGET_URL = 'module=IncomingPayment&view=Widget&mode=showPayments&sourceModule=$MODULE$&sourceRecord=$RECORD$&relatedModule=IncomingPayment&relatedField=reference_id';
-    public const RELATED_SAVE_HANDLER = 'IncomingPayment_RelatedSave_Handler';
-    public const RELATED_SAVE_HANDLER_FILE = 'modules/IncomingPayment/handlers/RelatedSave.php';
-    public const RELATED_DELETE_HANDLER = 'IncomingPayment_RelatedDelete_Handler';
-    public const RELATED_DELETE_HANDLER_FILE = 'modules/IncomingPayment/handlers/RelatedDelete.php';
-    public const DELETE_WARNINGS_MODIFIABLE = 'DeleteWarningsAction';
-    public const DELETE_WARNINGS_MODIFIER = 'IncomingPayment_DeleteWarnings_Modifier';
-
-    public const EVENT_BEFORE_SAVE = 'vtiger.entity.beforesave';
-    public const EVENT_AFTER_SAVE_FINAL = 'vtiger.entity.aftersave.final';
-    public const EVENT_AFTER_DELETE = 'vtiger.entity.afterdelete';
-    public const EVENT_AFTER_RESTORE = 'vtiger.entity.afterrestore';
-
-    /**
-     * Integration columns editable from Settings.
-     */
-    public const INTEGRATION_COLUMNS = [
-        'status_field',
-        'status_value',
-        'status_value_back',
-        'relatedto_field',
-        'total_field',
-        'paid_field',
-        'balance_field',
-    ];
-
-    /**
-     * Field names every inventory module is expected to use; a module without them gets them chosen in Settings.
-     */
-    public const DEFAULT_TOTAL_FIELD = 'grand_total';
-    public const DEFAULT_BALANCE_FIELD = 'balance';
-    public const DEFAULT_PAID_FIELDS = ['received', 'paid'];
-
-    /**
-     * Block that renders only the document items; fields placed in it are not displayed.
-     */
-    public const ITEMS_BLOCK = 'LBL_ITEM_DETAILS';
-
-    /**
-     * Modules whose reference field holds the payer of a document, in order of preference.
-     */
+    public const INTEGRATION_LABEL = 'LBL_INCOMING_PAYMENT_INTEGRATION';
+    public const ICON = 'fa-solid fa-money-bill-trend-up';
     public const RELATED_TO_MODULES = ['Accounts', 'Vendors'];
+    public const DEFAULT_PAID_FIELDS = ['received', 'paid'];
+    public const PAID_FIELD_LABEL = 'Received';
 
     /**
-     * Returns the configuration that differs from the defaults derived from the module fields.
+     * Invoices are integrated by default: a paid invoice gets the Paid status, an unpaid one goes back to Created.
      *
-     * @return array [module => integration values]
+     * @return array [document module => integration values]
      */
-    public static function getIntegrationOverrides(): array
+    public function getIntegrationOverrides(): array
     {
         return [
             'Invoice' => [
@@ -120,15 +45,5 @@ class IncomingPayment_Config_Helper
                 'status_value_back' => 'Created',
             ],
         ];
-    }
-
-    /**
-     * Returns the statuses that count as a completed incoming payment.
-     *
-     * @return array
-     */
-    public static function getPaidStatuses(): array
-    {
-        return [self::STATUS_RECEIVED];
     }
 }

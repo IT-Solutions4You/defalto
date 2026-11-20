@@ -8,24 +8,9 @@
  * See LICENSE-AGPLv3.txt for more details.
  */
 
-class IncomingPayment_QuickCreateAjax_View extends Vtiger_QuickCreateAjax_View
+/**
+ * Quick create form of an incoming payment; logic in Core_PaymentQuickCreateAjax_View.
+ */
+class IncomingPayment_QuickCreateAjax_View extends Core_PaymentQuickCreateAjax_View
 {
-    /**
-     * Prefills a payment opened for a document (open amount, currency, due date, organisation)
-     * and renders the standard quick create form.
-     *
-     * @param Vtiger_Request $request
-     * @return void
-     * @throws Exception
-     */
-    public function process(Vtiger_Request $request)
-    {
-        $relationId = (int)$request->get(IncomingPayment_Config_Helper::FIELD_RELATION);
-
-        if ($relationId > 0) {
-            IncomingPayment_Prefill_Helper::setRequestValues($request, (string)getSalesEntityType($relationId), $relationId);
-        }
-
-        parent::process($request);
-    }
 }

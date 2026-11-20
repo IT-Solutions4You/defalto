@@ -9,37 +9,9 @@
  */
 
 /**
- * Adds a warning to the delete confirmation of an integrated document module when payments are linked to the records.
- * Registered for every active integration as the DeleteWarningsAction modifier (Core_DeleteWarnings_Action).
+ * Adds the linked incoming payments to the delete confirmation of a document; logic in
+ * Core_PaymentDeleteWarnings_Modifier.
  */
-class IncomingPayment_DeleteWarnings_Modifier implements Core_Modifier_Interface
+class IncomingPayment_DeleteWarnings_Modifier extends Core_PaymentDeleteWarnings_Modifier
 {
-    /**
-     * @inheritDoc
-     */
-    public function modifyProcess(Vtiger_Viewer $viewer, Vtiger_Request $request): void
-    {
-    }
-
-    /**
-     * Adds the warning about linked payments.
-     *
-     * @param array          $warnings  Warnings of the delete confirmation
-     * @param int[]          $recordIds Records being deleted
-     * @param Vtiger_Request $request
-     * @return void
-     */
-    public function modifyGetWarnings(array &$warnings, array $recordIds, Vtiger_Request $request): void
-    {
-        $counts = IncomingPayment_Associated_Model::getInstance()->countForDocuments($recordIds);
-
-        if ($counts['payments'] <= 0) {
-            return;
-        }
-
-        $module = IncomingPayment_Config_Helper::MODULE;
-        $warnings[] = count($recordIds) === 1
-            ? vtranslate('LBL_DELETE_DOCUMENT_WITH_PAYMENTS', $module, $counts['payments'])
-            : vtranslate('LBL_DELETE_DOCUMENTS_WITH_PAYMENTS', $module, $counts['documents'], $counts['payments']);
-    }
 }
