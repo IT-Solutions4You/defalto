@@ -68,6 +68,8 @@ Record images, previews and downloads keep working when an administrator stores 
 
 # Dashboard
 
+Key Metrics and MiniList display saved-filter names in your selected language when a translation is available. Custom names without a translation retain their saved text. Clicking a metric still opens its saved list.
+
 Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook titles are displayed as text.
 
 Choose the Notebook widget, enter a name and write your note in the editor. The compact toolbar offers bold, italic, underline, strikethrough, subscript, superscript, links, remove formatting and undo/redo. Use subscript for H₂O or superscript for m², and Link/Unlink to add or remove a clickable link. List and quotation buttons are not available; existing supported formatting remains displayed. Save adds the note to the current dashboard tab. The dialog keeps labels and fields aligned and gives the editor room to write.
