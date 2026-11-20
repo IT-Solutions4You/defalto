@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Verknüpfte Datensätze',
+    'LBL_RELATED_MODULES' => 'Verknüpfte Module',
     'LBL_AI_SETUP' => 'KI einrichten',
     'LBL_AI_ACTIVE_LICENSE' => 'Aktive Lizenz',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Aktive Membership-Lizenz im Installer',

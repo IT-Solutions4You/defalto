@@ -10,6 +10,7 @@
 	{if !empty($PICKIST_DEPENDENCY_DATASOURCE)}
 		<input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
 	{/if}
+	{assign var=DETAIL_BLOCK_MARGIN_CLASS value='m-0'}
 	{foreach key=BLOCK_LABEL_KEY item=FIELD_MODEL_LIST from=$RECORD_STRUCTURE}
 		{if isset($BLOCK_LIST[$BLOCK_LABEL_KEY])}
 		{assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL_KEY]}
@@ -17,6 +18,7 @@
 			{assign var=BLOCK value=''}
 		{/if}
 		{if $BLOCK eq null}{continue}{/if}
-		{include file=vtemplate_path($BLOCK->getUITypeModel()->getDetailViewTemplateName(), $MODULE_NAME) BLOCK=$BLOCK USER_MODEL=$USER_MODEL MODULE_NAME=$MODULE_NAME RECORD=$RECORD}
+		{include file=vtemplate_path($BLOCK->getUITypeModel()->getDetailViewTemplateName(), $MODULE_NAME) BLOCK=$BLOCK USER_MODEL=$USER_MODEL MODULE_NAME=$MODULE_NAME RECORD=$RECORD BLOCK_MARGIN_CLASS=$DETAIL_BLOCK_MARGIN_CLASS}
+		{assign var=DETAIL_BLOCK_MARGIN_CLASS value='mt-3'}
 	{/foreach}
 {/strip}

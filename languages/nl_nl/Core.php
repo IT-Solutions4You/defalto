@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Gerelateerde records',
+    'LBL_RELATED_MODULES' => 'Gerelateerde modules',
     'LBL_AI_SETUP' => 'AI instellen',
     'LBL_AI_ACTIVE_LICENSE' => 'Actieve licentie',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Een actieve Membership-licentie in Installer',

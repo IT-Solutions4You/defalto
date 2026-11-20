@@ -21,8 +21,17 @@
             <div class="detailViewContainer viewContent col p-0 overflow-auto">
                 <div class="content-area container-fluid px-0 pb-lg-4 px-lg-4">
                     {include file='DetailViewHeader.tpl'|vtemplate_path:$MODULE}
+                    {assign var=HAS_RELATED_MODULES value=false}
+                    {foreach item=RELATED_LINK from=$DETAILVIEW_LINKS['DETAILVIEWRELATED']|default:[]}
+                        {if $RELATED_LINK->getRelatedModuleName() neq 'ModComments'}
+                            {assign var=HAS_RELATED_MODULES value=true}
+                        {/if}
+                    {/foreach}
+                    {include file='RecordTabs.tpl'|vtemplate_path:'Core'}
                     <div class="detailview-content row">
                         <input id="recordId" type="hidden" value="{$RECORD->getId()}" />
-                        {include file="ModuleRelatedTabs.tpl"|vtemplate_path:$MODULE}
-                        <div class="details col-lg-9 col-xl-10 order-2 order-lg-1 px-0">
+                        {if $HAS_RELATED_MODULES}
+                            {include file="ModuleRelatedTabs.tpl"|vtemplate_path:$MODULE}
+                        {/if}
+                        <div class="details {if $HAS_RELATED_MODULES}col-lg-9 col-xl-10{else}col-12{/if} order-2 order-lg-1 px-0">
 {/strip}

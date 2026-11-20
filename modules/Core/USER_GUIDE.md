@@ -1,3 +1,15 @@
+# Record navigation
+
+Switching tabs opens the selected view of the current record. Tab links can also be opened directly or refreshed while retaining the selected record and view.
+
+The active tab has a thicker blue underline for easier recognition.
+
+The Related records button beside Comments opens a list of related modules with at least one linked record and their counts. Empty relations stay available in the desktop Related modules panel. On mobile, the sidebar and its toggle are hidden; use Related records for populated relations. Adding or removing related records refreshes the shortcuts automatically.
+
+Summary, Details, Updates, Sharing, Comments and related-record lists have no extra outer margin below the navigation. Spacing inside their content is retained.
+
+Record details separate the main record views from linked modules. Use the icon tabs below the record header for Summary, Details, Updates, Sharing and Comments, where available. The bar has a transparent background without a surrounding border or divider. The active view is underlined in blue; on a small screen the tab bar scrolls horizontally. Other related modules remain in the Related modules panel on desktop. On mobile, use the Related records dropdown for modules containing linked records. The separate sidebar and its toggle are hidden. Existing module-specific views remain accessible after the main views.
+
 # AI setup
 
 Click **AI** in the top bar to check your Membership license, whether the AI extension is installed, and whether it is enabled and configured. The window shows the next step. Administrators can open Installer, Module Manager or AI settings from the window when needed. If AI is ready and your profile has access, choose **Open AI** and send a message to test the connection.
@@ -73,3 +85,5 @@ Monthly appointments keep the selected local start time when daylight-saving tim
 # Address fields
 
 Address labels in the record edit form use the normal theme text color, including the combined postal code and city label.
+
+The Related records dropdown looks like the other record tabs. When one of its related modules is selected, its label is blue and underlined; clicking it still opens the list of related modules. Menu items use the navigation text size and spacing, and the selected item has bold primary-colored text without a background. In the desktop sidebar, only the currently open module is highlighted using the application's original primary theme colors and bold text. Its count uses a rounded badge, and selection stays synchronized with the dropdown.

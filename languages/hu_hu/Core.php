@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Kapcsolódó rekordok',
+    'LBL_RELATED_MODULES' => 'Kapcsolódó modulok',
     'LBL_AI_SETUP' => 'Az AI beállítása',
     'LBL_AI_ACTIVE_LICENSE' => 'Aktív licenc',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Aktív Membership licenc a telepítőben',

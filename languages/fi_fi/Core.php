@@ -9,6 +9,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Liittyvät tietueet',
+    'LBL_RELATED_MODULES' => 'Liittyvät moduulit',
     'LBL_AI_SETUP' => 'Ota tekoäly käyttöön',
     'LBL_AI_ACTIVE_LICENSE' => 'Aktiivinen lisenssi',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Voimassa oleva Membership-lisenssi asennusohjelmassa',

@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'السجلات ذات الصلة',
+    'LBL_RELATED_MODULES' => 'الوحدات ذات الصلة',
     'LBL_AI_SETUP' => 'إعداد الذكاء الاصطناعي',
     'LBL_AI_ACTIVE_LICENSE' => 'ترخيص نشط',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'ترخيص Membership نشط في أداة التثبيت',

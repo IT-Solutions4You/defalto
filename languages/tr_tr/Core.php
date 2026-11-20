@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'İlgili kayıtlar',
+    'LBL_RELATED_MODULES' => 'İlgili modüller',
     'LBL_AI_SETUP' => 'Yapay zekâyı kur',
     'LBL_AI_ACTIVE_LICENSE' => 'Etkin lisans',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Yükleyici’de etkin bir Membership lisansı',

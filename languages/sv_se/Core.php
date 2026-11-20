@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Relaterade poster',
+    'LBL_RELATED_MODULES' => 'Relaterade moduler',
     'LBL_AI_SETUP' => 'Konfigurera AI',
     'LBL_AI_ACTIVE_LICENSE' => 'Aktiv licens',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'En aktiv Membership-licens i installationshanteraren',

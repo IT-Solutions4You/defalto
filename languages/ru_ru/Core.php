@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Связанные записи',
+    'LBL_RELATED_MODULES' => 'Связанные модули',
     'LBL_AI_SETUP' => 'Настройка ИИ',
     'LBL_AI_ACTIVE_LICENSE' => 'Активная лицензия',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Активная лицензия Membership в установщике',

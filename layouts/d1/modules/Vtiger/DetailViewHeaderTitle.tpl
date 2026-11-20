@@ -8,15 +8,16 @@
  *}
 {strip}
 	<div class="record-header">
-		<div class="recordBasicInfo">
+		<div class="recordBasicInfo row g-0 flex-lg-nowrap">
+			<div class="col-12 col-lg-auto">
+				{include file='DetailViewHeaderImage.tpl'|vtemplate_path:$QUALIFIED_MODULE}
+			</div>
+			<div class="col-12 col-lg">
 			{if !isset($IS_OVERLAY) || !$IS_OVERLAY}
 				<div class="float-end">
 					{include file='DetailViewHeaderPagination.tpl'|vtemplate_path:$QUALIFIED_MODULE}
 				</div>
 			{/if}
-			<div class="float-start">
-				{include file='DetailViewHeaderImage.tpl'|vtemplate_path:$QUALIFIED_MODULE}
-			</div>
 			<div class="recordHeaderTitle">
                 <div class="row align-items-top">
                     <div class="col">
@@ -38,6 +39,7 @@
                 </div>
 			</div>
 			{include file='DetailViewHeaderFieldsView.tpl'|vtemplate_path:$QUALIFIED_MODULE}
+			</div>
 		</div>
 	</div>
 {/strip}

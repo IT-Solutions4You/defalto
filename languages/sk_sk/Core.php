@@ -9,6 +9,8 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Súvisiace záznamy',
+    'LBL_RELATED_MODULES' => 'Súvisiace moduly',
     'LBL_AI_SETUP' => 'Ako sprístupniť AI',
     'LBL_AI_ACTIVE_LICENSE' => 'Aktívna licencia',
     'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Platná licencia Membership v Installeri',
