@@ -19,7 +19,7 @@
 ## Installation lifecycle
 
 - Use `module.postinstall` for a new module and `module.postupdate` for an installed module through `Core_Install_Model`.
-- Reject an update whose package version is not newer than the installed module file version.
+- Allow newer, equal and older package versions. The confirmation view reads `Installer_ModulePackage_Model::getVersionNotice()` and includes Installer's shared `VersionNotice.tpl` to show both versions, an upgrade notice or a reinstall/downgrade warning. Existing modules always use `module.postupdate`; version comparison must not block installation. Package identity, minimum Defalto compatibility and post-install version validation remain mandatory.
 - Preserve an existing module's sharing permission, regenerate module metadata, clear runtime and template caches, and verify the installed version, active state, and default URL before committing package files.
 - On failure, restore copied files where possible and let the original error propagate to the central WebUI exception handler without replacing or hiding it.
 - `Index.js::showPackageInstallError()` (the install AJAX failure callback) shows the server-provided error in a modal with guidance to fix the cause and retry or report the exact error to the package publisher. The modal offers navigation to import another package; the install/update button stays available after closing it.

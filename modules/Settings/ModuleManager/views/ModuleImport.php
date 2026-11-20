@@ -219,6 +219,7 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
         $viewer->assign('MODULEIMPORT_FILE', $uploadFile);
         $viewer->assign('MODULEIMPORT_NAME', $importModuleName);
         $viewer->assign('MODULEIMPORT_VERSION', $package->getPackageVersion());
+        $viewer->assign('MODULEIMPORT_VERSION_NOTICE', $package->getVersionNotice());
         $viewer->assign('MODULEIMPORT_DEP_VTVERSION', $package->getRequiredVersion());
         $viewer->assign('MODULEIMPORT_CHANGELOG', $package->getChangelog());
         $viewer->assign('MODULEIMPORT_EXISTS', $moduleInstance ? 'true' : 'false');
