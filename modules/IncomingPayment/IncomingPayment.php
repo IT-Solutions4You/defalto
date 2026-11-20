@@ -26,26 +26,27 @@ class IncomingPayment extends CRMEntity
     public $list_fields = [
         'Payment No' => ['incomingpayment' => 'payment_no'],
         'Payment Name' => ['incomingpayment' => 'payment_name'],
-        'Amount' => ['incomingpayment' => 'paymentamount'],
+        'Amount' => ['incomingpayment' => 'payment_amount'],
         'Payment Status' => ['incomingpayment' => 'payment_status'],
         'Assigned To' => ['crmentity' => 'assigned_user_id'],
     ];
     public $list_fields_name = [
         'Payment No' => 'payment_no',
         'Payment Name' => 'payment_name',
-        'Amount' => 'paymentamount',
+        'Amount' => 'payment_amount',
         'Payment Status' => 'payment_status',
         'Assigned To' => 'assigned_user_id',
     ];
     public $list_link_field = 'payment_name';
     public $def_basicsearch_col = 'payment_name';
     public $def_detailview_recname = 'payment_name';
-    public $mandatory_fields = ['payment_name', 'paymentamount', 'due_date', 'assigned_user_id'];
+    public $mandatory_fields = ['payment_name', 'payment_amount', 'due_date', 'assigned_user_id'];
 
     /**
      * Writes the derived payment values and synchronises the documents of the payment.
      * It runs inside saveentity(), so it also covers import (bulk save mode, no events) and workflow field updates,
-     * and it runs before the after-save handlers, so workflows and the history see the new values.
+     * and it runs before the after-save handlers, so workflows and the history see the new values. The currency,
+     * the rate and the base amount of the amount (uitype 35) are already stored by saveentity() at this point.
      *
      * @param string $module Module name
      * @return void
@@ -53,8 +54,7 @@ class IncomingPayment extends CRMEntity
      */
     public function save_module(string $module)
     {
-        $isBulkInsert = self::isBulkSaveMode() && $this->mode !== 'edit';
-        IncomingPayment_DocumentSync_Model::getInstance()->handlePaymentSave((int)$this->id, $isBulkInsert);
+        IncomingPayment_DocumentSync_Model::getInstance()->handlePaymentSave((int)$this->id);
     }
 
     /**

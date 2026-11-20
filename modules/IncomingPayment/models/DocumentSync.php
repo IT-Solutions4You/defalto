@@ -44,35 +44,16 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * Returns the currency stored on a payment, before the running save changes it.
-     *
-     * @param int $paymentId Payment record id
-     * @return int currency id, 0 when the payment has no row yet
-     */
-    public function fetchStoredCurrencyId(int $paymentId): int
-    {
-        $row = $this->getPaymentTable()->selectData(['currency_id'], [$this->tableId => $paymentId]);
-
-        return (int)($row['currency_id'] ?? 0);
-    }
-
-    /**
      * Writes the derived values of a saved payment, applies it to its reference document
      * and recalculates the documents it was or is applied to.
      *
-     * @param int  $paymentId   Payment record id
-     * @param bool $refreshRate true to take the current rate of the currency (bulk inserts skip the before-save event)
+     * @param int $paymentId Payment record id
      * @return void
      * @throws Exception
      */
-    public function handlePaymentSave(int $paymentId, bool $refreshRate = false): void
+    public function handlePaymentSave(int $paymentId): void
     {
         $payment = Vtiger_Record_Model::getInstanceById($paymentId, IncomingPayment_Config_Helper::MODULE);
-
-        if ($refreshRate) {
-            $payment->set('conversion_rate', IncomingPayment_Calculation_Helper::getConversionRate((int)$payment->get('currency_id')));
-        }
-
         $this->updateReadonlyValues($payment);
         $associated = IncomingPayment_Associated_Model::getInstance();
         $previousRecordIds = $associated->fetchRecordIds($paymentId);
@@ -101,8 +82,8 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * Writes the read-only derived columns of a payment (rate, status, base currency amount,
-     * reference number) directly, because the entity save skips displaytype 2 fields. The record model
+     * Writes the read-only derived columns of a payment (status, reference numbers) directly,
+     * because the entity save skips displaytype 2 fields. The record model
      * is updated as well, so later calculations in the same request see the new values.
      *
      * @param Vtiger_Record_Model $payment Saved payment record
@@ -233,7 +214,7 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
      * Returns the rate for converting a payment into the currency of its document: the rate of the document for the
      * same currency, otherwise the rate stored on the payment.
      *
-     * @param array $payment            Row with currency_id and conversion_rate
+     * @param array $payment            Row with currency_id and conversion_rate of the payment amount
      * @param int   $documentCurrencyId Currency id of the document
      * @param float $documentRate       Conversion rate of the document currency
      * @return float
@@ -296,7 +277,8 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
     {
         $statuses = IncomingPayment_Config_Helper::getPaidStatuses();
         $result = $this->getDB()->pquery(
-            'SELECT associated.partial_amount, payment.currency_id, payment.conversion_rate
+            'SELECT associated.partial_amount, payment.' . IncomingPayment_Config_Helper::FIELD_AMOUNT_CURRENCY . ' AS currency_id,
+                payment.' . IncomingPayment_Config_Helper::FIELD_AMOUNT_RATE . ' AS conversion_rate
             FROM ' . IncomingPayment_Config_Helper::TABLE_ASSOCIATED . ' AS associated
             INNER JOIN ' . $this->table . ' AS payment ON payment.' . $this->tableId . ' = associated.payment_id
             INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = associated.payment_id
@@ -318,18 +300,19 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
      * Returns the payments applied to a document, newest payment date first.
      *
      * @param int $recordId Document record id
-     * @return array rows with id, payment_no, payment_name, paymentdate, payment_status, partial_amount, currency_id
+     * @return array rows with id, payment_no, payment_name, payment_date, payment_status, partial_amount, currency_id
      */
     public function fetchDocumentPayments(int $recordId): array
     {
+        $paymentDate = IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE;
         $result = $this->getDB()->pquery(
-            'SELECT payment.' . $this->tableId . ' AS id, payment.payment_no, payment.payment_name, payment.paymentdate,
-                payment.payment_status, associated.partial_amount, payment.currency_id
+            'SELECT payment.' . $this->tableId . ' AS id, payment.payment_no, payment.payment_name, payment.' . $paymentDate . ' AS payment_date,
+                payment.payment_status, associated.partial_amount, payment.' . IncomingPayment_Config_Helper::FIELD_AMOUNT_CURRENCY . ' AS currency_id
             FROM ' . IncomingPayment_Config_Helper::TABLE_ASSOCIATED . ' AS associated
             INNER JOIN ' . $this->table . ' AS payment ON payment.' . $this->tableId . ' = associated.payment_id
             INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = associated.payment_id
             WHERE vtiger_crmentity.deleted = 0 AND associated.record_id = ?
-            ORDER BY payment.paymentdate DESC, payment.' . $this->tableId . ' DESC',
+            ORDER BY payment.' . $paymentDate . ' DESC, payment.' . $this->tableId . ' DESC',
             [$recordId]
         );
         $payments = [];
@@ -344,13 +327,14 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
     /**
      * Returns the payments that are not received yet, for the daily status update.
      *
-     * @return array rows with id, paymentdate, due_date, payment_status
+     * @return array rows with id, payment_date, due_date, payment_status
      */
     public function fetchOpenPayments(): array
     {
         $statuses = IncomingPayment_Config_Helper::getPaidStatuses();
         $result = $this->getDB()->pquery(
-            'SELECT payment.' . $this->tableId . ' AS id, payment.paymentdate, payment.due_date, payment.payment_status
+            'SELECT payment.' . $this->tableId . ' AS id, payment.' . IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE . ' AS payment_date,
+                payment.due_date, payment.payment_status
             FROM ' . $this->table . ' AS payment
             INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = payment.' . $this->tableId . '
             WHERE vtiger_crmentity.deleted = 0
@@ -380,7 +364,7 @@ class IncomingPayment_DocumentSync_Model extends Core_DatabaseData_Model
 
         foreach ($this->fetchOpenPayments() as $row) {
             $status = IncomingPayment_Status_Helper::getStatus(
-                IncomingPayment_Status_Helper::normalizeDate($row['paymentdate']),
+                IncomingPayment_Status_Helper::normalizeDate($row['payment_date']),
                 IncomingPayment_Status_Helper::normalizeDate($row['due_date']),
                 $today
             );

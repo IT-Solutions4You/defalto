@@ -26,10 +26,45 @@ class IncomingPayment_Install_Model extends Core_Install_Model
     private const LEGACY_FIELDS = ['relations', 'accountingdate', 'tax_expense', 'vat_amount', 'total_without_vat', 'category'];
 
     /**
-     * Index of the reference column while it was an int column (uitype 10).
+     * Reference column of earlier installations and its index while it was an int column (uitype 10).
      */
+    private const LEGACY_RELATION_COLUMN = 'relationid';
     private const LEGACY_RELATION_INDEX = 'df_incomingpayment_relationid_idx';
+    private const LEGACY_RELATED_TO_COLUMN = 'relatedto';
+    private const LEGACY_RELATED_TO_INDEX = 'df_incomingpayment_relatedto_idx';
     private const LEGACY_STATUS_CRON = 'IncomingPaymentStatus';
+
+    /**
+     * Field names of earlier installations and their current names. renameLegacyFields() renames each field and its
+     * column in place, so the field id and everything bound to it (profiles, related lists, references) stay.
+     * The former currency and rate fields become the hidden fields of the amount with its own currency.
+     */
+    private const LEGACY_FIELD_NAMES = [
+        'paymentamount' => IncomingPayment_Config_Helper::FIELD_AMOUNT,
+        'currency_id' => IncomingPayment_Config_Helper::FIELD_AMOUNT_CURRENCY,
+        'conversion_rate' => IncomingPayment_Config_Helper::FIELD_AMOUNT_RATE,
+        'payamount_main' => IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE,
+        'paymentdate' => IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE,
+        'paymethod' => IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD,
+        'transactionid' => IncomingPayment_Config_Helper::FIELD_TRANSACTION_ID,
+        self::LEGACY_RELATION_COLUMN => IncomingPayment_Config_Helper::FIELD_RELATION,
+        'associated_no' => IncomingPayment_Config_Helper::FIELD_REFERENCE_NO,
+        self::LEGACY_RELATED_TO_COLUMN => IncomingPayment_Config_Helper::FIELD_RELATED_TO,
+        'contactid' => IncomingPayment_Config_Helper::FIELD_CONTACT,
+    ];
+
+    /**
+     * Hidden fields of the amount with its own currency; saved filters cannot use them.
+     */
+    private const AMOUNT_HIDDEN_FIELDS = [
+        IncomingPayment_Config_Helper::FIELD_AMOUNT_CURRENCY,
+        IncomingPayment_Config_Helper::FIELD_AMOUNT_RATE,
+    ];
+
+    /**
+     * Tables of saved filters whose column values look like "table:column:field:label:type".
+     */
+    private const FILTER_TABLES = ['vtiger_cvcolumnlist', 'vtiger_cvadvfilter', 'vtiger_cvstdfilter'];
 
     protected string $moduleNumbering = 'PAYIN';
 
@@ -63,45 +98,43 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         ],
     ];
 
-    public array $blocksHeaderFields = ['payment_status', 'paymentamount', 'paymentdate', 'relationid'];
+    public array $blocksHeaderFields = ['payment_status', 'payment_amount', 'payment_date', 'reference_id'];
     public array $blocksSummaryFields = [
         'payment_no',
         'payment_name',
         'payment_status',
-        'paymentamount',
-        'currency_id',
-        'paymentdate',
+        'payment_amount',
+        'payment_date',
         'due_date',
-        'paymethod',
-        'relationid',
-        'relatedto',
+        'payment_method',
+        'reference_id',
+        'related_to',
         'assigned_user_id',
     ];
     public array $blocksQuickCreateFields = [
         'payment_name',
-        'paymentamount',
-        'currency_id',
-        'paymentdate',
+        'payment_amount',
+        'payment_date',
         'due_date',
-        'paymethod',
-        'relationid',
-        'relatedto',
-        'contactid',
+        'payment_method',
+        'reference_id',
+        'related_to',
+        'contact_id',
         'assigned_user_id',
     ];
     public array $blocksListFields = [
         'payment_no',
         'payment_name',
-        'relationid',
-        'relatedto',
-        'paymentamount',
-        'paymentdate',
+        'reference_id',
+        'related_to',
+        'payment_amount',
+        'payment_date',
         'due_date',
         'payment_status',
         'assigned_user_id',
     ];
-    public array $relatedListFields = [['payment_no', 'payment_name', 'paymentdate', 'paymentamount', 'payment_status'], 'paymentdate', 'DESC'];
-    public array $popupFields = ['payment_no', 'payment_name', 'paymentamount', 'payment_status', 'relatedto'];
+    public array $relatedListFields = [['payment_no', 'payment_name', 'payment_date', 'payment_amount', 'payment_status'], 'payment_date', 'DESC'];
+    public array $popupFields = ['payment_no', 'payment_name', 'payment_amount', 'payment_status', 'related_to'];
 
     /**
      * Registers numbering, history, comments, related lists, settings link, cron, handlers and document integrations.
@@ -367,9 +400,10 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                         [IncomingPayment_Config_Helper::STATUS_RECEIVED, '#5CE573'],
                     ],
                 ],
-                'paymentamount' => [
-                    'uitype' => 72,
-                    'column' => 'paymentamount',
+                // The core adds the hidden currency and rate fields and the base amount column (uitype 35)
+                IncomingPayment_Config_Helper::FIELD_AMOUNT => [
+                    'uitype' => Vtiger_Field_Model::UITYPE_AMOUNT_CURRENCY,
+                    'column' => IncomingPayment_Config_Helper::FIELD_AMOUNT,
                     'table' => $table,
                     'columntype' => $amountType,
                     'label' => 'Amount',
@@ -380,31 +414,9 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 3,
                 ],
-                'currency_id' => [
-                    'uitype' => 117,
-                    'column' => 'currency_id',
-                    'table' => $table,
-                    'columntype' => 'int(19)',
-                    'label' => 'Currency',
-                    'typeofdata' => 'I~O',
-                    'defaultvalue' => 1,
-                    'quickcreate' => 2,
-                    'summaryfield' => 1,
-                ],
-                'conversion_rate' => [
-                    'uitype' => 1,
-                    'column' => 'conversion_rate',
-                    'table' => $table,
-                    'columntype' => 'decimal(12,5)',
-                    'label' => 'Conversion Rate',
-                    'typeofdata' => 'N~O',
-                    'displaytype' => 3,
-                    'quickcreate' => 1,
-                    'masseditable' => 0,
-                ],
-                'payamount_main' => [
+                IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE => [
                     'uitype' => 72,
-                    'column' => 'payamount_main',
+                    'column' => IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE,
                     'table' => $table,
                     'columntype' => $amountType,
                     'label' => 'Amount in Base Currency',
@@ -414,9 +426,9 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'masseditable' => 0,
                     'ajaxeditable' => 0,
                 ],
-                'paymentdate' => [
+                IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE => [
                     'uitype' => 5,
-                    'column' => 'paymentdate',
+                    'column' => IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE,
                     'table' => $table,
                     'columntype' => 'date',
                     'label' => 'Payment Date',
@@ -439,9 +451,9 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 5,
                 ],
-                'paymethod' => [
+                IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD => [
                     'uitype' => 15,
-                    'column' => 'paymethod',
+                    'column' => IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD,
                     'table' => $table,
                     'columntype' => 'varchar(255)',
                     'label' => 'Payment Method',
@@ -450,18 +462,18 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'picklist_values' => ['Bank Transfer', 'Cash', 'Credit card', 'Paypal', 'Wire transfer', 'Other'],
                 ],
-                'transactionid' => [
+                IncomingPayment_Config_Helper::FIELD_TRANSACTION_ID => [
                     'uitype' => 1,
-                    'column' => 'transactionid',
+                    'column' => IncomingPayment_Config_Helper::FIELD_TRANSACTION_ID,
                     'table' => $table,
                     'columntype' => 'varchar(100)',
                     'label' => 'Transaction ID',
                     'typeofdata' => 'V~O',
                     'quickcreate' => 1,
                 ],
-                'relationid' => [
+                IncomingPayment_Config_Helper::FIELD_RELATION => [
                     'uitype' => Vtiger_Field_Model::UITYPE_MULTI_REFERENCE,
-                    'column' => 'relationid',
+                    'column' => IncomingPayment_Config_Helper::FIELD_RELATION,
                     'table' => $table,
                     'columntype' => 'text',
                     'label' => 'Reference',
@@ -473,9 +485,9 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'filter_sequence' => 7,
                     'related_modules' => ['Invoice'],
                 ],
-                'relatedto' => [
+                IncomingPayment_Config_Helper::FIELD_RELATED_TO => [
                     'uitype' => 10,
-                    'column' => 'relatedto',
+                    'column' => IncomingPayment_Config_Helper::FIELD_RELATED_TO,
                     'table' => $table,
                     'columntype' => 'int(19)',
                     'label' => 'Related To',
@@ -484,9 +496,9 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'summaryfield' => 1,
                     'related_modules' => IncomingPayment_Config_Helper::RELATED_TO_MODULES,
                 ],
-                'contactid' => [
+                IncomingPayment_Config_Helper::FIELD_CONTACT => [
                     'uitype' => 10,
-                    'column' => 'contactid',
+                    'column' => IncomingPayment_Config_Helper::FIELD_CONTACT,
                     'table' => $table,
                     'columntype' => 'int(19)',
                     'label' => 'Contact Name',
@@ -504,9 +516,9 @@ class IncomingPayment_Install_Model extends Core_Install_Model
                     'filter' => 1,
                     'filter_sequence' => 8,
                 ],
-                'associated_no' => [
+                IncomingPayment_Config_Helper::FIELD_REFERENCE_NO => [
                     'uitype' => 1,
-                    'column' => 'associated_no',
+                    'column' => IncomingPayment_Config_Helper::FIELD_REFERENCE_NO,
                     'table' => $table,
                     'columntype' => 'varchar(255)',
                     'label' => 'Reference No',
@@ -577,25 +589,25 @@ class IncomingPayment_Install_Model extends Core_Install_Model
         $amountType = 'decimal(25,8) DEFAULT NULL';
 
         $this->dropLegacyRelationIndex();
+        $this->renameLegacyFields();
+        // The hidden currency and rate columns of the amount are created with its field (Core_Install_Model::createField())
         $this->getTable(IncomingPayment_Config_Helper::TABLE, null)
             ->createTable($index)
             ->createColumn('payment_name', 'varchar(255) DEFAULT NULL')
             ->createColumn('payment_no', 'varchar(100) DEFAULT NULL')
             ->createColumn('payment_status', 'varchar(255) DEFAULT NULL')
-            ->createColumn('paymentamount', $amountType)
-            ->createColumn('currency_id', 'int(19) NOT NULL DEFAULT 1')
-            ->createColumn('conversion_rate', 'decimal(12,5) NOT NULL DEFAULT 1.00000')
-            ->createColumn('payamount_main', $amountType)
-            ->createColumn('paymentdate', 'date DEFAULT NULL')
-            ->createColumn('due_date', 'date DEFAULT NULL')
-            ->createColumn('paymethod', 'varchar(255) DEFAULT NULL')
-            ->createColumn('transactionid', 'varchar(100) DEFAULT NULL')
-            ->createColumn('relationid', 'text DEFAULT NULL')
-            ->createColumn('relatedto', self::$COLUMN_INT)
-            ->createColumn('contactid', self::$COLUMN_INT)
-            ->createColumn('associated_no', 'varchar(255) DEFAULT NULL')
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_AMOUNT, $amountType)
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE, $amountType)
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE, 'date DEFAULT NULL')
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_DUE_DATE, 'date DEFAULT NULL')
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD, 'varchar(255) DEFAULT NULL')
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_TRANSACTION_ID, 'varchar(100) DEFAULT NULL')
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_RELATION, 'text DEFAULT NULL')
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_RELATED_TO, self::$COLUMN_INT)
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_CONTACT, self::$COLUMN_INT)
+            ->createColumn(IncomingPayment_Config_Helper::FIELD_REFERENCE_NO, 'varchar(255) DEFAULT NULL')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`' . $index . '`)')
-            ->createKey('KEY IF NOT EXISTS `df_incomingpayment_relatedto_idx` (`relatedto`)')
+            ->createKey('KEY IF NOT EXISTS `df_incomingpayment_related_to_idx` (`' . IncomingPayment_Config_Helper::FIELD_RELATED_TO . '`)')
             ->createKey('KEY IF NOT EXISTS `df_incomingpayment_status_idx` (`payment_status`)')
             ->createKey('CONSTRAINT `fk_crmid_df_incomingpayment` FOREIGN KEY IF NOT EXISTS (`' . $index . '`) REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE');
 
@@ -644,9 +656,255 @@ class IncomingPayment_Install_Model extends Core_Install_Model
             $this->deleteField($fieldName);
         }
 
+        $this->renameLegacyFields();
         $this->migrateAccountingBlock();
         $this->migrateRelationField();
         $this->migrateStatusCron();
+    }
+
+    /**
+     * Renames the fields of earlier installations to their current names (LEGACY_FIELD_NAMES) together with their
+     * columns, the picklist table of the payment method and the saved filters, workflow conditions, picklist
+     * dependencies and history that refer to them. Then the amount becomes the amount with its own currency
+     * (uitype 35) and the former currency and rate fields its hidden fields, so createField() finds them with
+     * their values. It runs before the fields are created (installTables(), also on a module update, which does
+     * not call migrate()) and again in migrate(); a field already renamed is skipped.
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function renameLegacyFields(): void
+    {
+        $tabId = (int)getTabid($this->getModuleName());
+
+        if (!$tabId) {
+            return;
+        }
+
+        $isRenamed = false;
+
+        foreach (self::LEGACY_FIELD_NAMES as $legacyName => $fieldName) {
+            $legacyField = $this->fetchFieldRow($tabId, $legacyName);
+
+            if (!$legacyField || $this->fetchFieldRow($tabId, $fieldName)) {
+                continue;
+            }
+
+            $this->renameLegacyField($tabId, $legacyField, $fieldName);
+            $isRenamed = true;
+        }
+
+        $this->convertAmountField($tabId);
+
+        if ($isRenamed) {
+            Vtiger_Cache::flush();
+            Core_AmountCurrency_Model::clearCache();
+        }
+    }
+
+    /**
+     * Renames one field of an earlier installation and its column, and every stored reference to it.
+     *
+     * @param int    $tabId       Tab id of the module
+     * @param array  $legacyField Row of vtiger_field with fieldid, fieldname and columnname
+     * @param string $fieldName   Current field and column name
+     * @return void
+     * @throws Exception
+     */
+    private function renameLegacyField(int $tabId, array $legacyField, string $fieldName): void
+    {
+        $legacyName = (string)$legacyField['fieldname'];
+        $legacyColumn = (string)$legacyField['columnname'];
+        $table = $this->getTable(IncomingPayment_Config_Helper::TABLE, null);
+
+        if (self::LEGACY_RELATED_TO_COLUMN === $legacyName && $table->isKeyExists(self::LEGACY_RELATED_TO_INDEX)) {
+            $table->getDB()->pquery(sprintf('ALTER TABLE %s DROP INDEX %s', IncomingPayment_Config_Helper::TABLE, self::LEGACY_RELATED_TO_INDEX), []);
+        }
+
+        $table->renameColumn($legacyColumn, $fieldName);
+        $this->db->pquery('UPDATE vtiger_field SET fieldname = ?, columnname = ? WHERE fieldid = ?', [$fieldName, $fieldName, (int)$legacyField['fieldid']]);
+
+        if (IncomingPayment_Config_Helper::FIELD_PAYMENT_METHOD === $fieldName) {
+            $this->renamePicklistTable($tabId, $legacyName, $fieldName);
+        }
+
+        $this->renameFilterColumns($legacyColumn, $legacyName, $fieldName);
+        $this->renameWorkflowConditions($legacyName, $fieldName);
+        $this->db->pquery('UPDATE vtiger_picklist_dependency SET sourcefield = ? WHERE tabid = ? AND sourcefield = ?', [$fieldName, $tabId, $legacyName]);
+        $this->db->pquery('UPDATE vtiger_picklist_dependency SET targetfield = ? WHERE tabid = ? AND targetfield = ?', [$fieldName, $tabId, $legacyName]);
+        $this->db->pquery(
+            'UPDATE vtiger_modtracker_detail
+            INNER JOIN vtiger_modtracker_basic ON vtiger_modtracker_basic.id = vtiger_modtracker_detail.id
+            SET vtiger_modtracker_detail.fieldname = ?
+            WHERE vtiger_modtracker_basic.module = ? AND vtiger_modtracker_detail.fieldname = ?',
+            [$fieldName, $this->getModuleName(), $legacyName]
+        );
+    }
+
+    /**
+     * Makes the amount the amount with its own currency (uitype 35) and the former currency and rate fields its
+     * hidden fields. A module update keeps the uitype and the layout flags of existing fields, so this is done here.
+     * Saved filters lose the hidden fields, because the filter editor cannot offer them. Safe to run again.
+     *
+     * @param int $tabId Tab id of the module
+     * @return void
+     */
+    private function convertAmountField(int $tabId): void
+    {
+        $this->db->pquery(
+            'UPDATE vtiger_field SET uitype = ? WHERE tabid = ? AND fieldname = ?',
+            [Vtiger_Field_Model::UITYPE_AMOUNT_CURRENCY, $tabId, IncomingPayment_Config_Helper::FIELD_AMOUNT]
+        );
+
+        foreach (self::AMOUNT_HIDDEN_FIELDS as $fieldName) {
+            $this->db->pquery(
+                'UPDATE vtiger_field SET displaytype = 3, quickcreate = 1, masseditable = 0, summaryfield = 0, headerfield = 0 WHERE tabid = ? AND fieldname = ?',
+                [$tabId, $fieldName]
+            );
+
+            foreach (self::FILTER_TABLES as $filterTable) {
+                $this->db->pquery(
+                    sprintf('DELETE FROM %s WHERE columnname LIKE ?', $filterTable),
+                    [$this->getFilterColumnPattern($fieldName, $fieldName)]
+                );
+            }
+        }
+    }
+
+    /**
+     * Renames the field in the columns and conditions of saved filters, also of the Payments list, whose filters
+     * use the columns of this module.
+     *
+     * @param string $legacyColumn Former column name
+     * @param string $legacyName   Former field name
+     * @param string $fieldName    Current field and column name
+     * @return void
+     */
+    private function renameFilterColumns(string $legacyColumn, string $legacyName, string $fieldName): void
+    {
+        $legacyPrefix = IncomingPayment_Config_Helper::TABLE . ':' . $legacyColumn . ':' . $legacyName . ':';
+        $prefix = IncomingPayment_Config_Helper::TABLE . ':' . $fieldName . ':' . $fieldName . ':';
+
+        foreach (self::FILTER_TABLES as $filterTable) {
+            $this->db->pquery(
+                sprintf('UPDATE %s SET columnname = CONCAT(?, SUBSTRING(columnname, ?)) WHERE columnname LIKE ?', $filterTable),
+                [$prefix, strlen($legacyPrefix) + 1, $this->getFilterColumnPattern($legacyColumn, $legacyName)]
+            );
+        }
+    }
+
+    /**
+     * Returns the LIKE pattern of the saved filter columns of a field of this module.
+     *
+     * @param string $columnName Column name
+     * @param string $fieldName  Field name
+     * @return string
+     */
+    private function getFilterColumnPattern(string $columnName, string $fieldName): string
+    {
+        $prefix = IncomingPayment_Config_Helper::TABLE . ':' . $columnName . ':' . $fieldName . ':';
+
+        return addcslashes($prefix, '\\%_') . '%';
+    }
+
+    /**
+     * Renames the field in the conditions of the workflows of this module, including conditions on a field of a
+     * referenced record, e.g. "(relatedto : (Accounts) accountname)".
+     *
+     * @param string $legacyName Former field name
+     * @param string $fieldName  Current field name
+     * @return void
+     */
+    private function renameWorkflowConditions(string $legacyName, string $fieldName): void
+    {
+        $result = $this->db->pquery('SELECT workflow_id, test FROM com_vtiger_workflows WHERE module_name = ?', [$this->getModuleName()]);
+        $referencePrefix = '(' . $legacyName . ' : (';
+
+        while ($row = $this->db->fetchByAssoc($result, -1, false)) {
+            $conditions = json_decode(decode_html((string)$row['test']), true);
+            $isChanged = false;
+
+            if (!is_array($conditions)) {
+                continue;
+            }
+
+            foreach ($conditions as $index => $condition) {
+                $conditionField = (string)($condition['fieldname'] ?? '');
+
+                if ($legacyName === $conditionField) {
+                    $conditions[$index]['fieldname'] = $fieldName;
+                    $isChanged = true;
+                } elseif (str_starts_with($conditionField, $referencePrefix)) {
+                    $conditions[$index]['fieldname'] = '(' . $fieldName . substr($conditionField, strlen($legacyName) + 1);
+                    $isChanged = true;
+                }
+            }
+
+            if ($isChanged) {
+                $this->db->pquery('UPDATE com_vtiger_workflows SET test = ? WHERE workflow_id = ?', [json_encode($conditions), (int)$row['workflow_id']]);
+            }
+        }
+    }
+
+    /**
+     * Renames the picklist table of a renamed picklist field with its sequence table and picklist name, so the values,
+     * their order, colors and role assignments stay. A picklist also used by a field of another module stays as it is.
+     *
+     * @param int    $tabId      Tab id of the module
+     * @param string $legacyName Former field name
+     * @param string $fieldName  Current field name
+     * @return void
+     * @throws Exception
+     */
+    private function renamePicklistTable(int $tabId, string $legacyName, string $fieldName): void
+    {
+        $legacyTable = 'vtiger_' . $legacyName;
+        $tableName = 'vtiger_' . $fieldName;
+
+        if (!Vtiger_Utils::CheckTable($legacyTable) || Vtiger_Utils::CheckTable($tableName) || $this->isPicklistUsedByOtherModule($tabId, $legacyName)) {
+            self::logError('Picklist table not renamed: ' . $legacyTable);
+
+            return;
+        }
+
+        $this->db->pquery(sprintf('RENAME TABLE %s TO %s', $legacyTable, $tableName), []);
+        $this->getTable($tableName, null)
+            ->renameColumn($legacyName . 'id', $fieldName . 'id')
+            ->renameColumn($legacyName, $fieldName);
+
+        if (Vtiger_Utils::CheckTable($legacyTable . '_seq') && !Vtiger_Utils::CheckTable($tableName . '_seq')) {
+            $this->db->pquery(sprintf('RENAME TABLE %s_seq TO %s_seq', $legacyTable, $tableName), []);
+        }
+
+        $this->db->pquery('UPDATE vtiger_picklist SET name = ? WHERE name = ?', [$fieldName, $legacyName]);
+    }
+
+    /**
+     * Tells whether a field of another module uses the picklist of the same name.
+     *
+     * @param int    $tabId     Tab id of this module
+     * @param string $fieldName Picklist field name
+     * @return bool
+     */
+    private function isPicklistUsedByOtherModule(int $tabId, string $fieldName): bool
+    {
+        $result = $this->db->pquery('SELECT 1 FROM vtiger_field WHERE fieldname = ? AND tabid != ? LIMIT 1', [$fieldName, $tabId]);
+
+        return 0 < $this->db->num_rows($result);
+    }
+
+    /**
+     * Returns the id, name and column of a field of this module, or an empty array.
+     *
+     * @param int    $tabId     Tab id of the module
+     * @param string $fieldName Field name
+     * @return array
+     */
+    private function fetchFieldRow(int $tabId, string $fieldName): array
+    {
+        $result = $this->db->pquery('SELECT fieldid, fieldname, columnname FROM vtiger_field WHERE tabid = ? AND fieldname = ?', [$tabId, $fieldName]);
+
+        return $this->db->num_rows($result) ? (array)$this->db->fetchByAssoc($result) : [];
     }
 
     /**
@@ -669,7 +927,7 @@ class IncomingPayment_Install_Model extends Core_Install_Model
     {
         $table = $this->getTable(IncomingPayment_Config_Helper::TABLE, null);
 
-        if ($table->checkColumn(IncomingPayment_Config_Helper::FIELD_RELATION, IncomingPayment_Config_Helper::TABLE) && $table->isKeyExists(self::LEGACY_RELATION_INDEX)) {
+        if ($table->checkColumn(self::LEGACY_RELATION_COLUMN, IncomingPayment_Config_Helper::TABLE) && $table->isKeyExists(self::LEGACY_RELATION_INDEX)) {
             $table->getDB()->pquery(sprintf('ALTER TABLE %s DROP INDEX %s', IncomingPayment_Config_Helper::TABLE, self::LEGACY_RELATION_INDEX), []);
         }
     }

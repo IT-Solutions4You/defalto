@@ -12,3 +12,4 @@
 - An underpayment threshold in the settings marks documents with a small remaining balance as paid while the balance keeps the real amount.
 - With the Payments list installed, the header of a payment shows Payments and leads back to the Payments list.
 - The daily system task PaymentStatus, shared by all payment modules, updates payment statuses when payment or due dates arrive.
+- The currency of a payment is chosen with the currency symbol inside the Amount field; searching, filtering and sorting by amount compare the amounts in the base currency.

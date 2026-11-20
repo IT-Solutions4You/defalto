@@ -48,7 +48,7 @@ class IncomingPayment_WidgetSummary_Helper
                 'id' => (int)$row['id'],
                 'number' => (string)$row['payment_no'],
                 'name' => (string)$row['payment_name'],
-                'date' => $row['paymentdate'] ? DateTimeField::convertToUserFormat((string)$row['paymentdate']) : '',
+                'date' => $row['payment_date'] ? DateTimeField::convertToUserFormat((string)$row['payment_date']) : '',
                 'status' => (string)$row['payment_status'],
                 'isReceived' => in_array((string)$row['payment_status'], IncomingPayment_Config_Helper::getPaidStatuses(), true),
                 'amount' => IncomingPayment_Calculation_Helper::formatAmount((float)$row['partial_amount'], (int)$row['currency_id']),

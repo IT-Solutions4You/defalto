@@ -38,7 +38,8 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 
 ## Other fields
 
-- **Amount in Base Currency** is calculated automatically from the exchange rate of the payment currency. The rate is taken when the payment is created or its currency changes, so editing an old payment does not change its value.
+- **Amount** holds the currency of the payment: click the currency symbol inside the field to choose another currency. A new payment starts with your currency, or with the currency of the invoice when it is created from an invoice.
+- **Amount in Base Currency** is calculated automatically from the exchange rate of the payment currency. The rate is taken when the payment is created or its currency changes, so editing an old payment does not change its value. Searching, filtering and sorting by **Amount** compare the amounts in the base currency, so payments in different currencies are ordered correctly.
 
 ## Settings
 

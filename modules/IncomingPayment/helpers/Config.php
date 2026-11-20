@@ -23,12 +23,24 @@ class IncomingPayment_Config_Helper
     public const SETTING_UNDERPAYMENT_THRESHOLD = 'underpayment_threshold';
 
     public const PAYMENTS_LIST_MODULE = 'Payments';
-    public const FIELD_RELATION = 'relationid';
-    public const FIELD_RELATED_TO = 'relatedto';
-    public const FIELD_CONTACT = 'contactid';
+    public const FIELD_RELATION = 'reference_id';
+    public const FIELD_RELATED_TO = 'related_to';
+    public const FIELD_CONTACT = 'contact_id';
     public const FIELD_STATUS = 'payment_status';
-    public const FIELD_AMOUNT = 'paymentamount';
-    public const FIELD_AMOUNT_BASE = 'payamount_main';
+    public const FIELD_PAYMENT_DATE = 'payment_date';
+    public const FIELD_DUE_DATE = 'due_date';
+    public const FIELD_REFERENCE_NO = 'reference_no';
+    public const FIELD_PAYMENT_METHOD = 'payment_method';
+    public const FIELD_TRANSACTION_ID = 'transaction_id';
+
+    /**
+     * Amount with its own currency (uitype 35). The core keeps its hidden currency and rate fields and the column
+     * with the amount in the base currency (Core_AmountCurrency_Model); the read-only base amount field shows it.
+     */
+    public const FIELD_AMOUNT = 'payment_amount';
+    public const FIELD_AMOUNT_CURRENCY = 'payment_amount_currency_id';
+    public const FIELD_AMOUNT_RATE = 'payment_amount_conversion_rate';
+    public const FIELD_AMOUNT_BASE = 'payment_amount_base';
 
     /**
      * Number of documents one payment may reference; payments to several documents come with the paid version.
@@ -51,7 +63,7 @@ class IncomingPayment_Config_Helper
      * relatedModule makes the core translate the widget title through this module's language file;
      * relatedField makes its Add action open the quick create form with the document in that field.
      */
-    public const WIDGET_URL = 'module=IncomingPayment&view=Widget&mode=showPayments&sourceModule=$MODULE$&sourceRecord=$RECORD$&relatedModule=IncomingPayment&relatedField=relationid';
+    public const WIDGET_URL = 'module=IncomingPayment&view=Widget&mode=showPayments&sourceModule=$MODULE$&sourceRecord=$RECORD$&relatedModule=IncomingPayment&relatedField=reference_id';
     public const RELATED_SAVE_HANDLER = 'IncomingPayment_RelatedSave_Handler';
     public const RELATED_SAVE_HANDLER_FILE = 'modules/IncomingPayment/handlers/RelatedSave.php';
     public const RELATED_DELETE_HANDLER = 'IncomingPayment_RelatedDelete_Handler';

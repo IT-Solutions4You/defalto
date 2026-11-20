@@ -10,7 +10,7 @@
 
 /**
  * Reference field of a payment: limits the edit form to the number of documents a payment may reference.
- * The same limit is enforced on save by IncomingPayment_PaymentValues_Helper::setEditableValues().
+ * The same limit is enforced on save by IncomingPayment_PaymentValues_Helper::validateReferences().
  */
 class IncomingPayment_Multireference_UIType extends Core_Multireference_UIType
 {

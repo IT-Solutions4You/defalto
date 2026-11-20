@@ -9,7 +9,7 @@
  */
 
 /**
- * Fills the editable derived values of a payment before it is saved.
+ * Checks the reference documents of a payment before it is saved.
  * The read-only values and the document synchronisation are handled by IncomingPayment::save_module().
  */
 class IncomingPayment_PaymentSave_Handler extends VTEventHandler
@@ -29,7 +29,7 @@ class IncomingPayment_PaymentSave_Handler extends VTEventHandler
         }
 
         if ($handlerType === IncomingPayment_Config_Helper::EVENT_BEFORE_SAVE) {
-            IncomingPayment_PaymentValues_Helper::setEditableValues($entityData);
+            IncomingPayment_PaymentValues_Helper::validateReferences($entityData);
         }
     }
 }

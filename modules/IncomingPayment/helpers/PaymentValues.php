@@ -9,34 +9,25 @@
  */
 
 /**
- * Fills the derived fields of a payment: editable ones before the save, read-only ones right after the record is written.
- * The entity save only writes fields with displaytype 1, 3, 4 and 6, so read-only (displaytype 2)
- * columns such as the status must be written with a direct update once the record exists.
+ * Checks a payment before the save and fills its read-only derived fields right after the record is written.
+ * The entity save only writes fields with displaytype 1, 3, 4 and 6, so read-only (displaytype 2) columns such as
+ * the status must be written with a direct update once the record exists. The currency, the conversion rate and the
+ * amount in the base currency belong to the amount with its own currency (uitype 35) and are kept by the core
+ * (Core_AmountCurrency_Model, called from CRMEntity::saveentity()).
  */
 class IncomingPayment_PaymentValues_Helper
 {
     /**
-     * Sets the editable derived values on the entity data of a payment being saved (currency fallback and conversion
-     * rate) and rejects more reference documents than the limit. The organisation and the contact are not taken from
-     * the reference document on save; only a payment created from a document gets them prefilled in the form.
+     * Rejects more reference documents than the limit on a payment being saved. The organisation and the contact
+     * are not taken from the reference document on save; only a payment created from a document gets them
+     * prefilled in the form.
      *
      * @param VTEntityData $entityData Payment entity data of the before-save event
      * @return void
      * @throws Exception
      */
-    public static function setEditableValues(VTEntityData $entityData): void
+    public static function validateReferences(VTEntityData $entityData): void
     {
-        $currencyId = (int)self::getValue($entityData, 'currency_id');
-
-        if ($currencyId <= 0) {
-            $currencyId = (int)CurrencyField::getDBCurrencyId();
-            $entityData->set('currency_id', $currencyId);
-        }
-
-        if (self::isRateRefreshRequired($entityData, $currencyId)) {
-            $entityData->set('conversion_rate', IncomingPayment_Calculation_Helper::getConversionRate($currencyId));
-        }
-
         $relationIds = Core_Multireference_UIType::getRecordIds(self::getValue($entityData, IncomingPayment_Config_Helper::FIELD_RELATION));
 
         if (count($relationIds) > IncomingPayment_Config_Helper::REFERENCE_LIMIT) {
@@ -45,25 +36,7 @@ class IncomingPayment_PaymentValues_Helper
     }
 
     /**
-     * Tells whether the payment needs the current rate of its currency. An existing payment keeps its stored rate,
-     * so editing an old payment does not change its base currency amount or the paid amount of its document.
-     *
-     * @param VTEntityData $entityData Payment entity data
-     * @param int          $currencyId Currency id being saved
-     * @return bool
-     */
-    private static function isRateRefreshRequired(VTEntityData $entityData, int $currencyId): bool
-    {
-        if ($entityData->isNew() || (float)self::getValue($entityData, 'conversion_rate') <= 0) {
-            return true;
-        }
-
-        return IncomingPayment_DocumentSync_Model::getInstance()->fetchStoredCurrencyId((int)$entityData->getId()) !== $currencyId;
-    }
-
-    /**
-     * Returns the read-only derived columns of a saved payment: conversion rate, status, base currency amount
-     * and the number of the reference document.
+     * Returns the read-only derived columns of a saved payment: the status and the numbers of the reference documents.
      *
      * @param Vtiger_Record_Model $payment Saved payment record
      * @return array [column => value]
@@ -71,24 +44,13 @@ class IncomingPayment_PaymentValues_Helper
      */
     public static function getReadonlyValues(Vtiger_Record_Model $payment): array
     {
-        $amount = IncomingPayment_Calculation_Helper::parseAmount($payment->get(IncomingPayment_Config_Helper::FIELD_AMOUNT));
-        $rate = (float)$payment->get('conversion_rate');
-
-        if ($rate <= 0) {
-            $rate = IncomingPayment_Calculation_Helper::getConversionRate((int)$payment->get('currency_id'));
-        }
-
-        $values = [
-            'conversion_rate' => $rate,
+        return [
             IncomingPayment_Config_Helper::FIELD_STATUS => IncomingPayment_Status_Helper::getStatus(
-                IncomingPayment_Status_Helper::normalizeDate($payment->get('paymentdate')),
-                IncomingPayment_Status_Helper::normalizeDate($payment->get('due_date'))
+                IncomingPayment_Status_Helper::normalizeDate($payment->get(IncomingPayment_Config_Helper::FIELD_PAYMENT_DATE)),
+                IncomingPayment_Status_Helper::normalizeDate($payment->get(IncomingPayment_Config_Helper::FIELD_DUE_DATE))
             ),
-            IncomingPayment_Config_Helper::FIELD_AMOUNT_BASE => IncomingPayment_Calculation_Helper::roundStoredAmount(IncomingPayment_Calculation_Helper::convertToBaseCurrency($amount, $rate)),
-            'associated_no' => implode(', ', self::getDocumentNumbers(self::getDocumentIds($payment))),
+            IncomingPayment_Config_Helper::FIELD_REFERENCE_NO => implode(', ', self::getDocumentNumbers(self::getDocumentIds($payment))),
         ];
-
-        return $values;
     }
 
     /**

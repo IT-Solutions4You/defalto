@@ -63,7 +63,7 @@ class IncomingPayment_Prefill_Helper
         }
 
         if ($moduleModel->getField('currency_id') && (int)$recordModel->get('currency_id') > 0) {
-            $values['currency_id'] = (int)$recordModel->get('currency_id');
+            $values[IncomingPayment_Config_Helper::FIELD_AMOUNT_CURRENCY] = (int)$recordModel->get('currency_id');
         }
 
         $dueDate = IncomingPayment_Status_Helper::normalizeDate($moduleModel->getField('duedate') ? $recordModel->get('duedate') : '');

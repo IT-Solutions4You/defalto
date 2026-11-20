@@ -11,18 +11,14 @@
 class IncomingPayment_Record_Model extends Vtiger_Record_Model
 {
     /**
-     * Returns the currency id of the payment, falling back to the base currency. List and related list rows do not
-     * load the currency column, so the stored currency is read from the database then.
+     * Returns the currency of the payment, which is the currency of its amount (uitype 35), falling back to the base
+     * currency. The payment table has no record currency column of its own.
      *
      * @return int
      */
     public function getCurrencyId(): int
     {
-        if (!$this->has('currency_id')) {
-            return parent::getCurrencyId();
-        }
-
-        $currencyId = (int)$this->get('currency_id');
+        $currencyId = $this->getAmountCurrencyId(IncomingPayment_Config_Helper::FIELD_AMOUNT);
 
         return $currencyId > 0 ? $currencyId : (int)CurrencyField::getDBCurrencyId();
     }
