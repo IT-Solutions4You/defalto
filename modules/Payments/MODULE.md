@@ -4,7 +4,7 @@
 Payments is one list of the records of all payment modules (IncomingPayment, later OutgoingPayment). It has no records, fields, tables or edit/detail views of its own (`isentitytype = 0`, class `Payments extends CRMExtension`). Payments are created and edited in their own module.
 
 ## Runtime owner and entry points
-- `modules/Payments/helpers/Sources.php`: `Payments_Sources_Helper` is the single list of sources (module, direction, optional source condition, fields treated as missing). The current sources are a prototype: IncomingPayment with a document and IncomingPayment without a document. The prototype treats `transactionid` as missing in the second source.
+- `modules/Payments/helpers/Sources.php`: `Payments_Sources_Helper` is the single list of sources (module, direction, optional source condition, fields treated as missing). The current sources are a prototype: IncomingPayment with a document and IncomingPayment without a document. The prototype treats `transaction_id` as missing in the second source.
 - `modules/Payments/models/ListView.php`: `Payments_ListView_Model` overrides the headers, entries, count, basic links (one add button per payment module) and mass actions (none).
 - `modules/Payments/models/UnionQuery.php`: `Payments_UnionQuery_Model` joins the source queries with `UNION ALL`. The union only decides the order, the page and the count.
 - `modules/Payments/models/SourceQuery.php`: `Payments_SourceQuery_Model` (a `Core_QueryGenerator_Model` of the payment module) applies the Payments filter, the list search, the source condition and the permissions of its module. It returns the union part (record id + sort value) through the projection columns of `Core_QueryGenerator_Model`.
@@ -15,7 +15,7 @@ Payments is one list of the records of all payment modules (IncomingPayment, lat
 ## Data flow of the list
 1. For every accessible source a `Payments_SourceQuery_Model` loads the Payments filter (`initForCustomViewById`), the list search (`parseAdvFilterList`) and the simple search. Filters and searches work by field name (`QueryGenerator::initForCustomViewById()` uses `$details[2]`), and payment modules share their field names.
 2. A condition on a field the source does not have is replaced by a constant condition on `createdtime` (`ny` = true, `y` = false). Otherwise the core would drop it silently. The replacement keeps the AND/OR structure. A missing field counts as empty: `y` and `k` hold, `e` holds for an empty value, `n` for a non-empty value, everything else fails.
-3. The union orders by the sort value (`paymentamount` sorts by `payamount_main`, see `Payments_Sources_Helper::SORT_FIELDS`) and then by record id.
+3. The union orders by the sort value (`payment_amount` sorts by the base amount `payment_amount_base`, see `Payments_Sources_Helper::SORT_FIELDS`) and then by record id.
 4. The rows of the page are loaded per source by a `Core_QueryGenerator_Model` of the module with `addRecordIdsCondition()`. They are formatted by that module's `ListViewController` and returned as record models of the payment module, so links open the payment module.
 
 ## Invariants

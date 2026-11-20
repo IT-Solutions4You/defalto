@@ -27,7 +27,7 @@ class Payments_Sources_Helper
      * Fields sorted by another column, e.g. an amount by its value in the base currency.
      */
     public const SORT_FIELDS = [
-        'paymentamount' => 'payamount_main',
+        'payment_amount' => 'payment_amount_base',
     ];
 
     /**
@@ -36,18 +36,18 @@ class Payments_Sources_Helper
     public const LIST_FIELDS = [
         'payment_no',
         'payment_name',
-        'paymentamount',
-        'paymentdate',
+        'payment_amount',
+        'payment_date',
         'due_date',
         'payment_status',
-        'relatedto',
+        'related_to',
         'assigned_user_id',
     ];
 
     /**
      * Field holding the document of a payment; it separates the two prototype sources.
      */
-    public const DOCUMENT_FIELD = 'relationid';
+    public const DOCUMENT_FIELD = 'reference_id';
 
     /**
      * Returns the configured sources keyed by source key.
@@ -68,7 +68,7 @@ class Payments_Sources_Helper
                 'module' => 'IncomingPayment',
                 'direction' => self::OUTGOING,
                 'condition' => self::CONDITION_WITHOUT_DOCUMENT,
-                'missing_fields' => ['transactionid'],
+                'missing_fields' => ['transaction_id'],
             ],
         ];
     }
