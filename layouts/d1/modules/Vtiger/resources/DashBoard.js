@@ -155,45 +155,76 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
 
 
         app.request.get({"url": "index.php?module=Home&view=AddNotePad"}).then(function (err, res) {
+            if (err) {
+                app.helper.showErrorNotification({message: err});
+
+                return;
+            }
+
             var callback = function (data) {
-                var wizardContainer = jQuery(data);
-                var form = jQuery('form', wizardContainer);
-                var params = {
+                const wizardContainer = jQuery(data),
+                    form = jQuery('form', wizardContainer),
+                    editor = new Vtiger_CkEditor_Js();
+
+                form.find('[name="saveButton"]').prop('disabled', true);
+                editor.loadCkEditor(form.find('[name="notePadContent"]'), editor.getNotebookConfig());
+                editor.getCkEditorInstanceFromName().on('instanceReady', function () {
+                    form.find('[name="saveButton"]').prop('disabled', false);
+                });
+                wizardContainer.closest('.modal').one('hide.bs.modal', function () {
+                    editor.removeCkEditor();
+                });
+
+                const params = {
                     submitHandler: function (form) {
-                        //To prevent multiple click on save
-                        var form = jQuery(form);
-                        jQuery("[name='saveButton']").attr('disabled', 'disabled');
-                        var notePadName = form.find('[name="notePadName"]').val();
-                        var notePadContent = form.find('[name="notePadContent"]').val();
-                        var linkId = element.data('linkid');
-                        var noteBookParams = {
+                        form = jQuery(form);
+                        const saveButton = form.find('[name="saveButton"]');
+
+                        if (saveButton.prop('disabled')) {
+                            return false;
+                        }
+
+                        saveButton.prop('disabled', true);
+
+                        const noteBookParams = {
                             'module': app.getModuleName(),
                             'action': 'NoteBook',
                             'mode': 'NoteBookCreate',
-                            'notePadName': notePadName,
-                            'notePadContent': notePadContent,
-                            'linkId': linkId,
+                            'notePadName': form.find('[name="notePadName"]').val(),
+                            'notePadContent': editor.getCkEditorInstanceFromName().getData(),
+                            'format': 'html',
+                            'linkId': element.data('linkid'),
                             'tab': jQuery(".tab-pane.active").data("tabid")
-                        }
+                        };
                         app.request.post({"data": noteBookParams}).then(function (err, data) {
+                            saveButton.prop('disabled', false);
+
+                            if (err) {
+                                app.helper.showErrorNotification({message: err});
+
+                                return;
+                            }
+
                             if (data) {
-                                var widgetId = data.widgetId;
+                                const widgetId = data.widgetId,
+                                    linkId = element.data('linkid');
                                 app.helper.hideModal();
 
                                 url += '&widgetid=' + widgetId;
 
-                                var name = element.data('name');
-                                var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted rounded bg-body d-flex flex-column" id="' + linkId + "-" + widgetId + '" data-name="' + name + '" data-mode="open"></li>');
+                                const name = element.data('name'),
+                                    widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted rounded bg-body d-flex flex-column" id="' + linkId + "-" + widgetId + '" data-name="' + name + '" data-mode="open"></li>');
                                 widgetContainer.data('url', url);
-                                var width = element.data('width');
-                                var height = element.data('height');
+                                const width = element.data('width'),
+                                    height = element.data('height');
                                 Vtiger_DashBoard_Js.gridster.add_widget(widgetContainer, width, height);
                                 Vtiger_DashBoard_Js.currentInstance.loadWidget(widgetContainer);
+                                app.helper.showSuccessNotification({message: app.vtranslate('JS_SAVED_SUCCESSFULLY')});
                             }
                         });
                         return false;
                     }
-                }
+                };
                 form.vtValidate(params);
             }
             app.helper.showModal(res, {"cb": callback});
@@ -537,6 +568,7 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
     },
 
     clearWidgetContent: function (widgetContainer) {
+        widgetContainer.trigger('Vtiger.Dashboard.BeforeRemove');
         widgetContainer.find('canvas').each(function () {
             if (typeof Chart !== 'undefined') {
                 const chart = Chart.getChart(this);
@@ -590,6 +622,7 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
                             var nonReversableWidgets = ['MiniList', 'Notebook']
 
                             parent.fadeOut('slow', function () {
+                                parent.trigger('Vtiger.Dashboard.BeforeRemove');
                                 Vtiger_DashBoard_Js.gridster.remove_widget(parent);
                                 parent.remove();
                             });
@@ -740,6 +773,7 @@ Vtiger.Class("Vtiger_DashBoard_Js", {
                     app.helper.hideProgress();
                     if (err == null) {
                         jQuery('li[data-tabid="' + tabId + '"]').remove();
+                        jQuery('.tab-content #tab_' + tabId).find('.dashboardWidget').trigger('Vtiger.Dashboard.BeforeRemove');
                         jQuery('.tab-content #tab_' + tabId).remove();
 
                         if (jQuery('.dashboardTab.active').length <= 0) {

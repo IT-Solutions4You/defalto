@@ -68,7 +68,13 @@ Record images, previews and downloads keep working when an administrator stores 
 
 # Dashboard
 
-Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook text are displayed as text, including when they contain characters used by HTML.
+Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook titles are displayed as text.
+
+Choose the Notebook widget, enter a name and write your note in the editor. The compact toolbar offers bold, italic, underline, strikethrough, subscript, superscript, links, remove formatting and undo/redo. Use subscript for H₂O or superscript for m², and Link/Unlink to add or remove a clickable link. List and quotation buttons are not available; existing supported formatting remains displayed. Save adds the note to the current dashboard tab. The dialog keeps labels and fields aligned and gives the editor room to write.
+
+Choose Edit on an existing note to open the standard editor with its toolbar above the editing area. Choose Save to update it without reloading the page and return to the note display. Each note has its own editor. The create and edit editors have no bottom status panel. A failed save keeps your draft available to retry. Existing plain-text notes keep their text and line breaks; saving them through the editor enables formatting. Active content and unsupported formatting are removed from formatted notes.
+
+Saved formatted notes appear as HTML content without an input border. Bulleted, numbered and nested lists keep their markers and indentation and follow the note's width rather than the dashboard grid's width. Text and long links wrap to fit the widget's width. Content that still cannot fit has a horizontal scrollbar inside the note, keeping the widget within its dashboard column.
 
 # Record forms
 

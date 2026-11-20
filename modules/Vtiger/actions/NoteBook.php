@@ -50,15 +50,9 @@ class Vtiger_NoteBook_Action extends Core_Controller_Action
 
     function NoteBookCreate(Vtiger_Request $request)
     {
-        $adb = PearDatabase::getInstance();
-
         $moduleName = $request->getModule();
         $userModel = Users_Record_Model::getCurrentUserModel();
-        $linkId = $request->get('linkId');
-        $noteBookName = $request->get('notePadName');
-        $noteBookContent = $request->get('notePadContent');
         $tabId = $request->get("tab");
-        $userid = $userModel->getId();
 
         // Added for Vtiger7
         if (empty($tabId)) {
@@ -68,23 +62,12 @@ class Vtiger_NoteBook_Action extends Core_Controller_Action
         }
 
         $dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
+
         if (!$dashBoardModel->getTabInfo($tabId)) {
             throw new Exception('Invalid dashboard tab');
         }
 
-        $date_var = date("Y-m-d H:i:s");
-        $date = $adb->formatDate($date_var, true);
-
-        $dataValue = [];
-        $dataValue['contents'] = $noteBookContent;
-        $dataValue['lastSavedOn'] = $date;
-
-        $data = Zend_Json::encode((object)$dataValue);
-
-        $query = "INSERT INTO vtiger_module_dashboard_widgets(linkid, userid, filterid, title, data,dashboardtabid) VALUES(?,?,?,?,?,?)";
-        $params = [$linkId, $userid, 0, $noteBookName, $data, $tabId];
-        $adb->pquery($query, $params);
-        $id = $adb->getLastInsertID();
+        $id = Vtiger_Notebook_Model::createNotebook($request, $tabId);
 
         $result = [];
         $result['success'] = true;

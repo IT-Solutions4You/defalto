@@ -838,6 +838,16 @@ Vtiger_Widget_Js('Vtiger_TagCloud_Widget_Js', {}, {
 /* Notebook Widget */
 Vtiger_Widget_Js('Vtiger_Notebook_Widget_Js', {}, {
 
+    notebookEditor: null,
+    isSaving: false,
+
+    removeNotebookEditor: function () {
+        if (this.notebookEditor) {
+            this.notebookEditor.removeCkEditor();
+            this.notebookEditor = null;
+        }
+    },
+
     // Override widget specific functions.
     postLoadWidget: function () {
         this.reinitNotebookView();
@@ -864,43 +874,89 @@ Vtiger_Widget_Js('Vtiger_Notebook_Widget_Js', {}, {
     },
 
     reinitNotebookView: function () {
-        var self = this;
-        jQuery('.dashboard_notebookWidget_edit', this.container).click(function () {
+        const self = this;
+
+        this.container.off('Vtiger.Dashboard.BeforeRemove.notebook').on('Vtiger.Dashboard.BeforeRemove.notebook', function () {
+            self.removeNotebookEditor();
+        });
+        jQuery('.dashboard_notebookWidget_edit', this.container).off('click.notebook').on('click.notebook', function () {
             self.editNotebookContent();
         });
-        jQuery('.dashboard_notebookWidget_save', this.container).click(function () {
+        jQuery('.dashboard_notebookWidget_save', this.container).off('click.notebook').on('click.notebook', function () {
             self.saveNotebookContent();
         });
     },
 
     editNotebookContent: function () {
-        jQuery('.dashboard_notebookWidget_text', this.container).show();
-        jQuery('.dashboard_notebookWidget_view', this.container).hide();
+        this.container.find('.dashboard_notebookWidget_text').show();
+        this.container.find('.dashboard_notebookWidget_view').hide();
+
+        if (!this.notebookEditor) {
+            const saveButton = this.container.find('.dashboard_notebookWidget_save');
+
+            saveButton.prop('disabled', true);
+            this.notebookEditor = new Vtiger_CkEditor_Js();
+            this.notebookEditor.loadCkEditor(this.container.find('.dashboard_notebookWidget_textarea'), this.notebookEditor.getNotebookConfig());
+            this.notebookEditor.getCkEditorInstanceFromName().on('instanceReady', function () {
+                saveButton.prop('disabled', false);
+            });
+        }
     },
 
     saveNotebookContent: function () {
-        var self = this;
-        var refreshContainer = this.container.find('.refresh');
-        var textarea = jQuery('.dashboard_notebookWidget_textarea', this.container);
+        if (this.isSaving) {
+            return;
+        }
 
-        var url = this.container.data('url');
-        var params = url + '&content=true&mode=save&contents=' + textarea.val();
+        const self = this,
+            saveButton = this.container.find('.dashboard_notebookWidget_save'),
+            params = {
+                url: this.container.data('url'),
+                data: {
+                    content: true,
+                    mode: 'save',
+                    format: 'html',
+                    contents: this.notebookEditor.getCkEditorInstanceFromName().getData()
+                }
+            };
 
+        this.isSaving = true;
+        saveButton.prop('disabled', true);
         app.helper.showProgress();
-        app.request.post({"url": params}).then(function (err, data) {
+        app.request.post(params).then(function (err, data) {
             app.helper.hideProgress();
-            var parent = self.getContainer();
-            var widgetContent = parent.find('.dashboardWidgetContent');
-            widgetContent.mCustomScrollbar('destroy');
+            self.isSaving = false;
+            saveButton.prop('disabled', false);
+
+            if (err) {
+                app.helper.showErrorNotification({message: err});
+
+                return;
+            }
+
+            const parent = self.getContainer(),
+                widgetContent = parent.find('.dashboardWidgetContent'),
+                adjustedHeight = parent.height() - 50;
+
+            self.removeNotebookEditor();
+
+            if (widgetContent.hasClass('mCustomScrollbar')) {
+                widgetContent.mCustomScrollbar('destroy');
+            }
+
             widgetContent.html(data);
-            var adjustedHeight = parent.height() - 50;
             app.helper.showVerticalScroll(widgetContent, {'setHeight': adjustedHeight});
 
             self.reinitNotebookView();
+            app.helper.showSuccessNotification({message: app.vtranslate('JS_SAVED_SUCCESSFULLY')});
         });
     },
 
     refreshWidget: function () {
+        if (this.isSaving) {
+            return;
+        }
+
         const parent = this.getContainer(),
             element = parent.find('a[name="drefresh"]'),
             contentContainer = parent.find('.dashboardWidgetContent'),
@@ -918,6 +974,8 @@ Vtiger_Widget_Js('Vtiger_Notebook_Widget_Js', {}, {
                     return err;
                 }
 
+                this.removeNotebookEditor();
+
                 if (contentContainer.closest('.mCustomScrollbar').length) {
                     contentContainer.mCustomScrollbar('destroy');
                     contentContainer.html(data);
@@ -928,7 +986,7 @@ Vtiger_Widget_Js('Vtiger_Notebook_Widget_Js', {}, {
                 }
 
                 contentContainer.trigger(Vtiger_Widget_Js.widgetPostRefereshEvent);
-            }
+            }.bind(this)
         );
     },
 });

@@ -8,6 +8,41 @@
 @import "variables.less";
 @import "../vtiger/style.less";
 
+.dashBoardContainer .tab-pane .dashBoardTabContents > div > ul {
+  position: relative;
+  width: 1260px;
+}
+
+.dashBoardContainer .dashBoardTabContents ul li {
+  list-style: inherit;
+  position: static;
+}
+
+.dashBoardContainer .dashBoardTabContents ul > li.dashboardWidget {
+  list-style: none;
+  position: absolute;
+}
+
+.dashBoardContainer .dashboard_notebookWidget_view,
+.dashBoardContainer .dashboard_notebookWidget_text {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dashBoardContainer .dashboard_notebookWidget_viewarea {
+  background-color: transparent;
+  border: 0;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 150px;
+  overflow-x: auto;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: normal;
+}
+
 .modules-menu ul li.active a {
   border-left: 3px solid @appColor;
   opacity: 1;

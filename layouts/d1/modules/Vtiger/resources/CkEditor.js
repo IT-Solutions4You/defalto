@@ -86,6 +86,21 @@ jQuery.Class("Vtiger_CkEditor_Js", {}, {
         return config;
     },
 
+    getNotebookConfig: function () {
+        return {
+            fullPage: false,
+            height: 180,
+            resize_enabled: false,
+            removePlugins: 'save,maximize,magicline,wsc,scayt,elementspath,resize',
+            allowedContent: 'p br strong b em i u s strike sub sup ul ol li blockquote; a[!href,title]',
+            toolbar: [
+                {name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'RemoveFormat']},
+                {name: 'links', items: ['Link', 'Unlink']},
+                {name: 'clipboard', items: ['Undo', 'Redo']}
+            ]
+        };
+    },
+
     /*
      * Function to load CkEditor
      * @params : element: element on which CkEditor has to be loaded, config: custom configurations for ckeditor
@@ -131,4 +146,3 @@ jQuery.Class("Vtiger_CkEditor_Js", {}, {
         }
     }
 });
-    

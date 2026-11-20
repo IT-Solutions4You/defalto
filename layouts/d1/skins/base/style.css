@@ -2610,6 +2610,11 @@ li.dashboardWidget {
 }
 
 .dashBoardContainer .dashBoardTabContents ul li {
+    list-style: inherit;
+    position: static;
+}
+
+.dashBoardContainer .dashBoardTabContents ul > li.dashboardWidget {
     list-style: none;
     position: absolute;
 }
@@ -2675,10 +2680,24 @@ li.dashboardWidget {
     vertical-align: middle;
 }
 
+.dashBoardContainer .dashboard_notebookWidget_view,
+.dashBoardContainer .dashboard_notebookWidget_text {
+    min-width: 0;
+    max-width: 100%;
+}
+
 .dashBoardContainer .dashboard_notebookWidget_viewarea {
-    background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
+    background-color: transparent;
+    border: 0;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     min-height: 150px;
+    overflow-x: auto;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: normal;
 }
 
 .dashBoardContainer .dashboard_notebookWidget_textarea {
@@ -3436,7 +3455,7 @@ div.tooltip-inner {
     background: inherit;
 }
 
-.dashBoardContainer .tab-pane .dashBoardTabContents ul {
+.dashBoardContainer .tab-pane .dashBoardTabContents > div > ul {
     position: relative;
     width: 1260px;
 }
