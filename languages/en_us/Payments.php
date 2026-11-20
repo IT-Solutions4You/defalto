@@ -28,6 +28,10 @@ $languageStrings = [
     'Reference No' => 'Reference No',
     'Related To' => 'Related To',
     'Contact Name' => 'Contact Name',
+    'Created' => 'Created',
+    'Waiting' => 'Waiting',
+    'Pending' => 'Pending',
+    'Paid' => 'Paid',
 ];
 
 $jsLanguageStrings = [

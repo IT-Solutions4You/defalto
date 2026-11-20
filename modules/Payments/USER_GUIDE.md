@@ -12,3 +12,4 @@ Payments shows all your payments in one list: incoming payments from customers a
 - Payments only lists payments. Creating, editing, deleting and importing happen in the payment modules.
 - You see only the payments you are allowed to see in their own module.
 - Global search finds a payment once, in its own module.
+- All payment directions share the statuses Created, Waiting, Pending and Paid. A row shows the status as its payment module names it (an incoming payment shows Received); the status filter and search offer Paid.

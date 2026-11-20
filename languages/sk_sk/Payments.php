@@ -28,6 +28,10 @@ $languageStrings = [
     'Reference No' => 'Číslo dokladu',
     'Related To' => 'Organizácia',
     'Contact Name' => 'Kontakt',
+    'Created' => 'Vytvorená',
+    'Waiting' => 'Čakajúca',
+    'Pending' => 'Po splatnosti',
+    'Paid' => 'Uhradená',
 ];
 
 $jsLanguageStrings = [

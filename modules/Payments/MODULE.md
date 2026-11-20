@@ -30,3 +30,4 @@ Export, mass delete, a direction column, translations other than en_us and sk_sk
 - `php -l` on touched files; `check_change.py` signature check.
 - On the test instance: install via `index.php?module=Payments&view=Install&mode=install`. Compare `view=ListAjax&mode=getRecordsCount` with the IncomingPayment count. Compare the order of a page with the IncomingPayment list ordered by the same field.
 - The module title on the detail of a payment leads here: `IncomingPayment_Module_Model::getCustomViewUrl()` returns the Payments list URL and `getBreadcrumbLabel()` the Payments label while Payments is available. OutgoingPayment must do the same (phase 3 moves it to the Core base).
+- Status labels: the payment modules share one status picklist with the final value `Paid`; `languages/<locale>/Payments.php` translates the statuses for the filter and search of the Payments list; rows keep the labels of their payment module.
