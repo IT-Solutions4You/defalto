@@ -12,6 +12,8 @@
 - With the Payments list installed, documents show the common Payments widget instead of the Incoming Payments widget and the module is hidden in the Sales menu.
 - Refunds: payments of this module integrated into a document paid by Outgoing Payments are refunds; they are subtracted from the paid amount, the Settings page has a Refund column and documents offer Add Refund.
 - Add Payment from a document prefills the total minus all payments, including the ones not received yet, as Cashflow did.
+- Received payments of a sales order count on the invoices created from it (same organisation, split by due date).
+- Opportunities (Potentials) can be integrated in the settings: total from Amount, due date from the expected close date.
 - Integration into document modules is configured in Settings → Incoming Payments Integration, which lists every inventory module automatically.
 - An underpayment threshold in the settings marks documents with a small remaining balance as paid while the balance keeps the real amount.
 - With the Payments list installed, the header of a payment shows Payments and leads back to the Payments list.

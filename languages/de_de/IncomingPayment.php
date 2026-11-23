@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Erwartet',
     'LBL_ADD_REFUND' => 'Erstattung hinzufügen',
     'LBL_REFUND' => 'Erstattung',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Zahlungen aus',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Die Zahlungen werden auch nicht mehr auf die daraus erstellten Belege angerechnet (%s).',
 ];
 
 $jsLanguageStrings = [

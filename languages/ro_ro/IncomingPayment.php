@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Așteptat',
     'LBL_ADD_REFUND' => 'Adaugă rambursare',
     'LBL_REFUND' => 'Rambursare',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Plăți din',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Plățile nu vor mai fi luate în calcul nici pe documentele create din acesta (%s).',
 ];
 
 $jsLanguageStrings = [

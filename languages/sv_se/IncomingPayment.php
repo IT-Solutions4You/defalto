@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Förväntat',
     'LBL_ADD_REFUND' => 'Lägg till återbetalning',
     'LBL_REFUND' => 'Återbetalning',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Betalningar från',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Betalningarna räknas inte heller längre på dokumenten som skapats från den (%s).',
 ];
 
 $jsLanguageStrings = [

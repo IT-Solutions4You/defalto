@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Verwacht',
     'LBL_ADD_REFUND' => 'Terugbetaling toevoegen',
     'LBL_REFUND' => 'Terugbetaling',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Betalingen van',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'De betalingen tellen ook niet meer mee op de documenten die ervan zijn gemaakt (%s).',
 ];
 
 $jsLanguageStrings = [

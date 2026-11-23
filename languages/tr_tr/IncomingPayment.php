@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Beklenen',
     'LBL_ADD_REFUND' => 'İade ekle',
     'LBL_REFUND' => 'İade',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Ödemeler:',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Ödemeler bundan oluşturulan belgelerde de artık hesaba katılmayacak (%s).',
 ];
 
 $jsLanguageStrings = [

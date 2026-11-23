@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'المتوقع',
     'LBL_ADD_REFUND' => 'إضافة استرداد',
     'LBL_REFUND' => 'استرداد',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'مدفوعات',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'لن تُحتسب المدفوعات أيضًا في المستندات التي أُنشئت منه (%s).',
 ];
 
 $jsLanguageStrings = [

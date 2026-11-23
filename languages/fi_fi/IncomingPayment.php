@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Odotettu',
     'LBL_ADD_REFUND' => 'Lisää palautus',
     'LBL_REFUND' => 'Palautus',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Maksut kohteesta',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Maksuja ei myöskään enää lasketa siitä luotuihin asiakirjoihin (%s).',
 ];
 
 $jsLanguageStrings = [

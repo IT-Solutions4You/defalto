@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Attendu',
     'LBL_ADD_REFUND' => 'Ajouter un remboursement',
     'LBL_REFUND' => 'Remboursement',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Paiements de',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Les paiements ne seront plus non plus comptés sur les documents créés à partir de celui-ci (%s).',
 ];
 
 $jsLanguageStrings = [
