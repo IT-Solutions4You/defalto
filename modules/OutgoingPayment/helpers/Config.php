@@ -27,6 +27,7 @@ class OutgoingPayment_Config_Helper extends Core_PaymentConfig_Helper
     public const ADD_LINK_LABEL = 'LBL_ADD_OUTGOING_PAYMENT';
     public const INTEGRATION_LABEL = 'LBL_OUTGOING_PAYMENT_INTEGRATION';
     public const ICON = 'fa-solid fa-money-bill-transfer';
+    public const DIRECTION = self::DIRECTION_OUTGOING;
     public const RELATED_TO_MODULES = ['Vendors', 'Accounts'];
     public const DEFAULT_PAID_FIELDS = ['paid', 'received'];
     public const PAID_FIELD_LABEL = 'Paid';

@@ -6,4 +6,6 @@
 - Payments can be created from a purchase order with the open amount, currency, due date, vendor and contact prefilled, in a quick form from the Add Payment button or in the full form from the More menu.
 - Purchase orders show an Outgoing Payments widget, a related list and an Add Payment button; their paid amount and balance are updated from the paid payments.
 - Vendors, organizations and contacts show their outgoing payments in a related list.
+- Every payment shows its direction (Incoming or Outgoing) in a read-only field.
+- With the Payments list installed, documents show the common Payments widget instead of the Outgoing Payments widget and the module is hidden in the Sales menu.
 - Integration into document modules is configured in Settings → Outgoing Payments Integration.

@@ -50,6 +50,10 @@ $languageStrings = [
     'LBL_NO_PAYMENTS' => 'Todavía no se ha registrado ningún pago para este registro.',
     'LBL_INTEGRATION_INACTIVE' => 'Los pagos emitidos no están integrados en este módulo.',
     'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integración de pagos emitidos',
+    'Direction' => 'Dirección',
+    'Incoming' => 'Entrante',
+    'Outgoing' => 'Saliente',
+    'LBL_EXPECTED_AMOUNT' => 'Esperado',
 ];
 
 $jsLanguageStrings = [

@@ -15,5 +15,8 @@ Outgoing Payments records the money your company pays, for example to vendors fo
 
 A daily background job updates the statuses when the dates arrive. Only Paid payments count towards the paid amount of the document.
 
+## Payments list
+With the Payments list installed, purchase orders show the common **Payments** widget instead of the Outgoing Payments widget, and Outgoing Payments is not in the Sales menu: open the payments from **Payments**, from the quick create menu or from a document. Every payment shows the **Direction** Outgoing.
+
 ## Settings
 Administrators choose the documents in **Settings → Outgoing Payments Integration**. Purchase orders are integrated by default.
