@@ -1,0 +1,9 @@
+# OutgoingPayment changelog
+
+## 1.0 - 2026-11-20
+
+- New module for recording outgoing payments with automatic numbering (PAYOUT), statuses derived from the payment and due dates and amounts with their own currency.
+- Payments can be created from a purchase order with the open amount, currency, due date, vendor and contact prefilled, in a quick form from the Add Payment button or in the full form from the More menu.
+- Purchase orders show an Outgoing Payments widget, a related list and an Add Payment button; their paid amount and balance are updated from the paid payments.
+- Vendors, organizations and contacts show their outgoing payments in a related list.
+- Integration into document modules is configured in Settings → Outgoing Payments Integration.

@@ -1,0 +1,56 @@
+<?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+$languageStrings = [
+    'OutgoingPayment' => 'المدفوعات الواردة',
+    'SINGLE_OutgoingPayment' => 'دفعة واردة',
+    'CV_ALL' => 'جميع المدفوعات الواردة',
+    'LBL_ADD_RECORD' => 'إضافة دفعة واردة',
+    'LBL_RECORDS_LIST' => 'قائمة المدفوعات الواردة',
+    'Outgoing Payments' => 'المدفوعات الواردة',
+    'LBL_OUTGOING_PAYMENT_INFORMATION' => 'تفاصيل الدفعة',
+    'Payment Name' => 'اسم الدفعة',
+    'Payment No' => 'رقم الدفعة',
+    'Payment Status' => 'حالة الدفعة',
+    'Amount' => 'المبلغ',
+    'Conversion Rate' => 'سعر الصرف',
+    'Amount in Base Currency' => 'المبلغ بالعملة الأساسية',
+    'Payment Date' => 'تاريخ الدفع',
+    'Due Date' => 'تاريخ الاستحقاق',
+    'Payment Method' => 'طريقة الدفع',
+    'Transaction ID' => 'معرّف المعاملة',
+    'Reference' => 'المستند',
+    'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'يمكن ربط الدفعة بمستند واحد فقط.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'توجد مدفوعات واردة مرتبطة بهذا السجل (%s). ستبقى المدفوعات، وسيُزال فقط ارتباطها بهذا السجل.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'توجد مدفوعات واردة مرتبطة بـ %s من السجلات المحددة (عدد المدفوعات: %s). ستبقى المدفوعات، وسيُزال فقط ارتباطها بالسجلات المحذوفة.',
+    'Related To' => 'مرتبط بـ',
+    'Contact Name' => 'اسم جهة الاتصال',
+    'Reference No' => 'رقم المستند',
+    'Created' => 'تم الإنشاء',
+    'Waiting' => 'قيد الانتظار',
+    'Pending' => 'متأخرة',
+    'Paid' => 'مستلمة',
+    'Bank Transfer' => 'تحويل بنكي',
+    'Cash' => 'نقدًا',
+    'Credit card' => 'بطاقة ائتمان',
+    'Paypal' => 'Paypal',
+    'Wire transfer' => 'تحويل (wire)',
+    'Other' => 'أخرى',
+    'LBL_ADD_OUTGOING_PAYMENT' => 'إضافة دفعة',
+    'LBL_TOTAL_AMOUNT' => 'الإجمالي',
+    'LBL_PAID_AMOUNT' => 'المدفوع',
+    'LBL_BALANCE' => 'الرصيد',
+    'LBL_NO_PAYMENTS' => 'لم يتم تسجيل أي دفعة لهذا السجل بعد.',
+    'LBL_INTEGRATION_INACTIVE' => 'المدفوعات الواردة غير مدمجة في هذه الوحدة.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'تكامل المدفوعات الواردة',
+];
+
+$jsLanguageStrings = [
+];

@@ -1,0 +1,38 @@
+<?php
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+
+$languageStrings = [
+    'OutgoingPayment' => 'المدفوعات الواردة',
+    'SINGLE_OutgoingPayment' => 'دفعة واردة',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'تكامل المدفوعات الواردة',
+    'LBL_INTEGRATION_INTRO' => 'اختر المستندات التي تستقبل المدفوعات والحقول التي تقرأها الوحدة وتحدّثها.',
+    'LBL_MODULE' => 'الوحدة',
+    'LBL_ACTIVE' => 'نشط',
+    'LBL_STATUS_FIELD' => 'حقل الحالة',
+    'LBL_STATUS_VALUE' => 'الحالة عند السداد الكامل',
+    'LBL_STATUS_VALUE_BACK' => 'الحالة عند إلغاء السداد',
+    'LBL_RELATED_TO_FIELD' => 'حقل المؤسسة',
+    'LBL_TOTAL_FIELD' => 'حقل المبلغ الإجمالي',
+    'LBL_PAID_FIELD' => 'حقل المبلغ المدفوع',
+    'LBL_BALANCE_FIELD' => 'حقل الرصيد',
+    'LBL_NONE' => 'لا شيء',
+    'LBL_SAVE' => 'حفظ',
+    'LBL_FIELDS_NOTE' => 'أثناء تفعيل التكامل يكون حقل المبلغ المدفوع في المستند للقراءة فقط ويُحسب من المدفوعات المستلمة. تُنشأ حقول المدفوع والرصيد المفقودة تلقائيًا.',
+    'LBL_NO_MODULES' => 'لا توجد وحدة مخزون متاحة للتكامل.',
+    'LBL_UNDERPAYMENT_THRESHOLD' => 'حد الدفع الناقص',
+    'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'المستند الذي لا يتجاوز رصيده هذا المبلغ يحصل على حالة مدفوع. تتم المقارنة بعملة المستند دون تحويل، ويبقى الرصيد معبرًا عن المبلغ الناقص الفعلي. القيمة 0 تعني المستندات المدفوعة بالكامل فقط.',
+    'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'يجب أن يكون حد الدفع الناقص رقمًا يساوي 0 أو أكبر.',
+];
+
+$jsLanguageStrings = [
+    'JS_NONE' => 'لا شيء',
+    'JS_INTEGRATION_SAVED' => 'تم حفظ إعدادات التكامل',
+    'JS_TOTAL_FIELD_REQUIRED' => 'اختر حقل المبلغ الإجمالي لكل وحدة نشطة',
+];
