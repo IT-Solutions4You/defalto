@@ -14,6 +14,7 @@
 - `Mention_Install_Model` uses Core installation to register the non-entity module and version in `vtiger_tab`, the global header script and the ModComments event handler. Enable/update registers links and handlers; disable/uninstall unregisters both.
 - Installation can rename a legacy ITS4YouMention registration while preserving its tab ID and permissions. It removes the legacy header script and event handler. Duplicate old/new module registrations stop migration for explicit reconciliation.
 - Licensing and package entitlement remain owned by Installer. Do not restore the upstream ITS4YouInstaller runtime license checks.
+- Module source and language files use the standard Defalto AGPL v3 header and the root `LICENSE-AGPLv3.txt`. Keep the MIT notice for the Composer-managed Mention.js dependency in `THIRD_PARTY_LICENSES.txt`. Legacy module names in `installTables()` are migration identifiers, not runtime license checks.
 
 ## UI and validation
 
