@@ -15,14 +15,14 @@
                 {if !empty($IMAGE_DETAILS)}
                     {foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
                         {if !empty($IMAGE_INFO['url'])}
-                            <div class="me-3">
+                            <div class="me-lg-3 mb-3 mb-lg-0">
                                 <div class="ratio ratio-1x1 rounded" style="background: url('{$IMAGE_INFO['url']}') center center / cover; width: 7rem;"></div>
                             </div>
                             {break}
                         {/if}
                     {/foreach}
                 {else}
-                    <div class="me-3">
+                    <div class="me-lg-3 mb-3 mb-lg-0">
                         <div class="ratio ratio-1x1 rounded bg-primary text-white" style="width: 7rem;">
                             <div class="h-100 d-flex align-items-center justify-content-center">
                                 {$RECORD->getModule()->getModuleIcon('3rem')}

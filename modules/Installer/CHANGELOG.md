@@ -1,5 +1,21 @@
 # Installer changelog
 
+## 1.63 - 2026-11-20
+
+- Displays the available Installer version and up-to-date status together on one line.
+- Explains disabled system and extension installation buttons with a tooltip when Installer needs updating or its latest version cannot be verified.
+- Matches the Installer update row to the system update design with a status icon, prominent installed version, available version below it and consistent update buttons.
+- Shows a compact red status badge beside the Installer name, with the full installation prerequisite available on hover and to screen readers.
+- Requires the latest Installer before updating Defalto or installing, updating or reinstalling extensions, including uploaded ZIP packages.
+- Shows Installer updates above the system update and keeps license management available while other installations are blocked.
+- Prevents system update packages from overwriting Installer and prevents installing an older Installer version.
+- Blocks system and extension installation when the latest Installer version cannot be verified, while allowing a validated Installer repair package.
+- Displays GitHub release-note bullet points on separate lines even when the list directly follows the introduction.
+- Allows reinstalling equal or older extension versions from the catalog and Module Manager, showing both versions and a notice before confirmation.
+- Warns about possible data incompatibility before installing an older extension package.
+- Shows the selected Defalto version's GitHub release notes, including categories and lists, before confirming a system update.
+- Explains when release notes are missing or temporarily unavailable while still allowing the update to continue.
+
 ## 1.62 - 2026-11-03
 
 - Keeps dependency requirements and locked versions together during system updates, preventing failures caused by a retained older lock file.

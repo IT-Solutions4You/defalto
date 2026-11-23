@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    <form id="detailView" class="container-fluid" method="POST">
+    <form id="detailView" class="container-fluid m-0" method="POST">
         {include file='DetailViewBlockView.tpl'|@vtemplate_path:$MODULE_NAME RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE_NAME=$MODULE_NAME}
     </form>
 {/strip}

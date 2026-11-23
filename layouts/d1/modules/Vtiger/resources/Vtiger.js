@@ -16,6 +16,21 @@ Vtiger.Class('Vtiger_Index_Js', {
         return new Vtiger_Index_Js();
     },
 
+    registerAiAvailabilityEvent() {
+        // Capture clicks before the installed extension's inline handlers run.
+        document.addEventListener('click', Vtiger_Index_Js.handleAiAvailabilityClick, true);
+    },
+
+    handleAiAvailabilityClick(event) {
+        const trigger = event.target.closest?.('#menubar_AI, .aiChatComment');
+
+        if (trigger) {
+            event.preventDefault();
+            event.stopPropagation();
+            vtUtils.showAiAvailability(trigger);
+        }
+    },
+
     /**
      * Function to show the content of a file in an iframe
      * @param {type} e

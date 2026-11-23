@@ -50,22 +50,9 @@ jQuery.Class("Vtiger_RelatedList_Js", {
     },
 
     updateRelatedRecordsCount: function (relationId) {
-        var recordId = app.getRecordId();
-        var moduleName = app.getModuleName();
-        var detailInstance = new Vtiger_Detail_Js();
-        detailInstance.getRelatedRecordsCount(recordId, moduleName, relationId).then(function (data) {
-            var relatedRecordsCount = data[relationId];
-            var element = new Object(jQuery("a", "li[data-relation-id=" + relationId + "]"));
-            // we should only show if there are any related records
-            var numberEle = element.find('.numberCircle');
-            numberEle.text(relatedRecordsCount);
-            if (relatedRecordsCount > 0) {
-                numberEle.removeClass('hide');
-            } else {
-                numberEle.addClass('hide');
-            }
-            element.attr("recordscount", relatedRecordsCount);
-        });
+        let detailInstance = Vtiger_Detail_Js.getInstanceByModuleName(this.parentModuleName);
+        detailInstance.setContainer(this.detailViewContainer);
+        detailInstance.updateRelatedRecordsCount(this.getParentId(), this.parentModuleName);
     },
 
     getCurrentPageNum: function () {
@@ -129,9 +116,11 @@ jQuery.Class("Vtiger_RelatedList_Js", {
         app.request.post({data: completeParams}).then(
             function (error, responseData) {
                 app.helper.hideProgress();
-                thisInstance.relatedTabsContainer.find('li').removeClass('active');
-                thisInstance.selectedRelatedTabElement.addClass('active');
-                let container = thisInstance.relatedContentContainer;
+                let detailInstance = Vtiger_Detail_Js.getInstanceByModuleName(thisInstance.parentModuleName),
+                    container = thisInstance.relatedContentContainer;
+                detailInstance.setContainer(thisInstance.detailViewContainer);
+                detailInstance.deSelectAllrelatedTabs();
+                detailInstance.markRelatedTabAsSelected(thisInstance.selectedRelatedTabElement);
 
                 container.html(responseData);
                 thisInstance.initializePaginationEvents();

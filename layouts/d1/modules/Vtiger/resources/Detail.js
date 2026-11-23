@@ -593,10 +593,33 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
     deSelectAllrelatedTabs: function () {
         this.getRelatedTabs().removeClass('active');
+        this.getRelatedTabs().filter('.record-view-tab').removeClass('text-primary').addClass('text-body-secondary');
+        this.getRelatedTabs().find('a[aria-current]').removeAttr('aria-current');
+        this.getRelatedTabs().filter('.record-related-tab').find('a').removeClass('active fw-bold');
+        this.getContainer().find('.record-related-more > button').removeClass('active text-primary').addClass('text-body-secondary');
     },
 
     markRelatedTabAsSelected: function (tabElement) {
+        let relationId = tabElement.data('relationId');
+
+        if (typeof relationId !== 'undefined') {
+            let relatedTabs = this.getRelatedTabs().not('.d-none').filter(function () {
+                return String(jQuery(this).data('relationId')) === String(relationId);
+            });
+
+            if (relatedTabs.length) {
+                tabElement = relatedTabs;
+            }
+        }
+
         tabElement.addClass('active');
+        tabElement.filter('.record-view-tab').removeClass('text-body-secondary').addClass('text-primary');
+        tabElement.find('a').attr('aria-current', 'page');
+        tabElement.filter('.record-related-tab').find('a').addClass('active fw-bold');
+
+        if (tabElement.filter('.record-related-tab').length) {
+            this.getContainer().find('.record-related-more > button').removeClass('text-body-secondary').addClass('active text-primary');
+        }
     },
 
     /*
@@ -1072,7 +1095,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
     getSelectedTab: function () {
         var tabContainer = this.getTabContainer();
-        return tabContainer.find('li.active');
+        return tabContainer.find('li.active').first();
     },
 
     /**
@@ -2333,21 +2356,42 @@ Vtiger.Class("Vtiger_Detail_Js", {
         return aDeferred.promise();
     },
 
-    updateRelatedRecordsCount: function () {
-        var self = this;
-        var recordId = self.getRecordId();
-        var moduleName = app.getModuleName();
+    updateRelatedRecordCount: function (relationId, count) {
+        let self = this,
+            tabs = self.getRelatedTabs().filter(function () {
+                return String(jQuery(this).data('relationId')) === String(relationId);
+            }),
+            links = tabs.find('a'),
+            shortcut = tabs.filter('.record-related-tab'),
+            hasRecords = Number(count) > 0,
+            selectedTab = tabs.filter('.active'),
+            targetTab = hasRecords ? shortcut : tabs.not('.record-related-tab');
+
+        links.find('.numberCircle').text(count).toggleClass('hide', !hasRecords);
+        links.attr('recordscount', count);
+        shortcut.toggleClass('d-none', !hasRecords);
+        self.getContainer().find('.record-related-more').toggleClass('d-none', !self.getRelatedTabs().filter('.record-related-tab:not(.d-none)').length);
+
+        if (selectedTab.length && targetTab.length) {
+            self.deSelectAllrelatedTabs();
+            self.markRelatedTabAsSelected(targetTab.first());
+        }
+    },
+
+    updateRelatedRecordsCount: function (recordId, moduleName) {
+        let self = this;
+
+        if (typeof recordId === 'undefined') {
+            recordId = self.getRecordId();
+        }
+
+        if (typeof moduleName === 'undefined') {
+            moduleName = app.getModuleName();
+        }
+
         self.getRelatedRecordsCount(recordId, moduleName).then(function (data) {
             jQuery.each(data, function (key, value) {
-                var element = new Object(jQuery("a", "li[data-relation-id=" + key + "]"));
-                var numberEle = element.find('.numberCircle');
-                numberEle.text(value);
-                if (parseInt(value) > 0) {
-                    numberEle.removeClass('hide');
-                } else {
-                    numberEle.addClass('hide');
-                }
-                element.attr("recordscount", value);
+                self.updateRelatedRecordCount(key, value);
             });
         });
     },

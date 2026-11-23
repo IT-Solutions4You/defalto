@@ -4,6 +4,10 @@ Module Manager (Settings) lets an administrator enable or disable installed modu
 
 ## Install from a ZIP file
 
+Module packages support versions such as `1.1` and `1.1.1`. The confirmation screen displays the full version. For example, `1.1.1` is an update from `1.1`, and `1.1.10` is an update from `1.1.9`. The module declaration, optional manifest and latest changelog heading must use the same version.
+
+Update Installer to the latest public version before importing or updating other modules. If Installer is outdated or its latest version cannot be verified, package preview and installation are blocked. Manage licenses and retry Check for updates in Installer. Installer ZIP packages can still update or repair Installer, but cannot downgrade it below the installed or latest known public version. Module enable and disable controls remain available.
+
 Open Module Manager, choose **Import Module from Zip**, accept the disclaimer, and select the package. The confirmation screen shows the detected module, package version, the required Defalto version (if the package states one), and up to the latest three customer-facing changelog versions read from the ZIP. Module Manager chooses **Import Now** or **Update Now** from the current module state; the module identity is read from the package contents, not from the file name.
 
 The ZIP may contain only:
@@ -16,6 +20,6 @@ The structure may be at the ZIP root or inside one wrapper directory. The packag
 
 Add customer-facing release notes at `modules/<Module>/CHANGELOG.md`: newest release first, using `## <version> - YYYY-MM-DD` followed by plain `- <change>` bullet points. The newest version must match the package version. Packages without this file remain installable, but the confirmation screen shows that release notes are unavailable.
 
-Packages using legacy `templates`, `settings`, `images`, or root `cron` directories are rejected. An update package must have a newer version than the installed module.
+Packages using legacy `templates`, `settings`, `images`, or root `cron` directories are rejected. The confirmation screen shows the installed and package versions before you continue. A newer package has an informational notice. An equal package warns that it will reinstall files and rerun the module update; an older package warns that existing data may be incompatible. Equal and older versions remain installable using Reinstall. Back up the database and module files before installing an older package: this does not restore an earlier database state. Minimum Defalto requirements and package validation still apply.
 
 Files are validated before installation. If installation fails, Module Manager restores changed files where possible and shows the original application error in a dialog. If you can correct the reported cause, close the dialog, fix it, and retry. If the package is incorrect or the problem persists, send the exact error to the package publisher. The dialog also lets you import another package.

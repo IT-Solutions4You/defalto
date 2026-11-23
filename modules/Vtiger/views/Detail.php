@@ -192,7 +192,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         $viewer->assign('ALL_USER_TAGS', $allUserTags);
 
         $relationId = $request->get('relationId');
-        $viewer->assign('SELECTED_TAB_LABEL', $request->get('tab_label', $currentUserModel->getDefaultTabLabel()));
+        $defaultRequestMode = $currentUserModel->get('default_record_view') === 'Summary' && $moduleModel->isSummaryViewSupported() ? 'summary' : 'full';
+        $requestMode = $request->get('requestMode', $defaultRequestMode);
+        $defaultTabLabel = vtranslate($requestMode === 'full' ? 'LBL_DETAILS' : 'LBL_SUMMARY', $moduleName);
+        $viewer->assign('SELECTED_TAB_LABEL', $request->get('tab_label', $defaultTabLabel));
         $viewer->assign('SELECTED_RELATION_ID', $relationId);
 
         //Vtiger7 - TO show custom view name in Module Header

@@ -9,6 +9,24 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Související záznamy',
+    'LBL_RELATED_MODULES' => 'Související moduly',
+    'LBL_AI_SETUP' => 'Jak zpřístupnit AI',
+    'LBL_AI_ACTIVE_LICENSE' => 'Aktivní licence',
+    'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Aktivní licence Membership v Installeru',
+    'LBL_AI_INSTALLED_EXTENSION' => 'Nainstalované rozšíření',
+    'LBL_AI_INSTALLED_EXTENSION_DESCRIPTION' => 'Rozšíření AI v tomto CRM',
+    'LBL_AI_READY' => 'AI připravená k použití',
+    'LBL_AI_READY_DESCRIPTION' => 'Zapnuté rozšíření s nastaveným klíčem API',
+    'LBL_AI_ACTIVATE_MEMBERSHIP' => 'Aktivujte licenci Membership v Installeru.',
+    'LBL_AI_INSTALL_EXTENSION' => 'Nainstalujte rozšíření AI v Installeru.',
+    'LBL_AI_ENABLE_EXTENSION' => 'Zapněte AI ve Správci modulů.',
+    'LBL_AI_SETUP_UNVERIFIED' => 'Nastavení AI se nepodařilo ověřit.',
+    'LBL_AI_CONFIGURE_KEY' => 'Nastavte klíč API pro AI.',
+    'LBL_AI_NO_ACCESS' => 'Váš profil nemá přístup k AI.',
+    'LBL_AI_CONTACT_ADMIN' => 'Obraťte se na správce CRM.',
+    'LBL_AI_TRY_CHAT' => 'Otevřete AI a odešlete zprávu pro ověření připojení.',
+    'LBL_AI_OPEN' => 'Otevřít AI',
     'LBL_PRODUCTBLOCKTPL' => 'Šablony produktových bloků',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Spravujte šablony produktových bloků pro položky skladu.',
     'LBL_SAVED_LIST_FILTER_NOTICE' => 'Tento seznam již používá uložené podmínky. Vymazání dodatečných filtrů je neodstraní.',
@@ -2056,7 +2074,6 @@ $jsLanguageStrings = [
     'JS_UPDATE_RECORD_TAXES_QUESTION' => 'Chcete aktualizovat daně u všech záznamů?',
     'JS_CLEAR' => 'Vymazat',
     'JS_ASSIGNED_USER_HAS_CHANGE' => 'Přiřazený uživatel byl změněn',
-    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Pro používání a instalaci AI rozšíření je vyžadována Membership licence',
     'JS_YES' => 'Ano',
     'JS_NO' => 'Ne',
     'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Zavřením okna se všechna zadaná data ztratí. Přejete si zavřít okno?'

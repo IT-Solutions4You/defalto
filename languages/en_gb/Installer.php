@@ -9,6 +9,14 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'Update Installer before installing the system or any extensions.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'The latest Installer version could not be verified. Retry the update check before installing the system or extensions.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'Use an Installer package at least as new as the installed and latest available versions.',
+    'LBL_REINSTALL' => 'Reinstall',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'A newer version will be installed. Review the changes before continuing.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'This version is already installed. Continuing reinstalls its files and reruns the module update.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'You are installing an older version. Existing data may be incompatible. Back up the database and module files before continuing.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'The changelog could not be loaded from GitHub. You can continue with the update.',
     'MyExtension' => 'My Extension',
     'LBL_SYSTEM_REQUIREMENTS' => 'System requirements',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'System Information',

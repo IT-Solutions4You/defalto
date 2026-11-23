@@ -53,6 +53,7 @@
 ### Module Versions
 
 - Treat `public string $moduleVersion` in `modules/<Module>/<Module>.php` as the install and update version of that installable module; the install flow persists it to `vtiger_tab.version`.
+- Extension versions may use two or three numeric components, such as `1.1` or `1.1.1`. Preserve the chosen format; never cast versions to floating-point numbers or truncate their components. Compare versions with `version_compare()`. Keep the exact version string aligned in the module declaration, public catalog, optional manifest and newest changelog heading. When incrementing a three-component version, increment only its final component (for example, `1.1.1` to `1.1.2`); do not convert existing modules to a new format unless requested.
 - For functional changes owned by an installable module, determine the latest publicly available module version from the canonical public distribution metadata, such as the Installer public extension catalog, and increment its final numeric component exactly once for the next unreleased version. This includes module PHP, module-specific layout assets, language strings, install or schema behavior, and Settings code owned by that module.
 - Before changing a module version, verify the public version instead of deriving the next version only from `HEAD`. If the working tree, index, or current development branch already uses the single next version after the public release, keep it for subsequent unreleased changes and commits. Do not increment it again until that version is publicly available.
 - When reviewing accumulated unreleased module changes, consolidate accidental repeated increments to one increment above the public release. This rule applies to module versions; application/resource versioning in `version.php` follows its separate rules above.
@@ -214,6 +215,7 @@
 - Describe added or repaired functionality and its practical benefit. State restrictions or removals explicitly; if none, say so briefly.
 - Keep bullets concise and in customer language, without nested lists or long explanations. Keep changes under the module that owns them.
 - Avoid implementation details, filenames, test output, commit hashes, and unnecessary introductory text unless the user asks for them.
+- When responding to `summary`, append the relevant completed commits after the module groups. For each commit, show its full commit title followed by its full GitHub commit URL in a separate fenced `text` code block so the URL is directly copyable. Use verified commit URLs and include only commits belonging to the summarized work. Omit this section when the summarized work has no completed commits.
 
 ## Manual Testing Checklist Command
 

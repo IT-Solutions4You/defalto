@@ -8,7 +8,25 @@ The header menu contains Defalto settings available to administrators, the curre
 
 # Record actions
 
+Beside Comments, the Related records button opens a dropdown of related modules that contain records, including their counts. These shortcuts appear or disappear as related records are added or removed. The desktop Related modules panel retains the full list, including empty relations. On mobile, the sidebar and its toggle are hidden; populated relations remain available through Related records.
+
+Summary, Details, Updates, Sharing, Comments and related-record lists start directly below the record navigation without an extra outer margin. The related-modules panel aligns with the content. Internal spacing between content sections remains unchanged.
+
+The key-fields summary block has no Details shortcut. Use the Details tab above the summary to open all record fields.
+
+Records in modules with image fields show their picture above the title and key fields on narrow screens. From the two-column key-field layout onward, the picture appears beside the name in a separate column. If no picture is stored, the module icon is shown.
+
+In the record header, Assigned To appears first when the key fields wrap on a narrower screen. In the wide, single-row layout it remains the last field.
+
+Full record details show an icon navigation bar below the record header: Summary, Details, Updates, Sharing and Comments, when supported and available. The current view is underlined. Module-specific views, such as project charts, remain available in this bar. On narrow screens, scroll the whole bar horizontally to reach more views and the Related records button; all items stay on one row.
+
+The Related modules panel contains the other linked modules and their record counts. The panel is available only on desktop. On mobile, use the Related records dropdown beside the top record tabs. The main record views and Comments are not repeated there. Open a related module to view its records; use the top bar to return to Summary or Details. When no other related modules are available, the content uses the full width. The comment composer in Summary remains available as before.
+
+Click the **AI** icon beside the comment box to check the license, installation and setup. If AI is ready and you have access, select **Open AI** to work with your current draft in AI chat. The comment stays in the editor until you post it.
+
 When you click Add in a record's summary widget, Quick Create fills the related-record field with the record you are viewing. For example, a task or milestone added from a project's summary starts with that project selected.
+
+An empty related-record summary widget shows the translated module name in its message, such as Project Tasks or Project Milestones, using your selected language.
 
 Administrators can lock or unlock a record. A non-administrator can lock a record only when it is assigned directly to that user and the user has permission to edit it; unlocking remains available only to administrators.
 
@@ -64,4 +82,18 @@ Record images, previews and downloads keep working when an administrator stores 
 
 # Dashboard
 
-Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook text are displayed as text, including when they contain characters used by HTML.
+Key Metrics and MiniList display saved-filter names in your selected language when a translation is available. Custom names without a translation retain their saved text. Clicking a metric still opens its saved list.
+
+Dashboard tabs and notebook widgets belong to the user who created them. You can rename, reorder and delete your own tabs and edit your own notes; another user's tab or note cannot be changed by entering its identifier. Tab names and notebook titles are displayed as text.
+
+Choose the Notebook widget, enter a name and write your note in the editor. The compact toolbar offers bold, italic, underline, strikethrough, subscript, superscript, links, remove formatting and undo/redo. Use subscript for H₂O or superscript for m², and Link/Unlink to add or remove a clickable link. List and quotation buttons are not available; existing supported formatting remains displayed. Save adds the note to the current dashboard tab. The dialog keeps labels and fields aligned and gives the editor room to write.
+
+Choose Edit on an existing note to open the standard editor with its toolbar above the editing area. Choose Save to update it without reloading the page and return to the note display. Each note has its own editor. The create and edit editors have no bottom status panel. A failed save keeps your draft available to retry. Existing plain-text notes keep their text and line breaks; saving them through the editor enables formatting. Active content and unsupported formatting are removed from formatted notes.
+
+Saved formatted notes appear as HTML content without an input border. Bulleted, numbered and nested lists keep their markers and indentation and follow the note's width rather than the dashboard grid's width. Text and long links wrap to fit the widget's width. Content that still cannot fit has a horizontal scrollbar inside the note, keeping the widget within its dashboard column.
+
+# Record forms
+
+Field labels in the full record edit form use the normal theme text color for easier reading, including address labels. This also applies when the same form creates or duplicates a record. Required fields retain their red asterisk, and restricted fields retain their lock indicator.
+
+The Related records dropdown looks like the other record tabs. When one of its related modules is selected, its label is blue and underlined; clicking it still opens the list of related modules. Menu items use the navigation text size and spacing, and the selected item has bold primary-colored text without a background. In the desktop sidebar, only the currently open module is highlighted using the application's original primary theme colors and bold text. Its count uses a rounded badge, and selection stays synchronized with the dropdown.
