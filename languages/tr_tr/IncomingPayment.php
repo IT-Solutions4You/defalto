@@ -50,6 +50,10 @@ $languageStrings = [
     'LBL_NO_PAYMENTS' => 'Bu kayıt için henüz ödeme kaydedilmedi.',
     'LBL_INTEGRATION_INACTIVE' => 'Gelen ödemeler bu modüle entegre edilmemiş.',
     'LBL_INCOMING_PAYMENT_INTEGRATION' => 'Gelen ödemeler entegrasyonu',
+    'Direction' => 'Yön',
+    'Incoming' => 'Gelen',
+    'Outgoing' => 'Giden',
+    'LBL_EXPECTED_AMOUNT' => 'Beklenen',
 ];
 
 $jsLanguageStrings = [

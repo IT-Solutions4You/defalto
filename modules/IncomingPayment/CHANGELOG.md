@@ -8,6 +8,8 @@
 - The detail view of a payment lists its documents in a tab for every integrated module.
 - Organizations, vendors and contacts show their incoming payments in a related list.
 - Deleting an invoice with payments warns about the linked payments and removes the link from them; a restored invoice recalculates its received amount and balance without them.
+- Every payment shows its direction (Incoming or Outgoing) in a read-only field.
+- With the Payments list installed, documents show the common Payments widget instead of the Incoming Payments widget and the module is hidden in the Sales menu.
 - Integration into document modules is configured in Settings → Incoming Payments Integration, which lists every inventory module automatically.
 - An underpayment threshold in the settings marks documents with a small remaining balance as paid while the balance keeps the real amount.
 - With the Payments list installed, the header of a payment shows Payments and leads back to the Payments list.

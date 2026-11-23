@@ -37,6 +37,7 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 - When you delete an invoice that has payments, the confirmation tells you how many payments are linked. The payments stay, only their link to the deleted invoice is removed, and their **Reference** becomes empty. Restoring the invoice from the recycle bin does not link the payments again; its received amount, balance and status are recalculated without them.
 
 ## Other fields
+- **Direction** is always Incoming; the Payments list uses it to tell incoming from outgoing payments.
 
 - **Amount** holds the currency of the payment: click the currency symbol inside the field to choose another currency. A new payment starts with your currency, or with the currency of the invoice when it is created from an invoice.
 - **Amount in Base Currency** is calculated automatically from the exchange rate of the payment currency. The rate is taken when the payment is created or its currency changes, so editing an old payment does not change its value. Searching, filtering and sorting by **Amount** compare the amounts in the base currency, so payments in different currencies are ordered correctly.
@@ -46,6 +47,7 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 Administrators configure the integration in **Settings → Incoming Payments Integration** (also available from the gear menu of the Incoming Payments list). The **Underpayment threshold** at the top applies to all modules: an invoice whose balance is at most this amount counts as paid, for example 1 to ignore small differences. The amount is compared in the invoice currency without conversion; 0 means only fully paid invoices. Changing it updates the statuses of all invoices with payments. For each document module you choose whether it is active, which status field and values are used when the document becomes fully paid or unpaid again, and which fields hold the organization, the total, the paid amount and the balance. Every inventory module is listed automatically, including modules added later: quotes, sales orders, purchase orders and invoices today. Invoices are active by default, the others can be switched on. Status values are empty for them until you choose them, so their status does not change on payment until then.
 
 ## Tips
+- With the Payments list installed, the invoice shows the common **Payments** widget with incoming and outgoing payments instead of the Incoming Payments widget, and Incoming Payments is not in the Sales menu: open the payments from **Payments**, from the quick create menu or from a document.
 
 - Create one payment per received transfer. When a transfer pays several invoices, create one payment per invoice for now.
 - Use the **Transaction ID** field for the bank reference so payments are easy to match with the bank statement.

@@ -27,6 +27,7 @@ class IncomingPayment_Config_Helper extends Core_PaymentConfig_Helper
     public const ADD_LINK_LABEL = 'LBL_ADD_INCOMING_PAYMENT';
     public const INTEGRATION_LABEL = 'LBL_INCOMING_PAYMENT_INTEGRATION';
     public const ICON = 'fa-solid fa-money-bill-trend-up';
+    public const DIRECTION = self::DIRECTION_INCOMING;
     public const RELATED_TO_MODULES = ['Accounts', 'Vendors'];
     public const DEFAULT_PAID_FIELDS = ['received', 'paid'];
     public const PAID_FIELD_LABEL = 'Received';

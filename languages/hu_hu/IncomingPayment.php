@@ -50,6 +50,10 @@ $languageStrings = [
     'LBL_NO_PAYMENTS' => 'Ehhez a rekordhoz még nincs rögzített fizetés.',
     'LBL_INTEGRATION_INACTIVE' => 'A beérkező fizetések nincsenek integrálva ebbe a modulba.',
     'LBL_INCOMING_PAYMENT_INTEGRATION' => 'Beérkező fizetések integrációja',
+    'Direction' => 'Irány',
+    'Incoming' => 'Bejövő',
+    'Outgoing' => 'Kimenő',
+    'LBL_EXPECTED_AMOUNT' => 'Várható',
 ];
 
 $jsLanguageStrings = [

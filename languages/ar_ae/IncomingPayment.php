@@ -50,6 +50,10 @@ $languageStrings = [
     'LBL_NO_PAYMENTS' => 'لم يتم تسجيل أي دفعة لهذا السجل بعد.',
     'LBL_INTEGRATION_INACTIVE' => 'المدفوعات الواردة غير مدمجة في هذه الوحدة.',
     'LBL_INCOMING_PAYMENT_INTEGRATION' => 'تكامل المدفوعات الواردة',
+    'Direction' => 'الاتجاه',
+    'Incoming' => 'واردة',
+    'Outgoing' => 'صادرة',
+    'LBL_EXPECTED_AMOUNT' => 'المتوقع',
 ];
 
 $jsLanguageStrings = [

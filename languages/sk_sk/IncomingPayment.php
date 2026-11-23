@@ -50,6 +50,10 @@ $languageStrings = [
     'LBL_NO_PAYMENTS' => 'K tomuto záznamu zatiaľ nie je evidovaná žiadna platba.',
     'LBL_INTEGRATION_INACTIVE' => 'Prijaté platby nie sú do tohto modulu integrované.',
     'LBL_INCOMING_PAYMENT_INTEGRATION' => 'Integrácia prijatých platieb',
+    'Direction' => 'Smer',
+    'Incoming' => 'Prichádzajúca',
+    'Outgoing' => 'Odchádzajúca',
+    'LBL_EXPECTED_AMOUNT' => 'Očakávané',
 ];
 
 $jsLanguageStrings = [
