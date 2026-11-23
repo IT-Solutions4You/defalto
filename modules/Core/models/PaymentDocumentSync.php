@@ -191,9 +191,7 @@ abstract class Core_PaymentDocumentSync_Model extends Core_DatabaseData_Model
      */
     public function getDocumentRate(Vtiger_Record_Model $recordModel): float
     {
-        $documentRate = (float)$recordModel->get('conversion_rate');
-
-        return $documentRate > 0 ? $documentRate : Core_PaymentCalculation_Helper::getConversionRate((int)$recordModel->get('currency_id'));
+        return Core_PaymentCalculation_Helper::getRecordRate($recordModel);
     }
 
     /**

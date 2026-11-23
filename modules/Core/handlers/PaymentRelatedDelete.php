@@ -40,7 +40,7 @@ abstract class Core_PaymentRelatedDelete_Handler extends VTEventHandler
 
         // The events manager calls every active handler for the event, so documents are filtered here
         // before the integration configuration is loaded.
-        if (!in_array($handlerType, $events, true) || !InventoryItem_Utils_Helper::isInventoryModule($moduleName)) {
+        if (!in_array($handlerType, $events, true) || !Core_PaymentConfig_Helper::isDocumentModule($moduleName)) {
             return;
         }
 
@@ -56,6 +56,15 @@ abstract class Core_PaymentRelatedDelete_Handler extends VTEventHandler
             $documentSync->recalculateDocument($moduleName, $recordId);
         } else {
             $documentSync->handleDocumentDelete($recordId);
+        }
+
+        // The payments of a sales order are split again over its remaining invoices; a deleted or restored
+        // sales order removes or brings back its payments on its invoices
+        $sourceDocument = Core_PaymentSourceDocument_Model::getInstance();
+        $sourceDocument->recalculateSiblings($moduleName, $recordId);
+
+        if (Core_PaymentSourceDocument_Model::isSourceModule($moduleName)) {
+            $sourceDocument->recalculateTargets($moduleName, $recordId);
         }
     }
 }

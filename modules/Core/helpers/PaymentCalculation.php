@@ -57,6 +57,19 @@ class Core_PaymentCalculation_Helper
     }
 
     /**
+     * Returns the conversion rate stored on a document, or the current rate of its currency when none is stored.
+     *
+     * @param Vtiger_Record_Model $recordModel Document record
+     * @return float
+     */
+    public static function getRecordRate(Vtiger_Record_Model $recordModel): float
+    {
+        $rate = (float)$recordModel->get('conversion_rate');
+
+        return $rate > 0 ? $rate : self::getConversionRate((int)$recordModel->get('currency_id'));
+    }
+
+    /**
      * Converts an amount from a currency into the base currency.
      *
      * @param float $amount Amount in the source currency

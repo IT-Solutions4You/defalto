@@ -68,13 +68,31 @@ class Core_PaymentIntegrationFields_Helper
             'status_value' => '',
             'status_value_back' => '',
             'relatedto_field' => self::getDefaultRelatedToField($paymentConfig, $moduleModel),
-            'total_field' => $moduleModel->getField(Core_PaymentConfig_Helper::DEFAULT_TOTAL_FIELD) ? Core_PaymentConfig_Helper::DEFAULT_TOTAL_FIELD : '',
+            'total_field' => self::getFirstField($moduleModel, Core_PaymentConfig_Helper::DEFAULT_TOTAL_FIELDS),
             'paid_field' => self::getDefaultPaidField($paymentConfig, $moduleModel),
             'balance_field' => Core_PaymentConfig_Helper::DEFAULT_BALANCE_FIELD,
             Core_PaymentConfig_Helper::INTEGRATION_REFUND => self::getDefaultRefund($paymentConfig, $moduleModel),
         ];
 
         return array_merge($defaults, $paymentConfig->getIntegrationOverrides()[$module] ?? []);
+    }
+
+    /**
+     * Returns the first of the given fields the module has; empty when it has none.
+     *
+     * @param Vtiger_Module_Model $moduleModel Document module
+     * @param string[]            $fieldNames  Field names in order of preference
+     * @return string
+     */
+    public static function getFirstField(Vtiger_Module_Model $moduleModel, array $fieldNames): string
+    {
+        foreach ($fieldNames as $fieldName) {
+            if ($moduleModel->getField($fieldName)) {
+                return $fieldName;
+            }
+        }
+
+        return '';
     }
 
     /**

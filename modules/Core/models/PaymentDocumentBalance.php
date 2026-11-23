@@ -77,8 +77,9 @@ class Core_PaymentDocumentBalance_Model
 
     /**
      * Recalculates the paid amount, balance and status of a document: received payments of the paying module minus
-     * received refunds of the other modules, each converted into the document currency. Nothing happens when no
-     * active payment module pays the document module.
+     * received refunds of the other modules plus the received payments of its source documents that fall on it,
+     * each converted into the document currency. Nothing happens when no active payment module pays the document
+     * module. A source document (sales order) recalculates its target documents (invoices) afterwards.
      *
      * @param string $documentModule Document module name
      * @param int    $recordId       Document record id
@@ -110,11 +111,16 @@ class Core_PaymentDocumentBalance_Model
         } finally {
             unset(self::$processing[$recordId]);
         }
+
+        if (Core_PaymentSourceDocument_Model::isSourceModule($documentModule)) {
+            Core_PaymentSourceDocument_Model::getInstance()->recalculateTargets($documentModule, $recordId);
+        }
     }
 
     /**
      * Returns the payments of the paying module minus the refunds of the other modules applied to a document,
-     * in the document currency: only received ones, or all of them regardless of their status.
+     * plus the payments of its source documents that fall on it (e.g. the sales order of an invoice), in the
+     * document currency: only received ones, or all of them regardless of their status.
      *
      * @param Vtiger_Record_Model $recordModel  Document record
      * @param bool                $onlyReceived true for received payments only, false for all payments
@@ -123,7 +129,10 @@ class Core_PaymentDocumentBalance_Model
      */
     public function getNetAmount(Vtiger_Record_Model $recordModel, bool $onlyReceived): float
     {
-        return $this->getSignedAmount($recordModel, $onlyReceived ? true : null);
+        $isReceived = $onlyReceived ? true : null;
+
+        return $this->getOwnNetAmount($recordModel, $isReceived)
+            + Core_PaymentSourceDocument_Model::getInstance()->getAllocatedAmount($recordModel, $isReceived);
     }
 
     /**
@@ -136,18 +145,19 @@ class Core_PaymentDocumentBalance_Model
      */
     public function getOpenNetAmount(Vtiger_Record_Model $recordModel): float
     {
-        return $this->getSignedAmount($recordModel, false);
+        return $this->getOwnNetAmount($recordModel, false);
     }
 
     /**
-     * Returns the payments of the paying module minus the refunds of the other modules, in the document currency.
+     * Returns the payments of the paying module minus the refunds of the other modules applied to the document
+     * itself, without the payments of its source documents, in the document currency.
      *
      * @param Vtiger_Record_Model $recordModel Document record
      * @param bool|null           $isReceived  true for received payments, false for the others, null for all
      * @return float
      * @throws Exception
      */
-    private function getSignedAmount(Vtiger_Record_Model $recordModel, ?bool $isReceived): float
+    public function getOwnNetAmount(Vtiger_Record_Model $recordModel, ?bool $isReceived): float
     {
         $documentModule = $recordModel->getModuleName();
         $payingModule = self::getPayingModule($documentModule);

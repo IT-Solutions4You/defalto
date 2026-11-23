@@ -149,6 +149,21 @@ class Core_PaymentConfig_Helper
      * Field names every inventory module is expected to use; a module without them gets them chosen in Settings.
      */
     public const DEFAULT_TOTAL_FIELD = 'grand_total';
+
+    /**
+     * Total amount fields of document modules, in order of preference (Potentials keep their total in amount).
+     */
+    public const DEFAULT_TOTAL_FIELDS = [self::DEFAULT_TOTAL_FIELD, 'amount'];
+
+    /**
+     * Due date fields of document modules, in order of preference; the due date of a new payment comes from them.
+     */
+    public const DOCUMENT_DUE_DATE_FIELDS = ['duedate', 'closingdate'];
+
+    /**
+     * Modules that can receive payments besides the inventory modules of the InventoryItem registry.
+     */
+    public const ADDITIONAL_DOCUMENT_MODULES = ['Potentials'];
     public const DEFAULT_BALANCE_FIELD = 'balance';
 
     /**
@@ -183,6 +198,18 @@ class Core_PaymentConfig_Helper
         }
 
         return self::$instances[$moduleName];
+    }
+
+    /**
+     * Tells whether a module can be integrated as a document module: an inventory module or one of the
+     * additional document modules. Cheap check for handlers that run for every module.
+     *
+     * @param string $moduleName Module name
+     * @return bool
+     */
+    public static function isDocumentModule(string $moduleName): bool
+    {
+        return in_array($moduleName, self::ADDITIONAL_DOCUMENT_MODULES, true) || InventoryItem_Utils_Helper::isInventoryModule($moduleName);
     }
 
     /**

@@ -70,7 +70,8 @@ class Core_PaymentPrefill_Helper
             $values[Core_PaymentConfig_Helper::FIELD_AMOUNT_CURRENCY] = (int)$recordModel->get('currency_id');
         }
 
-        $dueDate = Core_PaymentStatus_Helper::normalizeDate($moduleModel->getField('duedate') ? $recordModel->get('duedate') : '');
+        $dueDateField = Core_PaymentIntegrationFields_Helper::getFirstField($moduleModel, Core_PaymentConfig_Helper::DOCUMENT_DUE_DATE_FIELDS);
+        $dueDate = Core_PaymentStatus_Helper::normalizeDate($dueDateField !== '' ? $recordModel->get($dueDateField) : '');
 
         if ($dueDate !== '') {
             $values['due_date'] = DateTimeField::convertToUserFormat($dueDate);

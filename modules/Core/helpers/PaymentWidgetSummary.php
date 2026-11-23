@@ -34,12 +34,14 @@ class Core_PaymentWidgetSummary_Helper
     /**
      * Returns the payments of a document in the given payment modules, newest payment date first, and the totals:
      * total, paid and balance from the document fields of the paying module, expected as the payments minus the
-     * refunds not received yet. Payments the current user may not see are left out; the totals still count them.
+     * refunds not received yet. sourcePayments lists the received payments of source documents (the sales order of
+     * an invoice) that fall on the document. Payments the current user may not see are left out; the totals still
+     * count them.
      *
      * @param string[] $paymentModules Payment module names
      * @param string   $sourceModule   Document module name
      * @param int      $sourceRecord   Document record id
-     * @return array payments, total, paid, balance, expected, isIntegrated
+     * @return array payments, total, paid, balance, expected, sourcePayments, isIntegrated
      * @throws Exception
      */
     public static function getDocumentSummary(array $paymentModules, string $sourceModule, int $sourceRecord): array
@@ -50,6 +52,7 @@ class Core_PaymentWidgetSummary_Helper
             'paid' => '',
             'balance' => '',
             'expected' => '',
+            'sourcePayments' => [],
             'isIntegrated' => false,
         ];
 
@@ -58,7 +61,8 @@ class Core_PaymentWidgetSummary_Helper
         }
 
         $recordModel = Vtiger_Record_Model::getInstanceById($sourceRecord, $sourceModule);
-        $currencyId = (int)$recordModel->get('currency_id');
+        // A document without a currency (e.g. an opportunity) is in the base currency
+        $currencyId = (int)$recordModel->get('currency_id') ?: (int)CurrencyField::getDBCurrencyId();
         $payingModule = Core_PaymentDocumentBalance_Model::getPayingModule($sourceModule);
         $amountFields = $payingModule !== ''
             ? Core_PaymentConfig_Helper::getInstance($payingModule)->getIntegrationModel()->retrieveByModule($sourceModule)
@@ -71,6 +75,15 @@ class Core_PaymentWidgetSummary_Helper
             if ($paymentConfig->getIntegrationModel()->isActive($sourceModule)) {
                 $summary['isIntegrated'] = true;
             }
+        }
+
+        foreach (Core_PaymentSourceDocument_Model::getInstance()->getSourceAllocations($recordModel, true) as $allocation) {
+            $summary['sourcePayments'][] = [
+                'module' => $allocation['module'],
+                'number' => Core_PaymentValues_Helper::getRecordNumber(Vtiger_Record_Model::getInstanceById($allocation['id'], $allocation['module'])),
+                'url' => 'index.php?module=' . $allocation['module'] . '&view=Detail&record=' . $allocation['id'],
+                'amount' => Core_PaymentCalculation_Helper::formatAmount($allocation['amount'], $currencyId),
+            ];
         }
 
         // Payments minus refunds not received yet, in the document currency

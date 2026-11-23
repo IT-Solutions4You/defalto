@@ -69,7 +69,7 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
     {
         $modules = [];
 
-        foreach (InventoryItem_Utils_Helper::getInventoryItemModules() as $moduleName) {
+        foreach (array_merge(InventoryItem_Utils_Helper::getInventoryItemModules(), Core_PaymentConfig_Helper::ADDITIONAL_DOCUMENT_MODULES) as $moduleName) {
             if (!vtlib_isModuleActive($moduleName)) {
                 continue;
             }

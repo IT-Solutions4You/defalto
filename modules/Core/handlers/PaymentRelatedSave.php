@@ -10,7 +10,8 @@
 
 /**
  * Recalculates the paid amount, balance and status of an integrated document
- * after it was saved (for example after its total or currency changed).
+ * after it was saved (for example after its total or currency changed), and the other documents sharing
+ * a source document with it (the invoices of its sales order).
  */
 abstract class Core_PaymentRelatedSave_Handler extends VTEventHandler
 {
@@ -39,7 +40,7 @@ abstract class Core_PaymentRelatedSave_Handler extends VTEventHandler
 
         // The events manager calls every active handler for the event, so documents are filtered here
         // before the integration configuration is loaded.
-        if ($handlerType !== Core_PaymentConfig_Helper::EVENT_AFTER_SAVE_FINAL || !InventoryItem_Utils_Helper::isInventoryModule($moduleName)) {
+        if ($handlerType !== Core_PaymentConfig_Helper::EVENT_AFTER_SAVE_FINAL || !Core_PaymentConfig_Helper::isDocumentModule($moduleName)) {
             return;
         }
 
@@ -47,6 +48,9 @@ abstract class Core_PaymentRelatedSave_Handler extends VTEventHandler
             return;
         }
 
-        $this->getConfig()->getDocumentSyncModel()->recalculateDocument($moduleName, (int)$entityData->getId());
+        $recordId = (int)$entityData->getId();
+        $this->getConfig()->getDocumentSyncModel()->recalculateDocument($moduleName, $recordId);
+        // An invoice may have got or lost a sales order, which changes how the order payments are split
+        Core_PaymentSourceDocument_Model::getInstance()->recalculateSiblings($moduleName, $recordId);
     }
 }
