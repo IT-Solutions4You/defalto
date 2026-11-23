@@ -54,6 +54,8 @@ $languageStrings = [
     'Incoming' => 'Primită',
     'Outgoing' => 'Efectuată',
     'LBL_EXPECTED_AMOUNT' => 'Așteptat',
+    'LBL_ADD_REFUND' => 'Adaugă rambursare',
+    'LBL_REFUND' => 'Rambursare',
 ];
 
 $jsLanguageStrings = [

@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Underpayment threshold',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'A document whose balance is at most this amount gets the paid status. The amount is compared in the document currency without conversion and the balance keeps the real underpayment. 0 means only fully paid documents.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'The underpayment threshold must be a number of 0 or more.',
+    'LBL_REFUND' => 'Refund',
+    'LBL_REFUND_HELP' => 'Payments of this module are refunds of the document and are subtracted from its paid amount.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'No active payment module pays this document; refunds are not counted.',
+    'LBL_TWO_PAYING_MODULES' => 'Another payment module already pays %s. Mark the payments of one of them as refunds.',
 ];
 
 $jsLanguageStrings = [

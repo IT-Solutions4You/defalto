@@ -46,6 +46,11 @@ Only **Received** payments count towards the paid amount of the invoice. A daily
 
 Administrators configure the integration in **Settings → Incoming Payments Integration** (also available from the gear menu of the Incoming Payments list). The **Underpayment threshold** at the top applies to all modules: an invoice whose balance is at most this amount counts as paid, for example 1 to ignore small differences. The amount is compared in the invoice currency without conversion; 0 means only fully paid invoices. Changing it updates the statuses of all invoices with payments. For each document module you choose whether it is active, which status field and values are used when the document becomes fully paid or unpaid again, and which fields hold the organization, the total, the paid amount and the balance. Every inventory module is listed automatically, including modules added later: quotes, sales orders, purchase orders and invoices today. Invoices are active by default, the others can be switched on. Status values are empty for them until you choose them, so their status does not change on payment until then.
 
+## Refunds
+- Money you return to a customer is an outgoing payment on the invoice: click **Add Refund**. The form is prefilled with the paid amount. A received refund lowers the **Received** amount of the invoice, and a fully paid invoice can go back to its unpaid status.
+- Money a vendor returns on a purchase order is an incoming payment marked as a refund in **Settings → Incoming Payments Integration** (column **Refund**, purchase orders by default).
+- **Add Payment** prefills the total minus all payments of the invoice, also the ones not received yet.
+
 ## Tips
 - With the Payments list installed, the invoice shows the common **Payments** widget with incoming and outgoing payments instead of the Incoming Payments widget, and Incoming Payments is not in the Sales menu: open the payments from **Payments**, from the quick create menu or from a document.
 

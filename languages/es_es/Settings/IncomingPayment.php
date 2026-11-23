@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Umbral de pago insuficiente',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Un documento cuyo saldo sea como máximo este importe recibe el estado pagado. El importe se compara en la moneda del documento sin conversión y el saldo conserva el importe pendiente real. 0 significa solo documentos pagados por completo.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'El umbral de pago insuficiente debe ser un número igual o mayor que 0.',
+    'LBL_REFUND' => 'Reembolso',
+    'LBL_REFUND_HELP' => 'Los pagos de este módulo son reembolsos del documento y se restan del importe pagado.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Ningún módulo de pagos activo paga este documento; los reembolsos no se tienen en cuenta.',
+    'LBL_TWO_PAYING_MODULES' => 'Otro módulo de pagos ya paga %s. Marque los pagos de uno de ellos como reembolsos.',
 ];
 
 $jsLanguageStrings = [

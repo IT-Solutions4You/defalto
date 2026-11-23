@@ -54,6 +54,8 @@ $languageStrings = [
     'Incoming' => 'واردة',
     'Outgoing' => 'صادرة',
     'LBL_EXPECTED_AMOUNT' => 'المتوقع',
+    'LBL_ADD_REFUND' => 'إضافة استرداد',
+    'LBL_REFUND' => 'استرداد',
 ];
 
 $jsLanguageStrings = [

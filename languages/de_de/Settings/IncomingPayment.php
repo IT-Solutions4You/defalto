@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Grenze für Unterzahlung',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Ein Beleg, dessen Restbetrag höchstens diesem Betrag entspricht, erhält den Status bezahlt. Der Betrag wird ohne Umrechnung in der Währung des Belegs verglichen, der Restbetrag zeigt weiterhin die tatsächliche Unterzahlung. 0 bedeutet nur vollständig bezahlte Belege.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Die Grenze für Unterzahlung muss eine Zahl von 0 oder größer sein.',
+    'LBL_REFUND' => 'Erstattung',
+    'LBL_REFUND_HELP' => 'Zahlungen dieses Moduls sind Erstattungen zum Beleg und werden vom bezahlten Betrag abgezogen.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Kein aktives Zahlungsmodul bezahlt diesen Beleg; Erstattungen werden nicht berücksichtigt.',
+    'LBL_TWO_PAYING_MODULES' => 'Ein anderes Zahlungsmodul bezahlt bereits %s. Markieren Sie die Zahlungen eines der Module als Erstattungen.',
 ];
 
 $jsLanguageStrings = [

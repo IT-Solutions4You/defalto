@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Seuil de paiement insuffisant',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Un document dont le solde est au plus égal à ce montant reçoit le statut payé. Le montant est comparé dans la devise du document sans conversion et le solde conserve le montant réellement impayé. 0 signifie uniquement les documents entièrement payés.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Le seuil de paiement insuffisant doit être un nombre supérieur ou égal à 0.',
+    'LBL_REFUND' => 'Remboursement',
+    'LBL_REFUND_HELP' => 'Les paiements de ce module sont des remboursements du document et sont déduits du montant payé.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Aucun module de paiement actif ne règle ce document ; les remboursements ne sont pas pris en compte.',
+    'LBL_TWO_PAYING_MODULES' => 'Un autre module de paiement règle déjà %s. Marquez les paiements de l’un d’eux comme remboursements.',
 ];
 
 $jsLanguageStrings = [

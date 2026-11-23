@@ -10,6 +10,8 @@
 - Deleting an invoice with payments warns about the linked payments and removes the link from them; a restored invoice recalculates its received amount and balance without them.
 - Every payment shows its direction (Incoming or Outgoing) in a read-only field.
 - With the Payments list installed, documents show the common Payments widget instead of the Incoming Payments widget and the module is hidden in the Sales menu.
+- Refunds: payments of this module integrated into a document paid by Outgoing Payments are refunds; they are subtracted from the paid amount, the Settings page has a Refund column and documents offer Add Refund.
+- Add Payment from a document prefills the total minus all payments, including the ones not received yet, as Cashflow did.
 - Integration into document modules is configured in Settings → Incoming Payments Integration, which lists every inventory module automatically.
 - An underpayment threshold in the settings marks documents with a small remaining balance as paid while the balance keeps the real amount.
 - With the Payments list installed, the header of a payment shows Payments and leads back to the Payments list.

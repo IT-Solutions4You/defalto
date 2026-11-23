@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Gräns för underbetalning',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Ett dokument vars saldo är högst detta belopp får statusen betald. Beloppet jämförs i dokumentets valuta utan omräkning och saldot visar fortfarande den verkliga underbetalningen. 0 betyder endast helt betalda dokument.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Gränsen för underbetalning måste vara ett tal som är 0 eller större.',
+    'LBL_REFUND' => 'Återbetalning',
+    'LBL_REFUND_HELP' => 'Betalningar i den här modulen är återbetalningar av dokumentet och dras av från det betalda beloppet.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Ingen aktiv betalningsmodul betalar det här dokumentet; återbetalningar räknas inte.',
+    'LBL_TWO_PAYING_MODULES' => 'En annan betalningsmodul betalar redan %s. Markera betalningarna i en av dem som återbetalningar.',
 ];
 
 $jsLanguageStrings = [

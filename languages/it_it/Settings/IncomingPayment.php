@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Soglia di pagamento insufficiente',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Un documento il cui saldo è al massimo pari a questo importo riceve lo stato pagato. L\'importo viene confrontato nella valuta del documento senza conversione e il saldo mantiene l\'importo realmente non pagato. 0 indica solo documenti pagati per intero.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'La soglia di pagamento insufficiente deve essere un numero pari o superiore a 0.',
+    'LBL_REFUND' => 'Rimborso',
+    'LBL_REFUND_HELP' => 'I pagamenti di questo modulo sono rimborsi del documento e vengono sottratti dall\'importo pagato.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Nessun modulo di pagamento attivo paga questo documento; i rimborsi non vengono conteggiati.',
+    'LBL_TWO_PAYING_MODULES' => 'Un altro modulo di pagamento paga già %s. Contrassegnare i pagamenti di uno dei due come rimborsi.',
 ];
 
 $jsLanguageStrings = [

@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Eksik ödeme sınırı',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Bakiyesi en fazla bu tutar olan belge ödendi durumunu alır. Tutar, belgenin para biriminde dönüştürülmeden karşılaştırılır ve bakiye gerçek eksik ödemeyi göstermeye devam eder. 0 yalnızca tamamen ödenmiş belgeler anlamına gelir.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Eksik ödeme sınırı 0 veya daha büyük bir sayı olmalıdır.',
+    'LBL_REFUND' => 'İade',
+    'LBL_REFUND_HELP' => 'Bu modülün ödemeleri belgenin iadeleridir ve ödenen tutardan düşülür.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Bu belgeyi hiçbir etkin ödeme modülü ödemiyor; iadeler hesaba katılmaz.',
+    'LBL_TWO_PAYING_MODULES' => 'Başka bir ödeme modülü %s için zaten ödeme yapıyor. Bunlardan birinin ödemelerini iade olarak işaretleyin.',
 ];
 
 $jsLanguageStrings = [

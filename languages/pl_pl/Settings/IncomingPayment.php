@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Próg niedopłaty',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Dokument, którego saldo wynosi najwyżej tę kwotę, otrzymuje status opłacony. Kwota jest porównywana w walucie dokumentu bez przeliczania, a saldo nadal pokazuje rzeczywistą niedopłatę. 0 oznacza tylko w pełni opłacone dokumenty.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Próg niedopłaty musi być liczbą 0 lub większą.',
+    'LBL_REFUND' => 'Zwrot',
+    'LBL_REFUND_HELP' => 'Płatności tego modułu są zwrotami do dokumentu i są odejmowane od zapłaconej kwoty.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Żaden aktywny moduł płatności nie opłaca tego dokumentu; zwroty nie są uwzględniane.',
+    'LBL_TWO_PAYING_MODULES' => 'Inny moduł płatności już opłaca %s. Oznacz płatności jednego z nich jako zwroty.',
 ];
 
 $jsLanguageStrings = [

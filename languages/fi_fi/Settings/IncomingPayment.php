@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Vajaamaksun raja',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Asiakirja, jonka saldo on enintään tämä summa, saa tilan maksettu. Summaa verrataan asiakirjan valuutassa ilman muuntoa, ja saldo näyttää edelleen todellisen vajaamaksun. 0 tarkoittaa vain kokonaan maksettuja asiakirjoja.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Vajaamaksun rajan on oltava luku, joka on 0 tai suurempi.',
+    'LBL_REFUND' => 'Palautus',
+    'LBL_REFUND_HELP' => 'Tämän moduulin maksut ovat asiakirjan palautuksia, ja ne vähennetään maksetusta summasta.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Mikään aktiivinen maksumoduuli ei maksa tätä asiakirjaa; palautuksia ei lasketa.',
+    'LBL_TWO_PAYING_MODULES' => 'Toinen maksumoduuli maksaa jo %s. Merkitse toisen moduulin maksut palautuksiksi.',
 ];
 
 $jsLanguageStrings = [
