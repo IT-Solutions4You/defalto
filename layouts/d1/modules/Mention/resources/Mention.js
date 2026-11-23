@@ -228,7 +228,6 @@ jQuery.Class('Mention_Js', {
         if (!this.mentionScriptsRequest) {
             const self = this;
 
-            jQuery('<link>', {rel: 'stylesheet', href: this.getResourceUrl('Mention.css')}).appendTo('head');
             this.mentionScriptsRequest = jQuery.ajax({url: this.getResourceUrl('bootstrap-typeahead.js', true), dataType: 'script', cache: true, global: false})
                 .then(function () {
                     return jQuery.ajax({url: self.getResourceUrl('mention.js', true), dataType: 'script', cache: true, global: false});
