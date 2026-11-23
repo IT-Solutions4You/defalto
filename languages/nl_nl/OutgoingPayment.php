@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'Inkomende betalingen',
-    'SINGLE_OutgoingPayment' => 'Inkomende betaling',
-    'CV_ALL' => 'Alle inkomende betalingen',
-    'LBL_ADD_RECORD' => 'Inkomende betaling toevoegen',
-    'LBL_RECORDS_LIST' => 'Lijst van inkomende betalingen',
-    'Outgoing Payments' => 'Inkomende betalingen',
+    'OutgoingPayment' => 'Uitgaande betalingen',
+    'SINGLE_OutgoingPayment' => 'Uitgaande betaling',
+    'CV_ALL' => 'Alle uitgaande betalingen',
+    'LBL_ADD_RECORD' => 'Uitgaande betaling toevoegen',
+    'LBL_RECORDS_LIST' => 'Lijst van uitgaande betalingen',
+    'Outgoing Payments' => 'Uitgaande betalingen',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'Betalingsgegevens',
     'Payment Name' => 'Naam van de betaling',
     'Payment No' => 'Betalingsnummer',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'Transactie-ID',
     'Reference' => 'Document',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'Een betaling kan aan slechts één document worden gekoppeld.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Aan dit record zijn ontvangen betalingen gekoppeld (%s). De betalingen blijven bestaan, alleen hun koppeling met dit record wordt verwijderd.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Aan %s van de geselecteerde records zijn ontvangen betalingen gekoppeld (aantal betalingen: %s). De betalingen blijven bestaan, alleen hun koppeling met de verwijderde records wordt verwijderd.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Aan dit record zijn uitgaande betalingen gekoppeld (%s). De betalingen blijven bestaan, alleen hun koppeling met dit record wordt verwijderd.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Aan %s van de geselecteerde records zijn uitgaande betalingen gekoppeld (aantal betalingen: %s). De betalingen blijven bestaan, alleen hun koppeling met de verwijderde records wordt verwijderd.',
     'Related To' => 'Gerelateerd aan',
     'Contact Name' => 'Naam contactpersoon',
     'Reference No' => 'Documentnummer',
     'Created' => 'Aangemaakt',
     'Waiting' => 'In afwachting',
     'Pending' => 'Achterstallig',
-    'Paid' => 'Ontvangen',
+    'Paid' => 'Betaald',
     'Bank Transfer' => 'Bankoverschrijving',
     'Cash' => 'Contant',
     'Credit card' => 'Creditcard',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'Betaald',
     'LBL_BALANCE' => 'Saldo',
     'LBL_NO_PAYMENTS' => 'Voor dit record is nog geen betaling geregistreerd.',
-    'LBL_INTEGRATION_INACTIVE' => 'Inkomende betalingen zijn niet in deze module geïntegreerd.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integratie van inkomende betalingen',
+    'LBL_INTEGRATION_INACTIVE' => 'Uitgaande betalingen zijn niet in deze module geïntegreerd.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integratie van uitgaande betalingen',
 ];
 
 $jsLanguageStrings = [

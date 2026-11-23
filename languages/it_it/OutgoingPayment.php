@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'Pagamenti in entrata',
-    'SINGLE_OutgoingPayment' => 'Pagamento in entrata',
-    'CV_ALL' => 'Tutti i pagamenti in entrata',
-    'LBL_ADD_RECORD' => 'Aggiungi pagamento in entrata',
-    'LBL_RECORDS_LIST' => 'Elenco pagamenti in entrata',
-    'Outgoing Payments' => 'Pagamenti in entrata',
+    'OutgoingPayment' => 'Pagamenti in uscita',
+    'SINGLE_OutgoingPayment' => 'Pagamento in uscita',
+    'CV_ALL' => 'Tutti i pagamenti in uscita',
+    'LBL_ADD_RECORD' => 'Aggiungi pagamento in uscita',
+    'LBL_RECORDS_LIST' => 'Elenco pagamenti in uscita',
+    'Outgoing Payments' => 'Pagamenti in uscita',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'Dettagli del pagamento',
     'Payment Name' => 'Nome del pagamento',
     'Payment No' => 'N. pagamento',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'ID transazione',
     'Reference' => 'Documento',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'Un pagamento può essere collegato a un solo documento.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'A questo record sono collegati pagamenti ricevuti (%s). I pagamenti restano, viene rimosso solo il loro collegamento a questo record.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'A %s dei record selezionati sono collegati pagamenti ricevuti (numero di pagamenti: %s). I pagamenti restano, viene rimosso solo il loro collegamento ai record eliminati.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'A questo record sono collegati pagamenti in uscita (%s). I pagamenti restano, viene rimosso solo il loro collegamento a questo record.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'A %s dei record selezionati sono collegati pagamenti in uscita (numero di pagamenti: %s). I pagamenti restano, viene rimosso solo il loro collegamento ai record eliminati.',
     'Related To' => 'Collegato a',
     'Contact Name' => 'Nome del contatto',
     'Reference No' => 'N. documento',
     'Created' => 'Creato',
     'Waiting' => 'In attesa',
     'Pending' => 'Scaduto',
-    'Paid' => 'Ricevuto',
+    'Paid' => 'Pagato',
     'Bank Transfer' => 'Bonifico bancario',
     'Cash' => 'Contanti',
     'Credit card' => 'Carta di credito',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'Pagato',
     'LBL_BALANCE' => 'Saldo',
     'LBL_NO_PAYMENTS' => 'Nessun pagamento è stato ancora registrato per questo record.',
-    'LBL_INTEGRATION_INACTIVE' => 'I pagamenti in entrata non sono integrati in questo modulo.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integrazione dei pagamenti in entrata',
+    'LBL_INTEGRATION_INACTIVE' => 'I pagamenti in uscita non sono integrati in questo modulo.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integrazione dei pagamenti in uscita',
 ];
 
 $jsLanguageStrings = [

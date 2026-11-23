@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'Paiements entrants',
-    'SINGLE_OutgoingPayment' => 'Paiement entrant',
-    'CV_ALL' => 'Tous les paiements entrants',
-    'LBL_ADD_RECORD' => 'Ajouter un paiement entrant',
-    'LBL_RECORDS_LIST' => 'Liste des paiements entrants',
-    'Outgoing Payments' => 'Paiements entrants',
+    'OutgoingPayment' => 'Paiements sortants',
+    'SINGLE_OutgoingPayment' => 'Paiement sortant',
+    'CV_ALL' => 'Tous les paiements sortants',
+    'LBL_ADD_RECORD' => 'Ajouter un paiement sortant',
+    'LBL_RECORDS_LIST' => 'Liste des paiements sortants',
+    'Outgoing Payments' => 'Paiements sortants',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'Détails du paiement',
     'Payment Name' => 'Nom du paiement',
     'Payment No' => 'N° de paiement',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'ID de transaction',
     'Reference' => 'Document',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'Un paiement ne peut être lié qu’à un seul document.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Des paiements reçus sont liés à cet enregistrement (%s). Les paiements sont conservés, seul leur lien vers cet enregistrement est supprimé.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Des paiements reçus sont liés à %s des enregistrements sélectionnés (nombre de paiements : %s). Les paiements sont conservés, seul leur lien vers les enregistrements supprimés est supprimé.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Des paiements sortants sont liés à cet enregistrement (%s). Les paiements sont conservés, seul leur lien vers cet enregistrement est supprimé.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Des paiements sortants sont liés à %s des enregistrements sélectionnés (nombre de paiements : %s). Les paiements sont conservés, seul leur lien vers les enregistrements supprimés est supprimé.',
     'Related To' => 'Lié à',
     'Contact Name' => 'Nom du contact',
     'Reference No' => 'N° de document',
     'Created' => 'Créé',
     'Waiting' => 'En attente',
     'Pending' => 'En retard',
-    'Paid' => 'Reçu',
+    'Paid' => 'Payé',
     'Bank Transfer' => 'Virement bancaire',
     'Cash' => 'Espèces',
     'Credit card' => 'Carte de crédit',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'Payé',
     'LBL_BALANCE' => 'Solde',
     'LBL_NO_PAYMENTS' => 'Aucun paiement n\'a encore été enregistré pour cet enregistrement.',
-    'LBL_INTEGRATION_INACTIVE' => 'Les paiements entrants ne sont pas intégrés à ce module.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Intégration des paiements entrants',
+    'LBL_INTEGRATION_INACTIVE' => 'Les paiements sortants ne sont pas intégrés à ce module.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Intégration des paiements sortants',
 ];
 
 $jsLanguageStrings = [

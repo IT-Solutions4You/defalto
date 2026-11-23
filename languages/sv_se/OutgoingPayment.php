@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'Inkommande betalningar',
-    'SINGLE_OutgoingPayment' => 'Inkommande betalning',
-    'CV_ALL' => 'Alla inkommande betalningar',
-    'LBL_ADD_RECORD' => 'Lägg till inkommande betalning',
-    'LBL_RECORDS_LIST' => 'Lista över inkommande betalningar',
-    'Outgoing Payments' => 'Inkommande betalningar',
+    'OutgoingPayment' => 'Utgående betalningar',
+    'SINGLE_OutgoingPayment' => 'Utgående betalning',
+    'CV_ALL' => 'Alla utgående betalningar',
+    'LBL_ADD_RECORD' => 'Lägg till utgående betalning',
+    'LBL_RECORDS_LIST' => 'Lista över utgående betalningar',
+    'Outgoing Payments' => 'Utgående betalningar',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'Betalningsuppgifter',
     'Payment Name' => 'Betalningens namn',
     'Payment No' => 'Betalningsnummer',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'Transaktions-ID',
     'Reference' => 'Dokument',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'En betalning kan bara kopplas till ett dokument.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Inkommande betalningar är kopplade till den här posten (%s). Betalningarna finns kvar, endast deras koppling till posten tas bort.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Inkommande betalningar är kopplade till %s av de valda posterna (antal betalningar: %s). Betalningarna finns kvar, endast deras koppling till de borttagna posterna tas bort.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Utgående betalningar är kopplade till den här posten (%s). Betalningarna finns kvar, endast deras koppling till posten tas bort.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Utgående betalningar är kopplade till %s av de valda posterna (antal betalningar: %s). Betalningarna finns kvar, endast deras koppling till de borttagna posterna tas bort.',
     'Related To' => 'Relaterad till',
     'Contact Name' => 'Kontaktnamn',
     'Reference No' => 'Dokumentnummer',
     'Created' => 'Skapad',
     'Waiting' => 'Väntande',
     'Pending' => 'Förfallen',
-    'Paid' => 'Mottagen',
+    'Paid' => 'Betald',
     'Bank Transfer' => 'Banköverföring',
     'Cash' => 'Kontant',
     'Credit card' => 'Kreditkort',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'Betalt',
     'LBL_BALANCE' => 'Saldo',
     'LBL_NO_PAYMENTS' => 'Ingen betalning har registrerats för denna post ännu.',
-    'LBL_INTEGRATION_INACTIVE' => 'Inkommande betalningar är inte integrerade i denna modul.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integration av inkommande betalningar',
+    'LBL_INTEGRATION_INACTIVE' => 'Utgående betalningar är inte integrerade i denna modul.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integration av utgående betalningar',
 ];
 
 $jsLanguageStrings = [

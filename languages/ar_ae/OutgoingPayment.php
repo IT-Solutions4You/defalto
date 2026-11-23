@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'المدفوعات الواردة',
-    'SINGLE_OutgoingPayment' => 'دفعة واردة',
-    'CV_ALL' => 'جميع المدفوعات الواردة',
-    'LBL_ADD_RECORD' => 'إضافة دفعة واردة',
-    'LBL_RECORDS_LIST' => 'قائمة المدفوعات الواردة',
-    'Outgoing Payments' => 'المدفوعات الواردة',
+    'OutgoingPayment' => 'المدفوعات الصادرة',
+    'SINGLE_OutgoingPayment' => 'دفعة صادرة',
+    'CV_ALL' => 'جميع المدفوعات الصادرة',
+    'LBL_ADD_RECORD' => 'إضافة دفعة صادرة',
+    'LBL_RECORDS_LIST' => 'قائمة المدفوعات الصادرة',
+    'Outgoing Payments' => 'المدفوعات الصادرة',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'تفاصيل الدفعة',
     'Payment Name' => 'اسم الدفعة',
     'Payment No' => 'رقم الدفعة',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'معرّف المعاملة',
     'Reference' => 'المستند',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'يمكن ربط الدفعة بمستند واحد فقط.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'توجد مدفوعات واردة مرتبطة بهذا السجل (%s). ستبقى المدفوعات، وسيُزال فقط ارتباطها بهذا السجل.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'توجد مدفوعات واردة مرتبطة بـ %s من السجلات المحددة (عدد المدفوعات: %s). ستبقى المدفوعات، وسيُزال فقط ارتباطها بالسجلات المحذوفة.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'توجد مدفوعات صادرة مرتبطة بهذا السجل (%s). ستبقى المدفوعات، وسيُزال فقط ارتباطها بهذا السجل.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'توجد مدفوعات صادرة مرتبطة بـ %s من السجلات المحددة (عدد المدفوعات: %s). ستبقى المدفوعات، وسيُزال فقط ارتباطها بالسجلات المحذوفة.',
     'Related To' => 'مرتبط بـ',
     'Contact Name' => 'اسم جهة الاتصال',
     'Reference No' => 'رقم المستند',
     'Created' => 'تم الإنشاء',
     'Waiting' => 'قيد الانتظار',
     'Pending' => 'متأخرة',
-    'Paid' => 'مستلمة',
+    'Paid' => 'مدفوعة',
     'Bank Transfer' => 'تحويل بنكي',
     'Cash' => 'نقدًا',
     'Credit card' => 'بطاقة ائتمان',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'المدفوع',
     'LBL_BALANCE' => 'الرصيد',
     'LBL_NO_PAYMENTS' => 'لم يتم تسجيل أي دفعة لهذا السجل بعد.',
-    'LBL_INTEGRATION_INACTIVE' => 'المدفوعات الواردة غير مدمجة في هذه الوحدة.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'تكامل المدفوعات الواردة',
+    'LBL_INTEGRATION_INACTIVE' => 'المدفوعات الصادرة غير مدمجة في هذه الوحدة.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'تكامل المدفوعات الصادرة',
 ];
 
 $jsLanguageStrings = [

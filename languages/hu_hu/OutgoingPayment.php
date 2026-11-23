@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'Beérkező fizetések',
-    'SINGLE_OutgoingPayment' => 'Beérkező fizetés',
-    'CV_ALL' => 'Összes beérkező fizetés',
-    'LBL_ADD_RECORD' => 'Beérkező fizetés hozzáadása',
-    'LBL_RECORDS_LIST' => 'Beérkező fizetések listája',
-    'Outgoing Payments' => 'Beérkező fizetések',
+    'OutgoingPayment' => 'Kimenő fizetések',
+    'SINGLE_OutgoingPayment' => 'Kimenő fizetés',
+    'CV_ALL' => 'Összes kimenő fizetés',
+    'LBL_ADD_RECORD' => 'Kimenő fizetés hozzáadása',
+    'LBL_RECORDS_LIST' => 'Kimenő fizetések listája',
+    'Outgoing Payments' => 'Kimenő fizetések',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'Fizetés adatai',
     'Payment Name' => 'Fizetés neve',
     'Payment No' => 'Fizetés száma',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'Tranzakció azonosító',
     'Reference' => 'Bizonylat',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'Egy fizetés csak egy bizonylathoz kapcsolható.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Ehhez a rekordhoz beérkezett fizetések kapcsolódnak (%s). A fizetések megmaradnak, csak a rekordhoz fűződő kapcsolatuk törlődik.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'A kijelölt rekordok közül %s rekordhoz beérkezett fizetések kapcsolódnak (fizetések száma: %s). A fizetések megmaradnak, csak a törölt rekordokhoz fűződő kapcsolatuk törlődik.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Ehhez a rekordhoz kimenő fizetések kapcsolódnak (%s). A fizetések megmaradnak, csak a rekordhoz fűződő kapcsolatuk törlődik.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'A kijelölt rekordok közül %s rekordhoz kimenő fizetések kapcsolódnak (fizetések száma: %s). A fizetések megmaradnak, csak a törölt rekordokhoz fűződő kapcsolatuk törlődik.',
     'Related To' => 'Kapcsolódik',
     'Contact Name' => 'Kapcsolattartó neve',
     'Reference No' => 'Bizonylatszám',
     'Created' => 'Létrehozva',
     'Waiting' => 'Várakozó',
     'Pending' => 'Lejárt',
-    'Paid' => 'Beérkezett',
+    'Paid' => 'Kifizetve',
     'Bank Transfer' => 'Banki átutalás',
     'Cash' => 'Készpénz',
     'Credit card' => 'Hitelkártya',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'Fizetve',
     'LBL_BALANCE' => 'Egyenleg',
     'LBL_NO_PAYMENTS' => 'Ehhez a rekordhoz még nincs rögzített fizetés.',
-    'LBL_INTEGRATION_INACTIVE' => 'A beérkező fizetések nincsenek integrálva ebbe a modulba.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Beérkező fizetések integrációja',
+    'LBL_INTEGRATION_INACTIVE' => 'A kimenő fizetések nincsenek integrálva ebbe a modulba.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Kimenő fizetések integrációja',
 ];
 
 $jsLanguageStrings = [

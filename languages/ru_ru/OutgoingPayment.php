@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'Входящие платежи',
-    'SINGLE_OutgoingPayment' => 'Входящий платёж',
-    'CV_ALL' => 'Все входящие платежи',
-    'LBL_ADD_RECORD' => 'Добавить входящий платёж',
-    'LBL_RECORDS_LIST' => 'Список входящих платежей',
-    'Outgoing Payments' => 'Входящие платежи',
+    'OutgoingPayment' => 'Исходящие платежи',
+    'SINGLE_OutgoingPayment' => 'Исходящий платёж',
+    'CV_ALL' => 'Все исходящие платежи',
+    'LBL_ADD_RECORD' => 'Добавить исходящий платёж',
+    'LBL_RECORDS_LIST' => 'Список исходящих платежей',
+    'Outgoing Payments' => 'Исходящие платежи',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'Данные платежа',
     'Payment Name' => 'Название платежа',
     'Payment No' => 'Номер платежа',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'ID транзакции',
     'Reference' => 'Документ',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'Платёж можно связать только с одним документом.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'С этой записью связаны входящие платежи (%s). Платежи останутся, будет удалена только их связь с этой записью.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'С %s из выбранных записей связаны входящие платежи (количество платежей: %s). Платежи останутся, будет удалена только их связь с удалёнными записями.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'С этой записью связаны исходящие платежи (%s). Платежи останутся, будет удалена только их связь с этой записью.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'С %s из выбранных записей связаны исходящие платежи (количество платежей: %s). Платежи останутся, будет удалена только их связь с удалёнными записями.',
     'Related To' => 'Связано с',
     'Contact Name' => 'Имя контакта',
     'Reference No' => 'Номер документа',
     'Created' => 'Создан',
     'Waiting' => 'Ожидается',
     'Pending' => 'Просрочен',
-    'Paid' => 'Получен',
+    'Paid' => 'Оплачен',
     'Bank Transfer' => 'Банковский перевод',
     'Cash' => 'Наличные',
     'Credit card' => 'Кредитная карта',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'Оплачено',
     'LBL_BALANCE' => 'Остаток',
     'LBL_NO_PAYMENTS' => 'Для этой записи ещё не зарегистрирован ни один платёж.',
-    'LBL_INTEGRATION_INACTIVE' => 'Входящие платежи не интегрированы в этот модуль.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Интеграция входящих платежей',
+    'LBL_INTEGRATION_INACTIVE' => 'Исходящие платежи не интегрированы в этот модуль.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Интеграция исходящих платежей',
 ];
 
 $jsLanguageStrings = [

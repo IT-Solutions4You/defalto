@@ -9,12 +9,12 @@
  */
 
 $languageStrings = [
-    'OutgoingPayment' => 'Pagamentos recebidos',
-    'SINGLE_OutgoingPayment' => 'Pagamento recebido',
-    'CV_ALL' => 'Todos os pagamentos recebidos',
-    'LBL_ADD_RECORD' => 'Adicionar pagamento recebido',
-    'LBL_RECORDS_LIST' => 'Lista de pagamentos recebidos',
-    'Outgoing Payments' => 'Pagamentos recebidos',
+    'OutgoingPayment' => 'Pagamentos efetuados',
+    'SINGLE_OutgoingPayment' => 'Pagamento efetuado',
+    'CV_ALL' => 'Todos os pagamentos efetuados',
+    'LBL_ADD_RECORD' => 'Adicionar pagamento efetuado',
+    'LBL_RECORDS_LIST' => 'Lista de pagamentos efetuados',
+    'Outgoing Payments' => 'Pagamentos efetuados',
     'LBL_OUTGOING_PAYMENT_INFORMATION' => 'Detalhes do pagamento',
     'Payment Name' => 'Nome do pagamento',
     'Payment No' => 'Nº do pagamento',
@@ -28,15 +28,15 @@ $languageStrings = [
     'Transaction ID' => 'ID da transação',
     'Reference' => 'Documento',
     'LBL_ONE_DOCUMENT_PER_PAYMENT' => 'Um pagamento pode ser vinculado a apenas um documento.',
-    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Há pagamentos recebidos vinculados a este registro (%s). Os pagamentos permanecem, apenas o vínculo com este registro é removido.',
-    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Há pagamentos recebidos vinculados a %s dos registros selecionados (número de pagamentos: %s). Os pagamentos permanecem, apenas o vínculo com os registros excluídos é removido.',
+    'LBL_DELETE_DOCUMENT_WITH_PAYMENTS' => 'Há pagamentos efetuados vinculados a este registro (%s). Os pagamentos permanecem, apenas o vínculo com este registro é removido.',
+    'LBL_DELETE_DOCUMENTS_WITH_PAYMENTS' => 'Há pagamentos efetuados vinculados a %s dos registros selecionados (número de pagamentos: %s). Os pagamentos permanecem, apenas o vínculo com os registros excluídos é removido.',
     'Related To' => 'Relacionado a',
     'Contact Name' => 'Nome do contato',
     'Reference No' => 'Nº do documento',
     'Created' => 'Criado',
     'Waiting' => 'Aguardando',
     'Pending' => 'Vencido',
-    'Paid' => 'Recebido',
+    'Paid' => 'Pago',
     'Bank Transfer' => 'Transferência bancária',
     'Cash' => 'Dinheiro',
     'Credit card' => 'Cartão de crédito',
@@ -48,8 +48,8 @@ $languageStrings = [
     'LBL_PAID_AMOUNT' => 'Pago',
     'LBL_BALANCE' => 'Saldo',
     'LBL_NO_PAYMENTS' => 'Nenhum pagamento foi registrado para este registro ainda.',
-    'LBL_INTEGRATION_INACTIVE' => 'Os pagamentos recebidos não estão integrados a este módulo.',
-    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integração de pagamentos recebidos',
+    'LBL_INTEGRATION_INACTIVE' => 'Os pagamentos efetuados não estão integrados a este módulo.',
+    'LBL_OUTGOING_PAYMENT_INTEGRATION' => 'Integração de pagamentos efetuados',
 ];
 
 $jsLanguageStrings = [
