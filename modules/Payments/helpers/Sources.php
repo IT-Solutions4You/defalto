@@ -16,8 +16,8 @@
 class Payments_Sources_Helper
 {
     public const MODULE = 'Payments';
-    public const INCOMING = 'Incoming';
-    public const OUTGOING = 'Outgoing';
+    public const INCOMING = Core_PaymentConfig_Helper::DIRECTION_INCOMING;
+    public const OUTGOING = Core_PaymentConfig_Helper::DIRECTION_OUTGOING;
     public const CONDITION_WITH_DOCUMENT = 'with_document';
     public const CONDITION_WITHOUT_DOCUMENT = 'without_document';
 
@@ -32,6 +32,7 @@ class Payments_Sources_Helper
      * Default columns of the All filter.
      */
     public const LIST_FIELDS = [
+        'payment_direction',
         'payment_no',
         'payment_name',
         'payment_amount',

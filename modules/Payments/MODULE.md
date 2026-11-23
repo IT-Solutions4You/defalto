@@ -10,6 +10,10 @@ Payments is one list of the records of all payment modules (IncomingPayment, lat
 - `modules/Payments/models/SourceQuery.php`: `Payments_SourceQuery_Model` (a `Core_QueryGenerator_Model` of the payment module) applies the Payments filter, the list search, the source condition and the permissions of its module. It returns the union part (record id + sort value) through the projection columns of `Core_QueryGenerator_Model`.
 - `modules/Payments/models/QueryGenerator.php`: `Payments_QueryGenerator_Model` is the generator `Vtiger_ListView_Model::getQueryGeneratorForModule()` creates for Payments. It is built on the primary payment module and remembers the Payments filter id.
 - `modules/Payments/models/Module.php`: `Payments_Module_Model` returns the blocks of the primary payment module and the fields of all payment modules (a shared field once). The filter editor, the column choice and the list search therefore offer payment fields.
+- `modules/Payments/views/Widget.php`: `Payments_Widget_View::showPayments` is the common payments widget on documents (template `PaymentsWidget.tpl`, add buttons `SummaryWidgetHeaderActions.tpl`). Its registration and data are in Core (`Core_PaymentWidget_Model`, `Core_PaymentWidgetSummary_Helper`, see `modules/Core/MODULE.md`, Payments base).
+- `modules/Payments/actions/MassDelete.php`: `Payments_MassDelete_Action` deletes each selected payment in its own module (`Delete` permission per record, skipped records in the message). It requires only access to Payments, because Payments itself has no Delete permission.
+- `modules/Payments/actions/ExportData.php` and `models/SourceExport.php`: the export takes the rows from the union in list order (all rows of the filter without the list search, the current page, or the selection), lets `Payments_SourceExport_Model` (a `Vtiger_ExportData_Action` that keeps the result instead of sending it) export the records of each payment module with the core field choice and formatting, and joins the columns by field name. A field only one module has is empty in the other rows.
+- `Payments_ListView_Model::getInstanceForRequest()` and `getSelectedRows()` give mass actions and the export the same filter, search and order as the list; `selected_ids = all` takes every row of the union except `excluded_ids`.
 - `modules/Payments/helpers/WebserviceOperation.php`: the webservice handler of Payments, registered in `vtiger_ws_entity` by the install model. Core code (for example `new CustomView('Payments')` in `CustomView_Record_Model::getSavedConditionCount()`) loads the webservice metadata of the list module. The handler returns the metadata of the primary payment module and refuses every write operation.
 
 ## Data flow of the list
@@ -23,8 +27,12 @@ Payments is one list of the records of all payment modules (IncomingPayment, lat
 - The install model keeps exactly one `vtiger_ws_entity` row: `vtws_addDefaultModuleTypeEntity()` adds a default row on every install/update, and `updateWebserviceHandler()` removes duplicates. `deleteModule()` removes the row, because the core leaves it behind.
 - Filters of Payments are stored with `entitytype = 'Payments'` and columns of the payment module fields.
 
-## Not done yet (phase 0)
-Export, mass delete, a direction column, translations other than en_us and sk_sk, a merged block list for several modules. Global search does not include Payments, because it lists only entity modules.
+## Install
+- `addCustomLinks()` registers the common widget on the documents and hides the payment modules in the menu once; `deleteCustomLinks()` gives the documents back the widgets of the payment modules and, except on an update, shows the payment modules in the menu again (`Core_PaymentMenu_Model`). `deleteModule()` runs it before the core drops the module.
+- The default All filter starts with the direction (`Payments_Sources_Helper::LIST_FIELDS`); an update does not change an existing filter.
+
+## Not done yet
+A merged block list for several modules. A dedicated message when no payment module is active (the list shows the standard empty list). Global search does not include Payments, because it lists only entity modules.
 
 ## Validation
 - `php -l` on touched files; `check_change.py` signature check.

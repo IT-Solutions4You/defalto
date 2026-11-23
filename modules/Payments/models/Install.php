@@ -17,14 +17,18 @@ class Payments_Install_Model extends Core_Install_Model
     public bool $requireInstallTables = false;
 
     /**
-     * Registers the module links; Payments needs only to stay an installable custom module.
+     * Registers the module links: Payments stays an installable custom module, the documents get the common
+     * payments widget and the payment modules are hidden in the menu (once).
      *
      * @return void
+     * @throws Exception
      */
     public function addCustomLinks(): void
     {
         $this->updateToCustomModule();
         $this->updateWebserviceHandler();
+        Core_PaymentWidget_Model::getInstance()->updateDocumentWidgets();
+        Core_PaymentMenu_Model::getInstance()->hideModules();
     }
 
     /**
@@ -71,24 +75,33 @@ class Payments_Install_Model extends Core_Install_Model
     }
 
     /**
-     * Removes the webservice entity, which the core leaves behind, before the core drops the module.
+     * Removes the common widget and the menu change, and the webservice entity, which the core leaves behind,
+     * before the core drops the module.
      *
      * @return void
      * @throws Exception
      */
     public function deleteModule(): void
     {
+        $this->deleteCustomLinks();
         $this->db->pquery('DELETE FROM vtiger_ws_entity WHERE name = ?', [$this->moduleName]);
         parent::deleteModule();
     }
 
     /**
-     * Payments registers no links, handlers or widgets, so there is nothing to remove.
+     * Gives the documents back the widgets of the payment modules. When Payments is disabled or uninstalled,
+     * the payment modules are shown in the menu again; an update keeps the menu as it is.
      *
      * @return void
+     * @throws Exception
      */
     public function deleteCustomLinks(): void
     {
+        Core_PaymentWidget_Model::getInstance()->updateDocumentWidgets([$this->moduleName]);
+
+        if ('module.preupdate' !== $this->eventType) {
+            Core_PaymentMenu_Model::getInstance()->showModules();
+        }
     }
 
     /**

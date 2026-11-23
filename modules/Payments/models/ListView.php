@@ -100,14 +100,77 @@ class Payments_ListView_Model extends Vtiger_ListView_Model
     }
 
     /**
-     * Payments offers no mass actions yet; editing and deleting happen in the payment modules.
+     * Returns the mass actions of Payments: delete, when the user may delete in at least one payment module.
+     * Payments_MassDelete_Action deletes each payment in its own module; editing happens in the payment modules.
      *
      * @param array $linkParams Link parameters
      * @return array
      */
     public function getListViewMassActions($linkParams)
     {
-        return ['LISTVIEWMASSACTION' => []];
+        $links = ['LISTVIEWMASSACTION' => []];
+
+        foreach (Payments_Sources_Helper::getAccessibleSources() as $source) {
+            if (Users_Privileges_Model::isPermitted($source['module'], 'Delete')) {
+                $links['LISTVIEWMASSACTION'][] = Vtiger_Link_Model::getInstanceFromValues([
+                    'linktype' => 'LISTVIEWMASSACTION',
+                    'linklabel' => 'LBL_DELETE',
+                    'linkurl' => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module=' . $this->getModule()->getName() . '&action=MassDelete");',
+                    'linkicon' => '',
+                ]);
+                break;
+            }
+        }
+
+        return $links;
+    }
+
+    /**
+     * Creates the list of a mass action or an export request: its filter, list search, simple search and ordering.
+     *
+     * @param Vtiger_Request $request Request with viewname, search_params, search_key, search_value, operator,
+     *                                orderby and sortorder
+     * @return self
+     */
+    public static function getInstanceForRequest(Vtiger_Request $request): self
+    {
+        $moduleName = Payments_Sources_Helper::MODULE;
+        /** @var self $listViewModel */
+        $listViewModel = Vtiger_ListView_Model::getInstance($moduleName, (int)$request->get('viewname'));
+        $searchParams = $request->get('search_params');
+        $searchParams = is_array($searchParams) ? $searchParams : [];
+        $tagParams = $request->get('tag_params');
+        $searchParams = array_merge($searchParams, is_array($tagParams) ? $tagParams : []);
+
+        return $listViewModel
+            ->set('search_params', Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($searchParams, $listViewModel->getModule()))
+            ->set('search_key', (string)$request->get('search_key'))
+            ->set('search_value', (string)$request->get('search_value'))
+            ->set('operator', (string)$request->get('operator'))
+            ->set('orderby', (string)$request->get('orderby'))
+            ->set('sortorder', (string)$request->get('sortorder'));
+    }
+
+    /**
+     * Returns the rows a mass action or an export of selected records applies to, in list order: the selected
+     * records, or with selected_ids = all every record of the list except the excluded ones.
+     *
+     * @param Vtiger_Request $request Mass action request
+     * @return array<int, array{source: string, id: int}>
+     */
+    public function getSelectedRows(Vtiger_Request $request): array
+    {
+        $selectedIds = $request->get('selected_ids');
+        $excludedIds = array_map('intval', (array)($request->get('excluded_ids') ?: []));
+        $rows = $this->getUnionQuery()->getAllRows();
+
+        if ('all' === $selectedIds) {
+            return array_values(array_filter($rows, static fn(array $row): bool => !in_array($row['id'], $excludedIds, true)));
+        }
+
+        $selectedIds = array_map('intval', (array)($selectedIds ?: []));
+
+        return array_values(array_filter($rows, static fn(array $row): bool => in_array($row['id'], $selectedIds, true)));
     }
 
     /**

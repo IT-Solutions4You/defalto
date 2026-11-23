@@ -84,6 +84,18 @@ class Payments_UnionQuery_Model extends Vtiger_Base_Model
     }
 
     /**
+     * Returns all rows of the union in list order, for exports and mass actions.
+     *
+     * @return array<int, array{source: string, id: int}>
+     */
+    public function getAllRows(): array
+    {
+        $count = $this->getCount();
+
+        return $count ? $this->getPageRows(0, $count) : [];
+    }
+
+    /**
      * Returns the number of payments matching the filter and the search in all sources.
      *
      * @return int
