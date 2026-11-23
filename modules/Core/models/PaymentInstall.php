@@ -168,6 +168,11 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
      */
     public function deleteModule(): void
     {
+        // deleteCustomLinks() removes comments and history; install() loads their classes, this path does not
+        require_once 'vtlib/Vtiger/Cron.php';
+        require_once 'modules/ModComments/ModComments.php';
+        require_once 'modules/ModTracker/ModTracker.php';
+
         $this->updateSummaryWidgets(false);
         $this->deleteCustomLinks();
         $this->isKeepingSharedPicklists = true;
