@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Očekáváno',
     'LBL_ADD_REFUND' => 'Přidat vratku',
     'LBL_REFUND' => 'Vratka',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Platby z',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Platby se přestanou započítávat i do dokladů z něj vystavených (%s).',
 ];
 
 $jsLanguageStrings = [

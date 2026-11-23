@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Previsto',
     'LBL_ADD_REFUND' => 'Adicionar reembolso',
     'LBL_REFUND' => 'Reembolso',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Pagamentos de',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Os pagamentos também deixarão de contar nos documentos criados a partir dele (%s).',
 ];
 
 $jsLanguageStrings = [

@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Ожидается',
     'LBL_ADD_REFUND' => 'Добавить возврат',
     'LBL_REFUND' => 'Возврат',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Платежи по',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Платежи также перестанут учитываться в документах, созданных на его основе (%s).',
 ];
 
 $jsLanguageStrings = [

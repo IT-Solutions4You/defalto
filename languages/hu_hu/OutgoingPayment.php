@@ -56,6 +56,8 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Várható',
     'LBL_ADD_REFUND' => 'Visszatérítés hozzáadása',
     'LBL_REFUND' => 'Visszatérítés',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Fizetések innen:',
+    'LBL_DELETE_SOURCE_WITH_TARGETS' => 'A fizetések a belőle létrehozott bizonylatokon sem számítanak többé (%s).',
 ];
 
 $jsLanguageStrings = [
