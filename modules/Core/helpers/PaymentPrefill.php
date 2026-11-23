@@ -50,18 +50,20 @@ class Core_PaymentPrefill_Helper
         }
 
         $config = $paymentConfig->getIntegrationModel()->retrieveByModule($sourceModule);
+        $isRefund = $paymentConfig->isRefundFor($sourceModule);
         $recordModel = Vtiger_Record_Model::getInstanceById($sourceRecord, $sourceModule);
         $moduleModel = $recordModel->getModule();
+        $namePrefix = $isRefund
+            ? vtranslate(Core_PaymentConfig_Helper::LBL_REFUND, $paymentConfig::MODULE)
+            : vtranslate('SINGLE_' . $paymentConfig::MODULE, $paymentConfig::MODULE);
         $values = [
             Core_PaymentConfig_Helper::FIELD_RELATION => $sourceRecord,
-            'payment_name' => trim(vtranslate('SINGLE_' . $paymentConfig::MODULE, $paymentConfig::MODULE) . ' ' . Core_PaymentValues_Helper::getRecordNumber($recordModel)),
+            'payment_name' => trim($namePrefix . ' ' . Core_PaymentValues_Helper::getRecordNumber($recordModel)),
         ];
-        $total = self::getFieldAmount($recordModel, (string)($config['total_field'] ?? ''));
-        $paid = self::getFieldAmount($recordModel, (string)($config['paid_field'] ?? ''));
-        $openAmount = max(0.0, $total - $paid);
+        $amount = self::getPrefillAmount($recordModel, $isRefund);
 
-        if ($openAmount > 0) {
-            $values[Core_PaymentConfig_Helper::FIELD_AMOUNT] = Core_PaymentCalculation_Helper::formatEditAmount($openAmount);
+        if ($amount > Core_PaymentCalculation_Helper::EPSILON) {
+            $values[Core_PaymentConfig_Helper::FIELD_AMOUNT] = Core_PaymentCalculation_Helper::formatEditAmount($amount);
         }
 
         if ($moduleModel->getField('currency_id') && (int)$recordModel->get('currency_id') > 0) {
@@ -85,6 +87,37 @@ class Core_PaymentPrefill_Helper
         }
 
         return $values;
+    }
+
+    /**
+     * Returns the amount a new payment of the document is prefilled with, in the document currency, as Cashflow
+     * does: for a payment the total minus all payments and plus all refunds regardless of their status, so waiting
+     * payments are not asked for twice; for a refund the paid amount (received payments minus received refunds).
+     * The paying module provides the total field. The result may be zero or negative; then nothing is prefilled.
+     *
+     * @param Vtiger_Record_Model $recordModel Document record
+     * @param bool                $isRefund    true for a refund, false for a payment
+     * @return float
+     * @throws Exception
+     */
+    private static function getPrefillAmount(Vtiger_Record_Model $recordModel, bool $isRefund): float
+    {
+        $documentModule = $recordModel->getModuleName();
+        $payingModule = Core_PaymentDocumentBalance_Model::getPayingModule($documentModule);
+
+        if ($payingModule === '') {
+            return 0.0;
+        }
+
+        $balanceModel = Core_PaymentDocumentBalance_Model::getInstance();
+
+        if ($isRefund) {
+            return $balanceModel->getNetAmount($recordModel, true);
+        }
+
+        $config = Core_PaymentConfig_Helper::getInstance($payingModule)->getIntegrationModel()->retrieveByModule($documentModule);
+
+        return self::getFieldAmount($recordModel, (string)($config['total_field'] ?? '')) - $balanceModel->getNetAmount($recordModel, false);
     }
 
     /**

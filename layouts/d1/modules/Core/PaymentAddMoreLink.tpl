@@ -13,7 +13,7 @@
         <li id="{$MODULE_NAME}_detailView_moreAction_Add{$PAYMENT_MODULE}">
             <a class="dropdown-item text-secondary" href="{Core_PaymentWidgetSummary_Helper::getAddUrl($PAYMENT_MODULE, $MODULE_NAME, $RECORD->getId())}&app={$SELECTED_MENU_CATEGORY}">
                 <i class="{$PAYMENT_CONFIG->getIcon()}"></i>
-                <span class="ms-2">{vtranslate($PAYMENT_CONFIG->getAddLinkLabel(), $PAYMENT_MODULE)}</span>
+                <span class="ms-2">{vtranslate($PAYMENT_CONFIG->getAddLinkLabel($MODULE_NAME), $PAYMENT_MODULE)}</span>
             </a>
         </li>
     {/if}

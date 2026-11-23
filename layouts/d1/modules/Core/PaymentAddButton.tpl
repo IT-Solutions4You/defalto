@@ -14,7 +14,7 @@
            href="{Core_PaymentWidgetSummary_Helper::getAddUrl($PAYMENT_MODULE, $MODULE_NAME, $RECORD->getId())}"
            onclick="const quickCreate = jQuery('#quickCreateModules [data-name={$PAYMENT_MODULE}]'); if (quickCreate.length) { event.preventDefault(); quickCreate.trigger('click', { data: { reference_id: {$RECORD->getId()} }, noCache: false, callbackFunction: function () { window.onbeforeunload = null; window.location.reload(); } }); }">
             <i class="{$PAYMENT_CONFIG->getIcon()}"></i>
-            <span class="ms-2">{vtranslate($PAYMENT_CONFIG->getAddLinkLabel(), $PAYMENT_MODULE)}</span>
+            <span class="ms-2">{vtranslate($PAYMENT_CONFIG->getAddLinkLabel($MODULE_NAME), $PAYMENT_MODULE)}</span>
         </a>
     {/if}
 {/strip}

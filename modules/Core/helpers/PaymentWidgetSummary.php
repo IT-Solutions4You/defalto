@@ -33,8 +33,8 @@ class Core_PaymentWidgetSummary_Helper
 
     /**
      * Returns the payments of a document in the given payment modules, newest payment date first, and the totals:
-     * total, paid and balance from the document fields, expected as the sum of the payments not received yet.
-     * Payments the current user may not see are left out; the totals still count them.
+     * total, paid and balance from the document fields of the paying module, expected as the payments minus the
+     * refunds not received yet. Payments the current user may not see are left out; the totals still count them.
      *
      * @param string[] $paymentModules Payment module names
      * @param string   $sourceModule   Document module name
@@ -59,23 +59,22 @@ class Core_PaymentWidgetSummary_Helper
 
         $recordModel = Vtiger_Record_Model::getInstanceById($sourceRecord, $sourceModule);
         $currencyId = (int)$recordModel->get('currency_id');
-        $amountFields = [];
-        $expected = 0.0;
+        $payingModule = Core_PaymentDocumentBalance_Model::getPayingModule($sourceModule);
+        $amountFields = $payingModule !== ''
+            ? Core_PaymentConfig_Helper::getInstance($payingModule)->getIntegrationModel()->retrieveByModule($sourceModule)
+            : [];
 
         foreach (array_intersect(Core_PaymentConfig_Helper::getActiveModules(), $paymentModules) as $paymentModule) {
             $paymentConfig = Core_PaymentConfig_Helper::getInstance($paymentModule);
-            $syncModel = $paymentConfig->getDocumentSyncModel();
-            array_push($summary['payments'], ...self::getPayments($paymentConfig, $sourceRecord));
-            $integration = $paymentConfig->getIntegrationModel();
+            array_push($summary['payments'], ...self::getPayments($paymentConfig, $sourceModule, $sourceRecord));
 
-            if (!$integration->isActive($sourceModule)) {
-                continue;
+            if ($paymentConfig->getIntegrationModel()->isActive($sourceModule)) {
+                $summary['isIntegrated'] = true;
             }
-
-            $summary['isIntegrated'] = true;
-            $amountFields = $amountFields ?: $integration->retrieveByModule($sourceModule);
-            $expected += $syncModel->sumOpenAmount($sourceRecord, $currencyId, $syncModel->getDocumentRate($recordModel));
         }
+
+        // Payments minus refunds not received yet, in the document currency
+        $expected = $summary['isIntegrated'] ? Core_PaymentDocumentBalance_Model::getInstance()->getOpenNetAmount($recordModel) : 0.0;
 
         usort($summary['payments'], static function (array $first, array $second): int {
             return [$second['sortDate'], $second['id']] <=> [$first['sortDate'], $first['id']];
@@ -103,7 +102,7 @@ class Core_PaymentWidgetSummary_Helper
     }
 
     /**
-     * Returns the active payment modules with an active integration on a document module.
+     * Returns the active payment modules with an active integration on a document module, the paying module first.
      *
      * @param string $sourceModule Document module name
      * @return string[]
@@ -111,21 +110,29 @@ class Core_PaymentWidgetSummary_Helper
      */
     public static function getIntegratedModules(string $sourceModule): array
     {
-        $modules = [];
+        $payingModules = $refundModules = [];
 
         foreach (Core_PaymentConfig_Helper::getActiveModules() as $paymentModule) {
-            if (Core_PaymentConfig_Helper::getInstance($paymentModule)->getIntegrationModel()->isActive($sourceModule)) {
-                $modules[] = $paymentModule;
+            $paymentConfig = Core_PaymentConfig_Helper::getInstance($paymentModule);
+
+            if (!$paymentConfig->getIntegrationModel()->isActive($sourceModule)) {
+                continue;
+            }
+
+            if ($paymentConfig->isRefundFor($sourceModule)) {
+                $refundModules[] = $paymentModule;
+            } else {
+                $payingModules[] = $paymentModule;
             }
         }
 
-        return $modules;
+        return array_merge($payingModules, $refundModules);
     }
 
     /**
      * Returns the add buttons of the common payments widget: one per payment module integrated on the document
-     * in which the current user may create payments. The label names the direction (LBL_ADD_INCOMING_PAYMENT,
-     * LBL_ADD_OUTGOING_PAYMENT) and is translated in the Payments language file.
+     * in which the current user may create payments, the paying module first. The label tells a payment from
+     * a refund (LBL_ADD_PAYMENT, LBL_ADD_REFUND) and is translated in the Payments language file.
      *
      * @param string $sourceModule Document module name
      * @param int    $sourceRecord Document record id
@@ -144,7 +151,7 @@ class Core_PaymentWidgetSummary_Helper
             $paymentConfig = Core_PaymentConfig_Helper::getInstance($paymentModule);
             $links[] = [
                 'module' => $paymentModule,
-                'label' => 'LBL_ADD_' . strtoupper($paymentConfig::DIRECTION) . '_PAYMENT',
+                'label' => $paymentConfig->isRefundFor($sourceModule) ? Core_PaymentConfig_Helper::LBL_ADD_REFUND : 'LBL_ADD_PAYMENT',
                 'icon' => $paymentConfig->getIcon(),
                 'url' => self::getAddUrl($paymentModule, $sourceModule, $sourceRecord),
             ];
@@ -171,13 +178,15 @@ class Core_PaymentWidgetSummary_Helper
      * Returns the payments of one payment module applied to a document that the current user may see.
      *
      * @param Core_PaymentConfig_Helper $paymentConfig Configuration of the payment module
+     * @param string                    $sourceModule  Document module name
      * @param int                       $sourceRecord  Document record id
      * @return array<int, array>
      * @throws Exception
      */
-    protected static function getPayments(Core_PaymentConfig_Helper $paymentConfig, int $sourceRecord): array
+    protected static function getPayments(Core_PaymentConfig_Helper $paymentConfig, string $sourceModule, int $sourceRecord): array
     {
         $paymentModule = $paymentConfig::MODULE;
+        $isRefund = $paymentConfig->isRefundFor($sourceModule);
         $payments = [];
 
         foreach ($paymentConfig->getDocumentSyncModel()->fetchDocumentPayments($sourceRecord) as $row) {
@@ -192,6 +201,7 @@ class Core_PaymentWidgetSummary_Helper
                 'module' => $paymentModule,
                 'direction' => $paymentConfig::DIRECTION,
                 'isIncoming' => Core_PaymentConfig_Helper::DIRECTION_INCOMING === $paymentConfig::DIRECTION,
+                'isRefund' => $isRefund,
                 'number' => (string)$row['payment_no'],
                 'name' => (string)$row['payment_name'],
                 'sortDate' => (string)$row['payment_date'],

@@ -21,6 +21,12 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
      */
     protected bool $isKeepingSharedPicklists = false;
 
+    /**
+     * True after installTables() added the refund column to an existing integration table; postInstall() then
+     * recalculates the documents with payments, because their paid amount becomes the net amount.
+     */
+    protected bool $isRefundColumnAdded = false;
+
     public array $blocksHeaderFields = ['payment_status', 'payment_amount', 'payment_date', 'reference_id'];
     public array $blocksSummaryFields = [
         'payment_no',
@@ -185,6 +191,7 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
      * Registers the module's own summary widgets again after the module cache was cleared.
      * On the first install the default widgets registered by install() were missing,
      * because they depend on the module state cached earlier in the same request.
+     * After the refund column was added, the documents with payments are recalculated to the net paid amount.
      *
      * @return void
      * @throws Exception
@@ -193,6 +200,10 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
     {
         parent::postInstall();
         $this->updateSummaryWidgets();
+
+        if ($this->isRefundColumnAdded) {
+            $this->getConfig()->getDocumentSyncModel()->recalculateAllDocuments();
+        }
     }
 
     /**
@@ -613,6 +624,8 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
             ->createTable($index)
             ->createKey('PRIMARY KEY IF NOT EXISTS (`' . $index . '`)');
 
+        $isRefundColumnMissing = Vtiger_Utils::CheckTable($config::TABLE_INTEGRATION)
+            && !in_array($config::INTEGRATION_REFUND, (array)$this->db->getColumnNames($config::TABLE_INTEGRATION), true);
         $this->getTable($config::TABLE_INTEGRATION, 'id')
             ->createTable()
             ->createColumn('module', 'varchar(100) NOT NULL')
@@ -624,7 +637,12 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
             ->createColumn('total_field', 'varchar(100) DEFAULT NULL')
             ->createColumn('paid_field', 'varchar(100) DEFAULT NULL')
             ->createColumn('balance_field', 'varchar(100) DEFAULT NULL')
+            ->createColumn($config::INTEGRATION_REFUND, 'tinyint(1) NOT NULL DEFAULT 0')
             ->createKey('UNIQUE KEY IF NOT EXISTS `' . $config::TABLE_INTEGRATION . '_module` (`module`)');
+
+        if ($isRefundColumnMissing) {
+            $this->migrateRefundDefaults();
+        }
 
         $this->getTable($config::TABLE_ASSOCIATED, 'id')
             ->createTable()
@@ -639,6 +657,33 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
             ->createColumn('name', 'varchar(100) NOT NULL')
             ->createColumn('value', 'text DEFAULT NULL')
             ->createKey('UNIQUE KEY IF NOT EXISTS `' . $config::TABLE_SETTING . '_name` (`name`)');
+    }
+
+    /**
+     * Sets the default refund role of the stored integration rows once, when the refund column was added:
+     * payments of the direction that does not pay a document module are refunds of it.
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function migrateRefundDefaults(): void
+    {
+        $config = $this->getConfig();
+        $result = $this->db->pquery('SELECT id, module FROM ' . $config::TABLE_INTEGRATION, []);
+
+        while ($row = $this->db->fetchByAssoc($result)) {
+            $moduleModel = Vtiger_Module_Model::getInstance((string)$row['module']);
+
+            if ($moduleModel) {
+                $this->db->pquery(
+                    'UPDATE ' . $config::TABLE_INTEGRATION . ' SET ' . $config::INTEGRATION_REFUND . ' = ? WHERE id = ?',
+                    [Core_PaymentIntegrationFields_Helper::getDefaultRefund($config, $moduleModel), (int)$row['id']]
+                );
+            }
+        }
+
+        $config->getIntegrationModel()->clearCache();
+        $this->isRefundColumnAdded = true;
     }
 
     /**

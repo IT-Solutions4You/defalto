@@ -38,7 +38,9 @@ abstract class Settings_Core_PaymentIntegrationSave_Action extends Settings_Vtig
 
     /**
      * Stores the submitted integration configuration and the underpayment threshold, re-registers the document
-     * module integrations and recalculates the documents with payments when the threshold changed.
+     * module integrations and recalculates the documents with payments when the threshold, an integration or
+     * a refund role changed.
+     * A document module may be paid by one payment module only (validatePayingModules()).
      *
      * @param Vtiger_Request $request
      * @return void
@@ -49,22 +51,75 @@ abstract class Settings_Core_PaymentIntegrationSave_Action extends Settings_Vtig
         $config = $this->getConfig();
         $threshold = $this->getUnderpaymentThreshold($request);
         $integration = $request->get('integration');
+        $integration = is_array($integration) ? $integration : [];
+        $this->validatePayingModules($request, $integration);
         $installModel = Core_Install_Model::getInstance('module.postupdate', $config::MODULE);
+        $previousRoles = $this->getIntegrationRoles();
         // The old configuration is removed first, so a changed paid field of a document becomes editable again.
         $installModel->updateIntegrations(false);
-        $config->getIntegrationModel()->saveFromRequest(is_array($integration) ? $integration : []);
+        $config->getIntegrationModel()->saveFromRequest($integration);
         $installModel->updateIntegrations();
 
         $settingModel = $config->getSettingModel();
+        $isRecalculationNeeded = $previousRoles !== $this->getIntegrationRoles();
 
         if (!Core_PaymentCalculation_Helper::isSameAmount($settingModel->getUnderpaymentThreshold(), $threshold)) {
             $settingModel->saveUnderpaymentThreshold($threshold);
+            $isRecalculationNeeded = true;
+        }
+
+        if ($isRecalculationNeeded) {
             $config->getDocumentSyncModel()->recalculateAllDocuments();
         }
 
         $response = new Vtiger_Response();
         $response->setResult(['success' => true]);
         $response->emit();
+    }
+
+    /**
+     * Returns the active and refund flags of every document module, to detect a change that alters the paid amounts.
+     *
+     * @return array [module => [active, is_refund]]
+     */
+    private function getIntegrationRoles(): array
+    {
+        $roles = [];
+
+        foreach ($this->getConfig()->getIntegrationModel()->retrieveAll() as $module => $row) {
+            $roles[$module] = [(int)$row['active'], (int)$row[Core_PaymentConfig_Helper::INTEGRATION_REFUND]];
+        }
+
+        return $roles;
+    }
+
+    /**
+     * Refuses a configuration in which a document module would be paid by this payment module and by another one:
+     * a document has one paying module, the payments of the others are refunds.
+     *
+     * @param Vtiger_Request $request     Save request
+     * @param array          $integration Submitted configuration [module => values]
+     * @return void
+     * @throws Exception
+     */
+    private function validatePayingModules(Vtiger_Request $request, array $integration): void
+    {
+        $config = $this->getConfig();
+        $conflicts = [];
+
+        foreach ($integration as $module => $values) {
+            if (!is_array($values) || empty($values['active']) || !empty($values[Core_PaymentConfig_Helper::INTEGRATION_REFUND])) {
+                continue;
+            }
+
+            if ('' !== Core_PaymentDocumentBalance_Model::getPayingModule((string)$module, [$config::MODULE])) {
+                $conflicts[] = vtranslate((string)$module, (string)$module);
+            }
+        }
+
+        if ($conflicts) {
+            throw new Exception(sprintf(vtranslate('LBL_TWO_PAYING_MODULES', $request->getModule(false)), implode(', ', $conflicts)));
+        }
     }
 
     /**

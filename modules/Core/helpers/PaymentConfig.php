@@ -108,6 +108,14 @@ class Core_PaymentConfig_Helper
     public const STATUS_PENDING = 'Pending';
     public const STATUS_PAID = 'Paid';
 
+    /**
+     * Integration column telling that the payments of the module are refunds of the document module: they are
+     * subtracted from the paid amount the opposite payment module writes (Core_PaymentDocumentBalance_Model).
+     */
+    public const INTEGRATION_REFUND = 'is_refund';
+    public const LBL_ADD_REFUND = 'LBL_ADD_REFUND';
+    public const LBL_REFUND = 'LBL_REFUND';
+
     public const RELATED_DOCUMENTS_FUNCTION = 'get_associated_documents';
     public const DELETE_WARNINGS_MODIFIABLE = 'DeleteWarningsAction';
 
@@ -244,13 +252,28 @@ class Core_PaymentConfig_Helper
     }
 
     /**
-     * Returns the label of the Add Payment button on a document, translated by the payment module.
+     * Returns the label of the Add Payment button on a document, translated by the payment module: Add Refund
+     * when the payments of this module are refunds of the document module.
      *
+     * @param string $documentModule Document module name; empty for the plain Add Payment label
      * @return string
+     * @throws Exception
      */
-    public function getAddLinkLabel(): string
+    public function getAddLinkLabel(string $documentModule = ''): string
     {
-        return static::ADD_LINK_LABEL;
+        return $documentModule !== '' && $this->isRefundFor($documentModule) ? self::LBL_ADD_REFUND : static::ADD_LINK_LABEL;
+    }
+
+    /**
+     * Tells whether the payments of this module are refunds of a document module (integration column is_refund).
+     *
+     * @param string $documentModule Document module name
+     * @return bool
+     * @throws Exception
+     */
+    public function isRefundFor(string $documentModule): bool
+    {
+        return 1 === (int)($this->getIntegrationModel()->retrieveByModule($documentModule)[self::INTEGRATION_REFUND] ?? 0);
     }
 
     /**

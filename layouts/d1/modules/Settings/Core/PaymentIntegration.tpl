@@ -35,6 +35,7 @@
                                     <tr>
                                         <th>{vtranslate('LBL_MODULE', $QUALIFIED_MODULE)}</th>
                                         <th class="text-center">{vtranslate('LBL_ACTIVE', $QUALIFIED_MODULE)}</th>
+                                        <th class="text-center" title="{vtranslate('LBL_REFUND_HELP', $QUALIFIED_MODULE)|escape}">{vtranslate('LBL_REFUND', $QUALIFIED_MODULE)}</th>
                                         <th>{vtranslate('LBL_STATUS_FIELD', $QUALIFIED_MODULE)}</th>
                                         <th>{vtranslate('LBL_STATUS_VALUE', $QUALIFIED_MODULE)}</th>
                                         <th>{vtranslate('LBL_STATUS_VALUE_BACK', $QUALIFIED_MODULE)}</th>
@@ -52,12 +53,19 @@
                                         {if isset($ROW.picklists[$ROW_CONFIG.status_field])}
                                             {assign var=ROW_STATUS_VALUES value=$ROW.picklists[$ROW_CONFIG.status_field]}
                                         {/if}
+                                        {assign var=ROW_IS_REFUND value=!empty($ROW_CONFIG.is_refund)}
                                         <tr class="integrationRow" data-module="{$ROW_MODULE}">
                                             <td class="fw-semibold">{$ROW.label|escape}</td>
                                             <td class="text-center">
-                                                <input type="checkbox" class="form-check-input" name="integration[{$ROW_MODULE}][active]" value="1"{if $ROW_CONFIG.active} checked{/if}>
+                                                <input type="checkbox" class="form-check-input activeCheckbox" name="integration[{$ROW_MODULE}][active]" value="1"{if $ROW_CONFIG.active} checked{/if}>
                                             </td>
-                                            <td>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="form-check-input refundCheckbox" name="integration[{$ROW_MODULE}][is_refund]" value="1"{if $ROW_IS_REFUND} checked{/if}>
+                                                {if $ROW.refundWithoutPaying}
+                                                    <div class="form-text text-warning text-nowrap">{vtranslate('LBL_REFUND_WITHOUT_PAYING', $QUALIFIED_MODULE)}</div>
+                                                {/if}
+                                            </td>
+                                            <td class="paymentField{if $ROW_IS_REFUND} opacity-50 pe-none{/if}">
                                                 <select class="form-select statusField" name="integration[{$ROW_MODULE}][status_field]" data-picklists="{$ROW.picklistsJson|escape}">
                                                     <option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=FIELD_NAME item=FIELD_LABEL from=$ROW.statusFields}
@@ -65,7 +73,7 @@
                                                     {/foreach}
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="paymentField{if $ROW_IS_REFUND} opacity-50 pe-none{/if}">
                                                 <select class="form-select statusValue" name="integration[{$ROW_MODULE}][status_value]" data-selected="{$ROW_CONFIG.status_value|escape}">
                                                     <option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=VALUE item=VALUE_LABEL from=$ROW_STATUS_VALUES}
@@ -73,7 +81,7 @@
                                                     {/foreach}
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="paymentField{if $ROW_IS_REFUND} opacity-50 pe-none{/if}">
                                                 <select class="form-select statusValue" name="integration[{$ROW_MODULE}][status_value_back]" data-selected="{$ROW_CONFIG.status_value_back|escape}">
                                                     <option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=VALUE item=VALUE_LABEL from=$ROW_STATUS_VALUES}
@@ -81,7 +89,7 @@
                                                     {/foreach}
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="paymentField{if $ROW_IS_REFUND} opacity-50 pe-none{/if}">
                                                 <select class="form-select" name="integration[{$ROW_MODULE}][relatedto_field]">
                                                     <option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=FIELD_NAME item=FIELD_LABEL from=$ROW.referenceFields}
@@ -89,7 +97,7 @@
                                                     {/foreach}
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="paymentField{if $ROW_IS_REFUND} opacity-50 pe-none{/if}">
                                                 <select class="form-select totalField" name="integration[{$ROW_MODULE}][total_field]">
                                                     <option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=FIELD_NAME item=FIELD_LABEL from=$ROW.amountFields}
@@ -97,7 +105,7 @@
                                                     {/foreach}
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="paymentField{if $ROW_IS_REFUND} opacity-50 pe-none{/if}">
                                                 <select class="form-select" name="integration[{$ROW_MODULE}][paid_field]">
                                                     <option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=FIELD_NAME item=FIELD_LABEL from=$ROW.amountFields}
@@ -108,7 +116,7 @@
                                                     {/if}
                                                 </select>
                                             </td>
-                                            <td>
+                                            <td class="paymentField{if $ROW_IS_REFUND} opacity-50 pe-none{/if}">
                                                 <select class="form-select" name="integration[{$ROW_MODULE}][balance_field]">
                                                     <option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
                                                     {foreach key=FIELD_NAME item=FIELD_LABEL from=$ROW.amountFields}

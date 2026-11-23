@@ -38,17 +38,26 @@ Settings_Vtiger_Index_Js('Settings_Vtiger_PaymentIntegration_Js', {}, {
     },
 
     /**
-     * Checks that every active module has a total field.
+     * Dims the fields of a refund row: refunds use the status and amount fields of the module that pays the document.
+     * The fields stay in the form, so they keep their values when the row is switched back to payments.
+     */
+    toggleRefundFields: function (row) {
+        row.find('.paymentField').toggleClass('opacity-50 pe-none', row.find('.refundCheckbox').is(':checked'));
+    },
+
+    /**
+     * Checks that every active module paid by this payment module has a total field.
      */
     validate: function () {
         let valid = true;
 
         this.getContainer().find('.integrationRow').each(function () {
             const row = jQuery(this),
-                active = row.find('input[type="checkbox"]').is(':checked'),
+                active = row.find('.activeCheckbox').is(':checked'),
+                refund = row.find('.refundCheckbox').is(':checked'),
                 totalField = row.find('.totalField').val();
 
-            if (active && !totalField) {
+            if (active && !refund && !totalField) {
                 valid = false;
             }
         });
@@ -97,6 +106,10 @@ Settings_Vtiger_Index_Js('Settings_Vtiger_PaymentIntegration_Js', {}, {
 
         container.on('change', '.statusField', function () {
             self.fillStatusValues(jQuery(this).closest('.integrationRow'));
+        });
+
+        container.on('change', '.refundCheckbox', function () {
+            self.toggleRefundFields(jQuery(this).closest('.integrationRow'));
         });
 
         container.on('click', '.saveIntegration', function () {

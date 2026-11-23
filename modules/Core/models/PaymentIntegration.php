@@ -88,7 +88,7 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
      */
     public function getEmptyRow(string $module): array
     {
-        $row = ['id' => 0, 'module' => $module, 'active' => 0];
+        $row = ['id' => 0, 'module' => $module, 'active' => 0, Core_PaymentConfig_Helper::INTEGRATION_REFUND => 0];
 
         foreach (Core_PaymentConfig_Helper::INTEGRATION_COLUMNS as $column) {
             $row[$column] = '';
@@ -109,7 +109,7 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
         }
 
         $table = $this->getIntegrationTable();
-        $result = $table->selectResult(array_merge(['id', 'module', 'active'], Core_PaymentConfig_Helper::INTEGRATION_COLUMNS), []);
+        $result = $table->selectResult(array_merge(['id', 'module', 'active', Core_PaymentConfig_Helper::INTEGRATION_REFUND], Core_PaymentConfig_Helper::INTEGRATION_COLUMNS), []);
         $stored = [];
 
         while ($row = $table->getDB()->fetchByAssoc($result, -1, false)) {
@@ -121,6 +121,7 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
         foreach ($this->getAvailableModules() as $module) {
             $rows[$module] = $stored[$module] ?? array_merge($this->getEmptyRow($module), Core_PaymentIntegrationFields_Helper::getDefaultConfig($this->getConfig(), $module));
             $rows[$module]['active'] = (int)$rows[$module]['active'];
+            $rows[$module][Core_PaymentConfig_Helper::INTEGRATION_REFUND] = (int)($rows[$module][Core_PaymentConfig_Helper::INTEGRATION_REFUND] ?? 0);
         }
 
         self::$rows[static::class] = $rows;
@@ -153,15 +154,50 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
 
     /**
      * Tells whether the payments of this module are integrated into the given document module.
+     * A paying integration needs a total field; a refund integration uses the fields of the paying module.
      *
      * @param string $module Document module name
      * @return bool
      */
     public function isActive(string $module): bool
     {
+        return $this->isActiveRow($this->retrieveByModule($module));
+    }
+
+    /**
+     * Tells whether a configuration row is an active integration.
+     *
+     * @param array $row Integration configuration
+     * @return bool
+     */
+    private function isActiveRow(array $row): bool
+    {
+        return (int)$row['active'] === 1 && ($row['total_field'] !== '' || $this->isRefundRow($row));
+    }
+
+    /**
+     * Tells whether a configuration row integrates refunds, not payments.
+     *
+     * @param array $row Integration configuration
+     * @return bool
+     */
+    private function isRefundRow(array $row): bool
+    {
+        return 1 === (int)($row[Core_PaymentConfig_Helper::INTEGRATION_REFUND] ?? 0);
+    }
+
+    /**
+     * Tells whether the payments of this module pay the given document module: the integration is active and
+     * its payments are not refunds.
+     *
+     * @param string $module Document module name
+     * @return bool
+     */
+    public function isPaying(string $module): bool
+    {
         $row = $this->retrieveByModule($module);
 
-        return (int)$row['active'] === 1 && $row['total_field'] !== '';
+        return $this->isActiveRow($row) && !$this->isRefundRow($row);
     }
 
     /**
@@ -174,7 +210,7 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
         $modules = [];
 
         foreach ($this->retrieveAll() as $module => $row) {
-            if ((int)$row['active'] === 1 && $row['total_field'] !== '') {
+            if ($this->isActiveRow($row)) {
                 $modules[] = $module;
             }
         }
@@ -235,7 +271,10 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
 
         foreach ($this->getAvailableModules() as $module) {
             $values = is_array($integration[$module] ?? null) ? $integration[$module] : [];
-            $data = ['active' => !empty($values['active']) ? 1 : 0];
+            $data = [
+                'active' => !empty($values['active']) ? 1 : 0,
+                Core_PaymentConfig_Helper::INTEGRATION_REFUND => !empty($values[Core_PaymentConfig_Helper::INTEGRATION_REFUND]) ? 1 : 0,
+            ];
 
             foreach (Core_PaymentConfig_Helper::INTEGRATION_COLUMNS as $column) {
                 $value = $values[$column] ?? '';
@@ -270,7 +309,7 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
         foreach ($modules as $module) {
             $row = $this->retrieveByModule($module);
 
-            if ($register) {
+            if ($register && !$this->isRefundRow($row)) {
                 $this->createAmountFields($module, $row);
             }
 
@@ -307,29 +346,33 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * Makes the paid amount field of a document read-only while the integration is active, editable when not.
+     * Makes the paid amount field of a document read-only while a payment module pays the document, editable when
+     * none does. The paid field of the paying module decides, so removing a refund integration, or the integration
+     * of a module that does not pay the document, keeps the field locked.
      *
      * @param string $module   Document module name
      * @param array  $row      Integration configuration
-     * @param bool   $register true when the integration is active
+     * @param bool   $register true when the integration is active, false when it is being removed
      * @return void
+     * @throws Exception
      */
     private function updatePaidFieldAccess(string $module, array $row, bool $register): void
     {
         $moduleModel = Vtiger_Module_Model::getInstance($module);
+        $payingModule = Core_PaymentDocumentBalance_Model::getPayingModule($module, $register ? [] : [$this->getConfig()::MODULE]);
         $fieldName = (string)($row['paid_field'] ?? '');
 
-        if (!$moduleModel || $fieldName === '') {
-            return;
+        if ($payingModule !== '') {
+            $fieldName = (string)(Core_PaymentConfig_Helper::getInstance($payingModule)->getIntegrationModel()->retrieveByModule($module)['paid_field'] ?? '');
         }
 
-        $field = $moduleModel->getField($fieldName);
+        $field = $moduleModel && $fieldName !== '' ? $moduleModel->getField($fieldName) : false;
 
         if (!$field) {
             return;
         }
 
-        $field->getFieldTable()->updateData(['displaytype' => $register ? 2 : 1], ['fieldid' => (int)$field->getId()]);
+        $field->getFieldTable()->updateData(['displaytype' => $payingModule !== '' ? 2 : 1], ['fieldid' => (int)$field->getId()]);
         Vtiger_Cache::flushModuleandBlockFieldsCache($moduleModel);
     }
 

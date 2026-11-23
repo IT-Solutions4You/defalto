@@ -17,7 +17,8 @@ class Core_PaymentIntegrationFields_Helper
      * Returns one row per available document module with its configuration and the selectable fields.
      *
      * @param Core_PaymentConfig_Helper $paymentConfig Configuration of the payment module
-     * @return array rows with module, label, config, statusFields, picklists, referenceFields, amountFields
+     * @return array rows with module, label, config, refundWithoutPaying (an active refund row of a document module
+     *               no other active payment module pays), statusFields, picklists, referenceFields, amountFields
      * @throws Exception
      */
     public static function getRows(Core_PaymentConfig_Helper $paymentConfig): array
@@ -37,6 +38,8 @@ class Core_PaymentIntegrationFields_Helper
                 'module' => $module,
                 'label' => vtranslate($module, $module),
                 'config' => $config,
+                'refundWithoutPaying' => !empty($config['active']) && !empty($config[Core_PaymentConfig_Helper::INTEGRATION_REFUND])
+                    && '' === Core_PaymentDocumentBalance_Model::getPayingModule($module, [$paymentConfig::MODULE]),
                 'statusFields' => $statusFields,
                 'picklists' => $picklists,
                 'picklistsJson' => Vtiger_Functions::jsonEncode($picklists),
@@ -68,9 +71,33 @@ class Core_PaymentIntegrationFields_Helper
             'total_field' => $moduleModel->getField(Core_PaymentConfig_Helper::DEFAULT_TOTAL_FIELD) ? Core_PaymentConfig_Helper::DEFAULT_TOTAL_FIELD : '',
             'paid_field' => self::getDefaultPaidField($paymentConfig, $moduleModel),
             'balance_field' => Core_PaymentConfig_Helper::DEFAULT_BALANCE_FIELD,
+            Core_PaymentConfig_Helper::INTEGRATION_REFUND => self::getDefaultRefund($paymentConfig, $moduleModel),
         ];
 
         return array_merge($defaults, $paymentConfig->getIntegrationOverrides()[$module] ?? []);
+    }
+
+    /**
+     * Returns whether the payments of the module are refunds of a document module by default: a document with
+     * a vendor (purchase order) is paid by outgoing payments, any other document by incoming payments; payments of
+     * the opposite direction are refunds.
+     *
+     * @param Core_PaymentConfig_Helper $paymentConfig Configuration of the payment module
+     * @param Vtiger_Module_Model       $moduleModel   Document module
+     * @return int 1 for refunds, 0 for payments
+     */
+    public static function getDefaultRefund(Core_PaymentConfig_Helper $paymentConfig, Vtiger_Module_Model $moduleModel): int
+    {
+        $payingDirection = Core_PaymentConfig_Helper::DIRECTION_INCOMING;
+
+        foreach ($moduleModel->getFieldsByType('reference') as $fieldModel) {
+            if (in_array('Vendors', (array)$fieldModel->getReferenceList(false, false), true)) {
+                $payingDirection = Core_PaymentConfig_Helper::DIRECTION_OUTGOING;
+                break;
+            }
+        }
+
+        return $paymentConfig::DIRECTION === $payingDirection ? 0 : 1;
     }
 
     /**

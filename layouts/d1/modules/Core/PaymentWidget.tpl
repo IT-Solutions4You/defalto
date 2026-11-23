@@ -24,6 +24,9 @@
                             <tr>
                                 <td>
                                     <a class="btn-link" href="{$PAYMENT.url}" title="{$PAYMENT.name|escape}">{$PAYMENT.number|escape}</a>
+                                    {if $PAYMENT.isRefund}
+                                        <span class="badge text-bg-warning ms-1">{vtranslate('LBL_REFUND', $MODULE_NAME)}</span>
+                                    {/if}
                                 </td>
                                 <td>{$PAYMENT.date|escape}</td>
                                 <td>
