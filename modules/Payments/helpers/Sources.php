@@ -9,11 +9,9 @@
  */
 
 /**
- * Configuration of the payment modules whose records the Payments list shows.
- *
- * Phase 0 (prototype): the only finished payment module is IncomingPayment. The second source is IncomingPayment
- * again, limited to payments without a document and labelled as outgoing, so that the union of two sources can be
- * tested before OutgoingPayment exists. It also treats one field as missing to test conditions on such fields.
+ * Configuration of the payment modules whose records the Payments list shows: IncomingPayment and OutgoingPayment.
+ * A source may limit its module by a condition (CONDITION_* constants) and treat fields as missing; both are unused
+ * now and stay for further payment modules.
  */
 class Payments_Sources_Helper
 {
@@ -61,14 +59,14 @@ class Payments_Sources_Helper
             'incoming' => [
                 'module' => 'IncomingPayment',
                 'direction' => self::INCOMING,
-                'condition' => self::CONDITION_WITH_DOCUMENT,
+                'condition' => null,
                 'missing_fields' => [],
             ],
-            'prototype_outgoing' => [
-                'module' => 'IncomingPayment',
+            'outgoing' => [
+                'module' => 'OutgoingPayment',
                 'direction' => self::OUTGOING,
-                'condition' => self::CONDITION_WITHOUT_DOCUMENT,
-                'missing_fields' => ['transaction_id'],
+                'condition' => null,
+                'missing_fields' => [],
             ],
         ];
     }
@@ -102,13 +100,35 @@ class Payments_Sources_Helper
     }
 
     /**
-     * Returns the module whose query generator stands in for Payments, where the list framework needs one.
+     * Returns the module whose query generator stands in for Payments, where the list framework needs one:
+     * the first source module the current user may open, otherwise the first active one, otherwise the first
+     * installed one. The payment modules are installed separately, so any of them may be missing.
      *
      * @return string
      */
     public static function getPrimaryModule(): string
     {
-        return self::getSourceModules()[0];
+        $modules = self::getSourceModules();
+
+        foreach ($modules as $moduleName) {
+            if (self::isAccessibleModule($moduleName)) {
+                return $moduleName;
+            }
+        }
+
+        foreach ($modules as $moduleName) {
+            if (vtlib_isModuleActive($moduleName)) {
+                return $moduleName;
+            }
+        }
+
+        foreach ($modules as $moduleName) {
+            if (getTabid($moduleName)) {
+                return $moduleName;
+            }
+        }
+
+        return $modules[0];
     }
 
     /**

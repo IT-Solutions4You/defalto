@@ -4,7 +4,7 @@
 Payments is one list of the records of all payment modules (IncomingPayment, later OutgoingPayment). It has no records, fields, tables or edit/detail views of its own (`isentitytype = 0`, class `Payments extends CRMExtension`). Payments are created and edited in their own module.
 
 ## Runtime owner and entry points
-- `modules/Payments/helpers/Sources.php`: `Payments_Sources_Helper` is the single list of sources (module, direction, optional source condition, fields treated as missing). The current sources are a prototype: IncomingPayment with a document and IncomingPayment without a document. The prototype treats `transaction_id` as missing in the second source.
+- `modules/Payments/helpers/Sources.php`: `Payments_Sources_Helper` is the single list of sources (module, direction, optional source condition, fields treated as missing). The sources are IncomingPayment and OutgoingPayment (since phase 4), without conditions or missing fields.
 - `modules/Payments/models/ListView.php`: `Payments_ListView_Model` overrides the headers, entries, count, basic links (one add button per payment module) and mass actions (none).
 - `modules/Payments/models/UnionQuery.php`: `Payments_UnionQuery_Model` joins the source queries with `UNION ALL`. The union only decides the order, the page and the count.
 - `modules/Payments/models/SourceQuery.php`: `Payments_SourceQuery_Model` (a `Core_QueryGenerator_Model` of the payment module) applies the Payments filter, the list search, the source condition and the permissions of its module. It returns the union part (record id + sort value) through the projection columns of `Core_QueryGenerator_Model`.
