@@ -51,6 +51,7 @@ $languageStrings = [
     'LBL_ADD' => 'Добавить',
     'LBL_ADD_REFUND' => 'Добавить возврат',
     'LBL_REFUND' => 'Возврат',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Платежи по',
 ];
 
 $jsLanguageStrings = [

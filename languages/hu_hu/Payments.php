@@ -51,6 +51,7 @@ $languageStrings = [
     'LBL_ADD' => 'Hozzáadás',
     'LBL_ADD_REFUND' => 'Visszatérítés hozzáadása',
     'LBL_REFUND' => 'Visszatérítés',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Fizetések innen:',
 ];
 
 $jsLanguageStrings = [

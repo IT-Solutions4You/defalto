@@ -50,6 +50,16 @@
         {else}
             <p class="text-body-secondary mb-2">{vtranslate('LBL_NO_PAYMENTS', $MODULE_NAME)}</p>
         {/if}
+        {if !empty($SUMMARY.sourcePayments)}
+            <ul class="list-unstyled mb-0 pt-2">
+                {foreach item=SOURCE_PAYMENT from=$SUMMARY.sourcePayments}
+                    <li class="d-flex justify-content-between">
+                        <span>{vtranslate('LBL_PAYMENTS_FROM_SOURCE', $MODULE_NAME)} <a class="btn-link" href="{$SOURCE_PAYMENT.url}">{$SOURCE_PAYMENT.number|escape}</a></span>
+                        <span>{$SOURCE_PAYMENT.amount|escape}</span>
+                    </li>
+                {/foreach}
+            </ul>
+        {/if}
         {if $SUMMARY.isIntegrated}
             <div class="d-flex flex-wrap gap-3 justify-content-end pt-3">
                 {if $SUMMARY.total neq ''}

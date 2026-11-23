@@ -51,6 +51,7 @@ $languageStrings = [
     'LBL_ADD' => 'إضافة',
     'LBL_ADD_REFUND' => 'إضافة استرداد',
     'LBL_REFUND' => 'استرداد',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'مدفوعات',
 ];
 
 $jsLanguageStrings = [

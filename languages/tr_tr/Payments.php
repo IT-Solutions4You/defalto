@@ -51,6 +51,7 @@ $languageStrings = [
     'LBL_ADD' => 'Ekle',
     'LBL_ADD_REFUND' => 'İade ekle',
     'LBL_REFUND' => 'İade',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Ödemeler:',
 ];
 
 $jsLanguageStrings = [

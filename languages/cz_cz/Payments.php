@@ -51,6 +51,7 @@ $languageStrings = [
     'LBL_ADD' => 'Přidat',
     'LBL_ADD_REFUND' => 'Přidat vratku',
     'LBL_REFUND' => 'Vratka',
+    'LBL_PAYMENTS_FROM_SOURCE' => 'Platby z',
 ];
 
 $jsLanguageStrings = [
