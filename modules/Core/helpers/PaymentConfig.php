@@ -34,6 +34,12 @@ class Core_PaymentConfig_Helper
     public const ICON = 'fa-solid fa-money-bill';
 
     /**
+     * Direction of the payments (DIRECTION_INCOMING or DIRECTION_OUTGOING), stored in the direction field of every
+     * payment so the Payments list can show, filter, sort and export it like any other field.
+     */
+    public const DIRECTION = '';
+
+    /**
      * Modules whose reference field holds the counterparty of a document, in order of preference.
      */
     public const RELATED_TO_MODULES = [];
@@ -48,8 +54,22 @@ class Core_PaymentConfig_Helper
      */
     public const PAID_FIELD_LABEL = '';
 
+    /**
+     * Payment modules of all directions, in the order the shared screens list them.
+     */
+    public const PAYMENT_MODULES = ['IncomingPayment', 'OutgoingPayment'];
+
     public const PAYMENTS_LIST_MODULE = 'Payments';
     public const SETTING_UNDERPAYMENT_THRESHOLD = 'underpayment_threshold';
+    public const SETTING_MENU_HIDDEN = 'menu_hidden';
+
+    /**
+     * Application whose menu holds the payment modules and the Payments list.
+     */
+    public const MENU_APP = 'SALES';
+
+    public const DIRECTION_INCOMING = 'Incoming';
+    public const DIRECTION_OUTGOING = 'Outgoing';
 
     public const FIELD_NAME = 'payment_name';
     public const FIELD_NUMBER = 'payment_no';
@@ -62,6 +82,7 @@ class Core_PaymentConfig_Helper
     public const FIELD_REFERENCE_NO = 'reference_no';
     public const FIELD_PAYMENT_METHOD = 'payment_method';
     public const FIELD_TRANSACTION_ID = 'transaction_id';
+    public const FIELD_DIRECTION = 'payment_direction';
 
     /**
      * Amount with its own currency (uitype 35). The core keeps its hidden currency and rate fields and the column
@@ -154,6 +175,36 @@ class Core_PaymentConfig_Helper
         }
 
         return self::$instances[$moduleName];
+    }
+
+    /**
+     * Returns the payment modules that are installed and have their configuration class.
+     *
+     * @param string[] $excludedModules Modules treated as not installed, e.g. a module being uninstalled
+     * @return string[]
+     */
+    public static function getInstalledModules(array $excludedModules = []): array
+    {
+        $modules = [];
+
+        foreach (self::PAYMENT_MODULES as $moduleName) {
+            if (!in_array($moduleName, $excludedModules, true) && getTabid($moduleName) && class_exists($moduleName . '_Config_Helper')) {
+                $modules[] = $moduleName;
+            }
+        }
+
+        return $modules;
+    }
+
+    /**
+     * Returns the payment modules that are installed and active.
+     *
+     * @param string[] $excludedModules Modules treated as inactive, e.g. a module being disabled
+     * @return string[]
+     */
+    public static function getActiveModules(array $excludedModules = []): array
+    {
+        return array_values(array_filter(self::getInstalledModules($excludedModules), 'vtlib_isModuleActive'));
     }
 
     /**

@@ -213,7 +213,7 @@ abstract class Core_PaymentDocumentSync_Model extends Core_DatabaseData_Model
      * @param Vtiger_Record_Model $recordModel Document record
      * @return float
      */
-    private function getDocumentRate(Vtiger_Record_Model $recordModel): float
+    public function getDocumentRate(Vtiger_Record_Model $recordModel): float
     {
         $documentRate = (float)$recordModel->get('conversion_rate');
 
@@ -285,6 +285,35 @@ abstract class Core_PaymentDocumentSync_Model extends Core_DatabaseData_Model
      */
     public function sumPaidAmount(int $recordId, int $documentCurrencyId, float $documentRate): float
     {
+        return $this->sumAmountByStatus($recordId, $documentCurrencyId, $documentRate, true);
+    }
+
+    /**
+     * Sums the payments applied to a document that are not received yet (created, waiting, pending),
+     * converted into the document currency. It is the expected amount of the payments widget.
+     *
+     * @param int   $recordId           Document record id
+     * @param int   $documentCurrencyId Currency id of the document
+     * @param float $documentRate       Conversion rate of the document currency
+     * @return float
+     */
+    public function sumOpenAmount(int $recordId, int $documentCurrencyId, float $documentRate): float
+    {
+        return $this->sumAmountByStatus($recordId, $documentCurrencyId, $documentRate, false);
+    }
+
+    /**
+     * Sums the payments applied to a document with a received status, or with any other status,
+     * converted into the document currency.
+     *
+     * @param int   $recordId           Document record id
+     * @param int   $documentCurrencyId Currency id of the document
+     * @param float $documentRate       Conversion rate of the document currency
+     * @param bool  $isPaid             true for received payments, false for the payments not received yet
+     * @return float
+     */
+    private function sumAmountByStatus(int $recordId, int $documentCurrencyId, float $documentRate, bool $isPaid): float
+    {
         $statuses = Core_PaymentConfig_Helper::getPaidStatuses();
         $result = $this->getDB()->pquery(
             'SELECT associated.partial_amount, payment.' . Core_PaymentConfig_Helper::FIELD_AMOUNT_CURRENCY . ' AS currency_id,
@@ -293,7 +322,7 @@ abstract class Core_PaymentDocumentSync_Model extends Core_DatabaseData_Model
             INNER JOIN ' . $this->table . ' AS payment ON payment.' . $this->tableId . ' = associated.payment_id
             INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = associated.payment_id
             WHERE vtiger_crmentity.deleted = 0 AND associated.record_id = ?
-            AND payment.payment_status IN (' . generateQuestionMarks($statuses) . ')',
+            AND payment.payment_status ' . ($isPaid ? 'IN' : 'NOT IN') . ' (' . generateQuestionMarks($statuses) . ')',
             array_merge([$recordId], $statuses)
         );
         $sum = 0.0;

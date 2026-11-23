@@ -111,7 +111,8 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
     }
 
     /**
-     * Registers numbering, history, comments, related lists, settings link, cron, handlers and document integrations.
+     * Registers numbering, history, comments, related lists, settings link, cron, handlers and document integrations,
+     * and hides the module in the menu while the Payments list is there (once, see Core_PaymentMenu_Model).
      *
      * @return void
      * @throws Exception
@@ -127,6 +128,7 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
         $this->updateEventHandler();
         $this->getConfig()->getIntegrationModel()->installDefaults();
         $this->updateIntegrations();
+        Core_PaymentMenu_Model::getInstance()->hideModules([$this->moduleName]);
     }
 
     /**
@@ -194,8 +196,9 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
     }
 
     /**
-     * Registers or removes the links, widgets, related lists and handlers in the integrated document modules.
-     * With $register = true only active integrations are registered; with false every available module is cleaned.
+     * Registers or removes the links, related lists and handlers in the integrated document modules and updates the
+     * payments widgets of the documents (Core_PaymentWidget_Model). With $register = true only active integrations
+     * are registered; with false every available module is cleaned and this module counts as inactive for the widgets.
      *
      * @param bool $register true to register, false to remove
      * @return void
@@ -210,12 +213,10 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
         $ownRegistrations = [
             $this->registerRelatedLists,
             $this->registerCustomLinks,
-            $this->registerSummaryWidgets,
             $this->registerEventHandler,
         ];
         $this->registerRelatedLists = [];
         $this->registerCustomLinks = [];
-        $this->registerSummaryWidgets = [];
         $this->registerEventHandler = [];
 
         foreach ($modules as $moduleName) {
@@ -248,13 +249,6 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
                 $config::ADD_LINK_LABEL,
                 $this->getConfig()->getAddMoreLinkTemplate(),
             ];
-            $this->registerSummaryWidgets[] = [
-                $moduleName,
-                $this->getConfig()->getWidgetLabel(),
-                $this->getConfig()->getWidgetUrl(),
-                '',
-                6,
-            ];
         }
 
         if (!empty($modules)) {
@@ -278,14 +272,11 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
         $this->updateRelatedList($register);
         $this->updateCustomLinks($register);
         $this->updateEventHandler($register);
-        $this->registerDefaultSummaryWidgets = false;
-        $this->updateSummaryWidgets($register);
-        $this->registerDefaultSummaryWidgets = true;
         $integrationModel->updateModules($modules, $register);
+        Core_PaymentWidget_Model::getInstance()->updateDocumentWidgets($register ? [] : [$paymentModule]);
         [
             $this->registerRelatedLists,
             $this->registerCustomLinks,
-            $this->registerSummaryWidgets,
             $this->registerEventHandler,
         ] = $ownRegistrations;
     }
@@ -384,6 +375,23 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
                         [$config::STATUS_WAITING, '#F0D98B'],
                         [$config::STATUS_PENDING, '#F5587D'],
                         [Core_PaymentConfig_Helper::STATUS_PAID, '#5CE573'],
+                    ],
+                ],
+                // Fixed per module: the column default fills it for new and existing rows, displaytype 2 is never saved
+                $config::FIELD_DIRECTION => [
+                    'uitype' => 15,
+                    'column' => $config::FIELD_DIRECTION,
+                    'table' => $table,
+                    'columntype' => "varchar(100) NOT NULL DEFAULT '" . $config::DIRECTION . "'",
+                    'label' => 'Direction',
+                    'typeofdata' => 'V~O',
+                    'displaytype' => 2,
+                    'quickcreate' => 1,
+                    'masseditable' => 0,
+                    'ajaxeditable' => 0,
+                    'picklist_values' => [
+                        [Core_PaymentConfig_Helper::DIRECTION_INCOMING, '#5CE573'],
+                        [Core_PaymentConfig_Helper::DIRECTION_OUTGOING, '#F5587D'],
                     ],
                 ],
                 // The core adds the hidden currency and rate fields and the base amount column (uitype 35)

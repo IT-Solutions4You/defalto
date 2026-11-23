@@ -51,6 +51,9 @@
                 {if $SUMMARY.balance neq ''}
                     <span>{vtranslate('LBL_BALANCE', $MODULE_NAME)}: <strong>{$SUMMARY.balance|escape}</strong></span>
                 {/if}
+                {if $SUMMARY.expected neq ''}
+                    <span>{vtranslate('LBL_EXPECTED_AMOUNT', $MODULE_NAME)}: <strong>{$SUMMARY.expected|escape}</strong></span>
+                {/if}
             </div>
         {else}
             <p class="text-body-secondary mb-0">{vtranslate('LBL_INTEGRATION_INACTIVE', $MODULE_NAME)}</p>

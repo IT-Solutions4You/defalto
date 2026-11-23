@@ -67,6 +67,28 @@ abstract class Core_PaymentSetting_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Tells whether the module was already hidden in the menu for the Payments list. An administrator may show it
+     * again in the menu editor; the flag keeps later updates from hiding it once more.
+     *
+     * @return bool
+     */
+    public function isMenuHidden(): bool
+    {
+        return '1' === $this->getValue(Core_PaymentConfig_Helper::SETTING_MENU_HIDDEN, '0');
+    }
+
+    /**
+     * Stores whether the module was hidden in the menu for the Payments list.
+     *
+     * @param bool $isHidden true after hiding, false after showing it again
+     * @return void
+     */
+    public function saveMenuHidden(bool $isHidden): void
+    {
+        $this->saveValue(Core_PaymentConfig_Helper::SETTING_MENU_HIDDEN, $isHidden ? '1' : '0');
+    }
+
+    /**
      * Returns a stored setting.
      *
      * @param string $name    Setting name

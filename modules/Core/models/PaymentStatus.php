@@ -15,12 +15,6 @@
 class Core_PaymentStatus_Model
 {
     /**
-     * Payment modules; the document synchronisation model of each (Core_PaymentConfig_Helper::getDocumentSyncModel())
-     * re-saves their open payments.
-     */
-    public const PAYMENT_MODULES = ['IncomingPayment', 'OutgoingPayment'];
-
-    /**
      * Returns a new instance.
      *
      * @return self
@@ -53,10 +47,8 @@ class Core_PaymentStatus_Model
     {
         $models = [];
 
-        foreach (self::PAYMENT_MODULES as $moduleName) {
-            if (vtlib_isModuleActive($moduleName) && class_exists($moduleName . '_Config_Helper')) {
-                $models[$moduleName] = Core_PaymentConfig_Helper::getInstance($moduleName)->getDocumentSyncModel();
-            }
+        foreach (Core_PaymentConfig_Helper::getActiveModules() as $moduleName) {
+            $models[$moduleName] = Core_PaymentConfig_Helper::getInstance($moduleName)->getDocumentSyncModel();
         }
 
         return $models;

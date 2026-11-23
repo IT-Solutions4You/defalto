@@ -36,7 +36,8 @@ class Core_PaymentValues_Helper
     }
 
     /**
-     * Returns the read-only derived columns of a saved payment: the status and the numbers of the reference documents.
+     * Returns the read-only derived columns of a saved payment: the status, the numbers of the reference documents
+     * and the direction of its module.
      *
      * @param Vtiger_Record_Model $payment Saved payment record
      * @return array [column => value]
@@ -50,6 +51,7 @@ class Core_PaymentValues_Helper
                 Core_PaymentStatus_Helper::normalizeDate($payment->get(Core_PaymentConfig_Helper::FIELD_DUE_DATE))
             ),
             Core_PaymentConfig_Helper::FIELD_REFERENCE_NO => implode(', ', self::getDocumentNumbers(self::getDocumentIds($payment))),
+            Core_PaymentConfig_Helper::FIELD_DIRECTION => Core_PaymentConfig_Helper::getInstance($payment->getModuleName())::DIRECTION,
         ];
     }
 
