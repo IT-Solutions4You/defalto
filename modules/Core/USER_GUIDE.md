@@ -1,5 +1,7 @@
 # Record navigation
 
+The Key fields card in Summary shows its title without a Details shortcut. Open the Details tab to view all record fields.
+
 Switching tabs opens the selected view of the current record. Tab links can also be opened directly or refreshed while retaining the selected record and view.
 
 The active tab has a thicker blue underline for easier recognition.

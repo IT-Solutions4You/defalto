@@ -12,7 +12,7 @@ Beside Comments, the Related records button opens a dropdown of related modules 
 
 Summary, Details, Updates, Sharing, Comments and related-record lists start directly below the record navigation without an extra outer margin. The related-modules panel aligns with the content. Internal spacing between content sections remains unchanged.
 
-The Details shortcut in the key-fields summary block is shown as text without an icon.
+The key-fields summary block has no Details shortcut. Use the Details tab above the summary to open all record fields.
 
 Records in modules with image fields show their picture above the title and key fields on narrow screens. From the two-column key-field layout onward, the picture appears beside the name in a separate column. If no picture is stored, the module icon is shown.
 

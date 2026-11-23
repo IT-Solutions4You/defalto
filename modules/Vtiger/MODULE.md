@@ -29,6 +29,8 @@ This module holds shared base behavior inherited by other modules. It has no sta
 - `SummaryViewWidgets.tpl` treats a missing or empty `DETAILVIEWWIDGET` link group as a valid empty layout. `getDetailViewLinks()` does not guarantee a key for link types without links, so guard the collection before iterating.
 - A summary widget link URL with `headerActions=1` lets the widget's own module (`module` URL parameter) add actions to the widget header: `Vtiger_DetailView_Model::getWidgets()` sets `headerActionsModule` and `SummaryViewWidget.tpl` includes `SummaryWidgetHeaderActions.tpl` of that module (used by InventoryItem). Do not hard-code module-specific buttons in the shared header.
 
+- `SummaryViewWidget.tpl` omits the Details shortcut for `LBL_KEY_FIELDS`, including persisted widgets whose URLs still contain `showDetails=1`. Other widgets retain their configured Details shortcuts; full record details remain accessible through the record navigation tab.
+
 ## Shared utilities and storage
 
 - The running application version is owned by `version.php` as `$defalto_current_version`. Shared runtime code must use that value and must not restore the removed `vtiger_current_version` global.

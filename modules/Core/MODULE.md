@@ -2,6 +2,8 @@
 
 ## Record navigation
 
+- `layouts/d1/modules/Core/SummaryKeyFields.tpl` renders the fallback Key fields summary card without a Details shortcut. Persisted `LBL_KEY_FIELDS` widgets use Vtiger's `SummaryViewWidget.tpl`, which also omits that shortcut. Full record details remain available through the Details tab in record navigation.
+
 - Only the currently open relation is highlighted in the desktop sidebar. Its colors come from the existing theme-owned nav-pills variables (`--dt-light-blue-color` and `--bs-primary-color`), with bold weight and rounded-pill count badges. Do not tint every populated relation or override these colors with Bootstrap default primary values.
 
 - The base skin removes only the top margin of the main related-list card with `.detailViewContainer .details > .relatedContainer > .bg-body`. Keep LESS and generated CSS aligned; this shared override also covers module-owned related-list templates without editing those extensions or their internal controls.
