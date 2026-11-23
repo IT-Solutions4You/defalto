@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Ожидается',
     'LBL_NO_PAYMENTS' => 'Для этой записи ещё не зарегистрирован ни один платёж.',
     'LBL_INTEGRATION_INACTIVE' => 'Платежи не интегрированы в этот модуль.',
+    'LBL_ADD' => 'Добавить',
+    'LBL_ADD_REFUND' => 'Добавить возврат',
+    'LBL_REFUND' => 'Возврат',
 ];
 
 $jsLanguageStrings = [

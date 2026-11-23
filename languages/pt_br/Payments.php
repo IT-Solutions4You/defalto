@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Previsto',
     'LBL_NO_PAYMENTS' => 'Nenhum pagamento foi registrado para este registro ainda.',
     'LBL_INTEGRATION_INACTIVE' => 'Os pagamentos não estão integrados a este módulo.',
+    'LBL_ADD' => 'Adicionar',
+    'LBL_ADD_REFUND' => 'Adicionar reembolso',
+    'LBL_REFUND' => 'Reembolso',
 ];
 
 $jsLanguageStrings = [

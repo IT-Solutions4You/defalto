@@ -14,7 +14,8 @@ Payments shows all your payments in one list: incoming payments from customers a
 ## Payments on a document
 - Invoices, orders and other integrated documents show one **Payments** widget with the payments of all directions: direction, number, payment date, status and amount.
 - Below the payments the widget shows the Total, Paid and Balance of the document and **Expected**, the payments that are not paid yet.
-- **Add Payment** in the widget header opens the payment form prefilled from the document; when the document has both directions you choose Incoming or Outgoing first.
+- A refund (money returned on the document) is marked **Refund** in the widget and lowers the Paid amount.
+- **Add Payment** in the widget header opens the payment form prefilled from the document; when the document has refunds switched on you choose **Add Payment** or **Add Refund**.
 
 ## Menu
 - With Payments installed, the Sales menu shows only Payments; Incoming Payments and Outgoing Payments are hidden there but still work (quick create, links, related lists). An administrator can show them again in the menu editor.

@@ -28,6 +28,9 @@
                                     <span class="badge {if $PAYMENT.isIncoming}text-bg-success{else}text-bg-danger{/if}">
                                         {vtranslate($PAYMENT.direction, $MODULE_NAME)}
                                     </span>
+                                    {if $PAYMENT.isRefund}
+                                        <span class="badge text-bg-warning ms-1">{vtranslate('LBL_REFUND', $MODULE_NAME)}</span>
+                                    {/if}
                                 </td>
                                 <td>
                                     <a class="btn-link" href="{$PAYMENT.url}" title="{$PAYMENT.name|escape}">{$PAYMENT.number|escape}</a>

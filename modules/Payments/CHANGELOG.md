@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.1 - 2026-11-19
+- The payments widget marks refunds, shows the expected amount net of refunds and offers Add Payment and Add Refund.
 - Documents show one Payments widget with the payments of all directions, the totals and the expected amount; Add Payment offers the directions integrated on the document.
 - Incoming Payments and Outgoing Payments are hidden in the Sales menu while Payments is installed.
 - Direction column, export of all payment directions into one file and mass delete in the Payments list.

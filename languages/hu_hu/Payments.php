@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Várható',
     'LBL_NO_PAYMENTS' => 'Ehhez a rekordhoz még nincs rögzített fizetés.',
     'LBL_INTEGRATION_INACTIVE' => 'A fizetések nincsenek integrálva ebbe a modulba.',
+    'LBL_ADD' => 'Hozzáadás',
+    'LBL_ADD_REFUND' => 'Visszatérítés hozzáadása',
+    'LBL_REFUND' => 'Visszatérítés',
 ];
 
 $jsLanguageStrings = [

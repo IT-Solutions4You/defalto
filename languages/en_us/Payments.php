@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Expected',
     'LBL_NO_PAYMENTS' => 'No payments have been recorded for this record yet.',
     'LBL_INTEGRATION_INACTIVE' => 'Payments are not integrated into this module.',
+    'LBL_ADD' => 'Add',
+    'LBL_ADD_REFUND' => 'Add Refund',
+    'LBL_REFUND' => 'Refund',
 ];
 
 $jsLanguageStrings = [

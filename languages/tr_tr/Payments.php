@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Beklenen',
     'LBL_NO_PAYMENTS' => 'Bu kayıt için henüz ödeme kaydedilmedi.',
     'LBL_INTEGRATION_INACTIVE' => 'Ödemeler bu modüle entegre değil.',
+    'LBL_ADD' => 'Ekle',
+    'LBL_ADD_REFUND' => 'İade ekle',
+    'LBL_REFUND' => 'İade',
 ];
 
 $jsLanguageStrings = [

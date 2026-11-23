@@ -6,7 +6,7 @@
  * This file is licensed under the GNU AGPL v3 License.
  * See LICENSE-AGPLv3.txt for more details.
  *}
-{* Add button of the common payments widget: the form of the only integrated payment module, or a choice of them. *}
+{* Add button of the common payments widget: the form of the only integrated payment module, or a choice of a payment and a refund. *}
 {strip}
     {assign var=PAYMENT_ADD_LINKS value=Core_PaymentWidgetSummary_Helper::getAddLinks($MODULE_NAME, $RECORD->getId())}
     {if count($PAYMENT_ADD_LINKS) eq 1}
@@ -21,7 +21,7 @@
         <div class="float-end dropdown paymentsWidgetAdd">
             <button type="button" class="btn btn-sm text-secondary fw-bold dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-plus"></i>
-                <span class="ms-2">{vtranslate('LBL_ADD_PAYMENT', 'Payments')}</span>
+                <span class="ms-2">{vtranslate('LBL_ADD', 'Payments')}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 {foreach item=PAYMENT_ADD_LINK from=$PAYMENT_ADD_LINKS}

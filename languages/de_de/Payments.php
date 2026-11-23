@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Erwartet',
     'LBL_NO_PAYMENTS' => 'Für diesen Datensatz wurde noch keine Zahlung erfasst.',
     'LBL_INTEGRATION_INACTIVE' => 'Zahlungen sind in dieses Modul nicht integriert.',
+    'LBL_ADD' => 'Hinzufügen',
+    'LBL_ADD_REFUND' => 'Erstattung hinzufügen',
+    'LBL_REFUND' => 'Erstattung',
 ];
 
 $jsLanguageStrings = [

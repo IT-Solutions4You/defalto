@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'المتوقع',
     'LBL_NO_PAYMENTS' => 'لم يتم تسجيل أي دفعة لهذا السجل بعد.',
     'LBL_INTEGRATION_INACTIVE' => 'المدفوعات غير مدمجة في هذه الوحدة.',
+    'LBL_ADD' => 'إضافة',
+    'LBL_ADD_REFUND' => 'إضافة استرداد',
+    'LBL_REFUND' => 'استرداد',
 ];
 
 $jsLanguageStrings = [

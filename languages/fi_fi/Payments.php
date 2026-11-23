@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Odotettu',
     'LBL_NO_PAYMENTS' => 'Tälle tietueelle ei ole vielä kirjattu maksuja.',
     'LBL_INTEGRATION_INACTIVE' => 'Maksuja ei ole integroitu tähän moduuliin.',
+    'LBL_ADD' => 'Lisää',
+    'LBL_ADD_REFUND' => 'Lisää palautus',
+    'LBL_REFUND' => 'Palautus',
 ];
 
 $jsLanguageStrings = [

@@ -48,6 +48,9 @@ $languageStrings = [
     'LBL_EXPECTED_AMOUNT' => 'Așteptat',
     'LBL_NO_PAYMENTS' => 'Nu a fost înregistrată încă nicio plată pentru această înregistrare.',
     'LBL_INTEGRATION_INACTIVE' => 'Plățile nu sunt integrate în acest modul.',
+    'LBL_ADD' => 'Adaugă',
+    'LBL_ADD_REFUND' => 'Adaugă rambursare',
+    'LBL_REFUND' => 'Rambursare',
 ];
 
 $jsLanguageStrings = [
