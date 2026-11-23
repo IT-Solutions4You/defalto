@@ -54,6 +54,8 @@ $languageStrings = [
     'Incoming' => 'Saapuva',
     'Outgoing' => 'Lähtevä',
     'LBL_EXPECTED_AMOUNT' => 'Odotettu',
+    'LBL_ADD_REFUND' => 'Lisää palautus',
+    'LBL_REFUND' => 'Palautus',
 ];
 
 $jsLanguageStrings = [

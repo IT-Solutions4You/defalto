@@ -54,6 +54,8 @@ $languageStrings = [
     'Incoming' => 'Incoming',
     'Outgoing' => 'Outgoing',
     'LBL_EXPECTED_AMOUNT' => 'Expected',
+    'LBL_ADD_REFUND' => 'Add Refund',
+    'LBL_REFUND' => 'Refund',
 ];
 
 $jsLanguageStrings = [

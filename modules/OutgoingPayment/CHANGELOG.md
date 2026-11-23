@@ -8,4 +8,6 @@
 - Vendors, organizations and contacts show their outgoing payments in a related list.
 - Every payment shows its direction (Incoming or Outgoing) in a read-only field.
 - With the Payments list installed, documents show the common Payments widget instead of the Outgoing Payments widget and the module is hidden in the Sales menu.
+- Refunds: payments of this module integrated into a document paid by Incoming Payments are refunds; they are subtracted from the paid amount, the Settings page has a Refund column and documents offer Add Refund.
+- Add Payment from a document prefills the total minus all payments, including the ones not received yet, as Cashflow did.
 - Integration into document modules is configured in Settings → Outgoing Payments Integration.

@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Prag de plată insuficientă',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Un document al cărui sold este cel mult această sumă primește starea plătit. Suma se compară în moneda documentului fără conversie, iar soldul păstrează suma reală neplătită. 0 înseamnă doar documentele plătite integral.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Pragul de plată insuficientă trebuie să fie un număr mai mare sau egal cu 0.',
+    'LBL_REFUND' => 'Rambursare',
+    'LBL_REFUND_HELP' => 'Plățile acestui modul sunt rambursări ale documentului și se scad din suma plătită.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Niciun modul de plăți activ nu plătește acest document; rambursările nu sunt luate în calcul.',
+    'LBL_TWO_PAYING_MODULES' => 'Alt modul de plăți plătește deja %s. Marcați plățile unuia dintre ele ca rambursări.',
 ];
 
 $jsLanguageStrings = [

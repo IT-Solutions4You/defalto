@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Alulfizetési határ',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Az a bizonylat, amelynek egyenlege legfeljebb ennyi, fizetett állapotot kap. Az összehasonlítás átváltás nélkül a bizonylat pénznemében történik, az egyenleg továbbra is a valós hátralékot mutatja. A 0 csak a teljesen kifizetett bizonylatokat jelenti.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Az alulfizetési határnak 0 vagy annál nagyobb számnak kell lennie.',
+    'LBL_REFUND' => 'Visszatérítés',
+    'LBL_REFUND_HELP' => 'Ennek a modulnak a fizetései a bizonylat visszatérítései, és levonódnak a kifizetett összegből.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Egyetlen aktív fizetési modul sem fizeti ezt a bizonylatot; a visszatérítések nem számítanak.',
+    'LBL_TWO_PAYING_MODULES' => 'Egy másik fizetési modul már fizeti ezt: %s. Jelölje az egyik modul fizetéseit visszatérítésként.',
 ];
 
 $jsLanguageStrings = [

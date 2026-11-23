@@ -18,5 +18,10 @@ A daily background job updates the statuses when the dates arrive. Only Paid pay
 ## Payments list
 With the Payments list installed, purchase orders show the common **Payments** widget instead of the Outgoing Payments widget, and Outgoing Payments is not in the Sales menu: open the payments from **Payments**, from the quick create menu or from a document. Every payment shows the **Direction** Outgoing.
 
+## Refunds
+- Money a vendor returns on a purchase order is an incoming payment: click **Add Refund** on the purchase order. It lowers the **Paid** amount.
+- Money you return to a customer on an invoice is an outgoing payment marked as a refund (column **Refund** in the settings, invoices, quotes and sales orders by default). Switch the invoice on in the settings first.
+- **Add Payment** prefills the total minus all payments of the document, also the ones not paid yet.
+
 ## Settings
 Administrators choose the documents in **Settings → Outgoing Payments Integration**. Purchase orders are integrated by default.

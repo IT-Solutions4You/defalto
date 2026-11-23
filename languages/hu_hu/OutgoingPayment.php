@@ -54,6 +54,8 @@ $languageStrings = [
     'Incoming' => 'Bejövő',
     'Outgoing' => 'Kimenő',
     'LBL_EXPECTED_AMOUNT' => 'Várható',
+    'LBL_ADD_REFUND' => 'Visszatérítés hozzáadása',
+    'LBL_REFUND' => 'Visszatérítés',
 ];
 
 $jsLanguageStrings = [

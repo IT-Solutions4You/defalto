@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Hranice nedoplatku',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Doklad, jehož zůstatek je nejvýše tato částka, dostane stav uhrazený. Částka se porovnává v měně dokladu bez přepočtu a v zůstatku zůstává skutečný nedoplatek. 0 znamená jen zcela uhrazené doklady.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'Hranice nedoplatku musí být číslo 0 nebo větší.',
+    'LBL_REFUND' => 'Vratka',
+    'LBL_REFUND_HELP' => 'Platby tohoto modulu jsou vratky k dokladu a odečtou se od zaplacené částky.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Doklad nehradí žádný aktivní modul plateb, vratky se nezapočítají.',
+    'LBL_TWO_PAYING_MODULES' => 'Jiný modul plateb už hradí %s. Platby jednoho z nich označte jako vratky.',
 ];
 
 $jsLanguageStrings = [

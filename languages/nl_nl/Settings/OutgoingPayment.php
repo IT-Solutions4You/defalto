@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Drempel voor onderbetaling',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Een document waarvan het saldo hoogstens dit bedrag is, krijgt de status betaald. Het bedrag wordt zonder omrekening in de valuta van het document vergeleken en het saldo blijft de werkelijke onderbetaling tonen. 0 betekent alleen volledig betaalde documenten.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'De drempel voor onderbetaling moet een getal van 0 of hoger zijn.',
+    'LBL_REFUND' => 'Terugbetaling',
+    'LBL_REFUND_HELP' => 'Betalingen van deze module zijn terugbetalingen van het document en worden van het betaalde bedrag afgetrokken.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Geen actieve betalingsmodule betaalt dit document; terugbetalingen worden niet meegeteld.',
+    'LBL_TWO_PAYING_MODULES' => 'Een andere betalingsmodule betaalt %s al. Markeer de betalingen van een van beide als terugbetalingen.',
 ];
 
 $jsLanguageStrings = [

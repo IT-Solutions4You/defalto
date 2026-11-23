@@ -54,6 +54,8 @@ $languageStrings = [
     'Incoming' => 'Gelen',
     'Outgoing' => 'Giden',
     'LBL_EXPECTED_AMOUNT' => 'Beklenen',
+    'LBL_ADD_REFUND' => 'İade ekle',
+    'LBL_REFUND' => 'İade',
 ];
 
 $jsLanguageStrings = [

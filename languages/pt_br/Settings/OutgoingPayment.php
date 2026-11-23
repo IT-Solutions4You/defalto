@@ -29,6 +29,10 @@ $languageStrings = [
     'LBL_UNDERPAYMENT_THRESHOLD' => 'Limite de pagamento a menor',
     'LBL_UNDERPAYMENT_THRESHOLD_HELP' => 'Um documento cujo saldo seja no máximo este valor recebe o status pago. O valor é comparado na moeda do documento sem conversão e o saldo mantém o valor real em aberto. 0 significa apenas documentos totalmente pagos.',
     'LBL_INVALID_UNDERPAYMENT_THRESHOLD' => 'O limite de pagamento a menor deve ser um número maior ou igual a 0.',
+    'LBL_REFUND' => 'Reembolso',
+    'LBL_REFUND_HELP' => 'Os pagamentos deste módulo são reembolsos do documento e são subtraídos do valor pago.',
+    'LBL_REFUND_WITHOUT_PAYING' => 'Nenhum módulo de pagamento ativo paga este documento; os reembolsos não são contabilizados.',
+    'LBL_TWO_PAYING_MODULES' => 'Outro módulo de pagamento já paga %s. Marque os pagamentos de um deles como reembolsos.',
 ];
 
 $jsLanguageStrings = [

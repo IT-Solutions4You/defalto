@@ -54,6 +54,8 @@ $languageStrings = [
     'Incoming' => 'Prichádzajúca',
     'Outgoing' => 'Odchádzajúca',
     'LBL_EXPECTED_AMOUNT' => 'Očakávané',
+    'LBL_ADD_REFUND' => 'Pridať vratku',
+    'LBL_REFUND' => 'Vratka',
 ];
 
 $jsLanguageStrings = [
