@@ -17,13 +17,62 @@
  */
 
 $languageStrings = [
+    'LBL_CHART_RANGE_REMEDY' => 'Flytta datumen till projektperioden eller korrigera projektets datum.',
+    'LBL_CHART_DEPENDENCY_REMEDY' => 'Flytta starten till efter föregångarens slut eller korrigera eller ta bort det felaktiga beroendet.',
+    'LBL_CHART_MILESTONE_REMEDY' => 'Avsluta den angivna uppgiften senast vid milstolpens slutdatum eller korrigera slutdatumet.',
+    'LBL_CHART_OVERDUE_REMEDY' => 'Uppdatera datumen eller markera uppgiften som klar om arbetet är färdigt.',
+    'LBL_CHART_END' => 'Slut',
+    'LBL_CHART_START' => 'Start',
+    'LBL_CHART_DAY_COUNT' => 'Antal dagar',
+    'LBL_MILESTONE_RANGE_HELP' => 'Milstolpen sträcker sig från den tidigaste starten för kopplade uppgifter till det sparade slutdatumet. Uppgifterna måste sluta senast den dagen. Utan startdatum visas endast slutdatumsmarkeringen. Uppgiftsdatum flyttas inte automatiskt. Utan eget datum använder milstolpen projektets planerade slut.',
+    'LBL_TASK_OUTSIDE_PROJECT_DATES' => 'Uppgiftens datum måste ligga mellan projektets start och planerade slut.',
+    'LBL_TASK_MILESTONE_PROJECT' => 'Den valda milstolpen måste tillhöra uppgiftens projekt.',
+    'LBL_MILESTONE_BEFORE_TASK_END' => 'Milstolpen får inte sluta före datumen för de kopplade uppgifterna.',
+    'LBL_TASK_AFTER_MILESTONE' => 'Uppgiftens datum får inte överskrida den kopplade milstolpens slutdatum.',
+    'LBL_CHART_TABLE' => 'Uppgiftstabell',
+    'LBL_CLOSED_TASK_STATUSES' => 'Avslutade uppgiftsstatusar',
+    'LBL_CLOSED_TASK_STATUSES_HELP' => 'Välj statusar som inte ska markeras som försenade. Förloppsprocenten ändras inte.',
+    'LBL_CHART_OVERDUE' => 'Försenad',
+    'LBL_CHART_PERIOD' => 'Period',
+    'LBL_CHART_SETTINGS_SETUP' => 'Diagraminställningar blir tillgängliga efter uppdatering av systemdatabasen.',
+    'LBL_OUTSIDE_PROJECT_RANGE' => 'Uppgiftens datum ligger utanför projektets planerade period.',
+    'LBL_DEPENDENCY_VIOLATION' => 'Uppgiften eller milstolpen börjar innan föregångaren har avslutats.',
+    'LBL_DEPENDENCY_SELF' => 'En post kan inte länkas till sig själv.',
+    'LBL_DEPENDENCY_DUPLICATE' => 'Detta beroende finns redan.',
+    'LBL_DEPENDENCY_CYCLE' => 'Detta beroende skulle skapa en cykel.',
+    'LBL_DEPENDENCY_HELP' => 'Koppla uppgifter till uppgifter eller milstolpar till milstolpar med Slut → Start. Dubbelklicka för att ta bort länken. Datum flyttas inte automatiskt.',
+    'LBL_DEPENDENCY_SETUP' => 'Beroenden blir tillgängliga efter uppdatering av systemdatabasen.',
+    'LBL_UNSCHEDULED_TASKS' => 'Oplanerade',
+    'LBL_MISSING_START_DATE' => 'Startdatum saknas',
+    'LBL_MISSING_END_DATE' => 'Slutdatum saknas',
+    'LBL_INVALID_DATE_RANGE' => 'Ogiltigt datumintervall',
+    'LBL_EMPTY_PROJECT_CHART' => 'Uppgifter visas på tidslinjen när de har giltiga start- och slutdatum. Lägg till en uppgift för att börja planera projektet.',
+    'Milestones list' => 'Milestones Lista',
+    'Add Project Task' => 'Lägg till projektuppgift',
+    'Project Milestone Name' => 'Projektmilstolpsnamn',
+    'Milestone Date' => 'Milstolpsdatum',
+    'Project Task Name' => 'Project Task Namn',
+    'Is Converted From Opportunity' => 'Omvandlat från en affärsmöjlighet',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
+    'LBL_DAY_SCALE' => 'Dag',
+    'LBL_WEEK_SCALE' => 'Vecka',
+    'LBL_MONTH_SCALE' => 'Månad',
+    'LBL_YEAR_SCALE' => 'År',
     'CV_ALL' => 'Alla projekt',
     // Basic Strings
     'Project'                              => 'Projekt',
     'SINGLE_Project'                       => 'Projekt',
     'LBL_ADD_RECORD'                       => 'Lägg till projekt',
     'LBL_RECORDS_LIST'                     => 'Projektlista',
-    'LBL_MILESTONES_LIST'                  => 'Milstolpar Lista',
 
     // Blocks
     'LBL_PROJECT_INFORMATION'              => 'Projektuppgifter',
@@ -50,7 +99,6 @@ $languageStrings = [
     'LBL_TASKS_LOW'                        => 'Låg prioritet',
     'LBL_TASKS_OTHER'                      => 'Andra prioriteringar',
     'LBL_SELECT_PROGRESS'                  => 'framsteg - alla',
-    'LBL_SELECT_STATUS'                    => 'status - alla',
 
     //Related List
     'LBL_CHARTS'                           => 'Topplista',
@@ -81,7 +129,7 @@ $languageStrings = [
     'normal'                               => 'Normal',
     'high'                                 => 'Hög',
 
-    //Gantt chart 
+    //Gantt chart
     'LBL_CHART'                            => 'Gantt-schema',
     'LBL_PROGRESS_CHART'                   => 'framsteg Gantt-schema',
     'LBL_TASK_NAME'                        => 'uppgiftsnamn',
@@ -98,5 +146,11 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'JS_LBL_SELECT_STATUS' => 'Välj Status',
+    'JS_LBL_SELECT_PROGRESS' => 'framsteg - alla',
+    'JS_START_DATE' => 'startdatum',
+    'JS_END_DATE' => 'slutdatum',
+    'JS_PROJECT_TASKS' => 'Uppgifter',
+    'JS_TASK_NAME' => 'uppgiftsnamn',
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Färg sparats',
 ];

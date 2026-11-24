@@ -381,6 +381,8 @@ class Project_Install_Model extends Core_Install_Model
         return [
             'vtiger_project',
             'vtiger_projectcf',
+            'df_project_dependency',
+            'df_project_chart_preference',
         ];
     }
 
@@ -390,6 +392,19 @@ class Project_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        $this->getTable('df_project_chart_preference', 'id')->createTable('id')
+            ->createColumn('projectid', 'int(19) NOT NULL')
+            ->createColumn('userid', 'int(19) NOT NULL')
+            ->createColumn('settings', 'text NOT NULL')
+            ->createKey('UNIQUE KEY IF NOT EXISTS project_chart_user (projectid, userid)');
+
+        $this->getTable('df_project_dependency', 'id')
+            ->createTable('id', 'int(19) NOT NULL AUTO_INCREMENT PRIMARY KEY')
+            ->createColumn('projectid', 'int(19) NOT NULL')
+            ->createColumn('sourceid', 'int(19) NOT NULL')
+            ->createColumn('targetid', 'int(19) NOT NULL')
+            ->createKey('UNIQUE KEY IF NOT EXISTS project_dependency (projectid, sourceid, targetid)');
+
         $this->getTable('vtiger_project', null)
             ->createTable('projectid')
             ->renameColumn('accountid', 'account_id')

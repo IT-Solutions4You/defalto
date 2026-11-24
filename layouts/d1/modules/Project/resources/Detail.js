@@ -67,9 +67,8 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         data.find('.colorPicker').ColorPicker(params);
 
         //on change of status, update color picker with the status color
-        var selectElement = data.find('[name=taskstatus]');
-        selectElement.on('change', function () {
-            var selectedOption = selectElement.find('option:selected');
+        data.off('change.projectColor', '[name=taskstatus]').on('change.projectColor', '[name=taskstatus]', function (event) {
+            var selectedOption = jQuery(event.currentTarget).find('option:selected');
             var color = selectedOption.data('color');
             selectedColorField.val(color);
             data.find('.colorPicker').ColorPickerSetColor(color);
@@ -125,7 +124,8 @@ Vtiger_Detail_Js('Project_Detail_Js', {
     registerStatusChangeEventForWidget: function () {
         const self = this;
 
-        self.getContainer().on('change', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]', function (e) {
+        self.getContainer().off('change.projectWidget', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]')
+            .on('change.projectWidget', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]', function (e) {
             let picklistName = this.name,
                 statusCondition = {},
                 params = {},
@@ -206,60 +206,97 @@ Vtiger_Detail_Js('Project_Detail_Js', {
     /**
      * Function to load the gantt chart
      */
-    loadGanttChart: function (container) {
-        var gantt;
-        //load templates
-        jQuery("#ganttemplates").loadTemplates();
+    loadGanttChart: function (container, retainedState = null) {
+        const element = container.find('.project-chart')[0],
+            previous = Project_Detail_Js.gantt,
+            viewState = retainedState ?? (previous && previous.container.dataset.record === element?.dataset.record ? previous.getViewState() : {});
 
-        // here starts gantt initialization
-        gantt = new GanttMaster();
-        var workSpace = $("#workSpace");
-        workSpace.css({height: $("#workSpace").parent().height() - 20});
-        gantt.init(workSpace);
+        if (Project_Detail_Js.gantt) {
+            Project_Detail_Js.gantt.destroy();
+            Project_Detail_Js.gantt = false;
+        }
 
-        var ret;
-        ret = JSON.parse($("#projecttasks").val());
-
-        gantt.loadProject(ret);
-        gantt.checkpoint(); //empty the undo stack
-
-        $(window).resize(function () {
-            workSpace.trigger("resize.gantt");
-        })
-        jQuery('.toggleButton').click(function () {
-            workSpace.trigger("resize.gantt");
-        });
-
-        Project_Detail_Js.gantt = gantt;
-
-        // Added to make default sortorder of startdate to be ascending
-        var element = jQuery('.gdfTable.fixHead').find('.gdfColHeader[data-name=startdate]');
-        element.data('nextorder', 'asc');
-        element.trigger('click');
+        if (element) {
+            Project_Detail_Js.gantt = new Project_Chart_Js();
+            Project_Detail_Js.gantt.setParentInstance(this);
+            Project_Detail_Js.gantt.registerEvents(element, viewState);
+        }
     },
 
     loadContents: function (url, data) {
-        var detailContentsHolder = this.getContentHolder();
-        var thisInstance = this;
-        var aDeferred = jQuery.Deferred();
+        const detailContentsHolder = this.getContentHolder(),
+            thisInstance = this,
+            deferred = jQuery.Deferred(),
+            requestId = (this.projectContentRequestId || 0) + 1;
+        this.projectContentRequestId = requestId;
+
         if (url.indexOf('index.php') < 0) {
             url = 'index.php?' + url;
         }
-        var params = [];
-        params.url = url;
-        if (typeof data != 'undefined') {
+
+        const params = {url},
+            chartRequest = app.convertUrlToDataParams(url).mode === 'showChart';
+
+        if (data !== undefined) {
             params.data = data;
         }
+
         app.helper.showProgress();
-        app.request.pjax(params).then(function (error, response) {
-            detailContentsHolder.html(response);
-            aDeferred.resolve(response);
-            app.helper.hideProgress();
-            if (detailContentsHolder.find('#workSpace').length != 0) {
-                thisInstance.loadGanttChart(detailContentsHolder);
+        // A detail-tab refresh must not enter the global PJAX/document event lifecycle.
+        app.request.post(params).then(function (error, response) {
+            if (requestId !== thisInstance.projectContentRequestId) {
+                deferred.reject();
+                return;
             }
+
+            app.helper.hideProgress();
+
+            if (error || typeof response !== 'string' || !response.trim()) {
+                const failure = error || {message: app.vtranslate('JS_ERROR')};
+                app.helper.showErrorNotification({message: failure.message || app.vtranslate('JS_ERROR')});
+                deferred.reject(failure);
+                return;
+            }
+
+            if (chartRequest) {
+                const incoming = jQuery('<div>').append(jQuery.parseHTML(response)),
+                    chartData = incoming.find('.project-chart-data').val();
+
+                if (!chartData || !incoming.find('.project-chart-canvas, .project-chart-unscheduled, .project-chart').length) {
+                    app.helper.showErrorNotification({message: app.vtranslate('JS_ERROR')});
+                    deferred.reject();
+                    return;
+                }
+            }
+
+            const previous = Project_Detail_Js.gantt,
+                viewState = previous ? previous.getViewState() : {};
+
+            if (previous) {
+                previous.destroy();
+                Project_Detail_Js.gantt = false;
+            }
+
+            detailContentsHolder.html(response);
+            thisInstance.setForm(detailContentsHolder.find('form#detailView').first());
+            thisInstance.registerBlockStatusCheckOnLoad();
+
+            if (detailContentsHolder.find('.project-chart').length) {
+                thisInstance.loadGanttChart(detailContentsHolder, viewState);
+            }
+
+            // Consumers run only after the replacement chart is ready.
+            deferred.resolve(response);
+        }, function (error) {
+            if (requestId === thisInstance.projectContentRequestId) {
+                app.helper.hideProgress();
+                app.helper.showErrorNotification({message: error?.message || error?.statusText || app.vtranslate('JS_ERROR')});
+            }
+
+            deferred.reject(error);
         });
-        return aDeferred.promise();
+
+        return deferred.promise();
     },
 
     /**
@@ -268,10 +305,11 @@ Vtiger_Detail_Js('Project_Detail_Js', {
     registerEventsForTasksWidget: function () {
         const self = this,
             summaryViewContainer = self.getContainer(),
-            tasksWidget = summaryViewContainer.find('[data-name="LBL_TASKS"]');
+            selector = '[data-name="LBL_TASKS"] .editTaskDetails';
 
-        tasksWidget.on('click', '.editTaskDetails', function (e) {
+        summaryViewContainer.off('click.projectTaskWidget', selector).on('click.projectTaskWidget', selector, function (e) {
             let currentTarget = jQuery(e.currentTarget),
+                tasksWidget = currentTarget.closest('[data-name="LBL_TASKS"]'),
                 newValue = currentTarget.data('value'),
                 element = currentTarget.closest('ul.dropdown-menu'),
                 editElement = element.closest('.dropdown'),
@@ -352,206 +390,18 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         });
     },
 
-    registerGanttChartEvents: function (container) {
-        this.registerZoomButtons(container);
-        this.registerTaskEdit(container);
-        this.registerRecordUpdateEvent(container);
-        this.registerGanttSorting(container);
-    },
-
-    registerZoomButtons: function (container) {
-
-        container.on('click', '.zoomIn', function (e) {
-            e.preventDefault();
-            jQuery("#workSpace").trigger('zoomPlus.gantt');
-        });
-
-        container.on('click', '.zoomOut', function (e) {
-            e.preventDefault();
-            jQuery("#workSpace").trigger('zoomMinus.gantt');
-        });
-    },
-
-    registerTaskEdit: function (container) {
-        var thisInstance = this;
-        container.on('click', '.editTask', function (e) {
-            var element = jQuery(e.currentTarget);
-            var params = {
-                'module': 'ProjectTask',
-                'view': 'QuickEditAjax',
-                'returnview': 'Detail',
-                'returnmode': 'showChart',
-                'returnmodule': app.getModuleName(),
-                'returnrecord': thisInstance.getRecordId(),
-                'parentid': thisInstance.getRecordId(),
-                'record': element.data('recordid')
-            }
-            app.helper.showProgress();
-            app.request.post({data: params}).then(
-                function (error, data) {
-                    app.helper.hideProgress();
-                    var callBackFunction = function (data) {
-                        var form = data.find('.recordEditView');
-                        var params = {
-                            submitHandler: function (form) {
-                                form = jQuery(form);
-                                if (form.attr('id') == 'projectTaskQuickEditForm') {
-                                    app.helper.showProgress();
-                                    thisInstance.saveTask(form).then(function (err, data) {
-                                        app.helper.hideProgress();
-                                        if (err === null) {
-                                            jQuery('.vt-notification').remove();
-                                            app.helper.hideModal();
-                                            // to reload chart
-                                            jQuery('[data-label-key=Chart]').click();
-                                        } else {
-                                            app.event.trigger('post.save.failed', err);
-                                        }
-                                    });
-                                }
-                            },
-                            validationMeta: quickcreate_uimeta
-                        };
-                        form.vtValidate(params);
-                    }
-                    var modalWindowParams = {
-                        cb: callBackFunction
-                    }
-                    app.helper.showModal(data, modalWindowParams);
-                }
-            );
-        });
-    },
-
-    registerRecordUpdateEvent: function (container) {
-        container.on('updateTaskRecord.gantt', '#workSpace', function (e, task) {
-            var dateFormat = vtUtils.getMomentDateFormat();
-            var startDate = moment(task.start).format(dateFormat);
-            var endDate = moment(task.end).format(dateFormat);
-            if ((task.oldstart != '' && task.oldend != '') && (task.oldstart != startDate || task.oldend != endDate)) {
-                var params = {
-                    'module': 'ProjectTask',
-                    'action': 'SaveTask',
-                    'record': task.recordid,
-                    'startdate': startDate,
-                    'enddate': endDate
-                }
-                app.helper.showProgress();
-                app.request.post({data: params}).then(
-                    function (error, data) {
-                        app.helper.hideProgress();
-                        if (error === null) {
-                            jQuery('.vt-notification').remove();
-                        } else {
-                            app.event.trigger('post.save.failed', error);
-                        }
-                    }
-                );
-            }
-        });
-    },
-
-    sortResults: function (arr, prop, asc) {
-        var thisInstance = this;
-        arr = arr.sort(function (a, b) {
-            if (asc) {
-                if (a[prop] === parseInt(a[prop], 10) && b[prop] === parseInt(b[prop], 10)) {
-                    return a[prop] - b[prop];
-                } else if (thisInstance.isDate(a[prop]) && thisInstance.isDate(b[prop])) {
-                    return new Date(a[prop]).getTime() - new Date(b[prop]).getTime();
-                } else {
-                    return thisInstance.sortAlphabetically(a[prop], b[prop]);
-                }
-            } else {
-                if (a[prop] === parseInt(a[prop], 10) && b[prop] === parseInt(b[prop], 10)) {
-                    return b[prop] - a[prop];
-                } else if (thisInstance.isDate(a[prop]) && thisInstance.isDate(b[prop])) {
-                    return new Date(b[prop]).getTime() - new Date(a[prop]).getTime();
-                } else {
-                    return thisInstance.sortAlphabetically(b[prop], a[prop]);
-                }
-            }
-        });
-
-        return arr;
-    },
-
-    isDate: function (date) {
-        return (new Date(date) !== "Invalid Date" && !isNaN(new Date(date))) ? true : false;
-    },
-
-    sortAlphabetically: function (a, b) {
-        var nameA = a.toLowerCase();
-        var nameB = b.toLowerCase()
-        if (nameA < nameB) {
-            return -1;
-        }
-        if (nameA > nameB) {
-            return 1;
-        }
-
-        return 0;
-    },
-
-    registerGanttSorting: function (container) {
-        var thisInstance = this;
-        container.on('click', '.gdfColHeader', function (e) {
-            var element = jQuery(e.currentTarget);
-            var text = element.data('text');
-            var name = element.data('name');
-            var order = element.data('nextorder');
-            if (name) {
-                container.find('.gdfColHeader .fa.fa-chevron-down').remove();
-                container.find('.gdfColHeader .fa.fa-chevron-up').remove();
-                var descTemplate = '<i class="fa fa-chevron-down"></i> ' + text;
-                var ascTemplate = '<i class="fa fa-chevron-up"></i>' + text;
-                if (!order) {
-                    order = false;
-                    element.html(descTemplate);
-                } else if (order == 'asc') {
-                    order = true;
-                    element.html(ascTemplate);
-                } else if (order == 'desc') {
-                    order = false;
-                    element.html(descTemplate);
-                }
-
-                var data = JSON.parse($("#projecttasks").val());
-                data.tasks = thisInstance.sortResults(data.tasks, name, order);
-                if (order == false) {
-                    order = 'asc';
-                } else {
-                    order = 'desc';
-                }
-                element.data('nextorder', order);
-                var gantt = Project_Detail_Js.gantt;
-                gantt.loadProject(data);
-                gantt.checkpoint(); //empty the undo stack
-            }
-        });
-    },
-
-    saveTask: function (form) {
-        var aDeferred = jQuery.Deferred();
-        var formData = form.serializeFormData();
-        app.request.post({data: formData}).then(
-            function (error, data) {
-                //TODO: App Message should be shown
-                aDeferred.resolve(error, data);
-            },
-            function (textStatus, errorThrown) {
-                aDeferred.reject(textStatus, errorThrown);
-            }
-        );
-        return aDeferred.promise();
-    },
-
     registerEvents: function () {
         var detailContentsHolder = this.getContentHolder();
         var thisInstance = this;
+
+        if (this.getContainer().data('projectDetailEvents')) {
+            return;
+        }
+
+        this.getContainer().data('projectDetailEvents', true);
         this._super();
 
-        detailContentsHolder.on('click', '.moreRecentMilestones', function (e) {
+        detailContentsHolder.off('click.projectRecentMilestones', '.moreRecentMilestones').on('click.projectRecentMilestones', '.moreRecentMilestones', function (e) {
             let recentMilestonesTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentMileStonesLabel);
 
             if (recentMilestonesTab) {
@@ -560,7 +410,7 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             }
         });
 
-        detailContentsHolder.on('click', '.moreRecentTickets', function (e) {
+        detailContentsHolder.off('click.projectRecentTickets', '.moreRecentTickets').on('click.projectRecentTickets', '.moreRecentTickets', function (e) {
             let recentTicketsTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTicketsTabLabel);
 
             if (recentTicketsTab) {
@@ -569,7 +419,7 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             }
         });
 
-        detailContentsHolder.on('click', '.moreRecentTasks', function (e) {
+        detailContentsHolder.off('click.projectRecentTasks', '.moreRecentTasks').on('click.projectRecentTasks', '.moreRecentTasks', function (e) {
             let recentTasksTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTasksTabLabel);
 
             if (recentTasksTab) {
@@ -579,8 +429,8 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         });
 
         var detailViewContainer = jQuery('.detailViewContainer');
-        thisInstance.registerGanttChartEvents(detailViewContainer);
-        if (detailViewContainer.find('#workSpace').length != 0) {
+
+        if (detailViewContainer.find('.project-chart').length != 0) {
             this.loadGanttChart(detailViewContainer);
         }
     }

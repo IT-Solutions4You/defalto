@@ -17,14 +17,62 @@
  */
 
 $languageStrings = [
+    'LBL_CHART_RANGE_REMEDY' => 'Przenieś terminy do okresu projektu lub popraw terminy projektu.',
+    'LBL_CHART_DEPENDENCY_REMEDY' => 'Przesuń początek za koniec poprzednika albo popraw lub usuń błędną zależność.',
+    'LBL_CHART_MILESTONE_REMEDY' => 'Zakończ wskazane zadanie do terminu kamienia milowego lub popraw ten termin.',
+    'LBL_CHART_OVERDUE_REMEDY' => 'Zaktualizuj terminy lub oznacz zadanie jako ukończone, jeśli praca jest gotowa.',
+    'LBL_CHART_END' => 'Koniec',
+    'LBL_CHART_START' => 'Początek',
+    'LBL_CHART_DAY_COUNT' => 'Liczba dni',
+    'LBL_MILESTONE_RANGE_HELP' => 'Kamień milowy obejmuje okres od najwcześniejszego rozpoczęcia powiązanych zadań do terminu zapisanego w rekordzie. Zadania muszą zakończyć się najpóźniej tego dnia. Bez daty rozpoczęcia widoczny jest tylko znacznik terminu. Daty zadań nie są przesuwane automatycznie. Bez własnej daty kamień milowy używa planowanego końca projektu.',
+    'LBL_TASK_OUTSIDE_PROJECT_DATES' => 'Daty zadania muszą mieścić się między początkiem a planowanym końcem projektu.',
+    'LBL_TASK_MILESTONE_PROJECT' => 'Wybrany kamień milowy musi należeć do projektu zadania.',
+    'LBL_MILESTONE_BEFORE_TASK_END' => 'Kamień milowy nie może kończyć się przed datami powiązanych zadań.',
+    'LBL_TASK_AFTER_MILESTONE' => 'Daty zadania nie mogą przekraczać terminu powiązanego kamienia milowego.',
+    'LBL_CHART_TABLE' => 'Tabela zadań',
+    'LBL_CLOSED_TASK_STATUSES' => 'Zamknięte statusy zadań',
+    'LBL_CLOSED_TASK_STATUSES_HELP' => 'Wybierz statusy, które nie mają być oznaczane jako opóźnione. Procent postępu pozostanie bez zmian.',
+    'LBL_CHART_OVERDUE' => 'Po terminie',
+    'LBL_CHART_PERIOD' => 'Okres',
+    'LBL_CHART_SETTINGS_SETUP' => 'Ustawienia wykresu będą dostępne po aktualizacji bazy danych systemu.',
+    'LBL_OUTSIDE_PROJECT_RANGE' => 'Terminy zadania wykraczają poza planowany okres projektu.',
+    'LBL_DEPENDENCY_VIOLATION' => 'Zadanie lub kamień milowy zaczyna się przed zakończeniem poprzednika.',
+    'LBL_DEPENDENCY_SELF' => 'Nie można połączyć rekordu z nim samym.',
+    'LBL_DEPENDENCY_DUPLICATE' => 'Ta zależność już istnieje.',
+    'LBL_DEPENDENCY_CYCLE' => 'Ta zależność utworzyłaby cykl.',
+    'LBL_DEPENDENCY_HELP' => 'Łącz zadania ze sobą lub kamienie milowe ze sobą relacją Koniec → Początek. Dwukrotne kliknięcie usuwa połączenie. Daty nie są przesuwane automatycznie.',
+    'LBL_DEPENDENCY_SETUP' => 'Zależności będą dostępne po aktualizacji bazy danych systemu.',
+    'LBL_UNSCHEDULED_TASKS' => 'Niezaplanowane',
+    'LBL_MISSING_START_DATE' => 'Brak daty rozpoczęcia',
+    'LBL_MISSING_END_DATE' => 'Brak daty zakończenia',
+    'LBL_INVALID_DATE_RANGE' => 'Nieprawidłowy zakres dat',
+    'LBL_EMPTY_PROJECT_CHART' => 'Zadania pojawią się na osi czasu po uzupełnieniu prawidłowych dat rozpoczęcia i zakończenia. Dodaj zadanie, aby rozpocząć planowanie projektu.',
+    'Milestones list' => 'Lista kamieni milowych',
+    'Add Project Task' => 'Dodaj zadanie projektu',
+    'Project Milestone Name' => 'Nazwa etapu',
+    'Milestone Date' => 'Data rozpoczęcia etapu',
+    'Project Task Name' => 'Nazwa projektu Zadanie',
+    'Is Converted From Opportunity' => 'Przekształcono z szansy sprzedaży',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
+    'LBL_DAY_SCALE' => 'Dzień',
+    'LBL_WEEK_SCALE' => 'Tydzień',
+    'LBL_MONTH_SCALE' => 'Miesiąc',
+    'LBL_YEAR_SCALE' => 'Rok',
     'CV_ALL' => 'Wszystkie projekty',
     // Basic Strings
     'Project'                 => 'Projekt',
     'SINGLE_Project'          => 'Projekt',
     'LBL_ADD_RECORD'          => 'Dodaj Projekt',
     'LBL_RECORDS_LIST'        => 'Lista Projektów',
-    'LBL_RECORD_SUMMARY'      => 'Podsumowanie Projektu',
-    'LBL_MILESTONES_LIST'     => 'Lista Milestones',
 
     // Blocks
     'LBL_PROJECT_INFORMATION' => 'Szczegóły projektu',
@@ -51,7 +99,6 @@ $languageStrings = [
     'LBL_TASKS_LOW'           => 'Niski priorytet',
     'LBL_TASKS_OTHER'         => 'Inne priorytety',
     'LBL_SELECT_PROGRESS'     => 'Postęp - wszystko',
-    'LBL_SELECT_STATUS'       => 'Stan - Wszystkie',
 
     //Related List
     'LBL_CHARTS'              => 'Wykresy',
@@ -81,7 +128,7 @@ $languageStrings = [
     'normal'                               => 'Normalny',
     'high'                                 => 'Wysoki',
 
-    //Gantt chart 
+    //Gantt chart
     'LBL_CHART'                            => 'Wykres Gantta',
     'LBL_PROGRESS_CHART'                   => 'Wykres Gantta',
     'LBL_TASK_NAME'                        => 'Nazwa zadania',
@@ -98,5 +145,11 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'JS_LBL_SELECT_STATUS' => 'Wybierz status',
+    'JS_LBL_SELECT_PROGRESS' => 'Postęp - wszystko',
+    'JS_START_DATE' => 'data rozpoczęcia',
+    'JS_END_DATE' => 'Data zakończenia',
+    'JS_PROJECT_TASKS' => 'Zadania',
+    'JS_TASK_NAME' => 'Nazwa zadania',
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Kolor zapisany pomyślnie',
 ];

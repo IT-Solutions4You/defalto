@@ -18,6 +18,56 @@
  */
 
 $languageStrings = [
+    'LBL_CHART_RANGE_REMEDY' => 'انقل التواريخ داخل فترة المشروع أو صحح تواريخ المشروع.',
+    'LBL_CHART_DEPENDENCY_REMEDY' => 'اجعل البداية بعد نهاية السجل السابق أو صحح العلاقة غير الصحيحة أو أزلها.',
+    'LBL_CHART_MILESTONE_REMEDY' => 'أنهِ المهمة المذكورة بحلول موعد المرحلة أو صحح موعد المرحلة.',
+    'LBL_CHART_OVERDUE_REMEDY' => 'حدّث التواريخ أو ضع علامة مكتملة إذا انتهى العمل.',
+    'LBL_CHART_END' => 'النهاية',
+    'LBL_CHART_START' => 'البداية',
+    'LBL_CHART_DAY_COUNT' => 'عدد الأيام',
+    'LBL_MILESTONE_RANGE_HELP' => 'تبدأ فترة المرحلة من أقدم تاريخ بدء لمهامها وتنتهي بالموعد المحفوظ في سجل المرحلة. يجب أن تنتهي المهام بحلول هذا الموعد. إذا لم يتوفر تاريخ بدء، يُعرض الموعد كعلامة فقط. لا تتغير مواعيد المهام تلقائيًا. إذا لم يكن للمرحلة موعد خاص، تُستخدم نهاية المشروع المخططة.',
+    'LBL_TASK_OUTSIDE_PROJECT_DATES' => 'يجب أن تكون تواريخ المهمة ضمن تاريخ بدء المشروع وتاريخ انتهائه المخطط.',
+    'LBL_TASK_MILESTONE_PROJECT' => 'يجب أن ينتمي المعلم المحدد إلى مشروع المهمة.',
+    'LBL_MILESTONE_BEFORE_TASK_END' => 'لا يمكن أن يسبق موعد المرحلة تواريخ مهامها المرتبطة.',
+    'LBL_TASK_AFTER_MILESTONE' => 'لا يمكن أن تتجاوز تواريخ المهمة الموعد النهائي للمرحلة المرتبطة.',
+    'LBL_CHART_TABLE' => 'جدول المهام',
+    'LBL_CLOSED_TASK_STATUSES' => 'حالات المهام المغلقة',
+    'LBL_CLOSED_TASK_STATUSES_HELP' => 'اختر الحالات التي يجب ألا تعتبر متأخرة. ستبقى نسبة الإنجاز دون تغيير.',
+    'LBL_CHART_OVERDUE' => 'متأخرة',
+    'LBL_CHART_PERIOD' => 'الفترة',
+    'LBL_CHART_SETTINGS_SETUP' => 'ستتوفر إعدادات المخطط بعد تحديث قاعدة بيانات النظام.',
+    'LBL_OUTSIDE_PROJECT_RANGE' => 'تواريخ المهمة تتجاوز الفترة المخططة للمشروع.',
+    'LBL_DEPENDENCY_VIOLATION' => 'تبدأ المهمة أو المرحلة قبل انتهاء السابقة.',
+    'LBL_DEPENDENCY_SELF' => 'لا يمكن ربط السجل بنفسه.',
+    'LBL_DEPENDENCY_DUPLICATE' => 'هذه التبعية موجودة بالفعل.',
+    'LBL_DEPENDENCY_CYCLE' => 'ستؤدي هذه التبعية إلى إنشاء دورة.',
+    'LBL_DEPENDENCY_HELP' => 'اربط المهام ببعضها أو المراحل ببعضها من النهاية إلى البداية. انقر نقراً مزدوجاً لحذف الرابط. لا تتغير المواعيد تلقائياً.',
+    'LBL_DEPENDENCY_SETUP' => 'ستتوفر التبعيات بعد تحديث قاعدة بيانات النظام.',
+    'LBL_UNSCHEDULED_TASKS' => 'غير مجدولة',
+    'LBL_MISSING_START_DATE' => 'تاريخ البدء مفقود',
+    'LBL_MISSING_END_DATE' => 'تاريخ الانتهاء مفقود',
+    'LBL_INVALID_DATE_RANGE' => 'نطاق التواريخ غير صالح',
+    'LBL_EMPTY_PROJECT_CHART' => 'تظهر المهام على المخطط الزمني عند تحديد تاريخي بدء وانتهاء صالحين. أضف مهمة لبدء تخطيط المشروع.',
+    'Milestones list' => 'قائمة المعالم',
+    'Add Project Task' => 'إضافة مهمة مشروع',
+    'Project Milestone Name' => 'اسم حدث المشروع',
+    'Milestone Date' => 'تاريخ حدث المشروع',
+    'Project Task Name' => 'المشروع اسم المهمة',
+    'Is Converted From Opportunity' => 'تم التحويل من فرصة',
+    '10%' => '10%',
+    '20%' => '20%',
+    '30%' => '30%',
+    '40%' => '40%',
+    '50%' => '50%',
+    '60%' => '60%',
+    '70%' => '70%',
+    '80%' => '80%',
+    '90%' => '90%',
+    '100%' => '100%',
+    'LBL_DAY_SCALE' => 'يوم',
+    'LBL_WEEK_SCALE' => 'أسبوع',
+    'LBL_MONTH_SCALE' => 'شهر',
+    'LBL_YEAR_SCALE' => 'سنة',
     'CV_ALL' => 'جميع المشاريع',
     // Basic Strings
     'Project'                              => 'المشاريع',
@@ -50,7 +100,6 @@ $languageStrings = [
     'LBL_TASKS_LOW'                        => 'منخفض الأولوية',
     'LBL_TASKS_OTHER'                      => 'الأولويات الأخرى',
     'LBL_SELECT_PROGRESS'                  => 'التقدم - جميع',
-    'LBL_SELECT_STATUS'                    => 'الحالة - جميع',
 
     //Related List
     'LBL_CHARTS'                           => 'الرسوم البيانية',
@@ -81,7 +130,7 @@ $languageStrings = [
     'normal'                               => 'طبيعي',
     'high'                                 => 'ارتفاع',
 
-    //Gantt chart 
+    //Gantt chart
     'LBL_CHART'                            => 'مخطط جانت',
     'LBL_PROGRESS_CHART'                   => 'مخطط جانت',
     'LBL_TASK_NAME'                        => 'اسم المهمة',
@@ -98,5 +147,11 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'JS_LBL_SELECT_STATUS' => 'اختر الحالة',
+    'JS_LBL_SELECT_PROGRESS' => 'التقدم - جميع',
+    'JS_START_DATE' => 'تاريخ بدء',
+    'JS_END_DATE' => 'تاريخ نهاية',
+    'JS_PROJECT_TASKS' => 'المهام',
+    'JS_TASK_NAME' => 'اسم المهمة',
     'JS_COLOR_SAVED_SUCESSFULLY' => 'لون المحفوظة بنجاح',
 ];

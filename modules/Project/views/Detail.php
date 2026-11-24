@@ -125,74 +125,44 @@ class Project_Detail_View extends Vtiger_Detail_View
 	 *
 	 * @param Vtiger_Request $request
 	 */
-	public function showChart(Vtiger_Request $request)
-	{
-		$parentId = $request->get('record');
-		$projectTasks = [];
-		$moduleName = $request->getModule();
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
-		$projectTaskModel = Vtiger_Module_Model::getInstance('ProjectTask');
-		$projectTasks['tasks'] = $parentRecordModel->getProjectTasks();
-		$projectTasks["selectedRow"] = 0;
-		$projectTasks["canWrite"] = true;
-		$projectTasks["canWriteOnParent"] = true;
-		$viewer = $this->getViewer($request);
-		$viewer->assign('PARENT_ID', $parentId);
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('PROJECT_TASKS', $projectTasks);
-		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
-		$viewer->assign('TASK_STATUS', Vtiger_Util_Helper::getRoleBasedPicklistValues('projecttaskstatus', $currentUserModel->get('roleid')));
-		$viewer->assign('TASK_STATUS_COLOR', $parentRecordModel->getStatusColors());
-		$viewer->assign('STYLES', $this->getHeaderCss($request));
-		$viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
-		$viewer->assign('STATUS_FIELD_MODEL', Vtiger_Field_Model::getInstance('projecttaskstatus', $projectTaskModel));
+    public function showChart(Vtiger_Request $request)
+    {
+        $project = Vtiger_Record_Model::getInstanceById($request->get('record'), 'Project');
+        $chart = new Project_Chart_Model();
+        $user = Users_Record_Model::getCurrentUserModel();
+        $viewer = $this->getViewer($request);
+        $viewer->assign('PARENT_ID', $project->getId())
+            ->assign('MODULE', 'Project')
+            ->assign('PROJECT_CHART', $chart->getChartData($project))
+            ->assign('USER_DATE_FORMAT', $user->get('date_format'))
+            ->assign('CHART_LOCALE', $user->get('language'))
+            ->assign('CHART_PRINT', false);
 
-		return $viewer->view('ShowChart.tpl', $moduleName, 'true');
-	}
+        return $viewer->view('ShowChart.tpl', 'Project', true);
+    }
 
-    /**
-     * @inheritDoc
-     */
     public function getHeaderScripts(Vtiger_Request $request): array
-	{
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$jsFileNames = [
-			'~/libraries/jquery/gantt/libs/jquery.livequery.min.js',
-			'~/libraries/jquery/gantt/libs/jquery.timers.js',
-			'~/libraries/jquery/gantt/libs/platform.js',
-			'~/libraries/jquery/gantt/libs/date.js',
-			'~/libraries/jquery/gantt/libs/i18nJs.js',
-			'~/libraries/jquery/gantt/libs/JST/jquery.JST.js',
-			'~/libraries/jquery/gantt/libs/jquery.svg.min.js',
-			'~/libraries/jquery/gantt/ganttUtilities.js',
-			'~/libraries/jquery/gantt/ganttTask.js',
-			'~/libraries/jquery/gantt/ganttDrawerSVG.js',
-			'~/libraries/jquery/gantt/ganttGridEditor.js',
-			'~/libraries/jquery/gantt/ganttMaster.js',
-			'~/libraries/jquery/gantt/libs/moment.min.js',
-			'~/libraries/jquery/colorpicker/js/colorpicker.js',
-		];
+    {
+        $scripts = parent::getHeaderScripts($request);
+        $local = $this->checkAndConvertJsScripts([
+            'modules.ProjectTask.resources.Edit',
+            '~/vendor/dhtmlx/gantt/codebase/dhtmlxgantt.js',
+            'modules.Project.resources.Chart',
+            '~/libraries/jquery/colorpicker/js/colorpicker.js',
+        ]);
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        return array_merge($scripts, $local);
+    }
 
-        return array_merge($headerScriptInstances, $jsScriptInstances);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
     public function getHeaderCss(Vtiger_Request $request): array
-	{
-		$headerCssInstances = parent::getHeaderCss($request);
-		$cssFileNames = [
-			'~/libraries/jquery/gantt/platform.css',
-			'~/libraries/jquery/gantt/gantt.css',
-			'~/libraries/jquery/colorpicker/css/colorpicker.css',
-		];
-		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
-		$headerCssInstances = array_merge($cssInstances, $headerCssInstances);
+    {
+        $styles = parent::getHeaderCss($request);
+        $local = $this->checkAndConvertCssStyles([
+            '~/vendor/dhtmlx/gantt/codebase/dhtmlxgantt.css',
+            '~/layouts/d1/modules/Project/resources/Chart.css',
+            '~/libraries/jquery/colorpicker/css/colorpicker.css',
+        ]);
 
-		return $headerCssInstances;
-	}
+        return array_merge($styles, $local);
+    }
 }
