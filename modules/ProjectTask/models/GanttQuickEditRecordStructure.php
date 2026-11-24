@@ -18,6 +18,8 @@
 
 class ProjectTask_GanttQuickEditRecordStructure_Model extends Vtiger_QuickCreateRecordStructure_Model
 {
+    protected static array $chartFields = ['projectid', 'milestoneid', 'startdate', 'enddate'];
+
     /**
      * Function to get the values in stuctured format
      * @return <array> - values in structure array('block'=>array(fieldinfo));
@@ -34,10 +36,20 @@ class ProjectTask_GanttQuickEditRecordStructure_Model extends Vtiger_QuickCreate
 
         $fieldModelList = $moduleModel->getQuickCreateFields();
 
-        // end date should be there in the quick edit for gantt chart
-        $fieldModelList['enddate'] = $moduleModel->getField('enddate');
+        // Chart relationships and boundaries are independent of Quick Create layout defaults.
+        foreach (self::$chartFields as $fieldName) {
+            $field = $moduleModel->getField($fieldName);
+
+            if ($field) {
+                $fieldModelList[$fieldName] = $field;
+            }
+        }
 
         foreach ($fieldModelList as $fieldName => $fieldModel) {
+            if (!$fieldModel->isViewable()) {
+                continue;
+            }
+
             $recordModelFieldValue = $recordModel->get($fieldName);
 
             if (!empty($recordModelFieldValue)) {

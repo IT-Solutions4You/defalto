@@ -10,6 +10,7 @@
 
 class ProjectTask_Install_Model extends Core_Install_Model
 {
+    protected bool $initializeClosedStatuses = false;
     public static array $progressValues = [
         '10%' => '10%',
         '20%' => '20%',
@@ -345,6 +346,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
         return [
             'vtiger_projecttask',
             'vtiger_projecttaskcf',
+            'df_projecttask_closed_status',
         ];
     }
 
@@ -354,6 +356,12 @@ class ProjectTask_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        $this->retrieveDB();
+        $this->initializeClosedStatuses = !Vtiger_Utils::CheckTable('df_projecttask_closed_status');
+        $this->getTable('df_projecttask_closed_status', null)->createTable('statusid', 'int(19) NOT NULL PRIMARY KEY');
+
+        $this->createDefaultClosedStatuses();
+
         $this->getTable('vtiger_projecttask', null)
             ->createTable('projecttaskid')
             ->createColumn('projecttaskname', 'varchar(255) default NULL')
@@ -370,5 +378,19 @@ class ProjectTask_Install_Model extends Core_Install_Model
 
         $this->getTable('vtiger_projecttaskcf', '')
             ->createTable('projecttaskid');
+    }
+    public function postInstall(): void
+    {
+        parent::postInstall();
+        $this->createDefaultClosedStatuses();
+    }
+
+    protected function createDefaultClosedStatuses(): void
+    {
+        if ($this->initializeClosedStatuses && Vtiger_Utils::CheckTable('vtiger_projecttaskstatus')) {
+            $this->getDB()->pquery('INSERT IGNORE INTO df_projecttask_closed_status (statusid)'
+                . ' SELECT projecttaskstatusid FROM vtiger_projecttaskstatus WHERE projecttaskstatus IN (?,?)', ['Completed', 'Canceled']);
+            $this->initializeClosedStatuses = false;
+        }
     }
 }

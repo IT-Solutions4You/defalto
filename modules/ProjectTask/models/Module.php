@@ -96,4 +96,16 @@ class ProjectTask_Module_Model extends Vtiger_Module_Model
     {
         return ['Import', 'Export', 'DuplicatesHandling'];
     }
+
+    public function getSettingLinks()
+    {
+        $links = parent::getSettingLinks();
+
+        if (Users_Record_Model::getCurrentUserModel()->isAdminUser()) {
+            $links[] = ['linktype' => 'LISTVIEWSETTING', 'linklabel' => vtranslate('LBL_CLOSED_TASK_STATUSES', 'Project'),
+                'linkurl' => 'index.php?module=ProjectTask&view=ChartSettings', 'linkicon' => ''];
+        }
+
+        return $links;
+    }
 }

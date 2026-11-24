@@ -18,6 +18,33 @@
 
 class ProjectMilestone_Module_Model extends Vtiger_Module_Model
 {
+    public function searchRecord($searchValue, $parentId = false, $parentModule = false, $relatedModule = false)
+    {
+        if (!$parentId || $parentModule !== 'Project') {
+            return parent::searchRecord($searchValue, $parentId, $parentModule, $relatedModule);
+        }
+
+        $query = Core_QueryGenerator_Model::getInstance('ProjectMilestone');
+        $query->setFields(['id', 'projectmilestonename']);
+        $query->addFieldColumnCondition('projectid', '=', (int)$parentId);
+        $query->addAnyFieldContainsCondition(['projectmilestonename'], (string)$searchValue);
+        $query->setLimit(100);
+        $rows = $query->getProjectedRows();
+        $permissions = Users_Privileges_Model::getDetailViewPermissions('ProjectMilestone', array_keys($rows));
+        $records = [];
+
+        foreach ($rows as $id => $row) {
+            if (!($permissions[$id] ?? false)) {
+                continue;
+            }
+
+            $records['ProjectMilestone'][$id] = Vtiger_Record_Model::getCleanInstance('ProjectMilestone')
+                ->setData($row);
+        }
+
+        return $records;
+    }
+
 	public function getSideBarLinks($linkParams)
 	{
 		$linkTypes = ['SIDEBARLINK', 'SIDEBARWIDGET'];
