@@ -52,6 +52,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'The item does not belong to the source record.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Quantity and price must be numbers.',
     'LBL_CONVERSION_NO_ITEMS' => 'At least one item has to remain.',
+    'Item name' => 'Item name',
+    'LBL_ADD_ITEM' => 'Add item',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Select the product or service from the list of suggestions.',
+    'No Tax' => 'No Tax',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Product line save error',

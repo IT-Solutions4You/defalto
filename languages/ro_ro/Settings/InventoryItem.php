@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Din %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Adaugă mapare',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Nu se copiază',
+    'LBL_PRODUCT_BLOCK' => 'Bloc de produse',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Tip de bloc de produse',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Bloc de produse standard',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Articolele se adaugă și se editează în vizualizarea de detalii a înregistrării, cu toate câmpurile articolului, reduceri, taxe și liste de prețuri.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Bloc de produse simplificat',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Articolele se adaugă și se editează în vizualizarea de editare a înregistrării. Se afișează doar denumirea articolului, cantitatea, unitatea, prețul și totalul, iar vizualizarea de detalii este numai pentru citire.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Setările conversiei au fost salvate',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Setarea blocului de produse a fost salvată',
 ];

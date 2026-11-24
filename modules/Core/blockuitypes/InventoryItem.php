@@ -15,6 +15,10 @@ class Core_InventoryItem_BlockUIType extends Vtiger_Base_Model implements Core_I
      */
     public function getTemplateName(): string
     {
+        if (InventoryItem_Module_Model::isSimplifiedBlock()) {
+            return 'blockuitypes/InventoryItemSimplifiedEdit.tpl';
+        }
+
         return 'blockuitypes/InventoryItemEdit.tpl';
     }
 
@@ -23,6 +27,10 @@ class Core_InventoryItem_BlockUIType extends Vtiger_Base_Model implements Core_I
      */
     public function getDetailViewTemplateName(): string
     {
+        if (InventoryItem_Module_Model::isSimplifiedBlock()) {
+            return 'blockuitypes/InventoryItemSimplified.tpl';
+        }
+
         return 'blockuitypes/InventoryItem.tpl';
     }
 }

@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Forrás: %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Leképezés hozzáadása',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Nem másolódik',
+    'LBL_PRODUCT_BLOCK' => 'Termékblokk',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Termékblokk típusa',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Szabványos termékblokk',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'A tételek hozzáadása és szerkesztése a rekord részletes nézetében történik, az összes tételmezővel, kedvezménnyel, adóval és árlistával.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Egyszerűsített termékblokk',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'A tételek hozzáadása és szerkesztése a rekord szerkesztési nézetében történik. Csak a tétel neve, a mennyiség, a mértékegység, az ár és az összeg jelenik meg, a részletes nézet csak olvasható.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Az átalakítás beállításai mentve',
+    'JS_PRODUCT_BLOCK_SAVED' => 'A termékblokk beállítása mentve',
 ];

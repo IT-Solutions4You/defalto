@@ -8,7 +8,7 @@
  *}
 
 {assign var=ACTIVE_TAB value='fields'}
-{if isset($smarty.request.mode) && ($smarty.request.mode eq 'decimals' || $smarty.request.mode eq 'conversions')}
+{if isset($smarty.request.mode) && ($smarty.request.mode eq 'decimals' || $smarty.request.mode eq 'conversions' || $smarty.request.mode eq 'block')}
     {assign var=ACTIVE_TAB value=$smarty.request.mode}
 {/if}
 <div class="listViewPageDiv detailViewContainer px-4 pb-4" id="listViewContent">
@@ -18,6 +18,11 @@
         </div>
         <div class="contents tabbable pt-3">
             <ul class="nav nav-tabs massEditTabs border-bottom">
+                <li class="tab-item blockTab {if $ACTIVE_TAB eq 'block'}active{/if} ms-3">
+                    <a class="nav-link {if $ACTIVE_TAB eq 'block'}active{/if}" data-bs-toggle="tab" href="#block">
+                        <strong>{vtranslate('LBL_PRODUCT_BLOCK', $QUALIFIED_MODULE)}</strong>
+                    </a>
+                </li>
                 <li class="tab-item fieldsTab {if $ACTIVE_TAB eq 'fields'}active{/if} ms-3">
                     <a class="nav-link {if $ACTIVE_TAB eq 'fields'}active{/if}" data-bs-toggle="tab" href="#fields">
                         <strong>{vtranslate('Fields', $QUALIFIED_MODULE)}</strong>
@@ -35,6 +40,41 @@
                 </li>
             </ul>
             <div class="tab-content layoutContent pb-3 overflowVisible">
+                <div class="tab-pane {if $ACTIVE_TAB eq 'block'}active{/if}" id="block">
+                    <form name="productBlockForm" id="productBlockForm" method="POST">
+                        <input type="hidden" name="module" value="InventoryItem">
+                        <input type="hidden" name="parent" value="Settings">
+                        <input type="hidden" name="action" value="BlockSave">
+                        <div class="detailViewInfo container-fluid pt-3 px-3">
+                            <div class="row form-group">
+                                <div class="col-sm-3 control-label fieldLabel pb-3">
+                                    <label class="fieldLabel">{vtranslate('LBL_PRODUCT_BLOCK_TYPE', $QUALIFIED_MODULE)}</label>
+                                </div>
+                                <div class="fieldValue col-sm-6 pb-3">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="productBlockType" id="productBlockStandard" value="standard" {if !$SIMPLIFIED_BLOCK}checked{/if}>
+                                        <label class="form-check-label" for="productBlockStandard">
+                                            <strong>{vtranslate('LBL_PRODUCT_BLOCK_STANDARD', $QUALIFIED_MODULE)}</strong>
+                                            <span class="d-block text-secondary">{vtranslate('LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION', $QUALIFIED_MODULE)}</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="productBlockType" id="productBlockSimplified" value="simplified" {if $SIMPLIFIED_BLOCK}checked{/if}>
+                                        <label class="form-check-label" for="productBlockSimplified">
+                                            <strong>{vtranslate('LBL_PRODUCT_BLOCK_SIMPLIFIED', $QUALIFIED_MODULE)}</strong>
+                                            <span class="d-block text-secondary">{vtranslate('LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION', $QUALIFIED_MODULE)}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid py-3">
+                            <div class="row">
+                                <div class="col text-center"><button type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="tab-pane {if $ACTIVE_TAB eq 'fields'}active{/if}" id="fields">
                     <form name="inventoryItemFields" id="inventoryItemFields" method="POST">
                         <input type="hidden" name="module" value="InventoryItem">

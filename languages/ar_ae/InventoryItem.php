@@ -38,6 +38,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'البند لا ينتمي إلى السجل المصدر.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'يجب أن تكون الكمية والسعر أرقامًا.',
     'LBL_CONVERSION_NO_ITEMS' => 'يجب أن يبقى بند واحد على الأقل.',
+    'Item name' => 'اسم العنصر',
+    'LBL_ADD_ITEM' => 'إضافة عنصر',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'اختر المنتج أو الخدمة من قائمة الاقتراحات.',
+    'No Tax' => 'بدون ضريبة',
 ];
 
 $jsLanguageStrings = [

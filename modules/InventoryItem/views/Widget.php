@@ -45,6 +45,13 @@ class InventoryItem_Widget_View extends Core_Widget_View
 
         Core_Modifiers_Model::modifyForClass(get_class($this), 'showItems', $sourceModule, $viewer, $request);
 
+        if (InventoryItem_Module_Model::isSimplifiedBlock()) {
+            $viewer->assign('SIMPLIFIED_ITEMS', InventoryItem_SimplifiedItems_Model::getRows($recordId));
+            InventoryItem_SimplifiedItems_Model::assignCommon($viewer);
+
+            return $viewer->view('SimplifiedItemsWidget.tpl', 'InventoryItem', true);
+        }
+
         return $viewer->view('ItemsWidget.tpl', 'InventoryItem', true);
     }
 }

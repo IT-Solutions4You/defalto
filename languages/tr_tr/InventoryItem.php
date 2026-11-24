@@ -38,6 +38,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'Kalem kaynak kayda ait değil.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Miktar ve fiyat sayı olmalıdır.',
     'LBL_CONVERSION_NO_ITEMS' => 'En az bir kalem kalmalıdır.',
+    'Item name' => 'Kalem adı',
+    'LBL_ADD_ITEM' => 'Kalem ekle',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Öneri listesinden ürünü veya hizmeti seçin.',
+    'No Tax' => 'Vergi yok',
 ];
 
 $jsLanguageStrings = [

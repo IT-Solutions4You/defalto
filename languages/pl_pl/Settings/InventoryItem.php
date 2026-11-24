@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Z %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Dodaj mapowanie',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Nie kopiuj',
+    'LBL_PRODUCT_BLOCK' => 'Blok produktów',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Typ bloku produktów',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Standardowy blok produktów',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Pozycje są dodawane i edytowane w widoku szczegółów rekordu, ze wszystkimi polami pozycji, rabatami, podatkami i cennikami.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Uproszczony blok produktów',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Pozycje są dodawane i edytowane w widoku edycji rekordu. Wyświetlane są tylko nazwa pozycji, ilość, jednostka, cena i suma, a widok szczegółów jest tylko do odczytu.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Ustawienia konwersji zapisane',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Ustawienie bloku produktów zostało zapisane',
 ];

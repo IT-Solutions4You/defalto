@@ -38,6 +38,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'Pozycja nie należy do rekordu źródłowego.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Ilość i cena muszą być liczbami.',
     'LBL_CONVERSION_NO_ITEMS' => 'Musi pozostać co najmniej jedna pozycja.',
+    'Item name' => 'Nazwa pozycji',
+    'LBL_ADD_ITEM' => 'Dodaj pozycję',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Wybierz produkt lub usługę z listy podpowiedzi.',
+    'No Tax' => 'Bez podatku',
 ];
 
 $jsLanguageStrings = [

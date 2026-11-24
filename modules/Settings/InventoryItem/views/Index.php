@@ -66,6 +66,7 @@ class Settings_InventoryItem_Index_View extends Settings_Vtiger_Index_View
         $viewer->assign('SELECTED_FIELDS', $selectedFields);
         $viewer->assign('MANDATORY_FIELDS', ['productid', 'quantity']);
         $viewer->assign('DECIMALS', $decimals);
+        $viewer->assign('SIMPLIFIED_BLOCK', InventoryItem_Module_Model::isSimplifiedBlock());
         $viewer->assign('CONVERSIONS', $conversions);
         $viewer->assign('CONVERSION_COLUMNS', InventoryItem_Conversion_Model::SUPPORTED_COLUMNS);
 

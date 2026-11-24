@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Da %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Aggiungi mappatura',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Non copiato',
+    'LBL_PRODUCT_BLOCK' => 'Blocco prodotti',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Tipo di blocco prodotti',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Blocco prodotti standard',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Gli articoli vengono aggiunti e modificati nella vista dettaglio del record, con tutti i campi dell\'articolo, sconti, imposte e listini.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Blocco prodotti semplificato',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Gli articoli vengono aggiunti e modificati nella vista di modifica del record. Vengono mostrati solo nome articolo, quantità, unità, prezzo e totale; la vista dettaglio è di sola lettura.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Impostazioni di conversione salvate',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Impostazione del blocco prodotti salvata',
 ];

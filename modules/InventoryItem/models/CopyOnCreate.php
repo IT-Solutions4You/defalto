@@ -12,6 +12,11 @@ class InventoryItem_CopyOnCreate_Model extends Vtiger_Base_Model
 {
     public static function run(CRMEntity $entity, int $forceConversionFrom = 0): void
     {
+        // The simplified product block posts the items with the document, they are saved instead of copying them from another document
+        if (InventoryItem_SimplifiedItems_Model::saveFromRequest($entity)) {
+            return;
+        }
+
         if (!empty($entity->mode) && $entity->mode !== 'create' && $entity->mode !== '') {
             return;
         }

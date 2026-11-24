@@ -544,7 +544,7 @@ class InventoryItem_Install_Model extends Core_Install_Model
 
     public function getTables(): array
     {
-        return ['df_inventoryitemcolumns', 'df_inventoryitem_itemmodules', 'df_inventoryitem_quantitydecimals', 'df_inventoryitem_modules'];
+        return ['df_inventoryitemcolumns', 'df_inventoryitem_itemmodules', 'df_inventoryitem_quantitydecimals', 'df_inventoryitem_modules', 'df_inventoryitem_settings'];
     }
 
     /**
@@ -603,6 +603,11 @@ class InventoryItem_Install_Model extends Core_Install_Model
             ->createTable('field', 'varchar(255) NOT NULL')
             ->createColumn('decimals', 'int(19) NOT NULL DEFAULT 0')
             ->createKey('PRIMARY KEY IF NOT EXISTS (`field`)');
+
+        $this->getTable('df_inventoryitem_settings', null)
+            ->createTable('name', 'varchar(100) NOT NULL')
+            ->createColumn('value', 'varchar(255) DEFAULT NULL')
+            ->createKey('PRIMARY KEY IF NOT EXISTS (`name`)');
 
         $this->getTable('df_inventoryitem_modules', null)
             ->createTable('tabid')

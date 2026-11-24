@@ -44,3 +44,12 @@ Discounts follow the field permissions of the **Inventory Items** module (Settin
 The overall discount button of the items block follows the same rule for the Overall Discount field, together with the Overall Discount field of the document itself. A user who cannot see it does not get the button, and a user who can only view it cannot change it.
 
 Changing the quantity or price of a line never removes its existing discount: the discount stays and the line and totals are recalculated, even if the user cannot edit discounts. New lines take the overall discount already set on the document.
+
+## Simplified product block
+
+For small companies with very simple documents, an administrator can switch the product block in **Settings > Inventory Items > Product block**:
+
+- **Standard product block (default):** items are added and edited in the detail view of the record, with all item fields, discounts, taxes and price books.
+- **Simplified product block:** items are added, edited and removed directly in the edit view of the record. Each row has only the item name, quantity, unit, price and total, and the grand total is shown under the table. If taxes are defined in the settings, each row also has a **Tax** column (the taxes of the selected product, or no tax) and the totals show the price without VAT, the VAT and the price with VAT. A new document has no row at the start. Under the table are the same **Text**, **Products** and **Services** buttons as in the standard block; each adds a row. In a Products or Services row, start typing (or click into the empty name) to pick a record from the list: its name, unit and price are filled in and you can still change them (a product or service row must be chosen from the list). A **Text** row has the full width of the table and only the text. The detail view and the Inventory Item summary widget show the same columns, read-only: there is no Add menu and the items cannot be changed there.
+
+Switching the setting does not change the stored items. Existing items stay on the document; in the simplified block a row total is quantity multiplied by price, so a document whose older items have discounts can show a grand total that differs from the sum of the visible row totals.

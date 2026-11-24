@@ -38,6 +38,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'L\'articolo non appartiene al record di origine.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Quantità e prezzo devono essere numeri.',
     'LBL_CONVERSION_NO_ITEMS' => 'Deve rimanere almeno un articolo.',
+    'Item name' => 'Nome articolo',
+    'LBL_ADD_ITEM' => 'Aggiungi articolo',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Seleziona il prodotto o il servizio dall\'elenco dei suggerimenti.',
+    'No Tax' => 'Nessuna imposta',
 ];
 
 $jsLanguageStrings = [

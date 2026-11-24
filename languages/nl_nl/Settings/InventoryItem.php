@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Van %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Toewijzing toevoegen',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Niet gekopieerd',
+    'LBL_PRODUCT_BLOCK' => 'Productblok',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Type productblok',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Standaard productblok',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Artikelen worden toegevoegd en bewerkt in de detailweergave van het record, met alle artikelvelden, kortingen, belastingen en prijslijsten.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Vereenvoudigd productblok',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Artikelen worden toegevoegd en bewerkt in de bewerkweergave van het record. Alleen artikelnaam, hoeveelheid, eenheid, prijs en totaal worden getoond; de detailweergave is alleen-lezen.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Conversie-instellingen opgeslagen',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Instelling voor productblok opgeslagen',
 ];

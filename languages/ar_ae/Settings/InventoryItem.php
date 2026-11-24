@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'من %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'إضافة ربط',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'لا يُنسخ',
+    'LBL_PRODUCT_BLOCK' => 'كتلة المنتجات',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'نوع كتلة المنتجات',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'كتلة المنتجات القياسية',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'تتم إضافة العناصر وتعديلها في عرض تفاصيل السجل، مع جميع حقول العنصر والخصومات والضرائب وقوائم الأسعار.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'كتلة المنتجات المبسطة',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'تتم إضافة العناصر وتعديلها في عرض تحرير السجل. يتم عرض اسم العنصر والكمية والوحدة والسعر والإجمالي فقط، وعرض التفاصيل للقراءة فقط.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'تم حفظ إعدادات التحويل',
+    'JS_PRODUCT_BLOCK_SAVED' => 'تم حفظ إعداد كتلة المنتجات',
 ];

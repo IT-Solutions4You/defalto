@@ -52,6 +52,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'Die Position gehört nicht zum Quelldatensatz.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Menge und Preis müssen Zahlen sein.',
     'LBL_CONVERSION_NO_ITEMS' => 'Mindestens eine Position muss erhalten bleiben.',
+    'Item name' => 'Positionsname',
+    'LBL_ADD_ITEM' => 'Position hinzufügen',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Wählen Sie das Produkt oder die Dienstleistung aus der Vorschlagsliste aus.',
+    'No Tax' => 'Keine Steuer',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Fehler beim Speichern der Produktzeile',
