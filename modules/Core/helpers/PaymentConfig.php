@@ -94,10 +94,11 @@ class Core_PaymentConfig_Helper
     public const FIELD_AMOUNT_BASE = 'payment_amount_base';
 
     /**
-     * Number of documents one payment may reference; payments to several documents come with the paid version.
+     * Messages when a payment would reference more documents than allowed (Core_PaymentLicense_Helper decides the
+     * limit): a plain one, and one offering the paid edition while it is locked.
      */
-    public const REFERENCE_LIMIT = 1;
     public const LBL_REFERENCE_LIMIT = 'LBL_ONE_DOCUMENT_PER_PAYMENT';
+    public const LBL_REFERENCE_LIMIT_PREMIUM = 'LBL_SEVERAL_DOCUMENTS_PREMIUM';
 
     /**
      * Payment statuses, shared by all payment modules (one picklist vtiger_payment_status). Paid is the final status

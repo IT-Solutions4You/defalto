@@ -67,7 +67,7 @@ abstract class Core_PaymentDocumentSync_Model extends Core_DatabaseData_Model
 
     /**
      * Returns the amount applied to each document of the payment. The whole amount goes to the first document:
-     * the save handler allows one document (Core_PaymentConfig_Helper::REFERENCE_LIMIT); only import, which
+     * the save handler allows one document (Core_PaymentLicense_Helper::getReferenceLimit()); only import, which
      * skips the save events, can store more, and the further documents are not applied.
      *
      * @param Vtiger_Record_Model $payment Saved payment record

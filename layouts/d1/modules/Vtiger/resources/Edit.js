@@ -382,6 +382,8 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
             maximumSelectionLength: parseInt(selectElement.data('maximumRecords')) || 0,
             language: selectElement.data('maximumRecordsMessage') ? {
                 maximumSelected: function () {
+                    self.openMultiReferencePremiumModal(selectElement);
+
                     return selectElement.data('maximumRecordsMessage');
                 }
             } : undefined,
@@ -454,9 +456,27 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
 
         selectElement.trigger('change');
 
-        if (isLimitReached && selectElement.data('maximumRecordsMessage')) {
+        if (isLimitReached && !this.openMultiReferencePremiumModal(selectElement) && selectElement.data('maximumRecordsMessage')) {
             app.helper.showErrorNotification({message: selectElement.data('maximumRecordsMessage')});
         }
+    },
+
+    /**
+     * Opens the buy window of the paid edition when a multi reference field reached its maximum and offers the paid
+     * edition (data-maximum-records-premium). Works only on pages that load the Installer script PremiumModal.js;
+     * the window opens once per page, later attempts show the message.
+     * @param {jQuery} selectElement
+     * @returns {boolean} true when the window was opened
+     */
+    openMultiReferencePremiumModal: function (selectElement) {
+        if (!selectElement.data('maximumRecordsPremium') || !window.DefaltoPremiumModal || selectElement.data('premiumModalShown')) {
+            return false;
+        }
+
+        selectElement.data('premiumModalShown', true);
+        window.DefaltoPremiumModal.open();
+
+        return true;
     },
 
     /**

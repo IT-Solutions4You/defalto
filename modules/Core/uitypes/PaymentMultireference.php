@@ -9,7 +9,8 @@
  */
 
 /**
- * Reference field of a payment: limits the edit form to the number of documents a payment may reference.
+ * Reference field of a payment: limits the edit form to the number of documents a payment may reference
+ * (Core_PaymentLicense_Helper) and, while the paid edition is locked, offers it when the limit is reached.
  * The same limit is enforced on save by Core_PaymentValues_Helper::validateReferences().
  */
 abstract class Core_PaymentMultireference_UIType extends Core_Multireference_UIType
@@ -30,7 +31,7 @@ abstract class Core_PaymentMultireference_UIType extends Core_Multireference_UIT
      */
     public function getMaximumRecords(): int
     {
-        return $this->isReferenceField() ? Core_PaymentConfig_Helper::REFERENCE_LIMIT : parent::getMaximumRecords();
+        return $this->isReferenceField() ? Core_PaymentLicense_Helper::getReferenceLimit() : parent::getMaximumRecords();
     }
 
     /**
@@ -38,7 +39,18 @@ abstract class Core_PaymentMultireference_UIType extends Core_Multireference_UIT
      */
     public function getMaximumRecordsMessage(): string
     {
-        return $this->isReferenceField() ? vtranslate(Core_PaymentConfig_Helper::LBL_REFERENCE_LIMIT, $this->getConfig()::MODULE) : parent::getMaximumRecordsMessage();
+        return $this->isReferenceField() ? Core_PaymentLicense_Helper::getReferenceLimitMessage($this->getConfig()::MODULE) : parent::getMaximumRecordsMessage();
+    }
+
+    /**
+     * Reaching the document limit of the Reference field offers the paid edition while it is locked.
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function isMaximumRecordsPremium(): bool
+    {
+        return $this->isReferenceField() ? Core_PaymentLicense_Helper::isLimitPremium() : parent::isMaximumRecordsPremium();
     }
 
     /**

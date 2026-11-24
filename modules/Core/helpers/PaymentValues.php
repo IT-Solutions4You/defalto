@@ -18,9 +18,11 @@
 class Core_PaymentValues_Helper
 {
     /**
-     * Rejects more reference documents than the limit on a payment being saved. The organisation and the contact
-     * are not taken from the reference document on save; only a payment created from a document gets them
-     * prefilled in the form.
+     * Rejects adding documents beyond the limit (Core_PaymentLicense_Helper::getReferenceLimit()) on a payment
+     * being saved. A payment that already references more documents (from an import or from the paid edition before
+     * its licence expired) can be saved again as long as no document is added, so the daily status update keeps
+     * working. The organisation and the contact are not taken from the reference document on save; only a payment
+     * created from a document gets them prefilled in the form.
      *
      * @param VTEntityData $entityData Payment entity data of the before-save event
      * @return void
@@ -30,8 +32,16 @@ class Core_PaymentValues_Helper
     {
         $relationIds = Core_Multireference_UIType::getRecordIds(self::getValue($entityData, Core_PaymentConfig_Helper::FIELD_RELATION));
 
-        if (count($relationIds) > Core_PaymentConfig_Helper::REFERENCE_LIMIT) {
-            throw new Exception(vtranslate(Core_PaymentConfig_Helper::LBL_REFERENCE_LIMIT, $entityData->getModuleName()));
+        if (count($relationIds) <= Core_PaymentLicense_Helper::getReferenceLimit()) {
+            return;
+        }
+
+        $paymentModule = (string)$entityData->getModuleName();
+        $paymentId = (int)$entityData->getId();
+        $previousIds = $paymentId > 0 ? Core_PaymentConfig_Helper::getInstance($paymentModule)->getAssociatedModel()->fetchRecordIds($paymentId) : [];
+
+        if (array_diff($relationIds, array_map('intval', $previousIds))) {
+            throw new Exception(Core_PaymentLicense_Helper::getReferenceLimitMessage($paymentModule));
         }
     }
 

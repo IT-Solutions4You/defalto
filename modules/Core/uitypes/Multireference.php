@@ -193,6 +193,18 @@ class Core_Multireference_UIType extends Vtiger_Reference_UIType
     }
 
     /**
+     * Tells whether reaching the maximum number of records should open the buy window of the paid edition
+     * (window.DefaltoPremiumModal of the Installer) instead of showing the message. The page must load the Installer
+     * script PremiumModal.js; without it the message is shown.
+     *
+     * @return bool
+     */
+    public function isMaximumRecordsPremium(): bool
+    {
+        return false;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getTemplateName()

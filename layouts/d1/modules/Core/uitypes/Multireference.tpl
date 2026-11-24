@@ -21,6 +21,10 @@
     <div class="Core_Multireference_UIType referencefield-wrapper js-multireference-field">
         <input name="popupReferenceModule" type="hidden" value="{$REFERENCED_MODULE_NAME}"/>
         <input name="{$FIELD_NAME}" type="hidden" value="{$UITYPE_MODEL->convertToValue(array_keys($REFERENCE_RECORDS))}" class="sourceField" data-multiple="true"/>
+        {if $UITYPE_MODEL->isMaximumRecordsPremium()}
+            {* Keeps the buy window of the Installer closed until the limit is reached *}
+            <input type="hidden" id="show{$MODULE}LicenseAlert" value="0"/>
+        {/if}
         <div class="input-group flex-nowrap">
             {if php7_count($REFERENCE_LIST) > 1}
                 <select class="select2 referenceModulesList">
@@ -36,6 +40,7 @@
                     data-placeholder="{vtranslate('LBL_TYPE_SEARCH', $MODULE)}"
                     data-maximum-records="{$UITYPE_MODEL->getMaximumRecords()}"
                     data-maximum-records-message="{$UITYPE_MODEL->getMaximumRecordsMessage()|escape:'html'}"
+                    {if $UITYPE_MODEL->isMaximumRecordsPremium()}data-maximum-records-premium="1"{/if}
                     data-fieldinfo='{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($FIELD_INFO))}'
                     {if $FIELD_INFO['mandatory'] eq true}data-rule-required="true"{/if}>
                 {foreach key=RECORD_ID item=REFERENCE_RECORD from=$REFERENCE_RECORDS}
