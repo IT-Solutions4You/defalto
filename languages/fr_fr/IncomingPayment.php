@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Un paiement pour plusieurs factures, réparti selon l’échéance',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Paiement groupé depuis la liste des factures',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Le trop-perçu reste sur la dernière facture',
+    'LBL_BULK_PAYMENT' => 'Paiement groupé',
+    'LBL_BULK_PAYMENT_SAVE' => 'Créer le paiement',
+    'LBL_PAY_OFF' => 'Solder',
+    'LBL_OPEN_AMOUNT' => 'Montant restant',
+    'LBL_NOT_SPLIT' => 'Non réparti',
+    'LBL_DOCUMENT' => 'Document',
+    'LBL_CURRENCY' => 'Devise',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Sélectionnez des documents que vous pouvez voir.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Les documents sélectionnés doivent appartenir à une seule organisation.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Le paiement a été créé.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Répartition du paiement',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Montant',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Non réparti :',
 ];

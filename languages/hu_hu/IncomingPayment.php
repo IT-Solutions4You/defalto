@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Egy fizetés több számlára, határidő szerint felosztva',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Csoportos fizetés a számlalistából',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'A túlfizetés az utolsó számlán marad',
+    'LBL_BULK_PAYMENT' => 'Csoportos fizetés',
+    'LBL_BULK_PAYMENT_SAVE' => 'Fizetés létrehozása',
+    'LBL_PAY_OFF' => 'Teljes kiegyenlítés',
+    'LBL_OPEN_AMOUNT' => 'Nyitott összeg',
+    'LBL_NOT_SPLIT' => 'Nincs felosztva',
+    'LBL_DOCUMENT' => 'Bizonylat',
+    'LBL_CURRENCY' => 'Pénznem',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Válasszon látható bizonylatokat.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'A kiválasztott bizonylatoknak egy szervezethez kell tartozniuk.',
+    'LBL_BULK_PAYMENT_CREATED' => 'A fizetés létrejött.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'A fizetés felosztása',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Összeg',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Nincs felosztva:',
 ];

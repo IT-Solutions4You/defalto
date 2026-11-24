@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Eine Zahlung für mehrere Rechnungen, aufgeteilt nach Fälligkeit',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Sammelzahlung aus der Rechnungsliste',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Überzahlung bleibt auf der letzten Rechnung',
+    'LBL_BULK_PAYMENT' => 'Sammelzahlung',
+    'LBL_BULK_PAYMENT_SAVE' => 'Zahlung erstellen',
+    'LBL_PAY_OFF' => 'Voll bezahlen',
+    'LBL_OPEN_AMOUNT' => 'Offener Betrag',
+    'LBL_NOT_SPLIT' => 'Nicht aufgeteilt',
+    'LBL_DOCUMENT' => 'Beleg',
+    'LBL_CURRENCY' => 'Währung',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Wählen Sie Belege aus, die Sie sehen dürfen.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Die ausgewählten Belege müssen zu einer Organisation gehören.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Die Zahlung wurde erstellt.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Aufteilung der Zahlung',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Betrag',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Nicht aufgeteilt:',
 ];

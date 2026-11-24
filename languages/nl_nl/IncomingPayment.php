@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Eén betaling voor meerdere facturen, verdeeld op vervaldatum',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Bulkbetaling vanuit de factuurlijst',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Teveel betaald blijft op de laatste factuur',
+    'LBL_BULK_PAYMENT' => 'Bulkbetaling',
+    'LBL_BULK_PAYMENT_SAVE' => 'Betaling aanmaken',
+    'LBL_PAY_OFF' => 'Volledig betalen',
+    'LBL_OPEN_AMOUNT' => 'Openstaand bedrag',
+    'LBL_NOT_SPLIT' => 'Niet verdeeld',
+    'LBL_DOCUMENT' => 'Document',
+    'LBL_CURRENCY' => 'Valuta',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Selecteer documenten die u mag zien.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'De geselecteerde documenten moeten bij één organisatie horen.',
+    'LBL_BULK_PAYMENT_CREATED' => 'De betaling is aangemaakt.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Verdeling van de betaling',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Bedrag',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Niet verdeeld:',
 ];

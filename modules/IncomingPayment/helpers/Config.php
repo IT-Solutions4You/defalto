@@ -25,6 +25,8 @@ class IncomingPayment_Config_Helper extends Core_PaymentConfig_Helper
     public const MAIN_BLOCK = 'LBL_INCOMING_PAYMENT_INFORMATION';
     public const RELATED_LIST_LABEL = 'Incoming Payments';
     public const ADD_LINK_LABEL = 'LBL_ADD_INCOMING_PAYMENT';
+    public const BULK_PAYMENT_LABEL = 'LBL_PAY_SELECTED_INCOMING';
+    public const BULK_PAYMENT_SCRIPT_LABEL = 'IncomingPaymentBulkJs';
     public const INTEGRATION_LABEL = 'LBL_INCOMING_PAYMENT_INTEGRATION';
     public const ICON = 'fa-solid fa-money-bill-trend-up';
     public const DIRECTION = self::DIRECTION_INCOMING;

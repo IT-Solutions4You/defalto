@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Un pagamento per più fatture con importo ripartito per scadenza',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Pagamento cumulativo dall’elenco fatture',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'L’eccedenza resta sull’ultima fattura',
+    'LBL_BULK_PAYMENT' => 'Pagamento cumulativo',
+    'LBL_BULK_PAYMENT_SAVE' => 'Crea pagamento',
+    'LBL_PAY_OFF' => 'Salda',
+    'LBL_OPEN_AMOUNT' => 'Importo residuo',
+    'LBL_NOT_SPLIT' => 'Non ripartito',
+    'LBL_DOCUMENT' => 'Documento',
+    'LBL_CURRENCY' => 'Valuta',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Selezionare documenti visibili.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'I documenti selezionati devono appartenere a una sola organizzazione.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Il pagamento è stato creato.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Ripartizione del pagamento',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Importo',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Non ripartito:',
 ];

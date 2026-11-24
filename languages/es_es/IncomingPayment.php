@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Un pago para varias facturas con el importe repartido por vencimiento',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Pago masivo desde la lista de facturas',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'El pago en exceso queda en la última factura',
+    'LBL_BULK_PAYMENT' => 'Pago masivo',
+    'LBL_BULK_PAYMENT_SAVE' => 'Crear pago',
+    'LBL_PAY_OFF' => 'Pagar todo',
+    'LBL_OPEN_AMOUNT' => 'Importe pendiente',
+    'LBL_NOT_SPLIT' => 'Sin repartir',
+    'LBL_DOCUMENT' => 'Documento',
+    'LBL_CURRENCY' => 'Moneda',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Seleccione documentos que pueda ver.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Los documentos seleccionados deben pertenecer a una sola organización.',
+    'LBL_BULK_PAYMENT_CREATED' => 'El pago se ha creado.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Reparto del pago',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Importe',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Sin repartir:',
 ];

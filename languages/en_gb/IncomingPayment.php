@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'One payment for several invoices with the amount split by due date',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Bulk payment from the invoice list',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Overpayment kept on the last invoice',
+    'LBL_BULK_PAYMENT' => 'Bulk payment',
+    'LBL_BULK_PAYMENT_SAVE' => 'Create payment',
+    'LBL_PAY_OFF' => 'Pay off',
+    'LBL_OPEN_AMOUNT' => 'Open amount',
+    'LBL_NOT_SPLIT' => 'Not split',
+    'LBL_DOCUMENT' => 'Document',
+    'LBL_CURRENCY' => 'Currency',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Select documents you may see.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'The selected documents must belong to one organisation.',
+    'LBL_BULK_PAYMENT_CREATED' => 'The payment was created.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Split of the payment',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Amount',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Not split:',
 ];
