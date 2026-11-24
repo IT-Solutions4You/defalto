@@ -18,34 +18,6 @@
 class Core_PaymentValues_Helper
 {
     /**
-     * Rejects adding documents beyond the limit (Core_PaymentLicense_Helper::getReferenceLimit()) on a payment
-     * being saved. A payment that already references more documents (from an import or from the paid edition before
-     * its licence expired) can be saved again as long as no document is added, so the daily status update keeps
-     * working. The organisation and the contact are not taken from the reference document on save; only a payment
-     * created from a document gets them prefilled in the form.
-     *
-     * @param VTEntityData $entityData Payment entity data of the before-save event
-     * @return void
-     * @throws Exception
-     */
-    public static function validateReferences(VTEntityData $entityData): void
-    {
-        $relationIds = Core_Multireference_UIType::getRecordIds(self::getValue($entityData, Core_PaymentConfig_Helper::FIELD_RELATION));
-
-        if (count($relationIds) <= Core_PaymentLicense_Helper::getReferenceLimit()) {
-            return;
-        }
-
-        $paymentModule = (string)$entityData->getModuleName();
-        $paymentId = (int)$entityData->getId();
-        $previousIds = $paymentId > 0 ? Core_PaymentConfig_Helper::getInstance($paymentModule)->getAssociatedModel()->fetchRecordIds($paymentId) : [];
-
-        if (array_diff($relationIds, array_map('intval', $previousIds))) {
-            throw new Exception(Core_PaymentLicense_Helper::getReferenceLimitMessage($paymentModule));
-        }
-    }
-
-    /**
      * Returns the read-only derived columns of a saved payment: the status, the numbers of the reference documents
      * and the direction of its module.
      *

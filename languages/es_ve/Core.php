@@ -11,6 +11,8 @@
 $languageStrings = [
     'LBL_PRODUCTBLOCKTPL' => 'Plantillas de bloques de productos',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Administre las plantillas de bloques de productos para los artículos de inventario.',
+    'LBL_PAY_SELECTED_INCOMING' => 'Pagar seleccionados',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Pagar seleccionados',
 ];
 
 $jsLanguageStrings = [];

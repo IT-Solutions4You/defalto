@@ -1172,6 +1172,8 @@ $languageStrings = [
     'LBL_RECORD_ACTION_EXCEPTION' => 'Exception',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Without PDF attachment (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Action not permitted',
+    'LBL_PAY_SELECTED_INCOMING' => 'Pay selected',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Pay selected',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Delete',

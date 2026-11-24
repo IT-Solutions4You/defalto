@@ -30,6 +30,14 @@ class Core_PaymentConfig_Helper
     public const MAIN_BLOCK = '';
     public const RELATED_LIST_LABEL = '';
     public const ADD_LINK_LABEL = '';
+
+    /**
+     * Label of the bulk payment action in document lists (translated in the core language file Vtiger.php, because
+     * list actions are translated by the document module) and of the header script that opens its window.
+     */
+    public const BULK_PAYMENT_LABEL = '';
+    public const BULK_PAYMENT_SCRIPT_LABEL = '';
+    public const BULK_PAYMENT_SCRIPT = 'layouts/$LAYOUT$/modules/Core/resources/PaymentBulk.js';
     public const INTEGRATION_LABEL = '';
     public const ICON = 'fa-solid fa-money-bill';
 
@@ -93,12 +101,6 @@ class Core_PaymentConfig_Helper
     public const FIELD_AMOUNT_RATE = 'payment_amount_conversion_rate';
     public const FIELD_AMOUNT_BASE = 'payment_amount_base';
 
-    /**
-     * Messages when a payment would reference more documents than allowed (Core_PaymentLicense_Helper decides the
-     * limit): a plain one, and one offering the paid edition while it is locked.
-     */
-    public const LBL_REFERENCE_LIMIT = 'LBL_ONE_DOCUMENT_PER_PAYMENT';
-    public const LBL_REFERENCE_LIMIT_PREMIUM = 'LBL_SEVERAL_DOCUMENTS_PREMIUM';
 
     /**
      * Payment statuses, shared by all payment modules (one picklist vtiger_payment_status). Paid is the final status
@@ -345,6 +347,17 @@ class Core_PaymentConfig_Helper
     public function getWidgetLabel(): string
     {
         return static::MODULE;
+    }
+
+    /**
+     * Returns the list action that opens the bulk payment window for the selected documents of a module.
+     *
+     * @param string $documentModule Document module name
+     * @return string
+     */
+    public function getBulkPaymentUrl(string $documentModule): string
+    {
+        return 'javascript:Core_PaymentBulk_Js.open("' . static::MODULE . '", "' . $documentModule . '")';
     }
 
     /**

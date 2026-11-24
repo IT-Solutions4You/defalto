@@ -1175,6 +1175,8 @@ Faceți clic pe autorizați și de a obține Contacte din Google.',
     'LBL_RECORD_ACTION_EXCEPTION' => 'Excepție',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Fără atașament PDF (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Acțiune nepermisă',
+    'LBL_PAY_SELECTED_INCOMING' => 'Plătește selectate',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Plătește selectate',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Sterge',

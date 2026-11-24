@@ -1298,6 +1298,8 @@ na zewnątrz free rosyjska.',
     'LBL_RECORD_ACTION_EXCEPTION' => 'Wyjątek',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Bez załącznika PDF (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Akcja niedozwolona',
+    'LBL_PAY_SELECTED_INCOMING' => 'Zapłać zaznaczone',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Zapłać zaznaczone',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Usuń',

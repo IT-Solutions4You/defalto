@@ -87,6 +87,10 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
         $this->registerSettingsLinks = [
             [$config::INTEGRATION_LABEL, $config->getSettingsUrl(), 'LBL_EXTENSIONS'],
         ];
+        // The bulk payment window is opened from document lists, so its script is loaded on every page
+        $this->registerCustomLinks = [
+            [$module, 'HEADERSCRIPT', $config::BULK_PAYMENT_SCRIPT_LABEL, Core_PaymentConfig_Helper::BULK_PAYMENT_SCRIPT],
+        ];
         $this->registerEventHandler = [
             [
                 [$config::EVENT_BEFORE_SAVE],
@@ -132,6 +136,7 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
         $this->updateRelatedList();
         $this->updateSettingsLinks();
         $this->updateEventHandler();
+        $this->updateCustomLinks();
         $this->getConfig()->getIntegrationModel()->installDefaults();
         $this->updateIntegrations();
         Core_PaymentMenu_Model::getInstance()->hideModules([$this->moduleName]);
@@ -146,6 +151,7 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
     public function deleteCustomLinks(): void
     {
         $this->updateIntegrations(false);
+        $this->updateCustomLinks(false);
         $this->updateEventHandler(false);
         $this->updateSettingsLinks(false);
         $this->updateRelatedList(false);
@@ -260,6 +266,16 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
                 $config::ADD_LINK_LABEL,
                 $this->getConfig()->getAddMoreLinkTemplate(),
             ];
+
+            // Bulk payment of the selected documents, only from the module that pays the document module
+            if (!$register || $integrationModel->isPaying($moduleName)) {
+                $this->registerCustomLinks[] = [
+                    $moduleName,
+                    'LISTVIEWMASSACTION',
+                    $config::BULK_PAYMENT_LABEL,
+                    $config->getBulkPaymentUrl($moduleName),
+                ];
+            }
         }
 
         if (!empty($modules)) {

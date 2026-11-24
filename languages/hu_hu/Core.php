@@ -1178,6 +1178,8 @@ kívül Vtiger.',
     'LBL_RECORD_ACTION_EXCEPTION' => 'Kivétel',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'PDF melléklet nélkül (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'A művelet nem engedélyezett',
+    'LBL_PAY_SELECTED_INCOMING' => 'Kijelöltek fizetése',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Kijelöltek fizetése',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Törlés',

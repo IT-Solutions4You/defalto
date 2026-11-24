@@ -17,7 +17,16 @@
 class Core_PaymentWidget_Model
 {
     public const LINK_TYPE = 'DETAILVIEWWIDGET';
-    public const WIDGET_SEQUENCE = 6;
+    /**
+     * Position of a new payments widget. The summary view puts widgets with an odd sequence in the right column
+     * (SummaryViewWidgets.tpl); 7 places it below the document items (InventoryItem, 5).
+     */
+    public const WIDGET_SEQUENCE = 7;
+
+    /**
+     * Earlier default position (left column); existing widgets still on it move to WIDGET_SEQUENCE.
+     */
+    public const LEGACY_WIDGET_SEQUENCE = 6;
 
     /**
      * Label of the common widget; it is also the name of the Payments list module.
@@ -138,7 +147,28 @@ class Core_PaymentWidget_Model
             }
         }
 
+        $this->moveLegacyWidgets($tabId, array_keys($wantedWidgets));
         Vtiger_Cache::delete('links-' . $tabId, [self::LINK_TYPE]);
+    }
+
+    /**
+     * Moves payments widgets still on the earlier default position to the right column. A position set by users
+     * differs from the earlier default and stays.
+     *
+     * @param int      $tabId  Document module id
+     * @param string[] $labels Labels of the payments widgets of the module
+     * @return void
+     */
+    protected function moveLegacyWidgets(int $tabId, array $labels): void
+    {
+        if (!$labels) {
+            return;
+        }
+
+        PearDatabase::getInstance()->pquery(
+            'UPDATE vtiger_links SET sequence = ? WHERE tabid = ? AND linktype = ? AND sequence = ? AND linklabel IN (' . generateQuestionMarks($labels) . ')',
+            [self::WIDGET_SEQUENCE, $tabId, self::LINK_TYPE, self::LEGACY_WIDGET_SEQUENCE, $labels]
+        );
     }
 
     /**

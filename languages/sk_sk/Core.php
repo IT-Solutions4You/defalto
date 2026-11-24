@@ -1571,6 +1571,8 @@ $languageStrings = [
     'LBL_RECORD_ACTION_EXCEPTION' => 'Výnimka',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Bez PDF prílohy (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Akcia nie je povolená',
+    'LBL_PAY_SELECTED_INCOMING' => 'Zaplatiť vybrané',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Zaplatiť vybrané',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Vymazať',

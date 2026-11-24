@@ -56,6 +56,25 @@ abstract class Core_PaymentAssociated_Model extends Core_DatabaseData_Model
     }
 
     /**
+     * Returns the amounts a payment applies to its documents, in the payment currency.
+     *
+     * @param int $paymentId Payment record id
+     * @return array<int, float> [document id => amount]
+     */
+    public function fetchAmounts(int $paymentId): array
+    {
+        $table = $this->getAssociatedTable();
+        $result = $table->selectResult(['record_id', 'partial_amount'], ['payment_id' => $paymentId]);
+        $amounts = [];
+
+        while ($row = $table->getDB()->fetchByAssoc($result)) {
+            $amounts[(int)$row['record_id']] = (float)$row['partial_amount'];
+        }
+
+        return $amounts;
+    }
+
+    /**
      * Returns the related list query of the documents of one module that a payment is applied to.
      * Vtiger_Module_Model::getRelationQuery() keeps only the text up to a second FROM, so it must not contain a subquery.
      *

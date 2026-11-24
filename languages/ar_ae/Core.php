@@ -1311,6 +1311,8 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
     'LBL_RECORD_ACTION_EXCEPTION' => 'استثناء',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'بدون مرفق PDF (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'الإجراء غير مسموح به',
+    'LBL_PAY_SELECTED_INCOMING' => 'دفع المحدد',
+    'LBL_PAY_SELECTED_OUTGOING' => 'دفع المحدد',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'حذف',

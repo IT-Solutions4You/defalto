@@ -9,9 +9,10 @@
  */
 
 /**
- * Reference field of a payment: limits the edit form to the number of documents a payment may reference
- * (Core_PaymentLicense_Helper) and, while the paid edition is locked, offers it when the limit is reached.
- * The same limit is enforced on save by Core_PaymentValues_Helper::validateReferences().
+ * Reference field of a payment: a multi reference field without a limit, so one payment may pay several documents.
+ * When the payment modules are split into a free and a paid edition, the limit goes here (getMaximumRecords(),
+ * getMaximumRecordsMessage() and isMaximumRecordsPremium() of Core_Multireference_UIType, which opens the Installer
+ * buy window) together with the before-save check in Core_PaymentSave_Handler.
  */
 abstract class Core_PaymentMultireference_UIType extends Core_Multireference_UIType
 {
@@ -24,42 +25,5 @@ abstract class Core_PaymentMultireference_UIType extends Core_Multireference_UIT
     protected function getConfig(): Core_PaymentConfig_Helper
     {
         return Core_PaymentConfig_Helper::getForClass(static::class);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getMaximumRecords(): int
-    {
-        return $this->isReferenceField() ? Core_PaymentLicense_Helper::getReferenceLimit() : parent::getMaximumRecords();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getMaximumRecordsMessage(): string
-    {
-        return $this->isReferenceField() ? Core_PaymentLicense_Helper::getReferenceLimitMessage($this->getConfig()::MODULE) : parent::getMaximumRecordsMessage();
-    }
-
-    /**
-     * Reaching the document limit of the Reference field offers the paid edition while it is locked.
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function isMaximumRecordsPremium(): bool
-    {
-        return $this->isReferenceField() ? Core_PaymentLicense_Helper::isLimitPremium() : parent::isMaximumRecordsPremium();
-    }
-
-    /**
-     * Tells whether the field is the payment's Reference field.
-     *
-     * @return bool
-     */
-    private function isReferenceField(): bool
-    {
-        return Core_PaymentConfig_Helper::FIELD_RELATION === $this->get('field')->getName();
     }
 }

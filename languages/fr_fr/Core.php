@@ -1160,6 +1160,8 @@ $languageStrings = [
     'LBL_RECORD_ACTION_EXCEPTION' => 'Exception',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Sans pièce jointe PDF (%d) : %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Action non autorisée',
+    'LBL_PAY_SELECTED_INCOMING' => 'Payer la sélection',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Payer la sélection',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Supprimer',

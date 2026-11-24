@@ -1176,6 +1176,8 @@ fuera de Vtiger.',
     'LBL_RECORD_ACTION_EXCEPTION' => 'Excepción',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Sin PDF adjunto (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Acción no permitida',
+    'LBL_PAY_SELECTED_INCOMING' => 'Pagar seleccionados',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Pagar seleccionados',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Eliminar',

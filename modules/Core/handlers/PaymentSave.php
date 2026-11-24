@@ -9,8 +9,10 @@
  */
 
 /**
- * Checks the reference documents of a payment before it is saved.
- * The read-only values and the document synchronisation are handled by the payment entity (Core_PaymentEntity_Model::save_module()).
+ * Before-save hook of a payment. It checks nothing today: a payment may reference any number of documents. It is the
+ * place for edition checks (for example a limit of documents per payment) once the payment modules are split into
+ * a free and a paid edition. The read-only values, the split of the amount over the documents and the document
+ * synchronisation are handled by the payment entity (Core_PaymentEntity_Model::save_module()).
  */
 abstract class Core_PaymentSave_Handler extends VTEventHandler
 {
@@ -35,12 +37,8 @@ abstract class Core_PaymentSave_Handler extends VTEventHandler
      */
     public function handleEvent($handlerType, $entityData)
     {
-        if ($entityData->getModuleName() !== $this->getConfig()::MODULE) {
+        if ($entityData->getModuleName() !== $this->getConfig()::MODULE || $handlerType !== Core_PaymentConfig_Helper::EVENT_BEFORE_SAVE) {
             return;
-        }
-
-        if ($handlerType === Core_PaymentConfig_Helper::EVENT_BEFORE_SAVE) {
-            Core_PaymentValues_Helper::validateReferences($entityData);
         }
     }
 }

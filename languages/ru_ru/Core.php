@@ -1174,6 +1174,8 @@ $languageStrings = [
     'LBL_RECORD_ACTION_EXCEPTION' => 'Исключение',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Без PDF-вложения (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Действие не разрешено',
+    'LBL_PAY_SELECTED_INCOMING' => 'Оплатить выбранные',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Оплатить выбранные',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'удалять',

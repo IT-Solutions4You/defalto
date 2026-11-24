@@ -11,6 +11,8 @@
 $languageStrings = [
     'LBL_PRODUCTBLOCKTPL' => 'Tuotelohkomallit',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Hallitse varastorivien tuotelohkomalleja.',
+    'LBL_PAY_SELECTED_INCOMING' => 'Maksa valitut',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Maksa valitut',
 ];
 
 $jsLanguageStrings = [];

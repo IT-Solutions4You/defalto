@@ -1171,6 +1171,8 @@ buiten Vtiger.',
     'LBL_RECORD_ACTION_EXCEPTION' => 'Uitzondering',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Zonder PDF-bijlage (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Actie niet toegestaan',
+    'LBL_PAY_SELECTED_INCOMING' => 'Selectie betalen',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Selectie betalen',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Wis',

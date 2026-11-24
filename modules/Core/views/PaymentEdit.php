@@ -58,21 +58,13 @@ abstract class Core_PaymentEdit_View extends Vtiger_Edit_View
     }
 
     /**
-     * Loads the buy window of the Installer while the paid edition is locked, so choosing a second document in the
-     * Reference field offers the paid edition (Core_PaymentMultireference_UIType::isMaximumRecordsPremium()).
+     * Loads the split of the amount over several documents below the Reference field (PaymentAllocation.js).
      *
      * @param Vtiger_Request $request
      * @return array
-     * @throws Exception
      */
     public function getHeaderScripts(Vtiger_Request $request): array
     {
-        $headerScripts = parent::getHeaderScripts($request);
-
-        if (Core_PaymentLicense_Helper::isLimitPremium() && vtlib_isModuleActive('Installer')) {
-            $headerScripts += $this->checkAndConvertJsScripts(['modules.Installer.resources.PremiumModal']);
-        }
-
-        return $headerScripts;
+        return array_merge(parent::getHeaderScripts($request), $this->checkAndConvertJsScripts(['modules.Core.resources.PaymentAllocation']));
     }
 }

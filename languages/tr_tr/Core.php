@@ -1173,6 +1173,8 @@ Vtiger dışında.',
     'LBL_RECORD_ACTION_EXCEPTION' => 'İstisna',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'PDF eki olmadan (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'İşleme izin verilmiyor',
+    'LBL_PAY_SELECTED_INCOMING' => 'Seçilenleri öde',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Seçilenleri öde',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Sil',

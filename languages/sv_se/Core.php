@@ -1310,6 +1310,8 @@ utanför Vtiger.',
     'LBL_RECORD_ACTION_EXCEPTION' => 'Undantag',
     'LBL_RECORD_ACTION_PDF_SKIPPED' => 'Utan PDF-bilaga (%d): %s',
     'LBL_RECORD_ACTION_DENIED_TITLE' => 'Åtgärden är inte tillåten',
+    'LBL_PAY_SELECTED_INCOMING' => 'Betala valda',
+    'LBL_PAY_SELECTED_OUTGOING' => 'Betala valda',
 ];
 $jsLanguageStrings = [
     'LBL_DELETE' => 'Ta Bort',

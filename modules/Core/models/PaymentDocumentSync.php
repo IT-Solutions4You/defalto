@@ -66,22 +66,16 @@ abstract class Core_PaymentDocumentSync_Model extends Core_DatabaseData_Model
     }
 
     /**
-     * Returns the amount applied to each document of the payment. The whole amount goes to the first document:
-     * the save handler allows one document (Core_PaymentLicense_Helper::getReferenceLimit()); only import, which
-     * skips the save events, can store more, and the further documents are not applied.
+     * Returns the amount applied to each document of the payment, split by Core_PaymentAllocation_Model
+     * (amounts entered in the form, the stored split, or a split by due date).
      *
      * @param Vtiger_Record_Model $payment Saved payment record
-     * @return array [document id => amount in the payment currency]
+     * @return array [document id => amount applied to the document in the payment currency]
+     * @throws Exception
      */
     private function getDocumentAmounts(Vtiger_Record_Model $payment): array
     {
-        $documentIds = Core_PaymentValues_Helper::getDocumentIds($payment);
-
-        if (!$documentIds) {
-            return [];
-        }
-
-        return [$documentIds[0] => Core_PaymentCalculation_Helper::parseAmount($payment->get(Core_PaymentConfig_Helper::FIELD_AMOUNT))];
+        return Core_PaymentAllocation_Model::getInstance($this->getConfig())->getDocumentAmounts($payment);
     }
 
     /**
