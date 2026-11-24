@@ -9,6 +9,14 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'Atualize o Installer antes de instalar o sistema ou extensões.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'Não foi possível verificar a versão mais recente do Installer. Repita a busca por atualizações antes de instalar o sistema ou extensões.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'Use um pacote do Installer com versão igual ou superior à instalada e à mais recente disponível.',
+    'LBL_REINSTALL' => 'Reinstalar',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Uma versão mais recente será instalada. Revise as alterações antes de continuar.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Esta versão já está instalada. Ao continuar, seus arquivos serão reinstalados e a atualização do módulo será executada novamente.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Você está instalando uma versão anterior. Os dados existentes podem ser incompatíveis. Faça backup do banco de dados e dos arquivos do módulo antes de continuar.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'Não foi possível carregar o histórico de alterações do GitHub. Você pode continuar com a atualização.',
     'MyExtension' => 'Minha extensão',
     'LBL_SYSTEM_REQUIREMENTS' => 'Requisitos do sistema',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Informações do sistema',

@@ -1,5 +1,34 @@
 # Core UI ownership
 
+## Record navigation
+
+- `layouts/d1/modules/Core/SummaryKeyFields.tpl` renders the fallback Key fields summary card without a Details shortcut. Persisted `LBL_KEY_FIELDS` widgets use Vtiger's `SummaryViewWidget.tpl`, which also omits that shortcut. Full record details remain available through the Details tab in record navigation.
+
+- Only the currently open relation is highlighted in the desktop sidebar. Its colors come from the existing theme-owned nav-pills variables (`--dt-light-blue-color` and `--bs-primary-color`), with bold weight and rounded-pill count badges. Do not tint every populated relation or override these colors with Bootstrap default primary values.
+
+- The base skin removes only the top margin of the main related-list card with `.detailViewContainer .details > .relatedContainer > .bg-body`. Keep LESS and generated CSS aligned; this shared override also covers module-owned related-list templates without editing those extensions or their internal controls.
+
+- Core detail block templates (`Base`, `Address`, `InventoryItem`) accept `BLOCK_MARGIN_CLASS`, defaulting to `mt-3` for existing callers. The shared Vtiger detail renderer supplies `m-0` for its first rendered block so Details aligns with the other record views without removing spacing between later blocks.
+
+- Record view items use Bootstrap `border-3` for a 3px underline, including Comments and module-specific tabs. Keep border color and active state with the existing underline navigation.
+
+- The related-module sidebar is desktop-only (`d-none d-lg-block`) and has no mobile toggle or offcanvas lifecycle. A Related records dropdown with a menu icon and translated label beside Comments contains initially hidden relation shortcuts, shown only after the existing permission-filtered count request reports a positive count. The entire record navigation row, including the Related records button, scrolls horizontally as one non-wrapping element. The tab list and dropdown do not shrink. Bootstrap data-bs-config sets Popper strategy to fixed so the open dropdown escapes the scrolling container. The toggle is hidden when no populated relation exists. Its button uses the same `nav-underline`, `nav-link` and `border-3` styling as the tabs; selecting a dropdown relation applies `active text-primary` to the button, and selecting another view clears both classes. Dropdown links use `fs-6 py-2`; selection adds `active fw-bold`, giving bold primary-colored text without a background; the scoped skin rule uses `--bs-primary-color` and a transparent background. Keep shortcut and sidebar metadata aligned by relation id, update both counts, and mark both the selected dropdown item and its matching desktop sidebar item active by relation id. `getSelectedTab()` returns only the first active representation for runtime controllers.
+
+- `Vtiger_Link_Model::getUrl()` already returns HTML-encoded native links. Escape these URLs in `RecordTabs.tpl` with `escape:'html':'UTF-8':false` so attribute safety is preserved without double-encoding ampersands. Both `data-url` (AJAX/history) and `href` (direct navigation) must decode to the original module, view, record and mode parameters in the browser.
+
+- `layouts/d1/modules/Core/RecordTabs.tpl` presents full-page record views as horizontally scrollable Bootstrap underline navigation with icons. The bar has a transparent background and no surrounding border or divider; retain the active tab's blue underline. Vtiger's detail pre-process template supplies the original view and relation links; Core does not create new relations or grant access. The shared `LBL_RELATED_MODULES` label belongs to Core in every locale, independently of extension-owned labels with the same key.
+
+## Frontend dependency management
+
+- Root Composer metadata owns the Mention.js package (`jakiestfu/mention`), including its bundled Typeahead script. The custom package definition and lockfile pin an immutable upstream revision because the repository has no Composer manifest. Install it under `vendor/jakiestfu/mention` without modifying vendor sources; Mention owns its Bootstrap renderer and matching adapter. Scoped `.mention-menu` styling is included in the shared base skin `style.less` and committed `style.css`.
+
+- Address-block label containers in `blockuitypes/AddressEditField.tpl` and `AddressEditFieldPair.tpl` omit `text-secondary` and inherit normal theme text color, matching Vtiger's shared edit fields. Keep lock icons styled independently from labels.
+
+## AI availability
+
+- `Core_AiAvailability_View` renders the authenticated setup dialog on demand. `Core_AiAvailability_Model` uses the same stored Membership decision as the AI chat and the module's local API-key check when that extension is present. Module registration and enablement are separate. Opening the dialog makes no licensing or AI-provider requests.
+- The dialog reports local readiness. The AI extension owns API-key configuration, chat and provider connectivity. The dialog only offers administrative actions to administrators and checks AI module permissions before offering chat.
+
 ## Read-only query projections
 
 - `Core_QueryGenerator_Model::getProjectedRows()` returns selected values keyed by record ID and field identifier, including related-field identifiers. It shares the configured joins, filters, parameters, sort, and limit with the original query. Projection consumers own extra record-action checks. `getRecords()` still hydrates complete record models.

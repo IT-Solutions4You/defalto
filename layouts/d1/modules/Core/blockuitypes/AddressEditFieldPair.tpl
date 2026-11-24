@@ -31,7 +31,7 @@
 
 <div class="py-2 col-12">
     <div class="row align-items-center">
-        <div class="fieldLabel text-secondary col-sm-4">
+        <div class="fieldLabel col-sm-4">
             <div class="d-flex">
                 {$PAIR_LABEL}
                 {if ($ZIP_FIELD && $ZIP_FIELD->isMandatory()) || ($CITY_FIELD && $CITY_FIELD->isMandatory())}<span class="text-danger ms-2">*</span>{/if}

@@ -1032,7 +1032,45 @@ var vtUtils = {
         container.find('[data-color-id]').removeClass('bg-body-secondary');
         container.find('[data-color-id="' + color + '"]').addClass('bg-body-secondary');
     },
-    showLicenseError() {
-        app.helper.showErrorNotification({message: app.vtranslate('JS_MEMBERSHIP_LICENSE_REQUIRED')});
+    showAiAvailability(trigger) {
+        if (this.aiAvailabilityPending || document.getElementById('aiAvailabilityModal')?.classList.contains('show')) {
+            return;
+        }
+
+        this.aiAvailabilityPending = true;
+        app.request.post({data: {module: 'Core', view: 'AiAvailability'}}).then((error, html) => {
+            this.aiAvailabilityPending = false;
+            const response = typeof html === 'string' && new DOMParser().parseFromString(html, 'text/html');
+
+            if (error || !response?.body?.firstElementChild?.matches('.aiAvailabilityDialog')) {
+                app.helper.showErrorNotification({message: app.vtranslate('JS_ERROR')});
+                return;
+            }
+
+            const modal = app.helper.showModal(html, {modalName: 'aiAvailabilityModal'});
+            modal.attr('aria-labelledby', 'aiAvailabilityTitle');
+            modal.one('hidden.bs.modal', () => trigger.focus());
+            modal.off('click.aiAvailability').on('click.aiAvailability', '[data-ai-setup-action]', (event) => {
+                const button = event.currentTarget,
+                    action = button.dataset.aiSetupAction,
+                    ai = window.AI;
+
+                if (typeof ai?.[action] !== 'function') {
+                    app.helper.showErrorNotification({message: app.vtranslate('JS_ERROR')});
+                    return;
+                }
+
+                button.disabled = true;
+                modal.one('hidden.bs.modal', () => {
+                    if (action === 'showChat' && trigger.matches('.aiChatComment')) {
+                        const comment = trigger.closest('.addCommentBlock, .widget_contents')?.querySelector('.commentcontent');
+                        ai.showChat(null, button.dataset.commentPrompt + '\n' + (comment?.value || ''), 'comment');
+                    } else {
+                        ai[action]();
+                    }
+                });
+                modal.modal('hide');
+            });
+        });
     },
 }

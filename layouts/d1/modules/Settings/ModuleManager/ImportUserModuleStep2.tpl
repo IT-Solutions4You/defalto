@@ -44,6 +44,7 @@
 									{/if}
 								</p>
 							</div>
+							{include file='modules/Installer/VersionNotice.tpl' VERSION_NOTICE=$MODULEIMPORT_VERSION_NOTICE}
 							<div class="mb-3">
 								<h5>{vtranslate('LBL_CHANGELOG_INFORMATION', 'Installer')}</h5>
 								{if $MODULEIMPORT_CHANGELOG}
@@ -92,7 +93,7 @@
 								</button>
 							{elseif $MODULEIMPORT_EXISTS eq 'true'}
 								<button class="btn btn-primary active updateModule" name="saveButton">
-									<span>{vtranslate('LBL_UPDATE_NOW', $QUALIFIED_MODULE)}</span>
+									<span>{if $MODULEIMPORT_VERSION_NOTICE && $MODULEIMPORT_VERSION_NOTICE.type eq 'warning'}{vtranslate('LBL_REINSTALL', 'Installer')}{else}{vtranslate('LBL_UPDATE_NOW', $QUALIFIED_MODULE)}{/if}</span>
 								</button>
 							{elseif $MODULEIMPORT_DIR_EXISTS eq 'true'}
 								<button class="btn btn-primary active finishButton" type="submit">

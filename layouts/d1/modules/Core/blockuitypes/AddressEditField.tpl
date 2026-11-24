@@ -32,7 +32,7 @@
     {else}
         <div class="py-2 {$COL}">
             <div class="row align-items-center">
-                <div class="fieldLabel text-secondary col-sm-4">
+                <div class="fieldLabel col-sm-4">
                     <div class="d-flex">
                         {if $MASS_EDIT}<input class="inputElement me-2 form-check-input" id="include_in_mass_edit_{$FIELD_MODEL->getFieldName()}" data-update-field="{$FIELD_MODEL->getFieldName()}" type="checkbox">{/if}
                         {$ADDR_LABEL}

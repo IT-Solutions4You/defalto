@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-	<form id="detailView" class="clearfix mt-3" method="POST">
+	<form id="detailView" class="clearfix m-0" method="POST">
 		<div class="resizable-summary-view">
 			<div class="container-fluid">
 				<div class="row">

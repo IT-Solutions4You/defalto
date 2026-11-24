@@ -8,9 +8,9 @@
  *}
 {strip}
 	<div class="p-2">
-		<div class="row">
-			<div class="dashboard_notebookWidget_view" style="word-break: break-all">
-				<div class="row mb-3">
+		<div class="d-flex flex-column">
+			<div class="dashboard_notebookWidget_view">
+				<div class="row gx-0 mb-3">
 					<div class="col-lg">
 						<i>{vtranslate('LBL_LAST_SAVED_ON', $MODULE)}</i> {Vtiger_Util_Helper::formatDateTimeIntoDayString($WIDGET->getLastSavedDate())}
 					</div>
@@ -21,13 +21,13 @@
 					</div>
 				</div>
 				<div class="pushDown2per col-lg-12">
-					<div class="dashboard_notebookWidget_viewarea boxSizingBorderBox form-control">
-						{$WIDGET->getContent()|escape:'html'|nl2br}
+					<div class="dashboard_notebookWidget_viewarea">
+						{$WIDGET->getDisplayContent()}
 					</div>
 				</div>
 			</div>
 			<div class="dashboard_notebookWidget_text" style="display:none;">
-				<div class="row mb-3">
+				<div class="row gx-0 mb-3">
 					<div class="col-lg">
 						<i>{vtranslate('LBL_LAST_SAVED_ON', $MODULE)}</i> {Vtiger_Util_Helper::formatDateTimeIntoDayString($WIDGET->getLastSavedDate())}
 					</div>
@@ -37,11 +37,9 @@
 						</button>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row gx-0">
 					<div class="col-lg-12">
-						<textarea class="dashboard_notebookWidget_textarea boxSizingBorderBox form-control" data-note-book-id="{$WIDGET->get('id')}">
-							{$WIDGET->getContent()|escape:'html'}
-						</textarea>
+						<textarea id="notebookContent_{$WIDGET->get('id')|escape:'html'}" class="dashboard_notebookWidget_textarea boxSizingBorderBox form-control" data-note-book-id="{$WIDGET->get('id')|escape:'html'}">{$WIDGET->getDisplayContent()|escape:'html'}</textarea>
 					</div>
 				</div>
 			</div>

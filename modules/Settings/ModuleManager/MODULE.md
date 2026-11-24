@@ -4,10 +4,13 @@
 
 - Settings Module Manager owns the administrator UI: the module list (enable/disable checkbox via `Basic::updateModuleStatus`, per-module Settings links) and the ZIP upload/confirmation screens.
 - `Installer_ModulePackage_Model` owns validation and installation of a manually uploaded module ZIP. Keep archive safety, staging, rollback, module-path ownership, and lifecycle behavior in Installer instead of duplicating it in the view or action.
+- Installer owns the current-Installer prerequisite for ZIP preview and installation. Installer ZIPs may update or repair Installer while other packages are blocked; Installer downgrades are rejected. The legacy `step3` catalog installation checks `Installer_UpdateRequirement_Model` before invoking the template importer.
 - Flow: `ModuleImport` view modes `importUserModuleStep1` (disclaimer and upload form) and `importUserModuleStep2` (stores the upload, shows the confirmation), then `Basic` action modes `importUserModuleStep3` / `updateUserModuleStep3` (both call `installUserModulePackage()`).
 - The legacy `Vtiger_Package` manifest importer remains only for the legacy extension flow (`ModuleImport` `step2` / `step3`); manually uploaded Defalto module packages must not use its directory remapping.
 
 ## Manual package contract
+
+- Module versions may use two or three numeric components, including `1.1.1`. Preserve the full version string in the package declaration, optional manifest, changelog and confirmation UI. Version ordering is owned by Installer and uses `version_compare()`.
 
 - Accept installable files only below `modules`, `layouts`, and `languages`, either directly at the ZIP root or below one wrapper directory.
 - Derive exactly one module identity from `modules/<Module>/<Module>.php`. Require a declared `moduleVersion` and `modules/<Module>/models/Install.php`. `modules/<Module>/manifest.xml` is optional; when present, its name and version must match the module file and its minimum Defalto version is enforced. Never use a root manifest or manifest data to remap package paths.
@@ -19,7 +22,7 @@
 ## Installation lifecycle
 
 - Use `module.postinstall` for a new module and `module.postupdate` for an installed module through `Core_Install_Model`.
-- Reject an update whose package version is not newer than the installed module file version.
+- Allow newer, equal and older package versions for modules other than Installer. Installer packages must satisfy `Installer_UpdateRequirement_Model`, which rejects versions older than the installed or known public Installer version. The confirmation view reads `Installer_ModulePackage_Model::getVersionNotice()` and includes Installer's shared `VersionNotice.tpl` to show both versions, an upgrade notice or a reinstall/downgrade warning. Existing modules always use `module.postupdate`. Package identity, minimum Defalto compatibility and post-install version validation remain mandatory.
 - Preserve an existing module's sharing permission, regenerate module metadata, clear runtime and template caches, and verify the installed version, active state, and default URL before committing package files.
 - On failure, restore copied files where possible and let the original error propagate to the central WebUI exception handler without replacing or hiding it.
 - `Index.js::showPackageInstallError()` (the install AJAX failure callback) shows the server-provided error in a modal with guidance to fix the cause and retry or report the exact error to the package publisher. The modal offers navigation to import another package; the install/update button stays available after closing it.

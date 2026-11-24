@@ -18,6 +18,24 @@
  */
 
 $languageStrings = [
+    'LBL_RELATED_RECORDS' => 'Verknüpfte Datensätze',
+    'LBL_RELATED_MODULES' => 'Verknüpfte Module',
+    'LBL_AI_SETUP' => 'KI einrichten',
+    'LBL_AI_ACTIVE_LICENSE' => 'Aktive Lizenz',
+    'LBL_AI_ACTIVE_LICENSE_DESCRIPTION' => 'Aktive Membership-Lizenz im Installer',
+    'LBL_AI_INSTALLED_EXTENSION' => 'Erweiterung installiert',
+    'LBL_AI_INSTALLED_EXTENSION_DESCRIPTION' => 'KI-Erweiterung in diesem CRM',
+    'LBL_AI_READY' => 'KI einsatzbereit',
+    'LBL_AI_READY_DESCRIPTION' => 'Aktivierte Erweiterung mit eingerichtetem API-Schlüssel',
+    'LBL_AI_ACTIVATE_MEMBERSHIP' => 'Aktivieren Sie Ihre Membership-Lizenz im Installer.',
+    'LBL_AI_INSTALL_EXTENSION' => 'Installieren Sie die KI-Erweiterung im Installer.',
+    'LBL_AI_ENABLE_EXTENSION' => 'Aktivieren Sie KI im Modulmanager.',
+    'LBL_AI_SETUP_UNVERIFIED' => 'Die KI-Einrichtung konnte nicht überprüft werden.',
+    'LBL_AI_CONFIGURE_KEY' => 'Konfigurieren Sie den API-Schlüssel für KI.',
+    'LBL_AI_NO_ACCESS' => 'Ihr Profil hat keinen Zugriff auf KI.',
+    'LBL_AI_CONTACT_ADMIN' => 'Wenden Sie sich an Ihre CRM-Administration.',
+    'LBL_AI_TRY_CHAT' => 'Öffnen Sie KI und senden Sie eine Nachricht, um die Verbindung zu testen.',
+    'LBL_AI_OPEN' => 'KI öffnen',
     'LBL_PRODUCTBLOCKTPL' => 'Produktblock-Vorlagen',
     'LBL_PRODUCTBLOCKTPL_DESC' => 'Produktblock-Vorlagen für Inventarpositionen verwalten.',
     'LBL_SAVED_LIST_FILTER_NOTICE' => 'Diese Liste verwendet bereits gespeicherte Bedingungen. Das Entfernen zusätzlicher Filter hebt diese nicht auf.',
@@ -1921,7 +1939,6 @@ $jsLanguageStrings = [
     'work' => 'Arbeit',
     'work_fax' => 'Fax',
     'JS_DIACRITICS_NOT_ALLOWED' => 'Diacritics are not permitted. Only hyphens, underscores, and spaces are allowed.',
-    'JS_MEMBERSHIP_LICENSE_REQUIRED' => 'Für die Nutzung und Installation der AI Erweiterung ist eine Membership Lizenz erforderlich',
     'JS_YES' => 'Ja',
     'JS_NO' => 'Nein',
     'JS_CHANGES_POPUP_WILL_BE_LOST' => 'Beim Schließen des Fensters gehen alle eingegebenen Daten verloren. Möchten Sie das Fenster schließen?	'

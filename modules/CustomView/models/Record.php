@@ -76,7 +76,9 @@ class CustomView_Record_Model extends Vtiger_Base_Model
             return $viewNameLabel;
         }
 
-        return $viewName;
+        $viewNameLabel = vtranslate($viewName, $moduleName);
+
+        return $viewNameLabel !== decode_html($viewName) ? $viewNameLabel : $viewName;
     }
 
     /**

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf03686aab84cc120124d6335761393f",
+    "content-hash": "c70ee4aa815067875bc9d5cf6e62359f",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -1423,6 +1423,24 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2025-10-06T14:47:22+00:00"
+        },
+        {
+            "name": "jakiestfu/mention",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jakiestfu/Mention.js.git",
+                "reference": "1b588ef059bfd4c5164393eb686252abbf8c8ebd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jakiestfu/Mention.js/zipball/1b588ef059bfd4c5164393eb686252abbf8c8ebd",
+                "reference": "1b588ef059bfd4c5164393eb686252abbf8c8ebd"
+            },
+            "type": "library",
+            "license": [
+                "MIT"
+            ]
         },
         {
             "name": "kcfinder/kcfinder",
@@ -4448,7 +4466,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "jakiestfu/mention": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

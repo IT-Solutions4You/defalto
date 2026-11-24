@@ -4,6 +4,8 @@ Create or edit a saved list to choose its columns, conditions, sorting and shari
 
 ## Conditions
 
+Saved-list names use your selected language when a translation is available, including built-in lists such as Prospect Accounts, Potentials Won and Open Quotes. Custom names without a translation keep their saved text. The same names appear in list selectors, Key Metrics and MiniList widgets.
+
 - A new list without conditions starts with one empty condition row. Choose a field in it; there is no need to click Add condition for the first rule.
 - Choose AND or OR beside a condition to connect it to the next one. The last row in each group has no connector. Each choice is kept when you save and reopen the list or create a draft with Save as filter.
 - The available comparisons match the quick filter for the same field, including any module-specific options. Checkbox conditions select Yes or No.
