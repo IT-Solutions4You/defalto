@@ -15,6 +15,9 @@ Outgoing Payments records the money your company pays, for example to vendors fo
 
 A daily background job updates the statuses when the dates arrive. Only Paid payments count towards the paid amount of the document.
 
+## Free and paid edition
+In the free edition a payment belongs to one document. Adding a second document in the payment form shows a window with the paid edition and a link to buy it; the quick form opened from a document shows a short message.
+
 ## Payments list
 With the Payments list installed, purchase orders show the common **Payments** widget instead of the Outgoing Payments widget, and Outgoing Payments is not in the Sales menu: open the payments from **Payments**, from the quick create menu or from a document. Every payment shows the **Direction** Outgoing.
 

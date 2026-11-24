@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Reembolso',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Pagamentos de',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Os pagamentos também deixarão de contar nos documentos criados a partir dele (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Vários documentos por pagamento estão disponíveis na versão paga.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'na versão paga quita vários documentos com um único pagamento.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Um pagamento para várias faturas com o valor dividido por vencimento',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Pagamento em lote a partir da lista de faturas',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'O pagamento excedente fica na última fatura',
 ];
 
 $jsLanguageStrings = [

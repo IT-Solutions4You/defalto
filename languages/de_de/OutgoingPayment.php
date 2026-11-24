@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Erstattung',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Zahlungen aus',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Die Zahlungen werden auch nicht mehr auf die daraus erstellten Belege angerechnet (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Mehrere Belege pro Zahlung gibt es in der kostenpflichtigen Version.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'bezahlt in der kostenpflichtigen Version mehrere Belege mit einer Zahlung.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Eine Zahlung für mehrere Rechnungen, aufgeteilt nach Fälligkeit',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Sammelzahlung aus der Rechnungsliste',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Überzahlung bleibt auf der letzten Rechnung',
 ];
 
 $jsLanguageStrings = [

@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Återbetalning',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Betalningar från',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Betalningarna räknas inte heller längre på dokumenten som skapats från den (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Flera dokument per betalning finns i den betalda versionen.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'betalar i den betalda versionen flera dokument med en betalning.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'En betalning för flera fakturor, fördelad efter förfallodatum',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Massbetalning från fakturalistan',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Överbetalning ligger kvar på sista fakturan',
 ];
 
 $jsLanguageStrings = [

@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Vratka',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Platby z',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Platby sa prestanú započítavať aj do dokladov z neho vystavených (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Viac dokladov v jednej platbe je v platenej verzii.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'v platenej verzii uhradí jednou platbou viac dokladov.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Jedna platba k viacerým faktúram s rozdelením sumy podľa splatnosti',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Hromadná platba zo zoznamu faktúr',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Preplatok ostane na poslednej faktúre',
 ];
 
 $jsLanguageStrings = [

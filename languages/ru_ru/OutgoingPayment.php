@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Возврат',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Платежи по',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Платежи также перестанут учитываться в документах, созданных на его основе (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Несколько документов в одном платеже доступны в платной версии.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'в платной версии оплачивает несколько документов одним платежом.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Один платёж на несколько счетов с распределением по сроку оплаты',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Массовая оплата из списка счетов',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Переплата остаётся на последнем счёте',
 ];
 
 $jsLanguageStrings = [
