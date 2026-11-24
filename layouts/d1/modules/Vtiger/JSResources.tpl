@@ -40,6 +40,7 @@
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/lib/bootbox/bootbox.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/Vtiger/resources/Base.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/Vtiger/resources/Vtiger.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/Core/resources/AssigneeSelect.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/Import/resources/Import.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/Vtiger/resources/Base.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/modules/Google/resources/Settings.js')}"></script>

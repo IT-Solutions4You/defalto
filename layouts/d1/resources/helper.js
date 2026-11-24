@@ -928,13 +928,13 @@ jQuery.Class("Vtiger_Helper_Js",{
             });
         }
 
-        container.html(content).modal(params);
-        container.html(content).modal('show');
+        container.html(content);
+        vtUtils.applyFieldElementsView(container);
+        container.modal(jQuery.extend({}, params, {show: false}));
+        container.modal('show');
         container.css('z-index', self.getZIndex());
 
         self.setBackdropIndex(backdropIndex);
-
-        vtUtils.applyFieldElementsView(container);
 
         return container;
     },

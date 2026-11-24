@@ -715,6 +715,7 @@ var vtUtils = {
      * @returns {undefined}
      */
     applyFieldElementsView: function (container) {
+        Vtiger_AssigneeSelect_Js.register(container);
         this.showSelect2ElementView(container.find('select.select2'));
         this.registerEventForDateFields(container.find('.dateField').not('.ignore-ui-registration'));
         this.registerEventForTimeFields(container.find('.timepicker-default'));

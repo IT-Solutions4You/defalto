@@ -652,6 +652,7 @@ Vtiger.Class('Vtiger_Index_Js', {
     registerAutoCompleteFields: function (container) {
         var thisInstance = this;
         container.find('input.autoComplete').autocomplete({
+            'appendTo': container.closest('.modal').length ? container.closest('.modal') : null,
             'minLength': '3',
             'source': function (request, response) {
                 //element will be array of dom elements
@@ -659,10 +660,7 @@ Vtiger.Class('Vtiger_Index_Js', {
                 var inputElement = jQuery(this.element[0]);
                 var searchValue = request.term;
                 var params = thisInstance.getReferenceSearchParams(inputElement);
-                params.module = app.getModuleName();
-                if (jQuery('#QuickCreate').length > 0) {
-                    params.module = container.find('[name="module"]').val();
-                }
+                params.module = params.module || app.getModuleName();
                 params.search_value = searchValue;
                 if (params.search_module && params.search_module != 'undefined') {
                     thisInstance.searchModuleNames(params).then(function (data) {
@@ -725,8 +723,8 @@ Vtiger.Class('Vtiger_Index_Js', {
      * @param <jQUery> container
      */
     registerClearReferenceSelectionEvent: function (container) {
-        container.off('click', '.clearReferenceSelection');
-        container.on('click', '.clearReferenceSelection', function (e) {
+        container.off('click.vtigerReferenceClear', '.clearReferenceSelection');
+        container.on('click.vtigerReferenceClear', '.clearReferenceSelection', function (e) {
             e.preventDefault();
             var element = jQuery(e.currentTarget);
             var parentTdElement = element.closest('td');
@@ -741,7 +739,7 @@ Vtiger.Class('Vtiger_Index_Js', {
             inputElement.attr("value", "");
             inputElement.data('value', '');
             inputElement.val("");
-            parentTdElement.find('input[name="' + fieldName + '"]').val("");
+            parentTdElement.find('input[name="' + fieldName + '"]').val("").trigger('change');
             element.addClass('hide');
             element.trigger(Vtiger_Edit_Js.referenceDeSelectionEvent);
         });
@@ -768,11 +766,12 @@ Vtiger.Class('Vtiger_Index_Js', {
     referenceModulePopupRegisterEvent: function (container) {
         let self = this;
 
-        container.off('click', '.relatedPopup');
-        container.on('click', '.relatedPopup', function (e) {
+        container.off('click.vtigerReferencePopup', '.relatedPopup');
+        container.on('click.vtigerReferencePopup', '.relatedPopup', function (e) {
             self.openPopUp(e);
         });
-        container.on('change', '.referenceModulesList', function (e) {
+        container.off('change.vtigerReferenceModule', '.referenceModulesList');
+        container.on('change.vtigerReferenceModule', '.referenceModulesList', function (e) {
             let element = jQuery(e.currentTarget),
                 parentElement = self.getParentElement(element),
                 popupReferenceModule = element.val(),
@@ -1013,6 +1012,13 @@ Vtiger.Class('Vtiger_Index_Js', {
             sourceRecordId = searchResultContainer.find('tr.listViewEntries.edited').data('id')
         }
 
+        const form = container.closest('form.recordEditView');
+
+        if (form.length) {
+            sourceModule = form.find('[name="module"]').first().val() || sourceModule;
+            sourceRecordId = form.find('[name="record"]').first().val() || '';
+        }
+
         let isMultiple = false;
 
         if (sourceFieldElement.data('multiple')) {
@@ -1136,6 +1142,13 @@ Vtiger.Class('Vtiger_Index_Js', {
             jQuery('input[name="popupReferenceModule"]', tdElement) : jQuery('input.popupReferenceModule', tdElement);
         var searchModule = referenceModuleElement.val();
         params.search_module = searchModule;
+        const form = element.closest('form.recordEditView');
+
+        if (form.length) {
+            params.module = form.find('[name="module"]').first().val() || app.getModuleName();
+            params.base_record = form.find('[name="record"]').first().val() || '';
+        }
+
         return params;
     },
 

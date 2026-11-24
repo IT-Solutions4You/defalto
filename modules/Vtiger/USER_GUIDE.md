@@ -8,6 +8,8 @@ The header menu contains Defalto settings available to administrators, the curre
 
 # Record actions
 
+Deleting a record from a list or search result asks for confirmation once per click, including after refreshing the displayed records.
+
 Beside Comments, the Related records button opens a dropdown of related modules that contain records, including their counts. These shortcuts appear or disappear as related records are added or removed. The desktop Related modules panel retains the full list, including empty relations. On mobile, the sidebar and its toggle are hidden; populated relations remain available through Related records.
 
 Summary, Details, Updates, Sharing, Comments and related-record lists start directly below the record navigation without an extra outer margin. The related-modules panel aligns with the content. Internal spacing between content sections remains unchanged.
@@ -97,3 +99,7 @@ Saved formatted notes appear as HTML content without an input border. Bulleted, 
 Field labels in the full record edit form use the normal theme text color for easier reading, including address labels. This also applies when the same form creates or duplicates a record. Required fields retain their red asterisk, and restricted fields retain their lock indicator.
 
 The Related records dropdown looks like the other record tabs. When one of its related modules is selected, its label is blue and underlined; clicking it still opens the list of related modules. Menu items use the navigation text size and spacing, and the selected item has bold primary-colored text without a background. In the desktop sidebar, only the currently open module is highlighted using the application's original primary theme colors and bold text. Its count uses a rounded badge, and selection stays synchronized with the dropdown.
+
+Relationship selectors in edit windows use the record being edited. Select a result to fill the relationship, or clear it to search again. Suggestions remain visible above the edit window. Reopening a selection list does not multiply selection actions.
+
+Screens using the shared user/group selector show fixed-size avatars, searchable users and groups, and All/My shortcuts. Apply confirms checkbox changes; closing discards the draft.

@@ -2,6 +2,8 @@
 
 This module holds shared base behavior inherited by other modules. It has no standalone installable module version; the sections below only record the invariants that are easy to break.
 
+- List, SearchList and AdvanceSearchList delete-button delegates use the `click.vtigerDeleteRecord` namespace and replace their own handler on registration. Search handlers stop bubbling to the enclosing page delegate, so one click opens one confirmation even after repeated controller initialization. Do not remove unrelated click handlers.
+
 - The comment AI button and the top bar share the Core availability dialog. The common application startup registers `Vtiger_Index_Js`'s delegated click handler for every view. The listener runs before inline handlers because the installed AI extension replaces the top bar control. Keep the comment trigger distinct so opening chat can pass the draft and use the existing comment prompt schema.
 
 - `Vtiger_Reference_UIType::getReportDisplayValueFromLabel()` renders a label already fetched by Reporting using the same link markup as normal reference rendering. Reporting must check target visibility before calling it.
@@ -139,3 +141,11 @@ This module holds shared base behavior inherited by other modules. It has no sta
 # Record action permissions
 
 - `Save`/`SaveAjax` (`saveRecord()`), `MassSave`, `MassDelete`, the list row actions, `Detail` and `Edit` (locked fields in `blocks/Fields.tpl`, denied picklist values in `uitypes/Picklist.tpl`, a denied form shown as `Core/RecordActionDeniedPage.tpl` in the layout, a refused full save shown again in the form) apply `Core_RecordActionPermission_Model` rules; see `modules/Core/MODULE.md` (Record action permissions) for the owner, the checks and the validation scenario.
+
+## Form-scoped reference selection
+
+- Reference popup source module/record and autocomplete base record come from the nearest recordEditView form, including new records with an empty id. Never reuse the underlying detail record for an overlay. Autocomplete results append inside their modal. Reference clear/popup/module delegates replace their own namespace, and clearing emits change on the hidden source field.
+- Popup initialization uses one namespaced post.Popup.Load listener. The shared popup helper inserts HTML once and initializes controls before showing the modal, avoiding duplicate script execution.
+- Standard OverlayEditView carries escaped field JSON in `.record-field-info`; Vtiger_Edit_Js.getValidationMeta(form) exposes it to vtValidate without global related_uimeta. Chart overlay submit handlers use this metadata and SaveAjax, retaining module validators and keeping failures in the form.
+
+- JSResources loads the Core-owned Vtiger_AssigneeSelect_Js globally. vtUtils.applyFieldElementsView registers shared assignee controls within the supplied container; registration is idempotent and preserves ordinary owner field widgets.

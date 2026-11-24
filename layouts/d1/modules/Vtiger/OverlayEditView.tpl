@@ -10,6 +10,7 @@
     <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 {/foreach}
 <form class="form-horizontal recordEditView" id="EditView" name="edit" method="post" action="index.php" enctype="multipart/form-data">
+    <input type="hidden" class="record-field-info" value="{Vtiger_Util_Helper::toSafeHTML($FIELDS_INFO)}">
     <div class="fc-overlay-modal modal-content overlayEdit border-0">
         {if isset($SINGLE_MODULE_NAME)}
             {assign var="singleModuleName" value=$SINGLE_MODULE_NAME}

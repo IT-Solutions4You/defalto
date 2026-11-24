@@ -1,5 +1,7 @@
 # Record navigation
 
+Project task and milestone date validation accepts the calendar date format configured in your user preferences. Dates stay on the selected calendar day.
+
 The Key fields card in Summary shows its title without a Details shortcut. Open the Details tab to view all record fields.
 
 Switching tabs opens the selected view of the current record. Tab links can also be opened directly or refreshed while retaining the selected record and view.
@@ -89,3 +91,9 @@ Monthly appointments keep the selected local start time when daylight-saving tim
 Address labels in the record edit form use the normal theme text color, including the combined postal code and city label.
 
 The Related records dropdown looks like the other record tabs. When one of its related modules is selected, its label is blue and underlined; clicking it still opens the list of related modules. Menu items use the navigation text size and spacing, and the selected item has bold primary-colored text without a background. In the desktop sidebar, only the currently open module is highlighted using the application's original primary theme colors and bold text. Its count uses a rounded badge, and selection stays synchronized with the dropdown.
+
+Related-record selection lists open above the edit window and return a selected record to that window. Repeated opening retains one selection action.
+
+## User and group selection
+
+Screens using the shared assignee selector let you search permitted users and groups, select several entries and choose Apply. All shows the unfiltered view; My selects your user when available. Clear removes the filter. Closing without applying keeps the previous selection. Photos or initials use fixed-size avatars.

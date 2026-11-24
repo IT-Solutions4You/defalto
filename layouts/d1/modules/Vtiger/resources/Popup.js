@@ -1004,7 +1004,8 @@ jQuery.Class("Vtiger_Popup_Js", {
 });
 
 jQuery(document).ready(function () {
-    app.event.on("post.Popup.Load", function (event, params) {
+    app.event.off("post.Popup.Load.vtigerPopup");
+    app.event.on("post.Popup.Load.vtigerPopup", function (event, params) {
         let popupInstance = Vtiger_Popup_Js.getInstance(params.module),
             eventToTrigger = params.eventToTrigger;
 
