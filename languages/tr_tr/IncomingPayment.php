@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'İade',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Ödemeler:',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Ödemeler bundan oluşturulan belgelerde de artık hesaba katılmayacak (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Bir ödemede birden fazla belge ücretli sürümde kullanılabilir.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'ücretli sürümde tek ödemeyle birden fazla belgeyi öder.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Vadeye göre dağıtılan, birden fazla fatura için tek ödeme',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Fatura listesinden toplu ödeme',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Fazla ödeme son faturada kalır',
 ];
 
 $jsLanguageStrings = [

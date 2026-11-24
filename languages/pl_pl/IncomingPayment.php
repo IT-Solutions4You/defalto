@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Zwrot',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Płatności z',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Płatności przestaną być również uwzględniane w dokumentach z niego wystawionych (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Kilka dokumentów w jednej płatności jest dostępnych w wersji płatnej.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'w wersji płatnej opłaca kilka dokumentów jedną płatnością.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Jedna płatność za kilka faktur z podziałem kwoty według terminu',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Płatność zbiorcza z listy faktur',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Nadpłata zostaje na ostatniej fakturze',
 ];
 
 $jsLanguageStrings = [

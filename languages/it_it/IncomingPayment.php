@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Rimborso',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Pagamenti di',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'I pagamenti non verranno più conteggiati nemmeno sui documenti creati da esso (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Più documenti per pagamento sono disponibili nella versione a pagamento.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'nella versione a pagamento salda più documenti con un unico pagamento.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Un pagamento per più fatture con importo ripartito per scadenza',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Pagamento cumulativo dall’elenco fatture',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'L’eccedenza resta sull’ultima fattura',
 ];
 
 $jsLanguageStrings = [

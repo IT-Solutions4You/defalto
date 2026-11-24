@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'استرداد',
     'LBL_PAYMENTS_FROM_SOURCE' => 'مدفوعات',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'لن تُحتسب المدفوعات أيضًا في المستندات التي أُنشئت منه (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'تتوفر عدة مستندات في دفعة واحدة في الإصدار المدفوع.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'في الإصدار المدفوع يسدد عدة مستندات بدفعة واحدة.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'دفعة واحدة لعدة فواتير موزعة حسب تاريخ الاستحقاق',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'دفع جماعي من قائمة الفواتير',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'تبقى الدفعة الزائدة على آخر فاتورة',
 ];
 
 $jsLanguageStrings = [

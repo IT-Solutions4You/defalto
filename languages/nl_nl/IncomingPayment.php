@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Terugbetaling',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Betalingen van',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'De betalingen tellen ook niet meer mee op de documenten die ervan zijn gemaakt (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Meerdere documenten per betaling zijn beschikbaar in de betaalde versie.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'betaalt in de betaalde versie meerdere documenten met één betaling.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Eén betaling voor meerdere facturen, verdeeld op vervaldatum',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Bulkbetaling vanuit de factuurlijst',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Teveel betaald blijft op de laatste factuur',
 ];
 
 $jsLanguageStrings = [

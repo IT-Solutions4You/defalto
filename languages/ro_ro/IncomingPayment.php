@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Rambursare',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Plăți din',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Plățile nu vor mai fi luate în calcul nici pe documentele create din acesta (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Mai multe documente per plată sunt disponibile în versiunea plătită.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'în versiunea plătită achită mai multe documente cu o singură plată.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'O plată pentru mai multe facturi, împărțită după scadență',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Plată în masă din lista de facturi',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Plata în plus rămâne pe ultima factură',
 ];
 
 $jsLanguageStrings = [

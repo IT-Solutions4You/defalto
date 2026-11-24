@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Palautus',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Maksut kohteesta',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Maksuja ei myöskään enää lasketa siitä luotuihin asiakirjoihin (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Useita asiakirjoja yhdessä maksussa on maksullisessa versiossa.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'maksaa maksullisessa versiossa useita asiakirjoja yhdellä maksulla.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Yksi maksu usealle laskulle eräpäivän mukaan jaettuna',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Joukkomaksu laskuluettelosta',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'Ylimaksu jää viimeiselle laskulle',
 ];
 
 $jsLanguageStrings = [

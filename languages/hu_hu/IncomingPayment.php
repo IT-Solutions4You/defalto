@@ -58,6 +58,11 @@ $languageStrings = [
     'LBL_REFUND' => 'Visszatérítés',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Fizetések innen:',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'A fizetések a belőle létrehozott bizonylatokon sem számítanak többé (%s).',
+    'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Több bizonylat egy fizetésben a fizetős verzióban érhető el.',
+    'LBL_PREMIUM_MODAL_SUBTITLE' => 'a fizetős verzióban egy fizetéssel több bizonylatot rendez.',
+    'LBL_PREMIUM_MODAL_ITEM_1' => 'Egy fizetés több számlára, határidő szerint felosztva',
+    'LBL_PREMIUM_MODAL_ITEM_2' => 'Csoportos fizetés a számlalistából',
+    'LBL_PREMIUM_MODAL_ITEM_3' => 'A túlfizetés az utolsó számlán marad',
 ];
 
 $jsLanguageStrings = [
