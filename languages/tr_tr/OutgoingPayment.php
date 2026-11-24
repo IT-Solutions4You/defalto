@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Vadeye göre dağıtılan, birden fazla fatura için tek ödeme',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Fatura listesinden toplu ödeme',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Fazla ödeme son faturada kalır',
+    'LBL_BULK_PAYMENT' => 'Toplu ödeme',
+    'LBL_BULK_PAYMENT_SAVE' => 'Ödeme oluştur',
+    'LBL_PAY_OFF' => 'Tamamını öde',
+    'LBL_OPEN_AMOUNT' => 'Kalan tutar',
+    'LBL_NOT_SPLIT' => 'Dağıtılmadı',
+    'LBL_DOCUMENT' => 'Belge',
+    'LBL_CURRENCY' => 'Para birimi',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Görebileceğiniz belgeleri seçin.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Seçilen belgeler tek bir kuruluşa ait olmalıdır.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Ödeme oluşturuldu.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Ödemenin dağıtımı',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Tutar',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Dağıtılmadı:',
 ];

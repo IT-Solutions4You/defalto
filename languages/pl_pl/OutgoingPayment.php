@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Jedna płatność za kilka faktur z podziałem kwoty według terminu',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Płatność zbiorcza z listy faktur',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Nadpłata zostaje na ostatniej fakturze',
+    'LBL_BULK_PAYMENT' => 'Płatność zbiorcza',
+    'LBL_BULK_PAYMENT_SAVE' => 'Utwórz płatność',
+    'LBL_PAY_OFF' => 'Opłać w całości',
+    'LBL_OPEN_AMOUNT' => 'Pozostało',
+    'LBL_NOT_SPLIT' => 'Nierozdzielone',
+    'LBL_DOCUMENT' => 'Dokument',
+    'LBL_CURRENCY' => 'Waluta',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Wybierz dokumenty, które możesz zobaczyć.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Wybrane dokumenty muszą należeć do jednej organizacji.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Płatność została utworzona.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Podział płatności',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Kwota',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Nierozdzielone:',
 ];

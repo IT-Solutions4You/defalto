@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'En betalning för flera fakturor, fördelad efter förfallodatum',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Massbetalning från fakturalistan',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Överbetalning ligger kvar på sista fakturan',
+    'LBL_BULK_PAYMENT' => 'Massbetalning',
+    'LBL_BULK_PAYMENT_SAVE' => 'Skapa betalning',
+    'LBL_PAY_OFF' => 'Betala helt',
+    'LBL_OPEN_AMOUNT' => 'Öppet belopp',
+    'LBL_NOT_SPLIT' => 'Ej fördelat',
+    'LBL_DOCUMENT' => 'Dokument',
+    'LBL_CURRENCY' => 'Valuta',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Välj dokument som du får se.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'De valda dokumenten måste tillhöra en organisation.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Betalningen skapades.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Fördelning av betalningen',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Belopp',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Ej fördelat:',
 ];

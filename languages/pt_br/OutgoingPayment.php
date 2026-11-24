@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Um pagamento para várias faturas com o valor dividido por vencimento',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Pagamento em lote a partir da lista de faturas',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'O pagamento excedente fica na última fatura',
+    'LBL_BULK_PAYMENT' => 'Pagamento em lote',
+    'LBL_BULK_PAYMENT_SAVE' => 'Criar pagamento',
+    'LBL_PAY_OFF' => 'Quitar',
+    'LBL_OPEN_AMOUNT' => 'Valor em aberto',
+    'LBL_NOT_SPLIT' => 'Não distribuído',
+    'LBL_DOCUMENT' => 'Documento',
+    'LBL_CURRENCY' => 'Moeda',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Selecione documentos que você pode ver.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Os documentos selecionados devem pertencer a uma única organização.',
+    'LBL_BULK_PAYMENT_CREATED' => 'O pagamento foi criado.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Distribuição do pagamento',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Valor',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Não distribuído:',
 ];

@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'دفعة واحدة لعدة فواتير موزعة حسب تاريخ الاستحقاق',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'دفع جماعي من قائمة الفواتير',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'تبقى الدفعة الزائدة على آخر فاتورة',
+    'LBL_BULK_PAYMENT' => 'دفع جماعي',
+    'LBL_BULK_PAYMENT_SAVE' => 'إنشاء دفعة',
+    'LBL_PAY_OFF' => 'سداد كامل',
+    'LBL_OPEN_AMOUNT' => 'المبلغ المتبقي',
+    'LBL_NOT_SPLIT' => 'غير موزع',
+    'LBL_DOCUMENT' => 'مستند',
+    'LBL_CURRENCY' => 'العملة',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'اختر مستندات يمكنك رؤيتها.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'يجب أن تنتمي المستندات المحددة إلى مؤسسة واحدة.',
+    'LBL_BULK_PAYMENT_CREATED' => 'تم إنشاء الدفعة.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'توزيع الدفعة',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'المبلغ',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'غير موزع:',
 ];

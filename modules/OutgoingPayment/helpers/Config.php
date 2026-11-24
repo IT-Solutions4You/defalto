@@ -25,8 +25,11 @@ class OutgoingPayment_Config_Helper extends Core_PaymentConfig_Helper
     public const MAIN_BLOCK = 'LBL_OUTGOING_PAYMENT_INFORMATION';
     public const RELATED_LIST_LABEL = 'Outgoing Payments';
     public const ADD_LINK_LABEL = 'LBL_ADD_OUTGOING_PAYMENT';
+    public const BULK_PAYMENT_LABEL = 'LBL_PAY_SELECTED_OUTGOING';
+    public const BULK_PAYMENT_SCRIPT_LABEL = 'OutgoingPaymentBulkJs';
     public const INTEGRATION_LABEL = 'LBL_OUTGOING_PAYMENT_INTEGRATION';
-    public const ICON = 'fa-solid fa-money-bill-transfer';
+    // The incoming payment icon turned upside down: the arrow goes down from left to right
+    public const ICON = 'fa-solid fa-money-bill-trend-up fa-flip-vertical';
     public const DIRECTION = self::DIRECTION_OUTGOING;
     public const RELATED_TO_MODULES = ['Vendors', 'Accounts'];
     public const DEFAULT_PAID_FIELDS = ['paid', 'received'];

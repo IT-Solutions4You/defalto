@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Jedna platba k více fakturám s rozdělením částky podle splatnosti',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Hromadná platba ze seznamu faktur',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Přeplatek zůstane na poslední faktuře',
+    'LBL_BULK_PAYMENT' => 'Hromadná platba',
+    'LBL_BULK_PAYMENT_SAVE' => 'Vytvořit platbu',
+    'LBL_PAY_OFF' => 'Uhradit celé',
+    'LBL_OPEN_AMOUNT' => 'Zbývá',
+    'LBL_NOT_SPLIT' => 'Nerozděleno',
+    'LBL_DOCUMENT' => 'Doklad',
+    'LBL_CURRENCY' => 'Měna',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Vyberte doklady, které smíte vidět.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Vybrané doklady musí patřit jedné organizaci.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Platba byla vytvořena.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Rozdělení platby',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Částka',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Nerozděleno:',
 ];

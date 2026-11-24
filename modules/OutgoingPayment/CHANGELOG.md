@@ -12,5 +12,6 @@
 - Add Payment from a document prefills the total minus all payments, including the ones not received yet, as Cashflow did.
 - Received payments of a sales order count on the invoices created from it (same organisation, split by due date).
 - Opportunities (Potentials) can be integrated in the settings: total from Amount, due date from the expected close date.
-- Choosing a second document for a payment offers the paid edition in a buy window; a payment that already has more documents can still be saved.
+- One payment can pay several documents: the amount is split by due date and can be changed per document in the payment form.
+- Bulk payment of documents selected in a list (Pay selected): one payment for one organization, Pay Off for documents paid first, amounts per document, different currencies.
 - Integration into document modules is configured in Settings → Outgoing Payments Integration.

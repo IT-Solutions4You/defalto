@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'O plată pentru mai multe facturi, împărțită după scadență',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Plată în masă din lista de facturi',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Plata în plus rămâne pe ultima factură',
+    'LBL_BULK_PAYMENT' => 'Plată în masă',
+    'LBL_BULK_PAYMENT_SAVE' => 'Creează plata',
+    'LBL_PAY_OFF' => 'Achită integral',
+    'LBL_OPEN_AMOUNT' => 'Sumă rămasă',
+    'LBL_NOT_SPLIT' => 'Nerepartizat',
+    'LBL_DOCUMENT' => 'Document',
+    'LBL_CURRENCY' => 'Monedă',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Selectați documente pe care le puteți vedea.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Documentele selectate trebuie să aparțină unei singure organizații.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Plata a fost creată.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Repartizarea plății',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Sumă',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Nerepartizat:',
 ];

@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Yksi maksu usealle laskulle eräpäivän mukaan jaettuna',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Joukkomaksu laskuluettelosta',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Ylimaksu jää viimeiselle laskulle',
+    'LBL_BULK_PAYMENT' => 'Joukkomaksu',
+    'LBL_BULK_PAYMENT_SAVE' => 'Luo maksu',
+    'LBL_PAY_OFF' => 'Maksa kokonaan',
+    'LBL_OPEN_AMOUNT' => 'Avoin summa',
+    'LBL_NOT_SPLIT' => 'Jakamatta',
+    'LBL_DOCUMENT' => 'Asiakirja',
+    'LBL_CURRENCY' => 'Valuutta',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Valitse asiakirjoja, jotka voit nähdä.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Valittujen asiakirjojen on kuuluttava yhdelle organisaatiolle.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Maksu luotiin.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Maksun jako',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Summa',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Jakamatta:',
 ];

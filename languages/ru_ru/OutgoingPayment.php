@@ -63,7 +63,20 @@ $languageStrings = [
     'LBL_PREMIUM_MODAL_ITEM_1' => 'Один платёж на несколько счетов с распределением по сроку оплаты',
     'LBL_PREMIUM_MODAL_ITEM_2' => 'Массовая оплата из списка счетов',
     'LBL_PREMIUM_MODAL_ITEM_3' => 'Переплата остаётся на последнем счёте',
+    'LBL_BULK_PAYMENT' => 'Массовая оплата',
+    'LBL_BULK_PAYMENT_SAVE' => 'Создать платёж',
+    'LBL_PAY_OFF' => 'Оплатить полностью',
+    'LBL_OPEN_AMOUNT' => 'Остаток',
+    'LBL_NOT_SPLIT' => 'Не распределено',
+    'LBL_DOCUMENT' => 'Документ',
+    'LBL_CURRENCY' => 'Валюта',
+    'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Выберите документы, доступные вам.',
+    'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Выбранные документы должны относиться к одной организации.',
+    'LBL_BULK_PAYMENT_CREATED' => 'Платёж создан.',
 ];
 
 $jsLanguageStrings = [
+    'JS_PAYMENT_SPLIT' => 'Распределение платежа',
+    'JS_PAYMENT_SPLIT_AMOUNT' => 'Сумма',
+    'JS_PAYMENT_SPLIT_REMAINING' => 'Не распределено:',
 ];
