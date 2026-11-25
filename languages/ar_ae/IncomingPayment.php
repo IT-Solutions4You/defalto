@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'اختر مستندات يمكنك رؤيتها.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'يجب أن تنتمي المستندات المحددة إلى مؤسسة واحدة.',
     'LBL_BULK_PAYMENT_CREATED' => 'تم إنشاء الدفعة.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'يجب أن يكون مبلغ الدفعة أكبر من صفر. أدخل الاسترداد كدفعة في وحدة المدفوعات الأخرى.',
 ];
 
 $jsLanguageStrings = [

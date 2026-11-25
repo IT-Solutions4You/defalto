@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Valitse asiakirjoja, jotka voit nähdä.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Valittujen asiakirjojen on kuuluttava yhdelle organisaatiolle.',
     'LBL_BULK_PAYMENT_CREATED' => 'Maksu luotiin.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Maksun summan on oltava suurempi kuin nolla. Kirjaa palautus toisen maksumoduulin maksuksi.',
 ];
 
 $jsLanguageStrings = [

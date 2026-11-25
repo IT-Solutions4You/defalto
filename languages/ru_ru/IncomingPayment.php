@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Выберите документы, доступные вам.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Выбранные документы должны относиться к одной организации.',
     'LBL_BULK_PAYMENT_CREATED' => 'Платёж создан.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Сумма платежа должна быть больше нуля. Возврат введите как платёж в другом модуле платежей.',
 ];
 
 $jsLanguageStrings = [

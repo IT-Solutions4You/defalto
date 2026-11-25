@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Betalingen van deze module zijn terugbetalingen van het document en worden van het betaalde bedrag afgetrokken.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Geen actieve betalingsmodule betaalt dit document; terugbetalingen worden niet meegeteld.',
     'LBL_TWO_PAYING_MODULES' => 'Een andere betalingsmodule betaalt %s al. Markeer de betalingen van een van beide als terugbetalingen.',
+    'LBL_NO_PAYING_MODULE' => 'Geen betalingsmodule betaalt %s. Vink Terugbetaling hier uit of laat een andere betalingsmodule het betalen.',
 ];
 
 $jsLanguageStrings = [

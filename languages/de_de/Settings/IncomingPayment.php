@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Zahlungen dieses Moduls sind Erstattungen zum Beleg und werden vom bezahlten Betrag abgezogen.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Kein aktives Zahlungsmodul bezahlt diesen Beleg; Erstattungen werden nicht berücksichtigt.',
     'LBL_TWO_PAYING_MODULES' => 'Ein anderes Zahlungsmodul bezahlt bereits %s. Markieren Sie die Zahlungen eines der Module als Erstattungen.',
+    'LBL_NO_PAYING_MODULE' => 'Kein Zahlungsmodul bezahlt %s. Entfernen Sie hier Erstattung oder lassen Sie ein anderes Zahlungsmodul bezahlen.',
 ];
 
 $jsLanguageStrings = [

@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Plățile acestui modul sunt rambursări ale documentului și se scad din suma plătită.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Niciun modul de plăți activ nu plătește acest document; rambursările nu sunt luate în calcul.',
     'LBL_TWO_PAYING_MODULES' => 'Alt modul de plăți plătește deja %s. Marcați plățile unuia dintre ele ca rambursări.',
+    'LBL_NO_PAYING_MODULE' => 'Niciun modul de plăți nu plătește %s. Debifați Rambursare aici sau lăsați alt modul de plăți să îl plătească.',
 ];
 
 $jsLanguageStrings = [

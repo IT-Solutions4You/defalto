@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Ennek a modulnak a fizetései a bizonylat visszatérítései, és levonódnak a kifizetett összegből.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Egyetlen aktív fizetési modul sem fizeti ezt a bizonylatot; a visszatérítések nem számítanak.',
     'LBL_TWO_PAYING_MODULES' => 'Egy másik fizetési modul már fizeti ezt: %s. Jelölje az egyik modul fizetéseit visszatérítésként.',
+    'LBL_NO_PAYING_MODULE' => 'Egyik fizetési modul sem fizeti ezt: %s. Itt vegye ki a Visszatérítést, vagy egy másik fizetési modul fizesse.',
 ];
 
 $jsLanguageStrings = [

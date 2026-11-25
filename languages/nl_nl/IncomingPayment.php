@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Selecteer documenten die u mag zien.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'De geselecteerde documenten moeten bij één organisatie horen.',
     'LBL_BULK_PAYMENT_CREATED' => 'De betaling is aangemaakt.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Het betalingsbedrag moet groter dan nul zijn. Voer een terugbetaling in als betaling van de andere betalingsmodule.',
 ];
 
 $jsLanguageStrings = [

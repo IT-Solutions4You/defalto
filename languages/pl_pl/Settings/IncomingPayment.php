@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Płatności tego modułu są zwrotami do dokumentu i są odejmowane od zapłaconej kwoty.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Żaden aktywny moduł płatności nie opłaca tego dokumentu; zwroty nie są uwzględniane.',
     'LBL_TWO_PAYING_MODULES' => 'Inny moduł płatności już opłaca %s. Oznacz płatności jednego z nich jako zwroty.',
+    'LBL_NO_PAYING_MODULE' => 'Żaden moduł płatności nie opłaca %s. Odznacz tutaj Zwrot albo pozwól, aby opłacał go inny moduł płatności.',
 ];
 
 $jsLanguageStrings = [

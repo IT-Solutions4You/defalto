@@ -7,7 +7,7 @@ Incoming Payments records the money your company receives for invoices (and, whe
 ## Creating a payment
 
 1. Open the invoice and click **Add Payment** in the detail view for the quick form, or **More → Add Payment** for the full form with all fields. The **Add** button in the **Incoming Payments** widget of the summary view opens the quick form too; after saving, reload the page to see the new invoice status in the header.
-2. The form is prefilled with the open amount of the invoice, its currency, the due date, the organization and the contact. Change what you need, for example when only a part of the invoice was paid.
+2. The form is prefilled with the open amount of the invoice, its currency, the due date, the organization and the contact. Change what you need, for example when only a part of the invoice was paid. The amount must be greater than zero; money you return is a refund (see below).
 3. Fill in the **Payment Date** when the money arrived. Leave it empty when you only expect the payment.
 4. Save. The payment is listed in the **Incoming Payments** widget and related list of the invoice. Organizations, vendors and contacts also have an **Incoming Payments** related list with the payments that name them.
 
@@ -56,7 +56,7 @@ Administrators configure the integration in **Settings → Incoming Payments Int
 
 ## Refunds
 - Money you return to a customer is an outgoing payment on the invoice: click **Add Refund**. The form is prefilled with the paid amount. A received refund lowers the **Received** amount of the invoice, and a fully paid invoice can go back to its unpaid status.
-- Money a vendor returns on a purchase order is an incoming payment marked as a refund in **Settings → Incoming Payments Integration** (column **Refund**, purchase orders by default).
+- Money a vendor returns on a purchase order is an incoming payment marked as a refund in **Settings → Incoming Payments Integration** (column **Refund**, purchase orders by default). Each document must be paid by exactly one payment module: the settings refuse to save a document marked as a refund in both modules, or paid by both.
 - **Add Payment** prefills the total minus all payments of the invoice, also the ones not received yet.
 
 ## Tips

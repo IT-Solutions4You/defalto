@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Payments of this module are refunds of the document and are subtracted from its paid amount.',
     'LBL_REFUND_WITHOUT_PAYING' => 'No active payment module pays this document; refunds are not counted.',
     'LBL_TWO_PAYING_MODULES' => 'Another payment module already pays %s. Mark the payments of one of them as refunds.',
+    'LBL_NO_PAYING_MODULE' => 'No payment module pays %s. Untick Refund here or let another payment module pay it.',
 ];
 
 $jsLanguageStrings = [

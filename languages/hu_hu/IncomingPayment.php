@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Válasszon látható bizonylatokat.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'A kiválasztott bizonylatoknak egy szervezethez kell tartozniuk.',
     'LBL_BULK_PAYMENT_CREATED' => 'A fizetés létrejött.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'A fizetés összegének nagyobbnak kell lennie nullánál. A visszatérítést a másik fizetési modul fizetéseként rögzítse.',
 ];
 
 $jsLanguageStrings = [

@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Os pagamentos deste módulo são reembolsos do documento e são subtraídos do valor pago.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Nenhum módulo de pagamento ativo paga este documento; os reembolsos não são contabilizados.',
     'LBL_TWO_PAYING_MODULES' => 'Outro módulo de pagamento já paga %s. Marque os pagamentos de um deles como reembolsos.',
+    'LBL_NO_PAYING_MODULE' => 'Nenhum módulo de pagamentos paga %s. Desmarque Reembolso aqui ou deixe outro módulo de pagamentos pagá-lo.',
 ];
 
 $jsLanguageStrings = [

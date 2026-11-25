@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Sélectionnez des documents que vous pouvez voir.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Les documents sélectionnés doivent appartenir à une seule organisation.',
     'LBL_BULK_PAYMENT_CREATED' => 'Le paiement a été créé.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Le montant du paiement doit être supérieur à zéro. Saisissez un remboursement comme paiement de l\'autre module de paiements.',
 ];
 
 $jsLanguageStrings = [

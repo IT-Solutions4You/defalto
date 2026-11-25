@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Bu modülün ödemeleri belgenin iadeleridir ve ödenen tutardan düşülür.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Bu belgeyi hiçbir etkin ödeme modülü ödemiyor; iadeler hesaba katılmaz.',
     'LBL_TWO_PAYING_MODULES' => 'Başka bir ödeme modülü %s için zaten ödeme yapıyor. Bunlardan birinin ödemelerini iade olarak işaretleyin.',
+    'LBL_NO_PAYING_MODULE' => 'Hiçbir ödeme modülü %s ödemiyor. Burada İadeyi kaldırın veya başka bir ödeme modülünün ödemesine izin verin.',
 ];
 
 $jsLanguageStrings = [
