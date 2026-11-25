@@ -26,7 +26,6 @@ $languageStrings = [
     'LBL_SUMMARY_TASK_COUNT' => '%s uppgifter',
     'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktiva',
     'LBL_SUMMARY_OVERDUE_COUNT' => '%s försenade',
-    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projektets framsteg',
     'LBL_SUMMARY_DATE_RANGE' => 'Från – Till',
     'LBL_SUMMARY_NO_DATES' => 'Inga datum',
     'LBL_SUMMARY_NO_MILESTONE' => 'Ingen milstolpe',

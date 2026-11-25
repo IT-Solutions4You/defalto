@@ -9,11 +9,11 @@
 {strip}
     <div class="container-fluid px-0">
         {foreach item=SUMMARY_CATEGORY from=$SUMMARY_INFORMATION}
-            <div class="row textAlignCenter roundedCorners">
+            <div class="row gy-3 textAlignCenter roundedCorners">
                 {foreach key=FIELD_NAME item=FIELD_VALUE from=$SUMMARY_CATEGORY}
-                    <div class="col-lg-3 pb-3">
-                        <div class="ratio ratio-1x1">
-                            <div class="h-100 w-100 d-flex align-items-center justify-content-center bg-body-secondary rounded">
+                    <div class="col-lg-3">
+                        <div class="ratio ratio-1x1 project-key-metric">
+                            <div class="h-100 w-100 py-3 d-flex align-items-center justify-content-center bg-body-secondary rounded">
                                 <div>
                                     <div class="fw-bold">{vtranslate($FIELD_NAME, $MODULE_NAME)}</div>
                                     <div>{if !empty($FIELD_VALUE)}{$FIELD_VALUE}{else}0{/if}</div>

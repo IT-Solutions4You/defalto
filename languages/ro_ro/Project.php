@@ -26,7 +26,6 @@ $languageStrings = [
     'LBL_SUMMARY_TASK_COUNT' => '%s sarcini',
     'LBL_SUMMARY_ACTIVE_COUNT' => '%s active',
     'LBL_SUMMARY_OVERDUE_COUNT' => '%s întârziate',
-    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Progresul proiectului',
     'LBL_SUMMARY_DATE_RANGE' => 'De la – Până la',
     'LBL_SUMMARY_NO_DATES' => 'Fără date',
     'LBL_SUMMARY_NO_MILESTONE' => 'Fără etapă',

@@ -26,7 +26,6 @@ $languageStrings = [
     'LBL_SUMMARY_TASK_COUNT' => '%s feladat',
     'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktív',
     'LBL_SUMMARY_OVERDUE_COUNT' => '%s lejárt',
-    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projekt előrehaladása',
     'LBL_SUMMARY_DATE_RANGE' => 'Kezdet – Vég',
     'LBL_SUMMARY_NO_DATES' => 'Nincsenek dátumok',
     'LBL_SUMMARY_NO_MILESTONE' => 'Nincs mérföldkő',

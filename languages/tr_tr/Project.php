@@ -26,7 +26,6 @@ $languageStrings = [
     'LBL_SUMMARY_TASK_COUNT' => '%s görev',
     'LBL_SUMMARY_ACTIVE_COUNT' => '%s etkin',
     'LBL_SUMMARY_OVERDUE_COUNT' => '%s gecikmiş',
-    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Proje ilerlemesi',
     'LBL_SUMMARY_DATE_RANGE' => 'Başlangıç – Bitiş',
     'LBL_SUMMARY_NO_DATES' => 'Tarih yok',
     'LBL_SUMMARY_NO_MILESTONE' => 'Kilometre taşı yok',

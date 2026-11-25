@@ -18,7 +18,6 @@ $languageStrings = [
     'LBL_SUMMARY_TASK_COUNT' => '%s úloh',
     'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktívnych',
     'LBL_SUMMARY_OVERDUE_COUNT' => '%s po termíne',
-    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Pokrok projektu',
     'LBL_SUMMARY_DATE_RANGE' => 'Od – Do',
     'LBL_SUMMARY_NO_DATES' => 'Bez dátumov',
     'LBL_SUMMARY_NO_MILESTONE' => 'Bez míľnika',

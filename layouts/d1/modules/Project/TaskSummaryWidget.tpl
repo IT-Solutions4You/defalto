@@ -5,7 +5,6 @@
                 <input type="hidden" name="relatedModule" value="ProjectTask">
                 <div class="d-flex flex-wrap align-items-center gap-3 flex-grow-1">
                     <h4 class="m-0">{vtranslate('LBL_TASKS', 'Project')|escape:'html'}</h4>
-                    <div class="project-summary-header-stats flex-grow-1"></div>
                 </div>
                 <div class="project-task-summary-actions">
                     {foreach item=ACTION key=ACTION_MODULE from=$DETAIL_VIEW_WIDGET->get('summary_actions')}

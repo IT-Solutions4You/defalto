@@ -10,7 +10,6 @@ $languageStrings = [
     'LBL_SUMMARY_TASK_COUNT' => '%s tehtävää',
     'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktiivista',
     'LBL_SUMMARY_OVERDUE_COUNT' => '%s myöhässä',
-    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projektin edistyminen',
     'LBL_SUMMARY_DATE_RANGE' => 'Alku – Loppu',
     'LBL_SUMMARY_NO_DATES' => 'Ei päivämääriä',
     'LBL_SUMMARY_NO_MILESTONE' => 'Ei välitavoitetta',

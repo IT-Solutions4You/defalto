@@ -26,10 +26,11 @@ class Project_Record_Model extends Vtiger_Record_Model
     {
         $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $projectTaskInstance = Vtiger_Module_Model::getInstance('ProjectTask');
+
         if ($userPrivilegesModel->hasModulePermission($projectTaskInstance->getId())) {
             $adb = PearDatabase::getInstance();
 
-            $query = 'SELECT assigned_user_id,enddate,projecttaskstatus,projecttaskpriority
+            $query = 'SELECT assigned_user_id,enddate,projecttaskstatus
 					FROM vtiger_projecttask
 							INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_projecttask.projecttaskid
 								AND vtiger_crmentity.deleted=0
@@ -38,13 +39,13 @@ class Project_Record_Model extends Vtiger_Record_Model
             $result = $adb->pquery($query, [$this->getId()]);
 
             $tasksOpen = $taskCompleted = $taskDue = $taskDeferred = $numOfPeople = 0;
-            $highTasks = $lowTasks = $normalTasks = $otherTasks = 0;
             $currentDate = date('Y-m-d');
             $inProgressStatus = ['Open', 'In Progress'];
             $usersList = [];
 
             while ($row = $adb->fetchByAssoc($result)) {
                 $projectTaskStatus = $row['projecttaskstatus'];
+
                 switch ($projectTaskStatus) {
                     case 'Open'        :
                         $tasksOpen++;
@@ -56,26 +57,12 @@ class Project_Record_Model extends Vtiger_Record_Model
                         $taskCompleted++;
                         break;
                 }
-                $projectTaskPriority = $row['projecttaskpriority'];
-                switch ($projectTaskPriority) {
-                    case 'high' :
-                        $highTasks++;
-                        break;
-                    case 'low' :
-                        $lowTasks++;
-                        break;
-                    case 'normal' :
-                        $normalTasks++;
-                        break;
-                    default :
-                        $otherTasks++;
-                        break;
-                }
 
                 if (!empty($row['enddate']) && (strtotime($row['enddate']) < strtotime($currentDate)) &&
                     (in_array($row['projecttaskstatus'], $inProgressStatus))) {
                     $taskDue++;
                 }
+
                 $usersList[] = $row['assigned_user_id'];
             }
 
@@ -87,13 +74,6 @@ class Project_Record_Model extends Vtiger_Record_Model
                 'Progress'            => $this->get('progress'),
                 'LBL_TASKS_DUE'       => $taskDue,
                 'LBL_TASKS_COMPLETED' => $taskCompleted,
-            ];
-
-            $summaryInfo['projecttaskpriority'] = [
-                'LBL_TASKS_HIGH'   => $highTasks,
-                'LBL_TASKS_NORMAL' => $normalTasks,
-                'LBL_TASKS_LOW'    => $lowTasks,
-                'LBL_TASKS_OTHER'  => $otherTasks,
             ];
         }
 

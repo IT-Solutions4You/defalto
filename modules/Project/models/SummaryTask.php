@@ -12,7 +12,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
 
         $headers = [];
 
-        foreach (['projecttaskname', 'projecttaskprogress', 'milestoneid', 'assigned_user_id', 'startdate', 'enddate', 'projecttaskpriority', 'projecttaskstatus'] as $name) {
+        foreach (['projecttaskname', 'projecttaskstatus', 'projecttaskprogress', 'milestoneid', 'assigned_user_id', 'startdate', 'enddate', 'projecttaskpriority'] as $name) {
             $field = $module->getField($name);
 
             if ($field && $field->isViewableInDetailView()) {
@@ -55,6 +55,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
             if (!isset($groups[$groupKey])) {
                 $groups[$groupKey] = [
                     'id' => $groupKey,
+                    'status' => $status,
                     'label' => $status === '' ? vtranslate('LBL_SUMMARY_NO_STATUS', 'Project') : $headers['projecttaskstatus']->getDisplayValue($status),
                     'color' => $this->getStatusColor($colors[$status] ?? ''),
                     'closed' => $closed,
@@ -96,7 +97,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
         }
 
         uasort($groups, static fn(array $first, array $second): int => ((int)$first['closed'] <=> (int)$second['closed']) ?: ($first['order'] <=> $second['order']));
-        $columns = array_intersect_key($headers, array_flip(['projecttaskname', 'projecttaskprogress', 'milestoneid', 'assigned_user_id']));
+        $columns = array_intersect_key($headers, array_flip(['projecttaskname', 'projecttaskstatus', 'projecttaskprogress', 'milestoneid', 'assigned_user_id']));
 
         if (isset($headers['startdate']) || isset($headers['enddate'])) {
             $columns['dates'] = true;
@@ -106,17 +107,15 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
             $columns = ['projecttaskname' => true] + $columns;
         }
 
-        $progressField = $project->getModule()->getField('progress');
-
         return [
             'groups' => $groups,
             'filters' => $this->getFilterDefinitions($headers, $groups),
             'columns' => $columns,
+            'page_size' => (int)(new Vtiger_Paging_Model())->getPageLimit(),
             'count' => $count,
             'active_count' => $activeCount,
             'status_visible' => isset($headers['projecttaskstatus']),
             'overdue_count' => $overdueCount,
-            'project_progress' => $progressField && $progressField->isViewableInDetailView() ? max(0, min(100, (int)$project->get('progress'))) : null,
         ];
     }
 

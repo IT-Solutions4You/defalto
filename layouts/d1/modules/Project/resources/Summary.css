@@ -35,7 +35,6 @@
 .project-task-summary progress::-webkit-progress-bar { background: var(--bs-secondary-bg); border-radius: 1rem; }
 .project-task-summary progress::-webkit-progress-value { background: var(--project-summary-accent); }
 .project-task-summary progress::-moz-progress-bar { background: var(--project-summary-accent); }
-.project-summary-progress progress { width: 7rem; }
 .project-summary-table { table-layout: fixed; min-width: 760px; }
 .project-summary-table > thead > tr > th {
     background: var(--bs-tertiary-bg);
@@ -60,7 +59,7 @@
 .project-summary-column-milestoneid { width: 20%; }
 .project-summary-column-assigned_user_id { width: 70px; }
 .project-summary-column-dates { width: 150px; }
-.project-summary-column-status { width: 115px; }
+.project-summary-column-projecttaskstatus { width: 115px; }
 .project-summary-table.project-summary-all { min-width: 900px; }
 .project-summary-table col.project-summary-column-actions,
 .project-summary-table > thead > tr > th.project-summary-column-actions,
@@ -114,7 +113,6 @@
 @media (hover: none) { .project-summary-status-edit { opacity: 1; } }
 @media (max-width: 767px) {
     .project-task-summary-actions { gap: 1rem; }
-    .project-summary-progress { flex-wrap: wrap; }
 }
 
 .project-task-summary [hidden] { display: none !important; }
@@ -124,3 +122,9 @@
 .project-summary-filter-options { max-height: 280px; overflow-y: auto; }
 .project-summary-filter-menu .dropdown-item { white-space: normal; cursor: pointer; }
 .project-summary-filter-options label:has(input:checked) { background: var(--bs-secondary-bg); font-weight: 600; }
+.project-key-metric { min-width: 0; }
+
+@media (max-width: 991.98px) {
+    .project-key-metric::before { display: none; }
+    .project-key-metric > * { position: static; }
+}

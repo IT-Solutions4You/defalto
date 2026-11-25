@@ -27,7 +27,6 @@ $languageStrings = [
     'LBL_SUMMARY_TASK_COUNT' => '%s tasks',
     'LBL_SUMMARY_ACTIVE_COUNT' => '%s active',
     'LBL_SUMMARY_OVERDUE_COUNT' => '%s overdue',
-    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Project progress',
     'LBL_SUMMARY_DATE_RANGE' => 'From – To',
     'LBL_SUMMARY_NO_DATES' => 'No dates',
     'LBL_SUMMARY_NO_MILESTONE' => 'No milestone',

@@ -123,6 +123,17 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         const self = this,
             container = this.getContainer();
 
+        container.off('click.projectSummaryRecordPreview', '.project-summary-task-name, .project-summary-milestone')
+            .on('click.projectSummaryRecordPreview', '.project-summary-task-name, .project-summary-milestone', function (event) {
+                if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+                    return;
+                }
+
+                event.preventDefault();
+                const link = jQuery(event.currentTarget);
+
+                Vtiger_Index_Js.getInstance().showQuickPreviewForId(link.data('record'), link.data('module'), app.getAppName());
+            });
         container.off('click.projectSummaryCreate', '.project-summary-create')
             .on('click.projectSummaryCreate', '.project-summary-create', function (event) {
                 const button = jQuery(event.currentTarget),
@@ -165,29 +176,18 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             });
         container.off(this.widgetPostLoad + '.projectSummary', '.widget_contents')
             .on(this.widgetPostLoad + '.projectSummary', '.widget_contents', function () {
-                self.updateTaskSummaryHeader(jQuery(this));
                 self.updateTaskSummaryAvatars(jQuery(this));
                 self.restoreTaskSummaryTabs(jQuery(this));
             });
         this.registerTaskSummaryFilterEvents(container);
-        this.updateTaskSummaryHeader(container);
         this.updateTaskSummaryAvatars(container);
         this.restoreTaskSummaryTabs(container);
-    },
-
-    updateTaskSummaryHeader: function (container) {
-        container.find('.project-summary-header-data').each(function () {
-            const data = jQuery(this),
-                header = data.closest('.project-task-summary').find('.project-summary-header-stats');
-
-            header.empty().append(data);
-        });
     },
 
     getTaskSummaryTabStorageKey: function (container) {
         const record = container.closest('.project-task-summary').data('record');
 
-        return ['Project', 'taskSummary', 'activeStatusOverview', app.getUserId(), record].join('.');
+        return ['Project', 'taskSummary', 'activeStatusOpen', app.getUserId(), record].join('.');
     },
 
     setTaskSummaryActiveTab: function (button) {
@@ -213,14 +213,20 @@ Vtiger_Detail_Js('Project_Detail_Js', {
     restoreTaskSummaryTabs: function (container) {
         const self = this;
 
+        vtUtils.enableTooltips('.project-task-summary [data-bs-toggle="tooltip"]');
         container.find('.project-summary-status-tabs').each(function () {
-            const tabs = jQuery(this).find('[role="tab"]'),
+            let tabs = jQuery(this).find('[role="tab"]'),
                 selected = app.storage.get(self.getTaskSummaryTabStorageKey(jQuery(this))),
-                matching = tabs.filter(function () { return jQuery(this).data('summary-group') === selected; });
+                matching = tabs.filter(function () { return jQuery(this).data('summary-group') === selected; }),
+                defaultTab = tabs.filter('[data-summary-status="Open"]');
+
+            if (!defaultTab.length) {
+                defaultTab = tabs.filter('[data-summary-status="In Progress"]');
+            }
 
             if (tabs.length) {
                 self.restoreTaskSummaryFilters(jQuery(this).closest('.project-task-summary-content'));
-                self.setTaskSummaryActiveTab(matching.length ? matching.first() : tabs.first());
+                self.setTaskSummaryActiveTab(matching.length ? matching.first() : (defaultTab.length ? defaultTab.first() : tabs.first()));
             }
         });
     },
@@ -228,6 +234,14 @@ Vtiger_Detail_Js('Project_Detail_Js', {
     registerTaskSummaryFilterEvents: function (container) {
         const self = this;
 
+        container.off('click.projectSummaryLoadMore', '[data-summary-load-more]')
+            .on('click.projectSummaryLoadMore', '[data-summary-load-more]', function (event) {
+                const content = jQuery(event.currentTarget).closest('.project-task-summary-content'),
+                    pageSize = content.data('summary-page-size');
+
+                content.data('summary-limit', (content.data('summary-limit') || pageSize) + pageSize);
+                self.updateTaskSummaryFilters(content, true);
+            });
         container.off('click.projectSummaryFilterPanel', '[data-filter-open]')
             .on('click.projectSummaryFilterPanel', '[data-filter-open]', function (event) {
                 const button = jQuery(event.currentTarget),
@@ -354,26 +368,33 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             && (!filters.from || end >= filters.from) && (!filters.to || start <= filters.to));
     },
 
-    updateTaskSummaryFilters: function (content) {
-        const self = this,
+    updateTaskSummaryFilters: function (content, preserveLimit) {
+        let self = this,
             filters = this.getTaskSummaryFilters(content),
             counts = {},
             chips = content.find('.project-summary-filter-values'),
-            active = content.find('.project-summary-status-tabs [aria-selected="true"]').data('summary-group');
-        let total = 0, visible = 0, selectedCount = 0;
+            active = content.find('.project-summary-status-tabs [aria-selected="true"]').data('summary-group'),
+            limit = preserveLimit ? content.data('summary-limit') : content.data('summary-page-size'),
+            total = 0, visible = 0, selectedCount = 0;
 
+        content.data('summary-limit', limit);
         content.find('[data-summary-filter-row]').each(function () {
             const match = self.isTaskSummaryFilterMatch(this, filters),
-                group = this.getAttribute('data-filter-status');
-
-            this.hidden = !match;
+                group = this.getAttribute('data-filter-status'),
+                activeMatch = match && (active === 'all' || active === group);
 
             if (match) {
                 total++;
                 counts[group] = (counts[group] || 0) + 1;
-                visible += active === 'all' || active === group ? 1 : 0;
             }
+
+            if (activeMatch) {
+                visible++;
+            }
+
+            this.hidden = !activeMatch || visible > limit;
         });
+        content.find('[data-summary-load-more-container]').prop('hidden', visible <= limit);
         content.find('.project-summary-status-tabs [role="tab"]').each(function () {
             const group = this.dataset.summaryGroup;
 
@@ -666,7 +687,6 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             }
 
             widgetDataContainer.html(data);
-            self.updateTaskSummaryHeader(widgetDataContainer);
             self.updateTaskSummaryAvatars(widgetDataContainer);
             self.restoreTaskSummaryTabs(widgetDataContainer);
         });
