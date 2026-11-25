@@ -1,13 +1,10 @@
 # Changelog
 
-## 0.1 - 2026-11-19
-- The payments widget of an invoice shows the sales order payments counted on it; opportunities get the widget when they are integrated.
-- The payments widget marks refunds, shows the expected amount net of refunds and offers Add Payment and Add Refund.
-- Documents show one Payments widget with the payments of all directions, the totals and the expected amount; Add Payment offers the directions integrated on the document.
+## 1.0 - 2026-11-25
+- New Payments list with incoming and outgoing payments in one list: Direction column, filters, column selection, search, sorting and paging; filters and search offer the statuses shared by all directions (Created, Waiting, Pending, Paid).
+- Add Incoming Payment and Add Outgoing Payment buttons open the form of the payment module.
+- Export of all payment directions into one file and mass delete.
+- Documents show one Payments widget with the payments of all directions, refunds marked, the totals and the expected amount net of refunds, with Add Payment and Add Refund; an invoice also shows the sales order payments counted on it, opportunities get the widget when they are integrated.
 - Incoming Payments and Outgoing Payments are hidden in the Sales menu while Payments is installed.
-- Direction column, export of all payment directions into one file and mass delete in the Payments list.
+- Payments can be installed before or after the payment modules.
 - Translations into all supported languages.
-- Outgoing payments are listed together with incoming payments; the Add Outgoing Payment button opens the outgoing payment form.
-- The status filter and search of the Payments list offer the statuses shared by all payment directions (Created, Waiting, Pending, Paid).
-- New Payments list showing incoming payments in one list, with filters, column selection, search, sorting and paging.
-- Add Incoming Payment button opening the payment form.

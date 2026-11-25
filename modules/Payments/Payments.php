@@ -13,7 +13,7 @@
  */
 class Payments extends CRMExtension
 {
-    public string $moduleVersion = '0.1';
+    public string $moduleVersion = '1.0';
     public string $moduleName = 'Payments';
     public string $moduleLabel = 'Payments';
     public string $parentName = 'SALES';
