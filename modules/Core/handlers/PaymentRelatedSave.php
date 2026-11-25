@@ -49,7 +49,9 @@ abstract class Core_PaymentRelatedSave_Handler extends VTEventHandler
         }
 
         $recordId = (int)$entityData->getId();
-        $this->getConfig()->getDocumentSyncModel()->recalculateDocument($moduleName, $recordId);
+        // A status the user or an extension set in this save (e.g. an invoiced proforma) is kept
+        $keepStatus = Core_PaymentDocumentBalance_Model::getInstance()->isStatusChangedBySave($moduleName, $recordId);
+        $this->getConfig()->getDocumentSyncModel()->recalculateDocument($moduleName, $recordId, $keepStatus);
         // An invoice may have got or lost a sales order, which changes how the order payments are split
         Core_PaymentSourceDocument_Model::getInstance()->recalculateSiblings($moduleName, $recordId);
     }

@@ -79,14 +79,16 @@ class Core_PaymentDocumentBalance_Model
      * Recalculates the paid amount, balance and status of a document: received payments of the paying module minus
      * received refunds of the other modules plus the received payments of its source documents that fall on it,
      * each converted into the document currency. Nothing happens when no active payment module pays the document
-     * module. A source document (sales order) recalculates its target documents (invoices) afterwards.
+     * module. A source document (sales order) recalculates its target documents (invoices) afterwards. A final
+     * invoice covered by its paid advances counts as paid (Core_PaymentSourceDocument_Model::isCoveredByAdvance()).
      *
      * @param string $documentModule Document module name
      * @param int    $recordId       Document record id
+     * @param bool   $keepStatus     true to keep the status, e.g. when the document save itself changed it
      * @return void
      * @throws Exception
      */
-    public function recalculateDocument(string $documentModule, int $recordId): void
+    public function recalculateDocument(string $documentModule, int $recordId, bool $keepStatus = false): void
     {
         if (isset(self::$processing[$recordId])) {
             return;
@@ -107,7 +109,8 @@ class Core_PaymentDocumentBalance_Model
             $total = Core_PaymentCalculation_Helper::parseAmount($recordModel->get((string)$config['total_field']));
             $paid = Core_PaymentCalculation_Helper::roundStoredAmount($this->getNetAmount($recordModel, true));
             $balance = Core_PaymentCalculation_Helper::roundStoredAmount($total - $paid);
-            Core_PaymentDocument_Helper::updateDocument($payingConfig, $recordModel, $config, $paid, $balance, $total);
+            $isCoveredByAdvance = Core_PaymentSourceDocument_Model::getInstance()->isCoveredByAdvance($recordModel);
+            Core_PaymentDocument_Helper::updateDocument($payingConfig, $recordModel, $config, $paid, $balance, $total, $keepStatus, $isCoveredByAdvance);
         } finally {
             unset(self::$processing[$recordId]);
         }
@@ -133,6 +136,35 @@ class Core_PaymentDocumentBalance_Model
 
         return $this->getOwnNetAmount($recordModel, $isReceived)
             + Core_PaymentSourceDocument_Model::getInstance()->getAllocatedAmount($recordModel, $isReceived);
+    }
+
+    /**
+     * Tells whether the current save of a document changed its status (a user or an extension set it), so that the
+     * recalculation of the paid amount keeps that status.
+     *
+     * @param string $documentModule Document module name
+     * @param int    $recordId       Document record id
+     * @return bool
+     * @throws Exception
+     */
+    public function isStatusChangedBySave(string $documentModule, int $recordId): bool
+    {
+        $payingModule = self::getPayingModule($documentModule);
+
+        if ($payingModule === '') {
+            return false;
+        }
+
+        $config = Core_PaymentConfig_Helper::getInstance($payingModule)->getIntegrationModel()->retrieveByModule($documentModule);
+        $statusField = (string)($config['status_field'] ?? '');
+
+        if ($statusField === '') {
+            return false;
+        }
+
+        require_once 'data/VTEntityDelta.php';
+
+        return (bool)(new VTEntityDelta())->hasChanged($documentModule, $recordId, $statusField);
     }
 
     /**

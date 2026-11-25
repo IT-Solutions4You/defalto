@@ -9,11 +9,17 @@
  */
 
 /**
- * Payments of a source document counted on the documents created from it, as Cashflow did: the received payments
- * of a sales order count on its invoices (Invoice.salesorder_id). The payments stay linked to the source document.
- * The net received amount of the source is split over its target documents with the same organisation by due date
- * (the earliest first, then by creation): each target gets at most what its own payments leave open, the last one
- * gets the rest, so an overpayment stays on the last target and nothing is counted twice.
+ * Payments of a source document counted on the documents created from it, as Cashflow did. The payments stay linked
+ * to the source document.
+ * - A field on the target (SOURCE_FIELDS): the received payments of a sales order count on its invoices
+ *   (Invoice.salesorder_id). The net received amount of the source is split over its target documents with the same
+ *   organisation by due date (the earliest first, then by creation): each target gets at most what its own payments
+ *   leave open, the last one gets the rest, so an overpayment stays on the last target and nothing is counted twice.
+ * - A field on the source (SOURCE_LINK_FIELDS): a proforma invoice points to its tax document and to its final
+ *   invoice. The tax document confirms the received advance and counts it up to the proforma total (LINK_RECEIPT).
+ *   The final invoice already deducts the proforma total by a minus item (ProformaInvoice extension), so it shows the
+ *   advance but counts only what was paid above the proforma total (LINK_DEDUCTED); while the advance is paid, the
+ *   final invoice counts as paid when its own balance is within the underpayment threshold.
  */
 class Core_PaymentSourceDocument_Model
 {
@@ -22,6 +28,27 @@ class Core_PaymentSourceDocument_Model
      */
     public const SOURCE_FIELDS = [
         'Invoice' => ['salesorder_id' => 'SalesOrder'],
+    ];
+
+    /**
+     * The target counts the payments of the source up to the source total (a tax document of a proforma invoice).
+     */
+    public const LINK_RECEIPT = 'receipt';
+
+    /**
+     * The target deducted the source total by an item and counts only the payments above it (a final invoice).
+     */
+    public const LINK_DEDUCTED = 'deducted';
+
+    /**
+     * Source document modules and their fields that point to target documents:
+     * [source => [field => [target module, LINK_RECEIPT or LINK_DEDUCTED]]].
+     */
+    public const SOURCE_LINK_FIELDS = [
+        'ProformaInvoice' => [
+            'tax_document_id' => ['Invoice', self::LINK_RECEIPT],
+            'final_invoice_id' => ['Invoice', self::LINK_DEDUCTED],
+        ],
     ];
 
     /**
@@ -54,6 +81,10 @@ class Core_PaymentSourceDocument_Model
      */
     public static function isSourceModule(string $moduleName): bool
     {
+        if (isset(self::SOURCE_LINK_FIELDS[$moduleName])) {
+            return true;
+        }
+
         foreach (self::SOURCE_FIELDS as $sources) {
             if (in_array($moduleName, $sources, true)) {
                 return true;
@@ -105,11 +136,12 @@ class Core_PaymentSourceDocument_Model
 
     /**
      * Returns the source payments that fall on a target document, one row per source document with the amount
-     * in the target currency.
+     * counted on the target and the net amount paid on the source, both in the target currency. A final invoice
+     * lists the paid advance of its proforma even when nothing of it is counted.
      *
      * @param Vtiger_Record_Model $targetRecord Target document
      * @param bool|null           $isReceived   true for received payments only, null for all payments
-     * @return array<int, array{id: int, module: string, amount: float}>
+     * @return array<int, array{id: int, module: string, amount: float, paid: float, link: string}>
      * @throws Exception
      */
     public function getSourceAllocations(Vtiger_Record_Model $targetRecord, ?bool $isReceived): array
@@ -121,11 +153,131 @@ class Core_PaymentSourceDocument_Model
             $amount = $this->getAllocation($sourceModule, $sourceId, $isReceived)[$targetId] ?? 0.0;
 
             if (!Core_PaymentCalculation_Helper::isSameAmount($amount, 0.0)) {
-                $allocations[] = ['id' => $sourceId, 'module' => $sourceModule, 'amount' => $amount];
+                $allocations[] = ['id' => $sourceId, 'module' => $sourceModule, 'amount' => $amount, 'paid' => $amount, 'link' => ''];
+            }
+        }
+
+        foreach ($this->getLinkedSources($targetRecord) as [$sourceRecord, $link]) {
+            $allocation = $this->getLinkAllocation($sourceRecord, $link, $targetRecord, $isReceived);
+
+            if (!Core_PaymentCalculation_Helper::isSameAmount($allocation['amount'], 0.0) || !Core_PaymentCalculation_Helper::isSameAmount($allocation['paid'], 0.0)) {
+                $allocations[] = $allocation;
             }
         }
 
         return $allocations;
+    }
+
+    /**
+     * Returns the payments of a source document that a target linked from its field counts, in the target currency:
+     * a tax document counts them up to the source total, a final invoice only the part above the source total,
+     * because it deducted the source total by an item.
+     *
+     * @param Vtiger_Record_Model $sourceRecord Source document (proforma invoice)
+     * @param string              $link         LINK_RECEIPT or LINK_DEDUCTED
+     * @param Vtiger_Record_Model $targetRecord Target document
+     * @param bool|null           $isReceived   true for received payments only, null for all payments
+     * @return array{id: int, module: string, amount: float, paid: float, link: string}
+     * @throws Exception
+     */
+    public function getLinkAllocation(Vtiger_Record_Model $sourceRecord, string $link, Vtiger_Record_Model $targetRecord, ?bool $isReceived): array
+    {
+        $sourceRate = Core_PaymentCalculation_Helper::getRecordRate($sourceRecord);
+        $targetRate = Core_PaymentCalculation_Helper::getRecordRate($targetRecord);
+        $paid = Core_PaymentDocumentBalance_Model::getInstance()->getOwnNetAmount($sourceRecord, $isReceived);
+        $total = $this->getDocumentTotal($sourceRecord);
+        $counted = self::LINK_RECEIPT === $link ? min($paid, $total) : $paid - $total;
+
+        return [
+            'id' => (int)$sourceRecord->getId(),
+            'module' => $sourceRecord->getModuleName(),
+            'amount' => Core_PaymentCalculation_Helper::convertBetweenCurrencies(max(0.0, $counted), $sourceRate, $targetRate),
+            'paid' => Core_PaymentCalculation_Helper::convertBetweenCurrencies($paid, $sourceRate, $targetRate),
+            'link' => $link,
+        ];
+    }
+
+    /**
+     * Tells whether a final invoice is covered by its advances: it deducted at least one proforma invoice and every
+     * such proforma is paid. The final invoice then counts as paid while its own balance is within the threshold,
+     * also when its total after the deduction is zero.
+     *
+     * @param Vtiger_Record_Model $targetRecord Target document
+     * @return bool
+     * @throws Exception
+     */
+    public function isCoveredByAdvance(Vtiger_Record_Model $targetRecord): bool
+    {
+        $hasAdvance = false;
+
+        foreach ($this->getLinkedSources($targetRecord) as [$sourceRecord, $link]) {
+            if (self::LINK_DEDUCTED !== $link) {
+                continue;
+            }
+
+            $hasAdvance = true;
+            $paid = Core_PaymentDocumentBalance_Model::getInstance()->getOwnNetAmount($sourceRecord, true);
+
+            if (!$this->isDocumentPaid($sourceRecord, $paid)) {
+                return false;
+            }
+        }
+
+        return $hasAdvance;
+    }
+
+    /**
+     * Returns the not deleted source documents that point to a target through a field of the source, with the kind
+     * of the link: [[source record, LINK_RECEIPT or LINK_DEDUCTED], ...].
+     *
+     * @param Vtiger_Record_Model $targetRecord Target document
+     * @return array<int, array{0: Vtiger_Record_Model, 1: string}>
+     * @throws Exception
+     */
+    protected function getLinkedSources(Vtiger_Record_Model $targetRecord): array
+    {
+        $targetModule = $targetRecord->getModuleName();
+        $sources = [];
+
+        foreach (self::SOURCE_LINK_FIELDS as $sourceModule => $fields) {
+            if (!vtlib_isModuleActive($sourceModule)) {
+                continue;
+            }
+
+            foreach ($fields as $fieldName => [$linkedModule, $link]) {
+                if ($linkedModule !== $targetModule) {
+                    continue;
+                }
+
+                foreach ($this->retrieveTargetIds($sourceModule, $fieldName, (int)$targetRecord->getId()) as $sourceId) {
+                    $sources[] = [Vtiger_Record_Model::getInstanceById($sourceId, $sourceModule), $link];
+                }
+            }
+        }
+
+        return $sources;
+    }
+
+    /**
+     * Tells whether a document is paid by the given net amount with the underpayment threshold of its paying module.
+     *
+     * @param Vtiger_Record_Model $recordModel Document record
+     * @param float               $paid        Net paid amount in the document currency
+     * @return bool
+     * @throws Exception
+     */
+    protected function isDocumentPaid(Vtiger_Record_Model $recordModel, float $paid): bool
+    {
+        $payingModule = Core_PaymentDocumentBalance_Model::getPayingModule($recordModel->getModuleName());
+
+        if ($payingModule === '') {
+            return false;
+        }
+
+        $total = $this->getDocumentTotal($recordModel);
+        $threshold = Core_PaymentConfig_Helper::getInstance($payingModule)->getSettingModel()->getUnderpaymentThreshold();
+
+        return Core_PaymentDocument_Helper::isPaid($paid, $total - $paid, $total, $threshold);
     }
 
     /**
@@ -192,9 +344,38 @@ class Core_PaymentSourceDocument_Model
             foreach ($this->getTargetRecords(Vtiger_Record_Model::getInstanceById((int)$sourceId, $sourceModule)) as $targetRecord) {
                 $numbers[] = Core_PaymentValues_Helper::getRecordNumber($targetRecord);
             }
+
+            foreach ($this->getLinkedTargetIds($sourceModule, (int)$sourceId) as $targetId => $targetModule) {
+                if (isRecordExists($targetId)) {
+                    $numbers[] = Core_PaymentValues_Helper::getRecordNumber(Vtiger_Record_Model::getInstanceById($targetId, $targetModule));
+                }
+            }
         }
 
         return array_values(array_unique($numbers));
+    }
+
+    /**
+     * Returns the targets a source document points to through its own fields (also of a deleted source):
+     * [target record id => target module].
+     *
+     * @param string $sourceModule Source document module
+     * @param int    $sourceId     Source document record id
+     * @return array<int, string>
+     */
+    protected function getLinkedTargetIds(string $sourceModule, int $sourceId): array
+    {
+        $targetIds = [];
+
+        foreach (self::SOURCE_LINK_FIELDS[$sourceModule] ?? [] as $fieldName => [$targetModule]) {
+            $targetId = (int)$this->retrieveFieldValue($sourceModule, $sourceId, $fieldName);
+
+            if ($targetId > 0 && getSalesEntityType($targetId) === $targetModule) {
+                $targetIds[$targetId] = $targetModule;
+            }
+        }
+
+        return $targetIds;
     }
 
     /**
@@ -235,6 +416,12 @@ class Core_PaymentSourceDocument_Model
                             $balanceModel->recalculateDocument($targetModule, $targetId);
                         }
                     }
+                }
+            }
+
+            foreach ($this->getLinkedTargetIds($sourceModule, $sourceId) as $targetId => $targetModule) {
+                if (isRecordExists($targetId)) {
+                    $balanceModel->recalculateDocument($targetModule, $targetId);
                 }
             }
         } finally {
@@ -322,18 +509,34 @@ class Core_PaymentSourceDocument_Model
      */
     protected function getOpenAmount(Vtiger_Record_Model $targetRecord, ?bool $isReceived): float
     {
-        $targetModule = $targetRecord->getModuleName();
-        $payingModule = Core_PaymentDocumentBalance_Model::getPayingModule($targetModule);
+        if (Core_PaymentDocumentBalance_Model::getPayingModule($targetRecord->getModuleName()) === '') {
+            return 0.0;
+        }
+
+        return max(0.0, $this->getDocumentTotal($targetRecord) - Core_PaymentDocumentBalance_Model::getInstance()->getOwnNetAmount($targetRecord, $isReceived));
+    }
+
+    /**
+     * Returns the total of a document from the total field of its paying module, in the document currency;
+     * 0 when no active payment module pays it.
+     *
+     * @param Vtiger_Record_Model $recordModel Document record
+     * @return float
+     * @throws Exception
+     */
+    protected function getDocumentTotal(Vtiger_Record_Model $recordModel): float
+    {
+        $moduleName = $recordModel->getModuleName();
+        $payingModule = Core_PaymentDocumentBalance_Model::getPayingModule($moduleName);
 
         if ($payingModule === '') {
             return 0.0;
         }
 
-        $config = Core_PaymentConfig_Helper::getInstance($payingModule)->getIntegrationModel()->retrieveByModule($targetModule);
+        $config = Core_PaymentConfig_Helper::getInstance($payingModule)->getIntegrationModel()->retrieveByModule($moduleName);
         $totalField = (string)($config['total_field'] ?? '');
-        $total = $totalField !== '' ? Core_PaymentCalculation_Helper::parseAmount($targetRecord->get($totalField)) : 0.0;
 
-        return max(0.0, $total - Core_PaymentDocumentBalance_Model::getInstance()->getOwnNetAmount($targetRecord, $isReceived));
+        return $totalField !== '' ? Core_PaymentCalculation_Helper::parseAmount($recordModel->get($totalField)) : 0.0;
     }
 
     /**

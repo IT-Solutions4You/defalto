@@ -167,14 +167,15 @@ abstract class Core_PaymentDocumentSync_Model extends Core_DatabaseData_Model
      * Recalculates the paid amount, balance and status of one document from the received payments of all payment
      * modules: the paying module minus the refunds (Core_PaymentDocumentBalance_Model).
      *
-     * @param string $module   Document module name
-     * @param int    $recordId Document record id
+     * @param string $module     Document module name
+     * @param int    $recordId   Document record id
+     * @param bool   $keepStatus true to keep the status, e.g. when the document save itself changed it
      * @return void
      * @throws Exception
      */
-    public function recalculateDocument(string $module, int $recordId): void
+    public function recalculateDocument(string $module, int $recordId, bool $keepStatus = false): void
     {
-        Core_PaymentDocumentBalance_Model::getInstance()->recalculateDocument($module, $recordId);
+        Core_PaymentDocumentBalance_Model::getInstance()->recalculateDocument($module, $recordId, $keepStatus);
     }
 
     /**

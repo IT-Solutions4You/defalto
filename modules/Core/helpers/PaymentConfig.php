@@ -167,6 +167,18 @@ class Core_PaymentConfig_Helper
      * Modules that can receive payments besides the inventory modules of the InventoryItem registry.
      */
     public const ADDITIONAL_DOCUMENT_MODULES = ['Potentials'];
+
+    /**
+     * Document modules paid by outgoing payments although they reference a customer, not a vendor: a credit note
+     * returns money to the customer, so incoming payments are its refunds.
+     */
+    public const OUTGOING_DOCUMENT_MODULES = ['CreditNote'];
+
+    /**
+     * Document statuses set outside the payments (an invoiced proforma, a cancelled document) that payments never
+     * change, whatever the status values of the integration are.
+     */
+    public const PROTECTED_STATUSES = ['Invoiced', 'Canceled', 'Cancel'];
     public const DEFAULT_BALANCE_FIELD = 'balance';
 
     /**

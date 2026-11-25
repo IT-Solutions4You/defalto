@@ -35,8 +35,9 @@ class Core_PaymentWidgetSummary_Helper
      * Returns the payments of a document in the given payment modules, newest payment date first, and the totals:
      * total, paid and balance from the document fields of the paying module, expected as the payments minus the
      * refunds not received yet. sourcePayments lists the received payments of source documents (the sales order of
-     * an invoice) that fall on the document. Payments the current user may not see are left out; the totals still
-     * count them.
+     * an invoice) that fall on the document, and the paid advances (proforma invoices) deducted by an item of the
+     * document, each with its translation key in label. Payments the current user may not see are left out; the
+     * totals still count them.
      *
      * @param string[] $paymentModules Payment module names
      * @param string   $sourceModule   Document module name
@@ -78,11 +79,14 @@ class Core_PaymentWidgetSummary_Helper
         }
 
         foreach (Core_PaymentSourceDocument_Model::getInstance()->getSourceAllocations($recordModel, true) as $allocation) {
+            // An advance deducted by an item shows everything paid on it; only the part above its total counts here
+            $isDeducted = $allocation['link'] === Core_PaymentSourceDocument_Model::LINK_DEDUCTED;
             $summary['sourcePayments'][] = [
                 'module' => $allocation['module'],
+                'label' => $isDeducted ? 'LBL_ADVANCE_FROM_SOURCE' : 'LBL_PAYMENTS_FROM_SOURCE',
                 'number' => Core_PaymentValues_Helper::getRecordNumber(Vtiger_Record_Model::getInstanceById($allocation['id'], $allocation['module'])),
                 'url' => 'index.php?module=' . $allocation['module'] . '&view=Detail&record=' . $allocation['id'],
-                'amount' => Core_PaymentCalculation_Helper::formatAmount($allocation['amount'], $currencyId),
+                'amount' => Core_PaymentCalculation_Helper::formatAmount($isDeducted ? $allocation['paid'] : $allocation['amount'], $currencyId),
             ];
         }
 

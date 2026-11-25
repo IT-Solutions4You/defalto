@@ -97,8 +97,8 @@ class Core_PaymentIntegrationFields_Helper
 
     /**
      * Returns whether the payments of the module are refunds of a document module by default: a document with
-     * a vendor (purchase order) is paid by outgoing payments, any other document by incoming payments; payments of
-     * the opposite direction are refunds.
+     * a vendor (purchase order) or a credit note (Core_PaymentConfig_Helper::OUTGOING_DOCUMENT_MODULES) is paid by
+     * outgoing payments, any other document by incoming payments; payments of the opposite direction are refunds.
      *
      * @param Core_PaymentConfig_Helper $paymentConfig Configuration of the payment module
      * @param Vtiger_Module_Model       $moduleModel   Document module
@@ -106,7 +106,9 @@ class Core_PaymentIntegrationFields_Helper
      */
     public static function getDefaultRefund(Core_PaymentConfig_Helper $paymentConfig, Vtiger_Module_Model $moduleModel): int
     {
-        $payingDirection = Core_PaymentConfig_Helper::DIRECTION_INCOMING;
+        $payingDirection = in_array($moduleModel->getName(), Core_PaymentConfig_Helper::OUTGOING_DOCUMENT_MODULES, true)
+            ? Core_PaymentConfig_Helper::DIRECTION_OUTGOING
+            : Core_PaymentConfig_Helper::DIRECTION_INCOMING;
 
         foreach ($moduleModel->getFieldsByType('reference') as $fieldModel) {
             if (in_array('Vendors', (array)$fieldModel->getReferenceList(false, false), true)) {
