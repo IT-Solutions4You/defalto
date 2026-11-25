@@ -215,6 +215,11 @@ Vtiger_Detail_Js('Project_Detail_Js', {
 
         vtUtils.enableTooltips('.project-task-summary [data-bs-toggle="tooltip"]');
         container.find('.project-summary-status-tabs').each(function () {
+            if (jQuery(this).closest('.project-task-summary-content').data('summary-initialized')) {
+                return;
+            }
+
+            jQuery(this).closest('.project-task-summary-content').data('summary-initialized', true);
             let tabs = jQuery(this).find('[role="tab"]'),
                 selected = app.storage.get(self.getTaskSummaryTabStorageKey(jQuery(this))),
                 matching = tabs.filter(function () { return jQuery(this).data('summary-group') === selected; }),
@@ -236,11 +241,7 @@ Vtiger_Detail_Js('Project_Detail_Js', {
 
         container.off('click.projectSummaryLoadMore', '[data-summary-load-more]')
             .on('click.projectSummaryLoadMore', '[data-summary-load-more]', function (event) {
-                const content = jQuery(event.currentTarget).closest('.project-task-summary-content'),
-                    pageSize = content.data('summary-page-size');
-
-                content.data('summary-limit', (content.data('summary-limit') || pageSize) + pageSize);
-                self.updateTaskSummaryFilters(content, true);
+                self.loadTaskSummaryPage(jQuery(event.currentTarget).closest('.project-task-summary-content'), true);
             });
         container.off('click.projectSummaryFilterPanel', '[data-filter-open]')
             .on('click.projectSummaryFilterPanel', '[data-filter-open]', function (event) {
@@ -349,59 +350,90 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         return value === '' ? '' : (date.isValid() ? date.format('YYYY-MM-DD') : null);
     },
 
-    isTaskSummaryFilterMatch: function (row, filters) {
+    loadTaskSummaryPage: function (content, append) {
+        if (append && (content.data('summary-loading') || !content.data('summary-has-more'))) {
+            return;
+        }
+
+        const self = this,
+            filters = this.getTaskSummaryFilters(content),
+            group = content.find('.project-summary-status-tabs [aria-selected="true"]').data('summary-group') || 'all',
+            sequence = (content.data('summary-sequence') || 0) + 1,
+            offset = append ? Number(content.data('summary-next-offset') || 0) : 0;
+
+        // Superseded requests must never append results to a newer filter or replacement widget.
+        content.data('summary-sequence', sequence);
+
+        if (!append) {
+            content.data('summary-next-offset', 0).data('summary-has-more', false);
+            content.find('.project-summary-group-rows').empty();
+            content.find('[data-summary-load-more-container]').prop('hidden', true);
+            content.find('.project-summary-filter-empty').prop('hidden', true);
+        }
+
         if (filters.from === null || filters.to === null || (filters.from && filters.to && filters.from > filters.to)) {
-            return false;
+            content.data('summary-loading', false).attr('aria-busy', 'false');
+            content.find('[data-summary-load-more]').prop('disabled', true);
+            content.find('.project-summary-filter-empty').prop('hidden', false);
+            return;
         }
 
-        for (const key of Object.keys(filters.values)) {
-            if (!filters.values[key].includes(row.getAttribute('data-filter-' + key))) {
-                return false;
+        content.data('summary-loading', true).attr('aria-busy', 'true');
+        content.find('[data-summary-load-more]').prop('disabled', true);
+        app.request.post({data: {
+            module: 'Project', view: 'Detail', mode: 'showRelatedRecords', relatedModule: 'ProjectTask',
+            record: content.closest('.project-task-summary').data('record'),
+            summaryPage: 1, summaryFilters: JSON.stringify(filters), summaryGroup: group, summaryOffset: offset
+        }}).then(function (error, data) {
+            if (!content[0].isConnected || content.data('summary-sequence') !== sequence) {
+                return;
             }
-        }
 
-        const start = row.getAttribute('data-filter-start') || row.getAttribute('data-filter-end'),
-            end = row.getAttribute('data-filter-end') || start;
+            content.data('summary-loading', false).attr('aria-busy', 'false');
+            content.find('[data-summary-load-more]').prop('disabled', false);
 
-        // ISO calendar dates compare directly; no Date/UTC conversion or timestamp boundaries.
-        return (!filters.from && !filters.to) || Boolean(start && end
-            && (!filters.from || end >= filters.from) && (!filters.to || start <= filters.to));
+            if (error) {
+                app.helper.showErrorNotification({message: error.message || error});
+                return;
+            }
+
+            const response = jQuery('<div>').html(data).find('.project-task-summary-content'),
+                bodies = content.find('.project-summary-group-rows');
+
+            if (!append) {
+                bodies.empty();
+            }
+
+            response.find('.project-summary-group-rows').each(function () {
+                const source = this,
+                    target = bodies.filter(function () { return this.id === source.id; });
+
+                target.append(jQuery(source).children());
+            });
+            content.find('.project-summary-status-tabs [role="tab"]').each(function () {
+                const tab = jQuery(this),
+                    match = response.find('[data-summary-group]').filter(function () { return this.dataset.summaryGroup === tab.attr('data-summary-group'); });
+
+                tab.find('.badge').text(match.find('.badge').text() || '0');
+            });
+            content.data('summary-next-offset', Number(response.attr('data-summary-next-offset') || 0))
+                .data('summary-has-more', response.attr('data-summary-has-more') === '1');
+            content.find('[data-summary-load-more-container]').prop('hidden', !content.data('summary-has-more'));
+            content.find('.project-summary-group-rows').each(function () { this.hidden = group !== 'all' && this.id !== group; });
+            content.find('[data-summary-all-only]').prop('hidden', group !== 'all');
+            content.find('.project-summary-filter-empty').prop('hidden', content.find('[data-summary-filter-row]').length > 0)
+                .find('td').attr('colspan', content.find('thead th').filter(function () { return !this.hidden; }).length);
+            self.updateTaskSummaryAvatars(content);
+            vtUtils.enableTooltips('.project-task-summary [data-bs-toggle="tooltip"]');
+        });
     },
 
-    updateTaskSummaryFilters: function (content, preserveLimit) {
+    updateTaskSummaryFilters: function (content) {
         let self = this,
             filters = this.getTaskSummaryFilters(content),
-            counts = {},
             chips = content.find('.project-summary-filter-values'),
-            active = content.find('.project-summary-status-tabs [aria-selected="true"]').data('summary-group'),
-            limit = preserveLimit ? content.data('summary-limit') : content.data('summary-page-size'),
-            total = 0, visible = 0, selectedCount = 0;
+            selectedCount = 0;
 
-        content.data('summary-limit', limit);
-        content.find('[data-summary-filter-row]').each(function () {
-            const match = self.isTaskSummaryFilterMatch(this, filters),
-                group = this.getAttribute('data-filter-status'),
-                activeMatch = match && (active === 'all' || active === group);
-
-            if (match) {
-                total++;
-                counts[group] = (counts[group] || 0) + 1;
-            }
-
-            if (activeMatch) {
-                visible++;
-            }
-
-            this.hidden = !activeMatch || visible > limit;
-        });
-        content.find('[data-summary-load-more-container]').prop('hidden', visible <= limit);
-        content.find('.project-summary-status-tabs [role="tab"]').each(function () {
-            const group = this.dataset.summaryGroup;
-
-            jQuery(this).find('.badge').text(group === 'all' ? total : counts[group] || 0);
-        });
-        content.find('.project-summary-filter-empty').prop('hidden', visible > 0)
-            .find('td').attr('colspan', content.find('thead th').filter(function () { return !this.hidden; }).length);
         chips.empty();
         content.find('[data-filter-key]:checked').each(function () {
             const option = jQuery(this),
@@ -435,6 +467,7 @@ Vtiger_Detail_Js('Project_Detail_Js', {
                 input.datepicker('option', option, boundary ? moment(boundary, 'YYYY-MM-DD', true).toDate() : null).val(rawValue);
             }
         });
+        this.loadTaskSummaryPage(content, false);
     },
 
     addTaskSummaryFilterChip: function (container, key, value, label) {

@@ -1,14 +1,14 @@
 {strip}
-    <div class="project-task-summary-content" data-summary-page-size="{$TASK_SUMMARY['page_size']}">
+    <div class="project-task-summary-content" data-summary-page-size="{$TASK_SUMMARY['page_size']}" data-summary-next-offset="{$TASK_SUMMARY['next_offset']}" data-summary-has-more="{$TASK_SUMMARY['has_more']}">
         <input type="hidden" name="relatedModule" value="ProjectTask">
         {if $TASK_SUMMARY['count'] && $TASK_SUMMARY['columns']}
             <div class="d-flex align-items-end border-bottom project-summary-toolbar">
             <div class="nav nav-tabs px-3 pt-2 project-summary-status-tabs flex-grow-1" role="tablist" aria-label="{vtranslate('Status', 'ProjectTask')|escape:'html'}">
-                <button type="button" id="tab_project_summary_all" class="nav-link d-flex align-items-center gap-2 active" role="tab" aria-selected="true" tabindex="0" aria-controls="project-summary-task-panel" data-summary-group="all"><span>{vtranslate('LBL_ALL', 'Core')|escape:'html'}</span><span class="badge bg-body-secondary text-body">{$TASK_SUMMARY['count']}</span></button>
+                <button type="button" id="tab_project_summary_all" class="nav-link d-flex align-items-center gap-2 active" role="tab" aria-selected="true" tabindex="0" aria-controls="project-summary-task-panel" data-summary-group="all"><span>{vtranslate('LBL_ALL', 'Core')|escape:'html'}</span><span class="badge bg-body-secondary text-body">{$TASK_SUMMARY['filtered_count']}</span></button>
                 {foreach item=GROUP from=$TASK_SUMMARY['groups'] name=statusTabs}
                     <button type="button" id="tab_{$GROUP['id']}" class="nav-link d-flex align-items-center gap-2" role="tab" aria-selected="false" tabindex="-1" aria-controls="project-summary-task-panel" data-summary-group="{$GROUP['id']}" data-summary-status="{$GROUP['status']|escape:'html'}">
                         <span class="project-summary-status-marker" style="background-color: {$GROUP['color']|escape:'html'}" aria-hidden="true"></span>
-                        <span>{$GROUP['label']|escape:'html'}</span><span class="badge bg-body-secondary text-body">{count($GROUP['rows'])}</span>
+                        <span>{$GROUP['label']|escape:'html'}</span><span class="badge bg-body-secondary text-body">{$GROUP['count']}</span>
                     </button>
                 {/foreach}
             </div>

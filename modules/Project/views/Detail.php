@@ -66,7 +66,14 @@ class Project_Detail_View extends Vtiger_Detail_View
 		if ($relatedModuleName === 'ProjectTask') {
 			$project = Vtiger_Record_Model::getInstanceById($parentId, 'Project');
 			$viewer = $this->getViewer($request);
-			$viewer->assign('TASK_SUMMARY', (new Project_SummaryTask_Model())->getSummaryData($project));
+			$filters = $request->get('summaryFilters');
+			$viewer->assign('TASK_SUMMARY', (new Project_SummaryTask_Model())->getSummaryData(
+			    $project,
+			    is_array($filters) ? $filters : [],
+			    (string)($request->get('summaryGroup') ?: 'all'),
+			    max(0, (int)$request->get('summaryOffset')),
+			    (bool)$request->get('summaryPage')
+			));
 
 			return $viewer->view('ProjectTaskSummaryWidgetContents.tpl', 'Project', true);
 		}

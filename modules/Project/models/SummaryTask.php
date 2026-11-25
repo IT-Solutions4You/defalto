@@ -23,12 +23,12 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
         return $headers;
     }
 
-    public function getSummaryData(Project_Record_Model $project): array
+    public function getSummaryData(Project_Record_Model $project, array $filters = [], string $activeGroup = 'all', int $offset = 0, bool $loadRows = false): array
     {
         $headers = $this->getHeaders();
         $module = Vtiger_Module_Model::getInstance('ProjectTask');
         $query = Core_QueryGenerator_Model::getInstance('ProjectTask');
-        $query->setFields(['id', ...array_keys($headers)]);
+        $query->setFields(['id', ...array_keys(array_intersect_key($headers, array_flip(['projecttaskstatus', 'assigned_user_id', 'milestoneid', 'projecttaskpriority', 'startdate', 'enddate'])))]);
         $query->addFieldColumnCondition('projectid', '=', $project->getId());
         $rows = $query->getProjectedRows();
         $permissions = Users_Privileges_Model::getDetailViewPermissions('ProjectTask', array_keys($rows));
@@ -39,14 +39,13 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
         $today = (new DateTimeImmutable('now', new DateTimeZone(Users_Record_Model::getCurrentUserModel()->get('time_zone') ?: 'UTC')))->format('Y-m-d');
         $groups = [];
         $activeCount = $overdueCount = $count = 0;
+        ksort($rows, SORT_NUMERIC);
 
         foreach ($rows as $id => $values) {
             if (empty($permissions[$id])) {
                 continue;
             }
 
-            $record = Vtiger_Record_Model::getCleanInstance('ProjectTask');
-            $record->setData($values)->setModuleFromInstance($module)->setId($id);
             $status = (string)($values['projecttaskstatus'] ?? '');
             $closed = in_array($status, $closedValues, true);
             $daysOverdue = $this->getDaysOverdue((string)($values['enddate'] ?? ''), $today, $closed);
@@ -62,6 +61,79 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
                     'order' => $statusOrder[$status] ?? PHP_INT_MAX,
                     'rows' => [],
                 ];
+            }
+
+            $ownerId = (string)($values['assigned_user_id'] ?? '0');
+            $priority = (string)($values['projecttaskpriority'] ?? '');
+            $groups[$groupKey]['rows'][$id] = [
+                'owner_key' => $ownerId,
+                'owner' => empty($values['assigned_user_id']) ? '' : decode_html(getOwnerName($ownerId)),
+                'milestone_key' => isset($milestones[(int)($values['milestoneid'] ?? 0)]) ? (string)$values['milestoneid'] : '0',
+                'milestone' => $milestones[(int)($values['milestoneid'] ?? 0)] ?? null,
+                'priority_key' => $priority,
+                'priority' => isset($headers['projecttaskpriority']) ? $headers['projecttaskpriority']->getDisplayValue($priority) : '',
+                'start_date' => (string)(Core_DateOnly_Helper::convertToDBFormat((string)($values['startdate'] ?? '')) ?? ''),
+                'end_date' => (string)(Core_DateOnly_Helper::convertToDBFormat((string)($values['enddate'] ?? '')) ?? ''),
+            ];
+            $count++;
+            $activeCount += isset($headers['projecttaskstatus']) && !$closed ? 1 : 0;
+            $overdueCount += $daysOverdue > 0 ? 1 : 0;
+        }
+
+        uasort($groups, static fn(array $first, array $second): int => ((int)$first['closed'] <=> (int)$second['closed']) ?: ($first['order'] <=> $second['order']));
+        $filterDefinitions = $this->getFilterDefinitions($headers, $groups);
+        $matchingIds = [];
+        $filteredCount = 0;
+        $pageSize = max(1, (int)(new Vtiger_Paging_Model())->getPageLimit());
+        $offset = max(0, $offset);
+
+        foreach ($groups as $key => &$group) {
+            $group['count'] = 0;
+
+            foreach ($group['rows'] as $id => $row) {
+                if (!$this->isFilterMatch($row, $key, $filters, $filterDefinitions)) {
+                    continue;
+                }
+
+                $group['count']++;
+                $filteredCount++;
+
+                if ($activeGroup === 'all' || $activeGroup === $key) {
+                    $matchingIds[] = $id;
+                }
+            }
+
+            $group['rows'] = [];
+        }
+
+        unset($group);
+        $pageIds = $loadRows ? array_slice($matchingIds, $offset, $pageSize) : [];
+        $pageRows = [];
+
+        if ($pageIds) {
+            $pageQuery = Core_QueryGenerator_Model::getInstance('ProjectTask');
+            $pageQuery->setFields(['id', ...array_keys($headers)]);
+            $pageQuery->addFieldColumnCondition('projectid', '=', $project->getId());
+            $pageQuery->addRecordIdsCondition($pageIds);
+            $pageQuery->setLimit($pageSize);
+            $pageRows = $pageQuery->getProjectedRows();
+        }
+
+        foreach ($pageIds as $id) {
+            if (!isset($pageRows[$id])) {
+                continue;
+            }
+
+            $values = $pageRows[$id];
+            $record = Vtiger_Record_Model::getCleanInstance('ProjectTask');
+            $record->setData($values)->setModuleFromInstance($module)->setId($id);
+            $status = (string)($values['projecttaskstatus'] ?? '');
+            $groupKey = 'status_' . sha1($status);
+            $closed = in_array($status, $closedValues, true);
+            $daysOverdue = $this->getDaysOverdue((string)($values['enddate'] ?? ''), $today, $closed);
+
+            if (!isset($groups[$groupKey])) {
+                continue;
             }
 
             $fields = array_map(static fn($field) => clone $field, $headers);
@@ -91,12 +163,8 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
                 'status' => $status,
                 'can_edit_status' => $this->isStatusEditable($record, $statusField),
             ];
-            $count++;
-            $activeCount += isset($headers['projecttaskstatus']) && !$closed ? 1 : 0;
-            $overdueCount += $daysOverdue > 0 ? 1 : 0;
         }
 
-        uasort($groups, static fn(array $first, array $second): int => ((int)$first['closed'] <=> (int)$second['closed']) ?: ($first['order'] <=> $second['order']));
         $columns = array_intersect_key($headers, array_flip(['projecttaskname', 'projecttaskstatus', 'projecttaskprogress', 'milestoneid', 'assigned_user_id']));
 
         if (isset($headers['startdate']) || isset($headers['enddate'])) {
@@ -109,14 +177,57 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
 
         return [
             'groups' => $groups,
-            'filters' => $this->getFilterDefinitions($headers, $groups),
+            'filters' => $filterDefinitions,
+            'filtered_count' => $filteredCount,
+            'next_offset' => $offset + count($pageIds),
+            'has_more' => $loadRows && $offset + count($pageIds) < count($matchingIds),
             'columns' => $columns,
-            'page_size' => (int)(new Vtiger_Paging_Model())->getPageLimit(),
+            'page_size' => $pageSize,
             'count' => $count,
             'active_count' => $activeCount,
             'status_visible' => isset($headers['projecttaskstatus']),
             'overdue_count' => $overdueCount,
         ];
+    }
+
+    protected function isFilterMatch(array $row, string $group, array $filters, array $definitions): bool
+    {
+        foreach (['status', 'owner', 'milestone', 'priority'] as $key) {
+            $selected = $filters['values'][$key] ?? [];
+
+            if (!isset($definitions[$key]) || !is_array($selected) || !$selected) {
+                continue;
+            }
+
+            $value = $key === 'status' ? $group : $row[$key . '_key'];
+
+            if (!in_array($value, $selected, true)) {
+                return false;
+            }
+        }
+
+        if (!isset($definitions['dates'])) {
+            return true;
+        }
+
+        $from = $filters['from'] ?? '';
+        $to = $filters['to'] ?? '';
+
+        foreach ([$from, $to] as $date) {
+            if (!is_string($date) || ($date !== '' && Core_DateOnly_Helper::convertToDBFormat($date) !== $date)) {
+                throw new Exception(vtranslate('JS_PLEASE_ENTER_VALID_DATE', 'Core'));
+            }
+        }
+
+        if ($from !== '' && $to !== '' && $from > $to) {
+            throw new Exception(vtranslate('JS_CHECK_START_AND_END_DATE', 'Core'));
+        }
+
+        $start = $row['start_date'] ?: $row['end_date'];
+        $end = $row['end_date'] ?: $start;
+
+        return ($from === '' && $to === '') || ($start !== '' && $end !== ''
+            && ($from === '' || $end >= $from) && ($to === '' || $start <= $to));
     }
 
     protected function getFilterDefinitions(array $headers, array $groups): array

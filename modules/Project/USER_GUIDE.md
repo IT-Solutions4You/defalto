@@ -6,11 +6,11 @@ Projects keep project details together with their tasks, milestones and related 
 
 In All, the task Status column appears before Progress.
 
-The table uses the same records-per-page limit as standard lists. Select Show more to reveal another batch of that size without leaving the project. The button disappears when all matching tasks are shown. Switching status tabs or changing filters starts again with one batch; tab counts always include every matching task.
+The table uses the same records-per-page limit as standard lists. Only the requested batch is loaded into the table. Select Show more to fetch the next batch from the server without leaving the project. The button disappears when all matching tasks are shown. Switching status tabs or changing filters starts again with one batch; tab counts always include every matching task.
 
 Key Metrics shows four indicators in order: Open Tasks, Progress, Overdue Tasks and Completed Tasks. Priority totals are not displayed here. On phones, indicators appear as compact rectangular cards. Cards keep space between rows on narrow screens without extra spacing below the last row.
 
-Use Filter beside the status tabs to choose statuses, assignees, milestones (including No milestone), priorities or a date range. Select several values within a category to include any of them; different categories must all match. The selected status tab also applies. Changes update the table and tab counts immediately. Done closes the menu. Active choices appear as removable chips; Clear filters removes them together. A tab with no matching tasks shows an empty result message.
+Use Filter beside the status tabs to choose statuses, assignees, milestones (including No milestone), priorities or a date range. Select several values within a category to include any of them; different categories must all match. The selected status tab also applies. Changing a filter or status requests the first matching batch from the server and updates the tab counts for all matches. Done closes the menu. Active choices appear as removable chips; Clear filters removes them together. A tab with no matching tasks shows an empty result message.
 
 Date filters include tasks whose start/end period overlaps the chosen dates, including both boundary days. With only one task date, that date is used; tasks without dates are excluded while a date filter is active. Use the standard CRM calendar beside each date field, or type a date in your selected date format. Invalid dates and an end date before the start date are marked for correction. The calendar offers the usual Today and Clear actions. Filters are remembered separately for each user and project in this browser and survive widget refreshes. Only values you may view are offered.
 
