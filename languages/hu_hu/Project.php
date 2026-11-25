@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_MANAGER' => 'Projektvezető',
     'LBL_SUMMARY_FILTER' => 'Szűrő',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Szűrők törlése',
     'LBL_SUMMARY_DATE_FROM' => 'Dátumtól',

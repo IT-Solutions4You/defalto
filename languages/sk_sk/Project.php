@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_MANAGER' => 'Projektový manažér',
     'LBL_SUMMARY_FILTER' => 'Filter',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Zrušiť filtre',
     'LBL_SUMMARY_DATE_FROM' => 'Dátum od',

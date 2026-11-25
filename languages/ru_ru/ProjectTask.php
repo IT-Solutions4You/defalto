@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Исполнитель',
     'CV_ALL' => 'Все задачи проекта',
     'SINGLE_ProjectTask'           => "Задач проекта",
     'LBL_ADD_RECORD'               => "Добавить задач проекта",

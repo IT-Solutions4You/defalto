@@ -27,3 +27,7 @@ Saving or cancelling an edit opened from Chart returns to that same chart. Savin
 Task bars show completion through their fill without a numeric percentage label. The stored percentage remains editable in the task form.
 
 The milestone date is the last allowed day for a linked task. The chart calculates the milestone start from its earliest task start. Saving a task cannot move the milestone deadline automatically.
+
+## Responsibility
+
+The **Assignee** field (Riešiteľ in Slovak) identifies the user or group responsible for the task. Select the responsible person or group when creating or editing a task; existing assignments and access rules stay the same.

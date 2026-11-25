@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Sorumlu',
     'CV_ALL' => 'Tüm proje görevleri',
     'SINGLE_ProjectTask'           => "Proje Görevi",
     'LBL_ADD_RECORD'               => "Proje Görev ekle",

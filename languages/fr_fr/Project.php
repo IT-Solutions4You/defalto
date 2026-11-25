@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_MANAGER' => 'Chef de projet',
     'LBL_SUMMARY_FILTER' => 'Filtre',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Effacer les filtres',
     'LBL_SUMMARY_DATE_FROM' => 'Date de début',

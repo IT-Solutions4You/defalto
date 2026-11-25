@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Responsável',
     'CV_ALL' => 'Todas as tarefas do projeto',
     // Basic Strings
     'SINGLE_ProjectTask'           => 'Tarefa Projeto',

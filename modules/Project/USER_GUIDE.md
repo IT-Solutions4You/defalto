@@ -95,3 +95,7 @@ Milestones may depend on other milestones. A successor should start after the pr
 
 
 Click the warning button beside the day count or on the timeline bar to open a compact, scrollable warning window. It lists every exact cause and what to change: dates, a wrong dependency, a milestone deadline, or a completed task status when appropriate. Dependency warnings name the predecessor and conflicting dates; milestone warnings identify the task past its deadline. Details appear only in this window, without banner summaries or hover warnings. The button also works with Enter or Space; closing the window returns focus to it. Warnings do not automatically change any record.
+
+## Responsibility
+
+The **Project manager** field identifies the user or group responsible for the project. Select the responsible person or group when creating or editing a project; existing assignments and access rules stay the same.

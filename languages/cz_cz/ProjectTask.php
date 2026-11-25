@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Řešitel',
     'CV_ALL' => 'Všechny úkoly projektu',
     'SINGLE_ProjectTask' => 'Projektový úkol',
     'LBL_ADD_RECORD' => 'Přidat projektový úkol',

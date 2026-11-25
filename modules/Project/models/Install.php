@@ -324,7 +324,7 @@ class Project_Install_Model extends Core_Install_Model
                     'uitype' => 53,
                     'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
-                    'label' => 'Assigned To',
+                    'label' => 'LBL_PROJECT_MANAGER',
                     'typeofdata' => 'V~M',
                     'quickcreate' => 1,
                     'summaryfield' => 0,

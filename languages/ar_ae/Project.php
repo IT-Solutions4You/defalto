@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_MANAGER' => 'مدير المشروع',
     'LBL_SUMMARY_FILTER' => 'تصفية',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'مسح عوامل التصفية',
     'LBL_SUMMARY_DATE_FROM' => 'من تاريخ',

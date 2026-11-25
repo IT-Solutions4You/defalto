@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Responsabil',
     'CV_ALL' => 'Toate sarcinile proiectului',
     'SINGLE_ProjectTask'           => "Activitate de proiect",
     'LBL_ADD_RECORD'               => "Adauga echipei de proiect",

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Felelős',
     'CV_ALL' => 'Összes projektfeladat',
     'SINGLE_ProjectTask'           => 'Projekt Feladat',
     'LBL_ADD_RECORD'               => 'Projekt Feladat hozzáadása',

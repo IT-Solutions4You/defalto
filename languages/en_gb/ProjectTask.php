@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Assignee',
     'CV_ALL' => 'All Project Tasks',
     'SINGLE_ProjectTask'           => 'Project Task',
     'LBL_ADD_RECORD'               => 'Add Project Task',

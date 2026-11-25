@@ -18,6 +18,7 @@
  */
 
 $languageStrings = [
+    'LBL_TASK_ASSIGNEE' => 'Bearbeiter',
     'CV_ALL' => 'Alle Projektaufgaben',
     'Assigned To' => 'zuständig',
     'Canceled' => 'abgebrochen',

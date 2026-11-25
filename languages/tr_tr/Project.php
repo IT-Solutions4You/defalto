@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_MANAGER' => 'Proje yöneticisi',
     'LBL_SUMMARY_FILTER' => 'Filtre',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Filtreleri temizle',
     'LBL_SUMMARY_DATE_FROM' => 'Başlangıç tarihi',

@@ -17,6 +17,7 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_MANAGER' => 'Projektledare',
     'LBL_SUMMARY_FILTER' => 'Filter',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Rensa filter',
     'LBL_SUMMARY_DATE_FROM' => 'Datum från',

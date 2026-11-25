@@ -1,6 +1,7 @@
 <?php
 
 $languageStrings = [
+    'LBL_PROJECT_MANAGER' => 'Projektipäällikkö',
     'LBL_SUMMARY_FILTER' => 'Suodatin',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Tyhjennä suodattimet',
     'LBL_SUMMARY_DATE_FROM' => 'Alkupäivä',

@@ -20,3 +20,5 @@
 - tests/gantt user-run fixtures create tasks through Vtiger_Save_Action and the module record validation, convert ISO fixture calendar dates to the acting user format, and finalize statuses only after dependency creation. They do not bypass custom record rules, add users or alter production schema.
 
 - Fixed date-validation reference modules, date field lists and quick-edit chart fields are typed static configuration on their owning action/model; loops retain the configured field order.
+
+- `ProjectTask_Install_Model::getBlocks()` owns the `assigned_user_id` field label `LBL_TASK_ASSIGNEE`; module language files translate it as Assignee (Riešiteľ in Slovak). Core installation/update applies the label to existing fields without changing assignment storage or permissions.
