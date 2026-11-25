@@ -100,8 +100,7 @@ class Import_Data_Action extends Core_Controller_Action
                 $fieldInstance = $moduleFields[$mandatoryFieldName];
                 if ($fieldInstance->getFieldDataType() == 'owner') {
                     $defaultValues[$mandatoryFieldName] = $this->user->id;
-                } elseif ($fieldInstance->getFieldDataType() != 'datetime' && $fieldInstance->getFieldDataType() != 'date' && $fieldInstance->getFieldDataType(
-                    ) != 'time' && $fieldInstance->getFieldDataType() != 'reference') {
+                } elseif (!in_array($fieldInstance->getFieldDataType(), ['datetime', 'date', 'time', 'reference', Vtiger_Field_Model::MULTI_REFERENCE_TYPE])) {
                     $defaultValues[$mandatoryFieldName] = '????';
                 }
             }
@@ -530,6 +529,8 @@ class Import_Data_Action extends Core_Controller_Action
 
                 $implodeValue = implode(' |##| ', $explodedValue);
                 $fieldData[$fieldName] = $implodeValue;
+            } elseif ($fieldDataType == Vtiger_Field_Model::MULTI_REFERENCE_TYPE) {
+                $fieldData[$fieldName] = $this->getMultireferenceImportValue($moduleModel, $fieldName, (string)$fieldValue);
             } elseif ($fieldDataType == 'reference') {
                 $entityId = false;
                 if (!empty($fieldValue)) {
@@ -792,7 +793,7 @@ class Import_Data_Action extends Core_Controller_Action
                 $fieldInstance = $moduleFields[$mandatoryField];
                 if ($fieldInstance->getFieldDataType() == 'owner') {
                     $fieldData[$mandatoryField] = $this->user->id;
-                } elseif (!in_array($mandatoryField, $entityNameFields) && $fieldInstance->getFieldDataType() != 'reference') {
+                } elseif (!in_array($mandatoryField, $entityNameFields) && !in_array($fieldInstance->getFieldDataType(), ['reference', Vtiger_Field_Model::MULTI_REFERENCE_TYPE])) {
                     $fieldData[$mandatoryField] = '????';
                 }
             }
@@ -1038,6 +1039,23 @@ class Import_Data_Action extends Core_Controller_Action
         }
 
         return $entityInfo;
+    }
+
+    /**
+     * Converts the value of a multi reference field (uitype 34) from the import file into the stored record ids.
+     *
+     * @param Vtiger_Module_Model|false $moduleModel Imported module
+     * @param string $fieldName Field name
+     * @param string $fieldValue Value from the file (Module::::number |##| ..., names or record ids)
+     * @return string Stored value (12;15), empty when no record was found
+     * @throws Exception
+     */
+    public function getMultireferenceImportValue($moduleModel, string $fieldName, string $fieldValue): string
+    {
+        $fieldModel = $moduleModel ? $moduleModel->getField($fieldName) : false;
+        $uiTypeModel = $fieldModel ? $fieldModel->getUITypeModel() : null;
+
+        return $uiTypeModel instanceof Core_Multireference_UIType ? $uiTypeModel->getImportValue($fieldValue) : '';
     }
 
     public function getEntityIdsList($referenceModuleName, $fieldValueDetails)

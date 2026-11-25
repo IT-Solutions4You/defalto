@@ -149,7 +149,7 @@ class Core_MultireferenceSearch_Model
      * @param array $recordIds Record ids
      * @return array record id => record number
      */
-    protected function fetchRecordNumbers(array $recordIds): array
+    public function fetchRecordNumbers(array $recordIds): array
     {
         $numberColumn = $this->getNumberColumn();
 
@@ -170,6 +170,35 @@ class Core_MultireferenceSearch_Model
         }
 
         return $numbers;
+    }
+
+    /**
+     * Loads the record that is not deleted and has exactly the given record number.
+     *
+     * @param string $number Record number, for example INV17
+     * @return int Record id, 0 when no record has the number
+     */
+    public function fetchRecordIdByNumber(string $number): int
+    {
+        $numberColumn = $this->getNumberColumn();
+
+        if (empty($numberColumn) || '' === $number) {
+            return 0;
+        }
+
+        [$tableName, $indexColumn, $column] = $numberColumn;
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery(
+            sprintf(
+                'SELECT vtiger_crmentity.crmid FROM vtiger_crmentity INNER JOIN %1$s ON %1$s.%2$s = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = 0 AND vtiger_crmentity.setype = ? AND %1$s.%3$s = ? LIMIT 1',
+                $tableName,
+                $indexColumn,
+                $column,
+            ),
+            [$this->moduleModel->getName(), $number],
+        );
+
+        return (int)$db->query_result($result, 0, 'crmid');
     }
 
     /**

@@ -9,3 +9,5 @@ The imported-record list shows only the records you imported successfully and su
 Saved mappings can be reused in later imports. A mapping remembers whether it was saved for files with or without a header row. Mappings for files with a header row fill in columns by column name, and others by column position. Columns that were not mapped when the mapping was saved stay unmapped.
 
 A currency column may contain the currency id (as written by the export), its code (USD) or its name (USA, Dollars). Amounts with their own currency, such as the amount of a payment, are imported in the currency of the same row.
+
+A field with several linked records, such as the Reference of a payment, is exported as the module and the record number of each record (Invoice::::INV17 |##| Invoice::::INV18). The import finds the records by their number, then by their name, and skips records it cannot find; it does not create new documents.

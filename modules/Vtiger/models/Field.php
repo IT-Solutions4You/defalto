@@ -1466,6 +1466,12 @@ class Vtiger_Field_Model extends Vtiger_Field
             case 'start_period'            :
                 $funcName = ['name' => 'lessThanDependentField', 'params' => ['end_period']];
                 break;
+            // the amount of a payment must be greater than zero; a refund is a payment of the other module
+            case Core_PaymentConfig_Helper::FIELD_AMOUNT:
+                if (in_array($this->getModule()->get('name'), Core_PaymentConfig_Helper::PAYMENT_MODULES, true)) {
+                    $funcName = ['name' => 'greater_than_zero'];
+                }
+                break;
         }
         if (isset($funcName) && $funcName) {
             array_push($validator, $funcName);

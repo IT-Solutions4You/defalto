@@ -9,10 +9,12 @@
  */
 
 /**
- * Before-save hook of a payment. It checks nothing today: a payment may reference any number of documents. It is the
- * place for edition checks (for example a limit of documents per payment) once the payment modules are split into
- * a free and a paid edition. The read-only values, the split of the amount over the documents and the document
- * synchronisation are handled by the payment entity (Core_PaymentEntity_Model::save_module()).
+ * Before-save hook of a payment. It refuses an amount that is not greater than zero (a refund is a positive payment
+ * of the other payment module), also for imports, workflows and web services that skip the form validation.
+ * A payment may reference any number of documents; this is the place for edition checks (for example a limit of
+ * documents per payment) once the payment modules are split into a free and a paid edition. The read-only values,
+ * the split of the amount over the documents and the document synchronisation are handled by the payment entity
+ * (Core_PaymentEntity_Model::save_module()).
  */
 abstract class Core_PaymentSave_Handler extends VTEventHandler
 {
@@ -39,6 +41,12 @@ abstract class Core_PaymentSave_Handler extends VTEventHandler
     {
         if ($entityData->getModuleName() !== $this->getConfig()::MODULE || $handlerType !== Core_PaymentConfig_Helper::EVENT_BEFORE_SAVE) {
             return;
+        }
+
+        $amount = Core_PaymentCalculation_Helper::parseAmount($entityData->get(Core_PaymentConfig_Helper::FIELD_AMOUNT));
+
+        if ($amount <= Core_PaymentCalculation_Helper::EPSILON) {
+            throw new Exception(vtranslate('LBL_AMOUNT_GREATER_THAN_ZERO', $this->getConfig()::MODULE));
         }
     }
 }

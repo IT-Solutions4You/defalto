@@ -15,6 +15,8 @@
 class Core_Multireference_UIType extends Vtiger_Reference_UIType
 {
     public const SEPARATOR = ';';
+    public const EXPORT_SEPARATOR = ' |##| ';
+    public const EXPORT_MODULE_SEPARATOR = '::::';
 
     /**
      * Returns the unique positive record ids of a stored or submitted value.
@@ -169,6 +171,90 @@ class Core_Multireference_UIType extends Vtiger_Reference_UIType
     public function getEditViewDisplayValue($value): string
     {
         return implode(', ', array_column($this->getReferenceRecords($value), 'name'));
+    }
+
+    /**
+     * Returns the value written to an export file: each record as Module::::record number (the name when the module
+     * has no record number), joined like multi select picklist values. getImportValue() reads it back.
+     *
+     * @param mixed $value Stored value (12;15)
+     * @return string For example Invoice::::INV17 |##| Invoice::::INV18
+     * @throws Exception
+     */
+    public function getExportValue(mixed $value): string
+    {
+        $records = $this->getReferenceRecords($value);
+        $numbers = [];
+
+        foreach (array_unique(array_column($records, 'module')) as $moduleName) {
+            $searchModel = Core_MultireferenceSearch_Model::getInstance($moduleName);
+            $numbers += $searchModel ? $searchModel->fetchRecordNumbers(array_keys($records)) : [];
+        }
+
+        $exportValues = [];
+
+        foreach ($records as $recordId => $referenceRecord) {
+            $label = '' !== (string)($numbers[$recordId] ?? '') ? decode_html($numbers[$recordId]) : $referenceRecord['name'];
+            $exportValues[] = $referenceRecord['module'] . self::EXPORT_MODULE_SEPARATOR . $label;
+        }
+
+        return implode(self::EXPORT_SEPARATOR, $exportValues);
+    }
+
+    /**
+     * Converts a value of an import file into the stored value. Accepts the export format (Module::::number or name,
+     * joined by |##|), values without the module (number or name searched in every module of the field) and plain
+     * record ids (12;15). A record is found by its number first, then by its name; missing records are skipped,
+     * the import does not create documents.
+     *
+     * @param string $value Value from the import file
+     * @return string Stored value (12;15)
+     * @throws Exception
+     */
+    public function getImportValue(string $value): string
+    {
+        $value = trim($value);
+
+        if ('' === $value) {
+            return '';
+        }
+
+        if (1 === preg_match('/^\d+(\s*[;,]\s*\d+)*$/', $value)) {
+            return $this->getDBInsertValue($value);
+        }
+
+        $referenceModules = $this->get('field')->getReferenceList(false);
+        $recordIds = [];
+
+        foreach (explode(trim(self::EXPORT_SEPARATOR), $value) as $part) {
+            $part = trim($part);
+            $modules = $referenceModules;
+
+            if (str_contains($part, ':::')) {
+                [$moduleName, $part] = array_map('trim', explode(':::', str_replace('::::', ':::', $part), 2));
+                $modules = array_intersect([$moduleName], $referenceModules);
+            }
+
+            if ('' === $part) {
+                continue;
+            }
+
+            foreach ($modules as $moduleName) {
+                $searchModel = Core_MultireferenceSearch_Model::getInstance($moduleName);
+                $recordId = $searchModel ? $searchModel->fetchRecordIdByNumber($part) : 0;
+
+                if (!$recordId) {
+                    $recordId = (int)getEntityId($moduleName, decode_html($part));
+                }
+
+                if ($recordId) {
+                    $recordIds[] = $recordId;
+                    break;
+                }
+            }
+        }
+
+        return $this->getDBInsertValue($recordIds);
     }
 
     /**

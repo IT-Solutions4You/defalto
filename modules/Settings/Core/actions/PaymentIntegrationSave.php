@@ -94,8 +94,8 @@ abstract class Settings_Core_PaymentIntegrationSave_Action extends Settings_Vtig
     }
 
     /**
-     * Refuses a configuration in which a document module would be paid by this payment module and by another one:
-     * a document has one paying module, the payments of the others are refunds.
+     * Refuses a configuration in which a document module would have no paying module or two of them: a document has
+     * exactly one paying module, the payments of the others are refunds.
      *
      * @param Vtiger_Request $request     Save request
      * @param array          $integration Submitted configuration [module => values]
@@ -105,20 +105,29 @@ abstract class Settings_Core_PaymentIntegrationSave_Action extends Settings_Vtig
     private function validatePayingModules(Vtiger_Request $request, array $integration): void
     {
         $config = $this->getConfig();
-        $conflicts = [];
+        $twoPaying = $nonePaying = [];
 
         foreach ($integration as $module => $values) {
-            if (!is_array($values) || empty($values['active']) || !empty($values[Core_PaymentConfig_Helper::INTEGRATION_REFUND])) {
+            if (!is_array($values) || empty($values['active'])) {
                 continue;
             }
 
-            if ('' !== Core_PaymentDocumentBalance_Model::getPayingModule((string)$module, [$config::MODULE])) {
-                $conflicts[] = vtranslate((string)$module, (string)$module);
+            $isRefund = !empty($values[Core_PaymentConfig_Helper::INTEGRATION_REFUND]);
+            $otherPayingModule = Core_PaymentDocumentBalance_Model::getPayingModule((string)$module, [$config::MODULE]);
+
+            if (!$isRefund && '' !== $otherPayingModule) {
+                $twoPaying[] = vtranslate((string)$module, (string)$module);
+            } elseif ($isRefund && '' === $otherPayingModule) {
+                $nonePaying[] = vtranslate((string)$module, (string)$module);
             }
         }
 
-        if ($conflicts) {
-            throw new Exception(sprintf(vtranslate('LBL_TWO_PAYING_MODULES', $request->getModule(false)), implode(', ', $conflicts)));
+        if ($twoPaying) {
+            throw new Exception(sprintf(vtranslate('LBL_TWO_PAYING_MODULES', $request->getModule(false)), implode(', ', $twoPaying)));
+        }
+
+        if ($nonePaying) {
+            throw new Exception(sprintf(vtranslate('LBL_NO_PAYING_MODULE', $request->getModule(false)), implode(', ', $nonePaying)));
         }
     }
 

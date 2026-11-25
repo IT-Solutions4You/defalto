@@ -441,6 +441,9 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action
                 } else {
                     $value = '';
                 }
+            } elseif ($type == Vtiger_Field_Model::MULTI_REFERENCE_TYPE) {
+                $uiTypeModel = $fieldInfo->getUITypeModel();
+                $value = $uiTypeModel instanceof Core_Multireference_UIType ? $uiTypeModel->getExportValue($value) : $value;
             } elseif ($uitype == 72 || $uitype == 71 || Core_AmountCurrency_Helper::isAmountCurrencyUIType($uitype)) {
                 $value = CurrencyField::convertToUserFormat($value, null, true, true);
             } elseif ($uitype == 7 && $fieldInfo->get('typeofdata') == 'N~O' || $uitype == 9) {

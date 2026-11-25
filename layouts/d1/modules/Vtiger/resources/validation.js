@@ -645,8 +645,15 @@ jQuery.validator.addMethod("inventory_percentage", function (value, element, par
 }, jQuery.validator.format(app.vtranslate('JS_PERCENTAGE_SHOULD_BE_LESS_THAN_100')));
 
 jQuery.validator.addMethod("greater_than_zero", function (value, element, params) {
-    return (value <= 0) ? false : true;
-}, jQuery.validator.format(app.vtranslate('JS_VALUE_SHOULD_BE_GREATER_THAN_ZERO')));
+    let number = value;
+
+    // an amount in the user format (1 234,50) is converted with the user's separators first
+    if (value !== '' && isNaN(value)) {
+        number = String(value).split(app.getGroupingSeparator()).join('').replace(app.getDecimalSeparator(), '.');
+    }
+
+    return (number <= 0) ? false : true;
+},jQuery.validator.format(app.vtranslate('JS_VALUE_SHOULD_BE_GREATER_THAN_ZERO')));
 
 // End
 

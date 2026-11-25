@@ -88,7 +88,8 @@ class Core_PaymentAllocation_Model
         $currencyId = (int)$payment->get(Core_PaymentConfig_Helper::FIELD_AMOUNT_CURRENCY);
         $rate = $this->getPaymentRate($currencyId, (float)$payment->get(Core_PaymentConfig_Helper::FIELD_AMOUNT_RATE));
 
-        if (null !== $requested) {
+        // an empty list means nothing was entered, the stored or suggested split applies
+        if (!empty($requested)) {
             return $this->getRequestedSplit($requested, $documentIds, $amount);
         }
 
