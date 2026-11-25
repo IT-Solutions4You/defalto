@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filtro',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Borrar filtros',
+    'LBL_SUMMARY_DATE_FROM' => 'Fecha desde',
+    'LBL_SUMMARY_DATE_TO' => 'Fecha hasta',
+    'LBL_SUMMARY_ASSIGNEE' => 'Responsable',
+    'LBL_SUMMARY_TASK_COUNT' => '%s tareas',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s activas',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s vencidas',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Progreso del proyecto',
+    'LBL_SUMMARY_DATE_RANGE' => 'Desde – Hasta',
+    'LBL_SUMMARY_NO_DATES' => 'Sin fechas',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Sin hito',
+    'LBL_SUMMARY_UNASSIGNED' => 'Sin asignar',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s días de retraso',
+    'LBL_SUMMARY_NO_STATUS' => 'Sin estado',
     'LBL_CHART_RANGE_REMEDY' => 'Sitúe las fechas dentro del período del proyecto o corrija las fechas del proyecto.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Mueva el inicio después del final del registro anterior o corrija o elimine la dependencia incorrecta.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Termine la tarea indicada antes o en la fecha del hito, o corrija la fecha del hito.',

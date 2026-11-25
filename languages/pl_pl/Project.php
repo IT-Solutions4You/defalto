@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filtr',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Wyczyść filtry',
+    'LBL_SUMMARY_DATE_FROM' => 'Data od',
+    'LBL_SUMMARY_DATE_TO' => 'Data do',
+    'LBL_SUMMARY_ASSIGNEE' => 'Osoba odpowiedzialna',
+    'LBL_SUMMARY_TASK_COUNT' => '%s zadań',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktywnych',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s po terminie',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Postęp projektu',
+    'LBL_SUMMARY_DATE_RANGE' => 'Od – Do',
+    'LBL_SUMMARY_NO_DATES' => 'Brak dat',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Brak kamienia milowego',
+    'LBL_SUMMARY_UNASSIGNED' => 'Nieprzypisane',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s dni po terminie',
+    'LBL_SUMMARY_NO_STATUS' => 'Brak statusu',
     'LBL_CHART_RANGE_REMEDY' => 'Przenieś terminy do okresu projektu lub popraw terminy projektu.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Przesuń początek za koniec poprzednika albo popraw lub usuń błędną zależność.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Zakończ wskazane zadanie do terminu kamienia milowego lub popraw ten termin.',

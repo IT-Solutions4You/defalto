@@ -9,6 +9,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filtr',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Zrušit filtry',
+    'LBL_SUMMARY_DATE_FROM' => 'Datum od',
+    'LBL_SUMMARY_DATE_TO' => 'Datum do',
+    'LBL_SUMMARY_ASSIGNEE' => 'Řešitel',
+    'LBL_SUMMARY_TASK_COUNT' => '%s úkolů',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktivních',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s po termínu',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Pokrok projektu',
+    'LBL_SUMMARY_DATE_RANGE' => 'Od – Do',
+    'LBL_SUMMARY_NO_DATES' => 'Bez dat',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Bez milníku',
+    'LBL_SUMMARY_UNASSIGNED' => 'Nepřiřazeno',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s dní po termínu',
+    'LBL_SUMMARY_NO_STATUS' => 'Bez stavu',
     'LBL_CHART_RANGE_REMEDY' => 'Přesuňte termíny do období projektu nebo opravte termíny projektu.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Posuňte začátek až za konec předchozího záznamu nebo opravte či odstraňte nesprávnou vazbu.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Ukončete uvedenou úlohu do termínu milníku nebo opravte termín milníku.',

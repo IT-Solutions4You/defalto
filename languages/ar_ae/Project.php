@@ -18,6 +18,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'تصفية',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'مسح عوامل التصفية',
+    'LBL_SUMMARY_DATE_FROM' => 'من تاريخ',
+    'LBL_SUMMARY_DATE_TO' => 'إلى تاريخ',
+    'LBL_SUMMARY_ASSIGNEE' => 'المسؤول',
+    'LBL_SUMMARY_TASK_COUNT' => '%s مهام',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s نشطة',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s متأخرة',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'تقدم المشروع',
+    'LBL_SUMMARY_DATE_RANGE' => 'من – إلى',
+    'LBL_SUMMARY_NO_DATES' => 'بدون تواريخ',
+    'LBL_SUMMARY_NO_MILESTONE' => 'بدون مرحلة رئيسية',
+    'LBL_SUMMARY_UNASSIGNED' => 'غير معيّن',
+    'LBL_SUMMARY_DAYS_OVERDUE' => 'متأخر %s أيام',
+    'LBL_SUMMARY_NO_STATUS' => 'بدون حالة',
     'LBL_CHART_RANGE_REMEDY' => 'انقل التواريخ داخل فترة المشروع أو صحح تواريخ المشروع.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'اجعل البداية بعد نهاية السجل السابق أو صحح العلاقة غير الصحيحة أو أزلها.',
     'LBL_CHART_MILESTONE_REMEDY' => 'أنهِ المهمة المذكورة بحلول موعد المرحلة أو صحح موعد المرحلة.',

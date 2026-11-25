@@ -2,6 +2,28 @@
 
 Projects keep project details together with their tasks, milestones and related records. Use the Tasks list to manage work and assignees, and Milestones to record important project dates. Task statuses describe the current stage of work.
 
+## Summary task table
+
+Use Filter beside the status tabs to choose statuses, assignees, milestones (including No milestone), priorities or a date range. Select several values within a category to include any of them; different categories must all match. The selected status tab also applies. Changes update the table and tab counts immediately. Done closes the menu. Active choices appear as removable chips; Clear filters removes them together. A tab with no matching tasks shows an empty result message.
+
+Date filters include tasks whose start/end period overlaps the chosen dates, including both boundary days. With only one task date, that date is used; tasks without dates are excluded while a date filter is active. Use the standard CRM calendar beside each date field, or type a date in your selected date format. Invalid dates and an end date before the start date are marked for correction. The calendar offers the usual Today and Clear actions. Filters are remembered separately for each user and project in this browser and survive widget refreshes. Only values you may view are offered.
+
+Select a status tab above the task table to show its tasks, or All to show every visible task. All opens by default and includes a Status column with a colored dot. Other status tabs hide this column. Each status tab shows a colored dot and the task count; the active status is marked by a thin underline. Your selected status is remembered separately for each user and project in the same browser after refreshing or reopening the project. If that status has no tasks left, All opens. Use arrow keys, Home or End to switch tabs from the keyboard.
+
+Date ranges hide repeated months and years to save space, using your selected date format. A one-day range shows one date. Both years remain visible when the range crosses a year boundary. Hover over a range to see both full dates.
+
+The task widget follows the active Defalto theme, with the same header, action buttons and compact table styling as other application widgets.
+
+Priority appears before the task name: a solid red flag for High, a gray outline flag for Low, and an empty slot for Normal so task names stay aligned. Hover over this slot to see the priority name.
+
+The Summary tab shows all project tasks you may view in the standard side-column widget, organized into status tabs above the table. Select a tab to view tasks in that status. Configured closed statuses appear last, with muted, crossed-out task names. The widget header shows the stored project progress and creation actions. Task counts appear in the status tabs. Hidden fields and records are excluded from the display.
+
+On narrow screens, scroll the table horizontally to see every column. Columns show the task name, progress bar, linked milestone, assignee avatar and start/end dates. The assignee is shown only as initials in an avatar; hover over it to see the full name. This leaves more room for task names. Task progress uses a 56px bar and plain percentage in a 110px column; unset progress is shown as —. Project progress appears on the right with its label, bar and plain-text percentage; the task progress column contains its bar and percentage. The task-name column heading is blank. Open tasks past their deadline show red dates and a calendar-day overdue count in your time zone. Empty values are identified without inventing dates, owners or milestones. Task names use the normal dark text color and remain clickable links. Select a task or milestone name to open its details.
+
+Use the menu at the far right of a task row to change its status when you have permission. Locked fields and denied status choices remain unavailable. A successful save refreshes the groups and counts without leaving the project. Change task progress in the task form.
+
+Add Project Milestone and Add Project Task appear in the header according to module availability, creation permission and the supported relation actions. They open the standard Quick Create form with the current project preselected, and refresh the task widget after saving. If Quick Create is unavailable, the normal full form opens. Task creation is available only in the header; there is no duplicate footer button. The separate milestone summary widget and former status/progress filter dropdowns are replaced by this grouped overview; milestones remain available through their related tab and task links.
+
 ## Chart
 
 Open a project and select **Chart** to see its scheduled tasks and milestones on a shared timeline. The left table shows the task or milestone name, start date and number of calendar days. Task assignees appear as initials beside their task name, with the full name on hover. Task colors follow the task status colors configured in CRM; milestones appear as ranges, or deadline diamonds when no task start is available.

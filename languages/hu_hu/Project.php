@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Szűrő',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Szűrők törlése',
+    'LBL_SUMMARY_DATE_FROM' => 'Dátumtól',
+    'LBL_SUMMARY_DATE_TO' => 'Dátumig',
+    'LBL_SUMMARY_ASSIGNEE' => 'Felelős',
+    'LBL_SUMMARY_TASK_COUNT' => '%s feladat',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktív',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s lejárt',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projekt előrehaladása',
+    'LBL_SUMMARY_DATE_RANGE' => 'Kezdet – Vég',
+    'LBL_SUMMARY_NO_DATES' => 'Nincsenek dátumok',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Nincs mérföldkő',
+    'LBL_SUMMARY_UNASSIGNED' => 'Nincs hozzárendelve',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s nap késés',
+    'LBL_SUMMARY_NO_STATUS' => 'Nincs állapot',
     'LBL_CHART_RANGE_REMEDY' => 'Helyezze a dátumokat a projekt időszakába, vagy javítsa a projekt dátumait.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Tegye a kezdést az előző rekord vége után, vagy javítsa vagy törölje a hibás függőséget.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Fejezze be a megadott feladatot a mérföldkő határidejéig, vagy javítsa a határidőt.',

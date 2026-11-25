@@ -1,6 +1,21 @@
 <?php
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Suodatin',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Tyhjennä suodattimet',
+    'LBL_SUMMARY_DATE_FROM' => 'Alkupäivä',
+    'LBL_SUMMARY_DATE_TO' => 'Loppupäivä',
+    'LBL_SUMMARY_ASSIGNEE' => 'Vastuuhenkilö',
+    'LBL_SUMMARY_TASK_COUNT' => '%s tehtävää',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktiivista',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s myöhässä',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projektin edistyminen',
+    'LBL_SUMMARY_DATE_RANGE' => 'Alku – Loppu',
+    'LBL_SUMMARY_NO_DATES' => 'Ei päivämääriä',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Ei välitavoitetta',
+    'LBL_SUMMARY_UNASSIGNED' => 'Ei määritetty',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s päivää myöhässä',
+    'LBL_SUMMARY_NO_STATUS' => 'Ei tilaa',
     'LBL_CHART_RANGE_REMEDY' => 'Siirrä päivämäärät projektin ajanjaksoon tai korjaa projektin päivämäärät.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Siirrä alku edeltäjän päättymisen jälkeen tai korjaa tai poista virheellinen riippuvuus.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Päätä mainittu tehtävä viimeistään välitavoitteen määräpäivänä tai korjaa määräpäivä.',

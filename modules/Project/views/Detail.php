@@ -63,6 +63,14 @@ class Project_Detail_View extends Vtiger_Detail_View
 		$moduleName = $request->getModule();
 		$relatedModuleInstance = Vtiger_Module_Model::getInstance($relatedModuleName);
 
+		if ($relatedModuleName === 'ProjectTask') {
+			$project = Vtiger_Record_Model::getInstanceById($parentId, 'Project');
+			$viewer = $this->getViewer($request);
+			$viewer->assign('TASK_SUMMARY', (new Project_SummaryTask_Model())->getSummaryData($project));
+
+			return $viewer->view('ProjectTaskSummaryWidgetContents.tpl', 'Project', true);
+		}
+
 		if ($sortOrder == "ASC") {
 			$nextSortOrder = "DESC";
 			$sortImage = "icon-chevron-down";
@@ -96,18 +104,6 @@ class Project_Detail_View extends Vtiger_Detail_View
 
 		$models = $relationListView->getEntries($pagingModel);
 		$header = $relationListView->getHeaders();
-		//ProjectTask Progress and Status should show in Projects summary view 
-		if ($relatedModuleName == 'ProjectTask') {
-			$fieldModel = Vtiger_Field_Model::getInstance('projecttaskstatus', $relatedModuleInstance);
-			if ($fieldModel && $fieldModel->isViewableInDetailView()) {
-				$header['projecttaskstatus'] = $relatedModuleModel->getField('projecttaskstatus');
-			}
-			$fieldModel = Vtiger_Field_Model::getInstance('projecttaskprogress', $relatedModuleInstance);
-			if ($fieldModel && $fieldModel->isViewableInDetailView()) {
-				$header['projecttaskprogress'] = $relatedModuleModel->getField('projecttaskprogress');
-			}
-		}
-
 		$viewer = $this->getViewer($request);
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('RELATED_RECORDS', $models);
@@ -160,6 +156,7 @@ class Project_Detail_View extends Vtiger_Detail_View
         $local = $this->checkAndConvertCssStyles([
             '~/vendor/dhtmlx/gantt/codebase/dhtmlxgantt.css',
             '~/layouts/d1/modules/Project/resources/Chart.css',
+            '~/layouts/d1/modules/Project/resources/Summary.css',
             '~/libraries/jquery/colorpicker/css/colorpicker.css',
         ]);
 

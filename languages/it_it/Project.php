@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filtro',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Cancella filtri',
+    'LBL_SUMMARY_DATE_FROM' => 'Data da',
+    'LBL_SUMMARY_DATE_TO' => 'Data a',
+    'LBL_SUMMARY_ASSIGNEE' => 'Assegnatario',
+    'LBL_SUMMARY_TASK_COUNT' => '%s attività',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s attive',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s scadute',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Avanzamento progetto',
+    'LBL_SUMMARY_DATE_RANGE' => 'Da – A',
+    'LBL_SUMMARY_NO_DATES' => 'Nessuna data',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Nessuna tappa',
+    'LBL_SUMMARY_UNASSIGNED' => 'Non assegnato',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s giorni di ritardo',
+    'LBL_SUMMARY_NO_STATUS' => 'Nessuno stato',
     'LBL_CHART_RANGE_REMEDY' => 'Spostare le date nel periodo del progetto o correggere le date del progetto.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Spostare l’inizio dopo la fine del predecessore oppure correggere o rimuovere la dipendenza errata.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Terminare l’attività indicata entro la scadenza della milestone o correggere tale scadenza.',

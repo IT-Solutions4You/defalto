@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filtru',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Șterge filtrele',
+    'LBL_SUMMARY_DATE_FROM' => 'De la data',
+    'LBL_SUMMARY_DATE_TO' => 'Până la data',
+    'LBL_SUMMARY_ASSIGNEE' => 'Responsabil',
+    'LBL_SUMMARY_TASK_COUNT' => '%s sarcini',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s active',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s întârziate',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Progresul proiectului',
+    'LBL_SUMMARY_DATE_RANGE' => 'De la – Până la',
+    'LBL_SUMMARY_NO_DATES' => 'Fără date',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Fără etapă',
+    'LBL_SUMMARY_UNASSIGNED' => 'Neatribuit',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s zile întârziere',
+    'LBL_SUMMARY_NO_STATUS' => 'Fără stare',
     'LBL_CHART_RANGE_REMEDY' => 'Mutați datele în perioada proiectului sau corectați datele proiectului.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Mutați începutul după sfârșitul predecesorului sau corectați ori eliminați dependența greșită.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Încheiați sarcina indicată până la termenul jalonului sau corectați termenul jalonului.',

@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filtre',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Filtreleri temizle',
+    'LBL_SUMMARY_DATE_FROM' => 'Başlangıç tarihi',
+    'LBL_SUMMARY_DATE_TO' => 'Bitiş tarihi',
+    'LBL_SUMMARY_ASSIGNEE' => 'Sorumlu',
+    'LBL_SUMMARY_TASK_COUNT' => '%s görev',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s etkin',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s gecikmiş',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Proje ilerlemesi',
+    'LBL_SUMMARY_DATE_RANGE' => 'Başlangıç – Bitiş',
+    'LBL_SUMMARY_NO_DATES' => 'Tarih yok',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Kilometre taşı yok',
+    'LBL_SUMMARY_UNASSIGNED' => 'Atanmamış',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s gün gecikmiş',
+    'LBL_SUMMARY_NO_STATUS' => 'Durum yok',
     'LBL_CHART_RANGE_REMEDY' => 'Tarihleri proje dönemine taşıyın veya proje tarihlerini düzeltin.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Başlangıcı önceki kaydın bitişinden sonraya taşıyın ya da yanlış bağımlılığı düzeltin veya kaldırın.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Belirtilen görevi kilometre taşı tarihine kadar bitirin veya bu tarihi düzeltin.',

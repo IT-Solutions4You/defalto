@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filter',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Clear filters',
+    'LBL_SUMMARY_DATE_FROM' => 'Date from',
+    'LBL_SUMMARY_DATE_TO' => 'Date to',
+    'LBL_SUMMARY_ASSIGNEE' => 'Assignee',
+    'LBL_SUMMARY_TASK_COUNT' => '%s tasks',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s active',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s overdue',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Project progress',
+    'LBL_SUMMARY_DATE_RANGE' => 'From – To',
+    'LBL_SUMMARY_NO_DATES' => 'No dates',
+    'LBL_SUMMARY_NO_MILESTONE' => 'No milestone',
+    'LBL_SUMMARY_UNASSIGNED' => 'Unassigned',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s days overdue',
+    'LBL_SUMMARY_NO_STATUS' => 'No status',
     'LBL_CHART_RANGE_REMEDY' => 'Move the dates inside the project period or correct the project dates.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Move the start after the predecessor ends, or correct or remove an incorrect dependency.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Finish the listed task by the milestone deadline or correct the milestone deadline.',

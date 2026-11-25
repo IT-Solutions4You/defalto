@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filter',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Rensa filter',
+    'LBL_SUMMARY_DATE_FROM' => 'Datum från',
+    'LBL_SUMMARY_DATE_TO' => 'Datum till',
+    'LBL_SUMMARY_ASSIGNEE' => 'Ansvarig',
+    'LBL_SUMMARY_TASK_COUNT' => '%s uppgifter',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktiva',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s försenade',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projektets framsteg',
+    'LBL_SUMMARY_DATE_RANGE' => 'Från – Till',
+    'LBL_SUMMARY_NO_DATES' => 'Inga datum',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Ingen milstolpe',
+    'LBL_SUMMARY_UNASSIGNED' => 'Ej tilldelad',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s dagar försenad',
+    'LBL_SUMMARY_NO_STATUS' => 'Ingen status',
     'LBL_CHART_RANGE_REMEDY' => 'Flytta datumen till projektperioden eller korrigera projektets datum.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Flytta starten till efter föregångarens slut eller korrigera eller ta bort det felaktiga beroendet.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Avsluta den angivna uppgiften senast vid milstolpens slutdatum eller korrigera slutdatumet.',

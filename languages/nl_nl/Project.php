@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filter',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Filters wissen',
+    'LBL_SUMMARY_DATE_FROM' => 'Datum vanaf',
+    'LBL_SUMMARY_DATE_TO' => 'Datum tot',
+    'LBL_SUMMARY_ASSIGNEE' => 'Verantwoordelijke',
+    'LBL_SUMMARY_TASK_COUNT' => '%s taken',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s actief',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s te laat',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projectvoortgang',
+    'LBL_SUMMARY_DATE_RANGE' => 'Van – Tot',
+    'LBL_SUMMARY_NO_DATES' => 'Geen datums',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Geen mijlpaal',
+    'LBL_SUMMARY_UNASSIGNED' => 'Niet toegewezen',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s dagen te laat',
+    'LBL_SUMMARY_NO_STATUS' => 'Geen status',
     'LBL_CHART_RANGE_REMEDY' => 'Verplaats de datums binnen de projectperiode of corrigeer de projectdatums.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Plaats de start na het einde van de voorganger of corrigeer of verwijder de onjuiste afhankelijkheid.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Voltooi de genoemde taak uiterlijk op de mijlpaaldatum of corrigeer die datum.',

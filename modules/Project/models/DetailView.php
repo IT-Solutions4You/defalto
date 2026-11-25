@@ -18,6 +18,27 @@
 
 class Project_DetailView_Model extends Vtiger_DetailView_Model
 {
+    public function getWidgets()
+    {
+        $widgets = [];
+
+        foreach (parent::getWidgets() as $widget) {
+            if ($widget->getLabel() === 'LBL_MILESTONES') {
+                continue;
+            }
+
+            if ($widget->getLabel() === 'LBL_TASKS') {
+                $widget->set('action', false);
+                $widget->set('link_template', 'TaskSummaryWidget.tpl');
+                $widget->set('summary_actions', (new Project_SummaryTask_Model())->getCreateActions($this->getRecord()));
+            }
+
+            $widgets[] = $widget;
+        }
+
+        return $widgets;
+    }
+
     /**
      * Function to get the detail view related links
      * @return <array> - list of links parameters

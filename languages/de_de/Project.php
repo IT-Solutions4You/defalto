@@ -18,6 +18,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filter',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Filter zurücksetzen',
+    'LBL_SUMMARY_DATE_FROM' => 'Datum von',
+    'LBL_SUMMARY_DATE_TO' => 'Datum bis',
+    'LBL_SUMMARY_ASSIGNEE' => 'Verantwortlich',
+    'LBL_SUMMARY_TASK_COUNT' => '%s Aufgaben',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s aktiv',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s überfällig',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Projektfortschritt',
+    'LBL_SUMMARY_DATE_RANGE' => 'Von – Bis',
+    'LBL_SUMMARY_NO_DATES' => 'Keine Termine',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Kein Meilenstein',
+    'LBL_SUMMARY_UNASSIGNED' => 'Nicht zugewiesen',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s Tage überfällig',
+    'LBL_SUMMARY_NO_STATUS' => 'Kein Status',
     'LBL_CHART_RANGE_REMEDY' => 'Verschieben Sie die Termine in den Projektzeitraum oder korrigieren Sie die Projekttermine.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Legen Sie den Beginn nach das Ende des Vorgängers oder korrigieren bzw. entfernen Sie die falsche Verknüpfung.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Beenden Sie die genannte Aufgabe bis zum Meilensteintermin oder korrigieren Sie diesen Termin.',

@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Filtre',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Effacer les filtres',
+    'LBL_SUMMARY_DATE_FROM' => 'Date de début',
+    'LBL_SUMMARY_DATE_TO' => 'Date de fin',
+    'LBL_SUMMARY_ASSIGNEE' => 'Responsable',
+    'LBL_SUMMARY_TASK_COUNT' => '%s tâches',
+    'LBL_SUMMARY_ACTIVE_COUNT' => '%s actives',
+    'LBL_SUMMARY_OVERDUE_COUNT' => '%s en retard',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Avancement du projet',
+    'LBL_SUMMARY_DATE_RANGE' => 'Du – Au',
+    'LBL_SUMMARY_NO_DATES' => 'Sans dates',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Sans jalon',
+    'LBL_SUMMARY_UNASSIGNED' => 'Non attribué',
+    'LBL_SUMMARY_DAYS_OVERDUE' => '%s jours de retard',
+    'LBL_SUMMARY_NO_STATUS' => 'Sans statut',
     'LBL_CHART_RANGE_REMEDY' => 'Placez les dates dans la période du projet ou corrigez les dates du projet.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Décalez le début après la fin du prédécesseur, ou corrigez ou supprimez la dépendance incorrecte.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Terminez la tâche indiquée au plus tard à la date du jalon ou corrigez cette date.',

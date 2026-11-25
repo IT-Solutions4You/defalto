@@ -17,6 +17,21 @@
  */
 
 $languageStrings = [
+    'LBL_SUMMARY_FILTER' => 'Фильтр',
+    'LBL_SUMMARY_CLEAR_FILTERS' => 'Сбросить фильтры',
+    'LBL_SUMMARY_DATE_FROM' => 'Дата с',
+    'LBL_SUMMARY_DATE_TO' => 'Дата по',
+    'LBL_SUMMARY_ASSIGNEE' => 'Исполнитель',
+    'LBL_SUMMARY_TASK_COUNT' => 'Задач: %s',
+    'LBL_SUMMARY_ACTIVE_COUNT' => 'Активных: %s',
+    'LBL_SUMMARY_OVERDUE_COUNT' => 'Просрочено: %s',
+    'LBL_SUMMARY_PROJECT_PROGRESS' => 'Ход проекта',
+    'LBL_SUMMARY_DATE_RANGE' => 'С – По',
+    'LBL_SUMMARY_NO_DATES' => 'Без дат',
+    'LBL_SUMMARY_NO_MILESTONE' => 'Без этапа',
+    'LBL_SUMMARY_UNASSIGNED' => 'Не назначено',
+    'LBL_SUMMARY_DAYS_OVERDUE' => 'Просрочено дней: %s',
+    'LBL_SUMMARY_NO_STATUS' => 'Без статуса',
     'LBL_CHART_RANGE_REMEDY' => 'Перенесите даты в период проекта или исправьте даты проекта.',
     'LBL_CHART_DEPENDENCY_REMEDY' => 'Установите начало после окончания предшественника либо исправьте или удалите неверную зависимость.',
     'LBL_CHART_MILESTONE_REMEDY' => 'Завершите указанную задачу к сроку вехи или исправьте срок вехи.',

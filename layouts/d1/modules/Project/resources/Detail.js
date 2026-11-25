@@ -116,6 +116,316 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         this._super();
         this.registerStatusChangeEventForWidget();
         this.registerEventsForTasksWidget();
+        this.registerTaskSummaryEvents();
+    },
+
+    registerTaskSummaryEvents: function () {
+        const self = this,
+            container = this.getContainer();
+
+        container.off('click.projectSummaryCreate', '.project-summary-create')
+            .on('click.projectSummaryCreate', '.project-summary-create', function (event) {
+                const button = jQuery(event.currentTarget),
+                    widget = button.closest('[class^="widgetContainer_"]'),
+                    module = button.data('module'),
+                    quickCreate = jQuery('#quickCreateModules').find('[data-name="' + module + '"]');
+
+                if (!quickCreate.length) {
+                    app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
+                    return;
+                }
+
+                // Both modules save their project reference in standard Quick Create; no extra relation write is needed.
+                self.setWidgetContainer(false);
+                quickCreate.trigger('click', {
+                    data: app.convertUrlToDataParams(button.data('url')),
+                    noCache: false,
+                    callbackFunction: function (data, error) {
+                        if (!error && widget.closest('body').length) {
+                            self.loadWidget(widget);
+                        }
+                    }
+                });
+            });
+        container.off('click.projectTaskTabs', '.project-summary-status-tabs [role="tab"]')
+            .on('click.projectTaskTabs', '.project-summary-status-tabs [role="tab"]', function (event) {
+                self.setTaskSummaryActiveTab(jQuery(event.currentTarget));
+            });
+        container.off('keydown.projectTaskTabs', '.project-summary-status-tabs [role="tab"]')
+            .on('keydown.projectTaskTabs', '.project-summary-status-tabs [role="tab"]', function (event) {
+                const button = jQuery(event.currentTarget),
+                    tabs = button.closest('[role="tablist"]').find('[role="tab"]'),
+                    index = tabs.index(button),
+                    indexes = {ArrowRight: (index + 1) % tabs.length, ArrowLeft: (index + tabs.length - 1) % tabs.length, Home: 0, End: tabs.length - 1};
+
+                if (Object.prototype.hasOwnProperty.call(indexes, event.key)) {
+                    event.preventDefault();
+                    tabs.eq(indexes[event.key]).trigger('click').trigger('focus');
+                }
+            });
+        container.off(this.widgetPostLoad + '.projectSummary', '.widget_contents')
+            .on(this.widgetPostLoad + '.projectSummary', '.widget_contents', function () {
+                self.updateTaskSummaryHeader(jQuery(this));
+                self.updateTaskSummaryAvatars(jQuery(this));
+                self.restoreTaskSummaryTabs(jQuery(this));
+            });
+        this.registerTaskSummaryFilterEvents(container);
+        this.updateTaskSummaryHeader(container);
+        this.updateTaskSummaryAvatars(container);
+        this.restoreTaskSummaryTabs(container);
+    },
+
+    updateTaskSummaryHeader: function (container) {
+        container.find('.project-summary-header-data').each(function () {
+            const data = jQuery(this),
+                header = data.closest('.project-task-summary').find('.project-summary-header-stats');
+
+            header.empty().append(data);
+        });
+    },
+
+    getTaskSummaryTabStorageKey: function (container) {
+        const record = container.closest('.project-task-summary').data('record');
+
+        return ['Project', 'taskSummary', 'activeStatusOverview', app.getUserId(), record].join('.');
+    },
+
+    setTaskSummaryActiveTab: function (button) {
+        const content = button.closest('.project-task-summary-content'),
+            group = button.data('summary-group');
+
+        content.find('.project-summary-status-tabs [role="tab"]').each(function () {
+            const tab = jQuery(this),
+                selected = this === button[0];
+
+            tab.toggleClass('active', selected).attr('aria-selected', String(selected)).attr('tabindex', selected ? '0' : '-1');
+        });
+        content.find('.project-summary-group-rows').each(function () {
+            this.hidden = group !== 'all' && this.id !== group;
+        });
+        content.find('[data-summary-all-only]').prop('hidden', group !== 'all');
+        content.find('.project-summary-table').toggleClass('project-summary-all', group === 'all');
+        content.find('[role="tabpanel"]').attr('aria-labelledby', button.attr('id'));
+        this.updateTaskSummaryFilters(content);
+        app.storage.set(this.getTaskSummaryTabStorageKey(content), group);
+    },
+
+    restoreTaskSummaryTabs: function (container) {
+        const self = this;
+
+        container.find('.project-summary-status-tabs').each(function () {
+            const tabs = jQuery(this).find('[role="tab"]'),
+                selected = app.storage.get(self.getTaskSummaryTabStorageKey(jQuery(this))),
+                matching = tabs.filter(function () { return jQuery(this).data('summary-group') === selected; });
+
+            if (tabs.length) {
+                self.restoreTaskSummaryFilters(jQuery(this).closest('.project-task-summary-content'));
+                self.setTaskSummaryActiveTab(matching.length ? matching.first() : tabs.first());
+            }
+        });
+    },
+
+    registerTaskSummaryFilterEvents: function (container) {
+        const self = this;
+
+        container.off('click.projectSummaryFilterPanel', '[data-filter-open]')
+            .on('click.projectSummaryFilterPanel', '[data-filter-open]', function (event) {
+                const button = jQuery(event.currentTarget),
+                    menu = button.closest('.project-summary-filter-menu'),
+                    panel = button.attr('data-filter-open');
+
+                menu.find('[data-filter-panel]').each(function () { this.hidden = this.dataset.filterPanel !== panel; });
+                menu.find('[data-filter-open]').attr('aria-expanded', 'false');
+                button.attr('aria-expanded', 'true');
+                menu.find('[data-filter-panel]').filter(function () { return this.dataset.filterPanel === panel; }).find('button, input').first().trigger('focus');
+            });
+        container.off('change.projectSummaryFilters', '[data-filter-key], [data-filter-date]')
+            .on('change.projectSummaryFilters', '[data-filter-key], [data-filter-date]', function (event) {
+                const content = jQuery(event.currentTarget).closest('.project-task-summary-content');
+
+                self.updateTaskSummaryFilters(content);
+
+                if (event.currentTarget.hasAttribute('data-filter-date')) {
+                    event.currentTarget.reportValidity();
+
+                    if (!event.currentTarget.checkValidity()) {
+                        return;
+                    }
+                }
+
+                app.storage.set(self.getTaskSummaryFilterStorageKey(content), self.getTaskSummaryFilters(content));
+            });
+        container.off('click.projectSummaryFilterClear', '[data-filter-clear], [data-filter-remove]')
+            .on('click.projectSummaryFilterClear', '[data-filter-clear], [data-filter-remove]', function (event) {
+                const button = jQuery(event.currentTarget),
+                    content = button.closest('.project-task-summary-content'),
+                    key = button.attr('data-filter-remove'),
+                    value = button.attr('data-filter-value');
+
+                if (key) {
+                    content.find('[data-filter-key]').filter(function () { return this.dataset.filterKey === key && this.value === value; }).prop('checked', false);
+                    content.find('[data-filter-date]').filter(function () { return this.dataset.filterDate === key; }).val('');
+                } else {
+                    content.find('[data-filter-key]').prop('checked', false);
+                    content.find('[data-filter-date]').val('');
+                }
+
+                self.updateTaskSummaryFilters(content);
+                app.storage.set(self.getTaskSummaryFilterStorageKey(content), self.getTaskSummaryFilters(content));
+            });
+        container.off('click.projectSummaryFilterDone', '[data-filter-done]')
+            .on('click.projectSummaryFilterDone', '[data-filter-done]', function (event) {
+                jQuery(event.currentTarget).closest('.project-summary-filter-dropdown').find('.project-summary-filter-toggle').trigger('click').trigger('focus');
+            });
+        container.off('hide.bs.dropdown.projectSummaryDates', '.project-summary-filter-dropdown')
+            .on('hide.bs.dropdown.projectSummaryDates', '.project-summary-filter-dropdown', function (event) {
+                if (jQuery(event.clickEvent?.target).closest('#ui-datepicker-div').length) {
+                    event.preventDefault();
+                }
+            });
+    },
+
+    getTaskSummaryFilterStorageKey: function (content) {
+        return this.getTaskSummaryTabStorageKey(content) + '.filters';
+    },
+
+    getTaskSummaryFilters: function (content) {
+        const filters = {values: {}, from: this.getTaskSummaryDateValue(content.find('[data-filter-date="from"]')), to: this.getTaskSummaryDateValue(content.find('[data-filter-date="to"]'))};
+
+        content.find('[data-filter-key]:checked').each(function () {
+            const key = this.dataset.filterKey;
+
+            if (!filters.values[key]) {
+                filters.values[key] = [];
+            }
+
+            filters.values[key].push(this.value);
+        });
+        return filters;
+    },
+
+    restoreTaskSummaryFilters: function (content) {
+        const saved = app.storage.get(this.getTaskSummaryFilterStorageKey(content), {}),
+            format = app.getDateFormat();
+
+        content.find('[data-filter-key]').each(function () {
+            this.checked = Array.isArray(saved.values?.[this.dataset.filterKey]) && saved.values[this.dataset.filterKey].includes(this.value);
+        });
+        content.find('[data-filter-date]').each(function () {
+            const input = jQuery(this),
+                value = saved[this.dataset.filterDate],
+                date = moment(value || '', 'YYYY-MM-DD', true);
+
+            input.attr('data-date-format', format).attr('placeholder', format);
+
+            if (!input.hasClass('hasDatepicker')) {
+                vtUtils.registerEventForDateFields(input);
+            }
+
+            input.datepicker('option', 'onClose', function () { input.trigger('change'); });
+            this.value = date.isValid() ? date.format(format.toUpperCase()) : '';
+        });
+    },
+
+    getTaskSummaryDateValue: function (input) {
+        const value = String(input.val() || '').trim(),
+            format = input.attr('data-date-format') || app.getDateFormat(),
+            date = moment(value, format.toUpperCase(), true);
+
+        return value === '' ? '' : (date.isValid() ? date.format('YYYY-MM-DD') : null);
+    },
+
+    isTaskSummaryFilterMatch: function (row, filters) {
+        if (filters.from === null || filters.to === null || (filters.from && filters.to && filters.from > filters.to)) {
+            return false;
+        }
+
+        for (const key of Object.keys(filters.values)) {
+            if (!filters.values[key].includes(row.getAttribute('data-filter-' + key))) {
+                return false;
+            }
+        }
+
+        const start = row.getAttribute('data-filter-start') || row.getAttribute('data-filter-end'),
+            end = row.getAttribute('data-filter-end') || start;
+
+        // ISO calendar dates compare directly; no Date/UTC conversion or timestamp boundaries.
+        return (!filters.from && !filters.to) || Boolean(start && end
+            && (!filters.from || end >= filters.from) && (!filters.to || start <= filters.to));
+    },
+
+    updateTaskSummaryFilters: function (content) {
+        const self = this,
+            filters = this.getTaskSummaryFilters(content),
+            counts = {},
+            chips = content.find('.project-summary-filter-values'),
+            active = content.find('.project-summary-status-tabs [aria-selected="true"]').data('summary-group');
+        let total = 0, visible = 0, selectedCount = 0;
+
+        content.find('[data-summary-filter-row]').each(function () {
+            const match = self.isTaskSummaryFilterMatch(this, filters),
+                group = this.getAttribute('data-filter-status');
+
+            this.hidden = !match;
+
+            if (match) {
+                total++;
+                counts[group] = (counts[group] || 0) + 1;
+                visible += active === 'all' || active === group ? 1 : 0;
+            }
+        });
+        content.find('.project-summary-status-tabs [role="tab"]').each(function () {
+            const group = this.dataset.summaryGroup;
+
+            jQuery(this).find('.badge').text(group === 'all' ? total : counts[group] || 0);
+        });
+        content.find('.project-summary-filter-empty').prop('hidden', visible > 0)
+            .find('td').attr('colspan', content.find('thead th').filter(function () { return !this.hidden; }).length);
+        chips.empty();
+        content.find('[data-filter-key]:checked').each(function () {
+            const option = jQuery(this),
+                label = option.closest('[data-filter-panel]').attr('data-filter-label');
+
+            self.addTaskSummaryFilterChip(chips, this.dataset.filterKey, this.value, label + ': ' + option.next('span').text());
+            selectedCount++;
+        });
+        content.find('[data-filter-date]').each(function () {
+            const input = jQuery(this),
+                invalid = self.getTaskSummaryDateValue(input) === null,
+                reversed = this.dataset.filterDate === 'to' && filters.from && filters.to && filters.from > filters.to;
+
+            this.setCustomValidity(invalid ? app.vtranslate('JS_PLEASE_ENTER_VALID_DATE') : (reversed ? app.vtranslate('JS_CHECK_START_AND_END_DATE') : ''));
+            input.toggleClass('is-invalid', invalid || Boolean(reversed));
+
+            if (this.value) {
+                self.addTaskSummaryFilterChip(chips, this.dataset.filterDate, this.value, jQuery(this).closest('label').text().trim() + ': ' + this.value);
+                selectedCount++;
+            }
+        });
+        content.find('.project-summary-filter-chips').prop('hidden', selectedCount === 0);
+        content.find('.project-summary-filter-count').text(selectedCount).prop('hidden', selectedCount === 0);
+        content.find('[data-filter-date]').each(function () {
+            const input = jQuery(this),
+                rawValue = input.val(),
+                boundary = this.dataset.filterDate === 'from' ? filters.to : filters.from,
+                option = this.dataset.filterDate === 'from' ? 'maxDate' : 'minDate';
+
+            if (input.hasClass('hasDatepicker')) {
+                input.datepicker('option', option, boundary ? moment(boundary, 'YYYY-MM-DD', true).toDate() : null).val(rawValue);
+            }
+        });
+    },
+
+    addTaskSummaryFilterChip: function (container, key, value, label) {
+        const button = jQuery('<button>', {type: 'button', class: 'btn btn-sm btn-outline-secondary rounded-pill', 'data-filter-remove': key, 'data-filter-value': value});
+
+        button.text(label + ' ×').appendTo(container);
+    },
+
+    updateTaskSummaryAvatars: function (container) {
+        container.find('.project-summary-avatar').each(function () {
+            this.textContent = Vtiger_AssigneeSelect_Js.getInitials(this.dataset.ownerLabel);
+        });
     },
 
     /**
@@ -126,64 +436,8 @@ Vtiger_Detail_Js('Project_Detail_Js', {
 
         self.getContainer().off('change.projectWidget', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]')
             .on('change.projectWidget', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]', function (e) {
-            let picklistName = this.name,
-                statusCondition = {},
-                params = {},
-                currentElement = jQuery(e.currentTarget),
-                form = currentElement.closest('form'),
-                summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
-                widgetDataContainer = summaryWidgetContainer.find('.widget_contents'),
-                referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val(),
-                recordId = form.find('[name="record"]').val() ?? app.getRecordId(),
-                module = form.find('[name="module"]').val() ?? app.getModuleName(),
-                selectedStatus = currentElement.find('option:selected').val(),
-                searchInfo = null;
-
-            if (selectedStatus.length > 0 && referenceModuleName == "HelpDesk") {
-                searchInfo = [];
-                searchInfo.push('ticketstatus');
-                searchInfo.push('e');
-                searchInfo.push(selectedStatus);
-                statusCondition['ticketstatus'] = searchInfo;
-                params['whereCondition'] = JSON.stringify(statusCondition);
-            } else if (referenceModuleName == "ProjectTask" && picklistName == 'projecttaskstatus') {
-                if (selectedStatus.length > 0) {
-                    searchInfo = [];
-                    searchInfo.push('projecttaskstatus');
-                    searchInfo.push('e');
-                    searchInfo.push(selectedStatus);
-                    statusCondition['projecttaskstatus'] = searchInfo;
-                    params['whereCondition'] = JSON.stringify(statusCondition);
-                }
-                jQuery('[name="projecttaskprogress"]').val('').select2("val", '');
-            } else if (referenceModuleName == "ProjectTask" && picklistName == 'projecttaskprogress') {
-                if (selectedStatus.length > 0) {
-                    searchInfo = [];
-                    searchInfo.push('projecttaskprogress');
-                    searchInfo.push('e');
-                    searchInfo.push(selectedStatus);
-                    statusCondition['projecttaskprogress'] = searchInfo;
-                    params['whereCondition'] = JSON.stringify(statusCondition);
-                }
-                jQuery('[name="projecttaskstatus"]').val('').select2("val", '');
-            }
-
-            params['record'] = recordId;
-            params['view'] = 'Detail';
-            params['module'] = module;
-            params['page'] = widgetDataContainer.find('[name="page"]').val();
-            params['limit'] = widgetDataContainer.find('[name="pageLimit"]').val();
-            params['relatedModule'] = referenceModuleName;
-            params['mode'] = 'showRelatedRecords';
-
-            app.helper.showProgress();
-            app.request.post({data: params}).then(
-                function (error, data) {
-                    app.helper.hideProgress();
-                    widgetDataContainer.html(data);
-                }
-            );
-        })
+                self.showRelatedRecords(jQuery(e.currentTarget).closest('.summaryWidgetContainer'));
+            });
     },
 
     /**
@@ -319,6 +573,8 @@ Vtiger_Detail_Js('Project_Detail_Js', {
                 newValue = '';
             }
 
+            newValue = String(newValue ?? '');
+            oldValue = String(oldValue ?? '');
             vtUtils.hideValidationMessage(editElement);
 
             if (element.data('mandatory') && newValue.length <= 0) {
@@ -327,7 +583,7 @@ Vtiger_Detail_Js('Project_Detail_Js', {
                 return false;
             }
 
-            if (oldValue !== newValue) {
+            if (oldValue !== newValue && !tasksWidget.data('taskSavePending')) {
                 let params = {
                     action: 'SaveAjax',
                     record: element.data('recordid'),
@@ -335,9 +591,18 @@ Vtiger_Detail_Js('Project_Detail_Js', {
                     value: newValue,
                     module: 'ProjectTask'
                 };
+                tasksWidget.data('taskSavePending', true);
                 app.helper.showProgress();
                 app.request.post({data: params}).then(function (error, data) {
+                    tasksWidget.removeData('taskSavePending');
                     app.helper.hideProgress();
+
+                    if (error) {
+                        app.helper.showErrorNotification({message: error.message || error});
+                        return;
+                    }
+
+                    app.helper.showSuccessNotification({message: app.vtranslate('JS_RECORD_UPDATED')});
                     self.showRelatedRecords(tasksWidget);
                 });
             }
@@ -360,18 +625,26 @@ Vtiger_Detail_Js('Project_Detail_Js', {
 
         if (referenceModuleName === 'ProjectTask') {
             let statusCondition = {},
-                selectedStatus = jQuery('[name="projecttaskstatus"]', widgetHeaderContainer).val();
+                selectedStatus = summaryWidgetContainer.find('.widget_filter [name="projecttaskstatus"]').val();
 
             if (typeof selectedStatus != "undefined" && selectedStatus.length > 0) {
-                statusCondition['vtiger_projecttask.projecttaskstatus'] = selectedStatus;
+                statusCondition['projecttaskstatus'] = ['projecttaskstatus', 'e', selectedStatus];
                 params['whereCondition'] = statusCondition;
             }
 
-            let selectedProgress = jQuery('[name="projecttaskprogress"]', widgetHeaderContainer).val();
+            let selectedProgress = summaryWidgetContainer.find('.widget_filter [name="projecttaskprogress"]').val();
 
             if (typeof selectedProgress != "undefined" && selectedProgress.length > 0) {
-                statusCondition['vtiger_projecttask.projecttaskprogress'] = selectedProgress;
+                statusCondition['projecttaskprogress'] = ['projecttaskprogress', 'e', selectedProgress];
                 params['whereCondition'] = statusCondition;
+            }
+        }
+
+        if (referenceModuleName === 'HelpDesk') {
+            const selectedStatus = summaryWidgetContainer.find('.widget_filter [name="ticketstatus"]').val();
+
+            if (selectedStatus) {
+                params.whereCondition = {ticketstatus: ['ticketstatus', 'e', selectedStatus]};
             }
         }
 
@@ -386,7 +659,16 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         app.helper.showProgress();
         app.request.post({data: params}).then(function (error, data) {
             app.helper.hideProgress();
+
+            if (error) {
+                app.helper.showErrorNotification({message: error.message || error});
+                return;
+            }
+
             widgetDataContainer.html(data);
+            self.updateTaskSummaryHeader(widgetDataContainer);
+            self.updateTaskSummaryAvatars(widgetDataContainer);
+            self.restoreTaskSummaryTabs(widgetDataContainer);
         });
     },
 
