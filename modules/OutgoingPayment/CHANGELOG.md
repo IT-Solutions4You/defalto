@@ -1,6 +1,6 @@
 # OutgoingPayment changelog
 
-## 1.0 - 2026-11-20
+## 1.0 - 2026-11-25
 
 - New module for recording outgoing payments with automatic numbering (PAYOUT), statuses derived from the payment and due dates and amounts with their own currency.
 - Payments can be created from a purchase order with the open amount, currency, due date, vendor and contact prefilled, in a quick form from the Add Payment button or in the full form from the More menu.
@@ -15,3 +15,4 @@
 - One payment can pay several documents: the amount is split by due date and can be changed per document in the payment form.
 - Bulk payment of documents selected in a list (Pay selected): one payment for one organization, Pay Off for documents paid first, amounts per document, different currencies.
 - Integration into document modules is configured in Settings → Outgoing Payments Integration.
+- The amount of a payment must be greater than zero; money returned is entered as a refund in the other payment module.
