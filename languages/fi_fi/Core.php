@@ -9,6 +9,18 @@
  */
 
 $languageStrings = [
+    'LBL_ADD' => 'Lisää',
+    'LBL_EDIT' => 'Muokkaa',
+    'LBL_DELETE' => 'Poista',
+    'Checklist' => 'Tarkistuslista',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Tallenna tietue, jotta voit merkitä kohtia valmiiksi.',
+    'LBL_CHECKLIST' => 'Tarkistuslista',
+    'LBL_CHECKLIST_CHANGED' => 'Tarkistuslistan teksti on muuttunut. Päivitä tietue ja yritä uudelleen.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Listan kohta',
+    'LBL_CHECKLIST_HIDE' => 'Piilota valmiit',
+    'LBL_CHECKLIST_SHOW' => 'Näytä valmiit',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Kirjoita teksti, joka ei ole tyhjä eikä ylitä sallittua pituutta.',
+    'LBL_CHECKLIST_SAVED' => 'Tarkistuslista tallennettu.',
     'LBL_RELATED_RECORDS' => 'Liittyvät tietueet',
     'LBL_RELATED_MODULES' => 'Liittyvät moduulit',
     'LBL_AI_SETUP' => 'Ota tekoäly käyttöön',

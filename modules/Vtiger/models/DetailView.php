@@ -385,6 +385,11 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model
 
             $widgetLink->set('linkurl', strtr((string)$widgetLink->get('linkurl'), $linkParameters));
             $urlParameters = $widgetLink->getUrlParameters();
+
+            if ($widgetLink->isChecklistWidgetUnavailable($moduleModel)) {
+                continue;
+            }
+
             $targetModuleName = $urlParameters['module'] ?? $this->getModuleName();
             $targetModuleModel = Vtiger_Module_Model::getInstance($targetModuleName);
             $relatedModuleName = $urlParameters['relatedModule'] ?? '';

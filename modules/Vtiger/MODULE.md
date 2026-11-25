@@ -1,5 +1,10 @@
 # Vtiger shared runtime
 
+- vtUtils.initFieldWidgets(container) initializes registered field widget instances without reinitializing select/date controls. Edit registerBasicEvents() and Detail registerBasicEvents()/loadContents()/loadWidget() call it for full pages, overlays, quick preview and AJAX content. applyFieldElementsView() delegates its field-widget pass to the same helper, covering Quick Create and other dynamic forms. Widget initEdit() methods must remain safe on repeated calls.
+
+- Basic pages, edit/detail overlays, QuickCreateAjax and detail quick preview call Core_Controller_View::getModuleUiTypeScripts(), which merges existing block resources and optional field-owned getScriptNames() resources. Quick preview loads these after base Detail/RelatedList and before Core QuickPreview. Checklist therefore works in an ordinary block without global header registration.
+- Shared blocks/Fields.tpl uses the normal label/value layout for Checklist fields, including read-only fields. Locked checklists render the same value template with controls disabled by Core permissions instead of raw field text. Vtiger_Field_Model::isTableFullWidth() recognizes the checklist data type. Core owns the value widget; standard detail/edit layouts own its label and columns.
+
 This module holds shared base behavior inherited by other modules. It has no standalone installable module version; the sections below only record the invariants that are easy to break.
 
 - List, SearchList and AdvanceSearchList delete-button delegates use the `click.vtigerDeleteRecord` namespace and replace their own handler on registration. Search handlers stop bubbling to the enclosing page delegate, so one click opens one confirmation even after repeated controller initialization. Do not remove unrelated click handlers.
@@ -16,6 +21,10 @@ This module holds shared base behavior inherited by other modules. It has no sta
 - Verify single and multiple selections in both themes through create, edit, quick create, inline edit and filter conditions. Check keyboard highlighting and disabled options, and confirm record labels in lists, details and related lists.
 
 ## Summary widgets
+
+- Link objects expose isChecklistWidgetUnavailable($module) so detail widget discovery asks the link directly whether its Checklist field is unavailable. The link reads its own URL parameters and delegates field validation to Core; other widget modes skip that lookup.
+
+- Checklist widget links use mode=showChecklist with a stable field name or legacy numeric field id. getWidgets() omits links whose field is absent, inaccessible or no longer a Checklist. The consuming module's install configuration owns its widget declaration; Core supplies shared value rendering and record/field mutation permissions.
 
 - Related-list cards use the shared skin's zero-top-margin rule, including module-specific templates. The desktop related-navigation column has no outer top padding; internal menu padding remains.
 

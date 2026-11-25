@@ -340,6 +340,7 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
      * @returns {undefined}
      */
     registerBasicEvents: function (form) {
+        vtUtils.initFieldWidgets(form);
         app.event.on('post.editView.load', function (event, container) {
         });
         this.registerEventForPicklistDependencySetup(form);

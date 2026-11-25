@@ -18,6 +18,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'قائمة تحقق',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'احفظ السجل لتتمكن من تحديد العناصر كمكتملة.',
+    'LBL_CHECKLIST' => 'قائمة تحقق',
+    'LBL_CHECKLIST_CHANGED' => 'تم تغيير نص قائمة التحقق. حدّث السجل وحاول مرة أخرى.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'عنصر القائمة',
+    'LBL_CHECKLIST_HIDE' => 'إخفاء المكتمل',
+    'LBL_CHECKLIST_SHOW' => 'إظهار المكتمل',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'أدخل نصاً غير فارغ ضمن الطول المسموح.',
+    'LBL_CHECKLIST_SAVED' => 'تم حفظ قائمة التحقق.',
     'LBL_RELATED_RECORDS' => 'السجلات ذات الصلة',
     'LBL_RELATED_MODULES' => 'الوحدات ذات الصلة',
     'LBL_AI_SETUP' => 'إعداد الذكاء الاصطناعي',

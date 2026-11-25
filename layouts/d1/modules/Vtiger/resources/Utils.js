@@ -709,6 +709,12 @@ var vtUtils = {
         });
     },
 
+    initFieldWidgets: function (container) {
+        this.eachFieldWidget(function (widget) {
+            widget.initEdit(container);
+        });
+    },
+
     /**
      * Function to change view of edited elements related to selected Plugin
      * @param {type} elementsContainer
@@ -720,9 +726,7 @@ var vtUtils = {
         this.registerEventForDateFields(container.find('.dateField').not('.ignore-ui-registration'));
         this.registerEventForTimeFields(container.find('.timepicker-default'));
 
-        this.eachFieldWidget(function (widget) {
-            widget.initEdit(container);
-        });
+        this.initFieldWidgets(container);
     },
 
     showQtip: function (element, message, customParams) {

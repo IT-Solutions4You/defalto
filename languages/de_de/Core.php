@@ -18,6 +18,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Checkliste',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Speichern Sie den Datensatz, um Einträge als erledigt zu markieren.',
+    'LBL_CHECKLIST' => 'Checkliste',
+    'LBL_CHECKLIST_CHANGED' => 'Der Text der Checkliste wurde geändert. Laden Sie den Datensatz neu und versuchen Sie es erneut.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Listeneintrag',
+    'LBL_CHECKLIST_HIDE' => 'Erledigte ausblenden',
+    'LBL_CHECKLIST_SHOW' => 'Erledigte anzeigen',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Geben Sie einen nicht leeren Text innerhalb der zulässigen Länge ein.',
+    'LBL_CHECKLIST_SAVED' => 'Checkliste gespeichert.',
     'LBL_RELATED_RECORDS' => 'Verknüpfte Datensätze',
     'LBL_RELATED_MODULES' => 'Verknüpfte Module',
     'LBL_AI_SETUP' => 'KI einrichten',

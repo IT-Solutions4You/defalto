@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Lista de verificação',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Salve o registro para marcar os itens como concluídos.',
+    'LBL_CHECKLIST' => 'Lista de verificação',
+    'LBL_CHECKLIST_CHANGED' => 'O texto da lista foi alterado. Atualize o registro e tente novamente.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Item da lista',
+    'LBL_CHECKLIST_HIDE' => 'Ocultar concluídos',
+    'LBL_CHECKLIST_SHOW' => 'Mostrar concluídos',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Insira um texto não vazio dentro do tamanho permitido.',
+    'LBL_CHECKLIST_SAVED' => 'Lista salva.',
     'LBL_RELATED_RECORDS' => 'Registros relacionados',
     'LBL_RELATED_MODULES' => 'Módulos relacionados',
     'LBL_AI_SETUP' => 'Configurar a IA',

@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Контрольный список',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Сохраните запись, чтобы отмечать пункты как выполненные.',
+    'LBL_CHECKLIST' => 'Контрольный список',
+    'LBL_CHECKLIST_CHANGED' => 'Текст списка изменился. Обновите запись и повторите попытку.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Пункт списка',
+    'LBL_CHECKLIST_HIDE' => 'Скрыть выполненные',
+    'LBL_CHECKLIST_SHOW' => 'Показать выполненные',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Введите непустой текст допустимой длины.',
+    'LBL_CHECKLIST_SAVED' => 'Список сохранён.',
     'LBL_RELATED_RECORDS' => 'Связанные записи',
     'LBL_RELATED_MODULES' => 'Связанные модули',
     'LBL_AI_SETUP' => 'Настройка ИИ',

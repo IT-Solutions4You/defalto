@@ -438,6 +438,14 @@ class Vtiger_Link_Model extends Vtiger_Link
         return $parameters;
     }
 
+    public function isChecklistWidgetUnavailable(Vtiger_Module_Model $module): bool
+    {
+        $urlParameters = $this->getUrlParameters();
+
+        return ($urlParameters['mode'] ?? '') === 'showChecklist'
+            && Core_Checklist_Model::getInstance()->getSummaryWidgetField($module, (string)($urlParameters['field'] ?? '')) === null;
+    }
+
     public function isSummaryFirst(): bool
     {
         return !empty($this->getUrlParameters()['summaryFirst']);

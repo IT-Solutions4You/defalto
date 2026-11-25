@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Lista kontrolna',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Zapisz rekord, aby oznaczać pozycje jako ukończone.',
+    'LBL_CHECKLIST' => 'Lista kontrolna',
+    'LBL_CHECKLIST_CHANGED' => 'Tekst listy został zmieniony. Odśwież rekord i spróbuj ponownie.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Pozycja listy',
+    'LBL_CHECKLIST_HIDE' => 'Ukryj ukończone',
+    'LBL_CHECKLIST_SHOW' => 'Pokaż ukończone',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Wprowadź niepusty tekst o dozwolonej długości.',
+    'LBL_CHECKLIST_SAVED' => 'Lista została zapisana.',
     'LBL_RELATED_RECORDS' => 'Powiązane rekordy',
     'LBL_RELATED_MODULES' => 'Powiązane moduły',
     'LBL_AI_SETUP' => 'Skonfiguruj AI',

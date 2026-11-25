@@ -18,6 +18,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Liste de contrôle',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Enregistrez la fiche pour marquer les éléments comme terminés.',
+    'LBL_CHECKLIST' => 'Liste de contrôle',
+    'LBL_CHECKLIST_CHANGED' => 'Le texte de la liste a changé. Actualisez la fiche et réessayez.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Élément de la liste',
+    'LBL_CHECKLIST_HIDE' => 'Masquer les éléments terminés',
+    'LBL_CHECKLIST_SHOW' => 'Afficher les éléments terminés',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Saisissez un texte non vide respectant la longueur autorisée.',
+    'LBL_CHECKLIST_SAVED' => 'Liste enregistrée.',
     'LBL_RELATED_RECORDS' => 'Enregistrements liés',
     'LBL_RELATED_MODULES' => 'Modules liés',
     'LBL_AI_SETUP' => 'Configurer l’IA',

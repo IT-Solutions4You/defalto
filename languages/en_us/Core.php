@@ -18,6 +18,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Checklist',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Save the record to mark items complete.',
+    'LBL_CHECKLIST' => 'Checklist',
+    'LBL_CHECKLIST_CHANGED' => 'The checklist text has changed. Refresh the record and try again.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'List item',
+    'LBL_CHECKLIST_HIDE' => 'Hide completed',
+    'LBL_CHECKLIST_SHOW' => 'Show completed',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Enter non-empty text within the allowed length.',
+    'LBL_CHECKLIST_SAVED' => 'Checklist saved.',
     'LBL_RELATED_RECORDS' => 'Related records',
     'LBL_RELATED_MODULES' => 'Related modules',
     'LBL_AI_SETUP' => 'Set up AI',

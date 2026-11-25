@@ -4867,3 +4867,28 @@ input[type=number] {
 .core-assignee-avatar img { display: block; width: 24px; height: 24px; max-width: 24px; object-fit: cover; }
 .core-assignee-row { cursor: pointer; }
 .core-assignee-row:hover { background: var(--bs-tertiary-bg); }
+
+/* Shared checklist touch controls keep their icons at the normal size. */
+@media (max-width: 767.98px), (pointer: coarse) {
+    .js-checklists .js-checklist-item {
+        gap: .5rem !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        min-height: 44px;
+    }
+    .js-checklists .js-checklist-check-target,
+    .js-checklists .js-checklist-item-delete {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+    }
+    .js-checklists .js-checklist-item-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        visibility: visible !important;
+    }
+    .js-checklists .js-checklist-item-editor {
+        min-width: 0;
+    }
+}

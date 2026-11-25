@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Ellenőrzőlista',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Mentse a rekordot az elemek készre jelöléséhez.',
+    'LBL_CHECKLIST' => 'Ellenőrzőlista',
+    'LBL_CHECKLIST_CHANGED' => 'A lista szövege megváltozott. Frissítse a rekordot, és próbálja újra.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Listaelem',
+    'LBL_CHECKLIST_HIDE' => 'Készek elrejtése',
+    'LBL_CHECKLIST_SHOW' => 'Készek megjelenítése',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Adjon meg nem üres szöveget a megengedett hosszon belül.',
+    'LBL_CHECKLIST_SAVED' => 'Lista mentve.',
     'LBL_RELATED_RECORDS' => 'Kapcsolódó rekordok',
     'LBL_RELATED_MODULES' => 'Kapcsolódó modulok',
     'LBL_AI_SETUP' => 'Az AI beállítása',

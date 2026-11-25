@@ -300,19 +300,39 @@ abstract class Core_Controller_View extends Core_Controller_Action
     }
 
     /**
-     * Resource scripts for every block UI type used by the given module.
-     *
-     * For each Block UI type (Base, Address, InventoryItem, …) it tries both the shared
-     * Core implementation and an optional per-module override, e.g.:
-     *   modules.Core.resources.AddressBlock  /  modules.<Module>.resources.AddressBlock
-     * Missing files are silently skipped by checkAndConvertJsScripts(), so modules
-     * only need to ship the block scripts they actually provide.
+     * Resource scripts required by the module's block and field UI types.
      *
      * @param string $moduleName
      *
      * @return array of Vtiger_JsScript_Model
      * @throws Exception
      */
+    public function getModuleUiTypeScripts(string $moduleName): array
+    {
+        return array_merge($this->getBlockUiTypeScripts($moduleName), $this->getFieldUiTypeScripts($moduleName));
+    }
+
+    public function getFieldUiTypeScripts(string $moduleName): array
+    {
+        $module = Vtiger_Module_Model::getInstance($moduleName);
+
+        if (!$module) {
+            return [];
+        }
+
+        $jsFileNames = [];
+
+        foreach ($module->getFields() as $field) {
+            $uiType = $field->getUITypeModel();
+
+            if (method_exists($uiType, 'getScriptNames')) {
+                $jsFileNames = array_merge($jsFileNames, $uiType->getScriptNames());
+            }
+        }
+
+        return $this->checkAndConvertJsScripts(array_values(array_unique($jsFileNames)));
+    }
+
     public function getBlockUiTypeScripts(string $moduleName): array
     {
         $jsFileNames = [];

@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Listă de verificare',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Salvați înregistrarea pentru a marca elementele ca finalizate.',
+    'LBL_CHECKLIST' => 'Listă de verificare',
+    'LBL_CHECKLIST_CHANGED' => 'Textul listei s-a modificat. Reîmprospătați înregistrarea și încercați din nou.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Element de listă',
+    'LBL_CHECKLIST_HIDE' => 'Ascunde finalizate',
+    'LBL_CHECKLIST_SHOW' => 'Arată finalizate',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Introduceți un text nevid în limita lungimii permise.',
+    'LBL_CHECKLIST_SAVED' => 'Lista a fost salvată.',
     'LBL_RELATED_RECORDS' => 'Înregistrări asociate',
     'LBL_RELATED_MODULES' => 'Module asociate',
     'LBL_AI_SETUP' => 'Configurare IA',

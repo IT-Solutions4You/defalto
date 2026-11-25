@@ -11,6 +11,10 @@
 class ProjectTask_Install_Model extends Core_Install_Model
 {
     protected bool $initializeClosedStatuses = false;
+    public array $registerSummaryWidgets = [
+        ['ProjectTask', 'LBL_CHECKLIST', 'module=ProjectTask&view=Widget&record=$RECORD$&mode=showChecklist&field=checklists', '', 5],
+    ];
+
     public static array $progressValues = [
         '10%' => '10%',
         '20%' => '20%',
@@ -321,6 +325,16 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'table' => 'vtiger_crmentity',
                     'label' => 'description',
                 ],
+                'checklists' => [
+                    'uitype' => Core_Checklist_Model::UI_TYPE,
+                    'column' => 'checklists',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'LBL_CHECKLIST',
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
+                    'ajaxeditable' => 0,
+                ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
                 'projecttask_no' => [
@@ -374,7 +388,8 @@ class ProjectTask_Install_Model extends Core_Install_Model
             ->createColumn('enddate', 'date default NULL')
             ->createColumn('projectid', 'varchar(100) default NULL')
             ->createColumn('projecttasknumber', 'int(11) default NULL')
-            ->createColumn('planed_hours', 'decimal(11,1) default NULL');
+            ->createColumn('planed_hours', 'decimal(11,1) default NULL')
+            ->createColumn('checklists', 'MEDIUMTEXT DEFAULT NULL');
 
         $this->getTable('vtiger_projecttaskcf', '')
             ->createTable('projecttaskid');

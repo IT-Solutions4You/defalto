@@ -9,6 +9,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Kontrolní seznam',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Uložte záznam, abyste mohli označovat položky jako hotové.',
+    'LBL_CHECKLIST' => 'Kontrolní seznam',
+    'LBL_CHECKLIST_CHANGED' => 'Text seznamu se změnil. Obnovte záznam a zkuste to znovu.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Položka seznamu',
+    'LBL_CHECKLIST_HIDE' => 'Skrýt hotové',
+    'LBL_CHECKLIST_SHOW' => 'Zobrazit hotové',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Zadejte neprázdný text v povolené délce.',
+    'LBL_CHECKLIST_SAVED' => 'Seznam byl uložen.',
     'LBL_RELATED_RECORDS' => 'Související záznamy',
     'LBL_RELATED_MODULES' => 'Související moduly',
     'LBL_AI_SETUP' => 'Jak zpřístupnit AI',

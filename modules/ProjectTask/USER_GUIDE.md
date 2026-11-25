@@ -2,6 +2,16 @@
 
 Project tasks describe work within a project, with an assignee, status, priority, progress and optional start and end dates. A task may also be associated with a project milestone. Use the task list or record detail to review and update the work.
 
+## Checklists
+
+Administrators can add **Checklist** to task Summary through Settings → Widget editor → Project Tasks. The Summary widget uses the same checklist controls and task edit permissions as Details and Edit. The field label follows the normal layout in each screen; in Edit it has the same text color as Description.
+
+Installing or updating the module registers a missing Checklist widget in the right Summary column. If an administrator has hidden or moved it, that choice remains in place during module updates.
+
+The **Checklist** field represents one checklist. It appears in the ordinary **Description** block by default and can be moved to another block by an administrator. Its value contains only item texts, one per line; completion states are stored separately. Details and Edit show the same simple list: a checkbox and item text on each row, followed by **+ List item**. There is no frame, percentage counter or progress bar. Press Enter to add an item and continue with the next one. Select item text to edit it; hover or use keyboard focus to reveal its remove icon.
+
+For saved tasks, checklist changes save immediately in either Details or Edit without saving the whole task or reloading the page. The server checks task and field edit permission for every change; read-only locks also apply. For a new task, prepare item texts before saving; completion controls become available after the first save. Complete or cancel an item edit before saving the task form. Checklist completion does not change the task's status or progress, and items do not include due dates or assignees. A copied task retains item text with all items unchecked. More checklists require more checklist fields, which administrators can add through Layout Editor without creating a special block.
+
 ## Dates and the project chart
 
 Start and end dates are calendar dates. Enter them in the date format selected in your user preferences; the chart uses the same format when saving a dragged task. The end cannot precede the start; equal dates describe a one-day task. A task with either date missing remains in the project's **Unscheduled** panel. Fill in a valid range and save to place it on the timeline.

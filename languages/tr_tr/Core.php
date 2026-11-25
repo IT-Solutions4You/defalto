@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Kontrol listesi',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Öğeleri tamamlandı olarak işaretlemek için kaydı kaydedin.',
+    'LBL_CHECKLIST' => 'Kontrol listesi',
+    'LBL_CHECKLIST_CHANGED' => 'Kontrol listesi metni değişti. Kaydı yenileyip tekrar deneyin.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Liste öğesi',
+    'LBL_CHECKLIST_HIDE' => 'Tamamlananları gizle',
+    'LBL_CHECKLIST_SHOW' => 'Tamamlananları göster',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'İzin verilen uzunlukta boş olmayan bir metin girin.',
+    'LBL_CHECKLIST_SAVED' => 'Kontrol listesi kaydedildi.',
     'LBL_RELATED_RECORDS' => 'İlgili kayıtlar',
     'LBL_RELATED_MODULES' => 'İlgili modüller',
     'LBL_AI_SETUP' => 'Yapay zekâyı kur',

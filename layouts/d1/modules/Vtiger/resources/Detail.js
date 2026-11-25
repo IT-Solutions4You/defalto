@@ -1675,6 +1675,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         app.request.post(params).then(function (error, response) {
             detailContentsHolder.html(response);
             self.setForm(detailContentsHolder.find('form#detailView').first());
+            vtUtils.initFieldWidgets(detailContentsHolder);
             self.registerBlockStatusCheckOnLoad();
             aDeferred.resolve(response);
             app.helper.hideProgress();
@@ -2129,6 +2130,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             }
 
             contentContainer.html(data);
+            vtUtils.initFieldWidgets(contentContainer);
             widgetContainer.data('summaryWidgetLoaded', true);
             widgetContainer.data('summaryWidgetLoading', false);
             contentContainer.trigger(thisInstance.widgetPostLoad);
@@ -3556,6 +3558,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     //Events common for DetailView and OverlayDetailView
     registerBasicEvents: function () {
         var self = this;
+        vtUtils.initFieldWidgets(this.getContainer());
         this.registerAjaxEditEvent();
         this.registerAjaxEditSaveEvent();
         this.registerAjaxEditCancelEvent();

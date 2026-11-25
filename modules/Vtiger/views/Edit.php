@@ -276,6 +276,6 @@ class Vtiger_Edit_View extends Vtiger_Index_View
         ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return array_merge($jsScriptInstances, $this->getBlockUiTypeScripts($moduleName));
+        return array_merge($jsScriptInstances, $this->getModuleUiTypeScripts($moduleName));
     }
 }

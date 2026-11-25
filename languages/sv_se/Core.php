@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Checklista',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Spara posten för att markera punkter som slutförda.',
+    'LBL_CHECKLIST' => 'Checklista',
+    'LBL_CHECKLIST_CHANGED' => 'Checklistans text har ändrats. Uppdatera posten och försök igen.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Listpunkt',
+    'LBL_CHECKLIST_HIDE' => 'Dölj slutförda',
+    'LBL_CHECKLIST_SHOW' => 'Visa slutförda',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Ange en text som inte är tom och som håller sig inom tillåten längd.',
+    'LBL_CHECKLIST_SAVED' => 'Checklistan sparades.',
     'LBL_RELATED_RECORDS' => 'Relaterade poster',
     'LBL_RELATED_MODULES' => 'Relaterade moduler',
     'LBL_AI_SETUP' => 'Konfigurera AI',

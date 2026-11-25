@@ -13,6 +13,8 @@
 
 ## Custom fields
 
+- Entity modules offer the `Checklist` field type in any ordinary block. `getTypeDetailsForAddField()` maps it to Core UI type 34 and MEDIUMTEXT with V~O. addField() uses the ordinary requested properties without Checklist-specific overrides or a separate type-defaults config. Defaults for the built-in ProjectTask field belong to ProjectTask's install configuration. Core owns widget operations and permissions; translated type names remain in Core locales.
+
 - `Block_Model::isAddCustomFieldEnabled()` blocks custom-field creation only in `LBL_TICKET_RESOLUTION` and `LBL_COMMENTS` (HelpDesk), `LBL_COMMENT_INFORMATION` (Faq) and `LBL_ITEM_DETAILS` of every inventory module from `InventoryItem_Utils_Helper::getInventoryItemModules()`. Item details are rendered by InventoryItem; other blocks of inventory modules must still allow document-level custom fields.
 - `Module_Model::addField()` names the column `cf_<fieldid>` and stores it in the entity's `customFieldTable[0]` if defined, otherwise `vtiger_<module>cf`. Fields added to inventory modules always get quick-create value 3.
 

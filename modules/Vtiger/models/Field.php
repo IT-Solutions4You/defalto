@@ -1881,7 +1881,7 @@ class Vtiger_Field_Model extends Vtiger_Field
 
         if (in_array($fieldName, ['description', 'signature', 'accesskey', 'imagename']) ||
             in_array((int)$this->get('uitype'), [self::UITYPE_FULL_WIDTH_TEXT_AREA, self::UITYPE_IMAGE]) ||
-            in_array($this->getFieldDataType(), ['recurrence', 'reminder'])
+            in_array($this->getFieldDataType(), ['recurrence', 'reminder', 'checklist'])
         ) {
             return true;
         }

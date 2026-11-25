@@ -17,6 +17,15 @@
  */
 
 $languageStrings = [
+    'Checklist' => 'Checklist',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Sla het record op om items als voltooid te markeren.',
+    'LBL_CHECKLIST' => 'Checklist',
+    'LBL_CHECKLIST_CHANGED' => 'De tekst van de checklist is gewijzigd. Vernieuw het record en probeer het opnieuw.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Lijstitem',
+    'LBL_CHECKLIST_HIDE' => 'Voltooide verbergen',
+    'LBL_CHECKLIST_SHOW' => 'Voltooide tonen',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Voer niet-lege tekst in binnen de toegestane lengte.',
+    'LBL_CHECKLIST_SAVED' => 'Checklist opgeslagen.',
     'LBL_RELATED_RECORDS' => 'Gerelateerde records',
     'LBL_RELATED_MODULES' => 'Gerelateerde modules',
     'LBL_AI_SETUP' => 'AI instellen',

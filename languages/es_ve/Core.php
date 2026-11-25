@@ -9,6 +9,18 @@
  */
 
 $languageStrings = [
+    'LBL_ADD' => 'Añadir',
+    'LBL_EDIT' => 'Editar',
+    'LBL_DELETE' => 'Eliminar',
+    'Checklist' => 'Lista de verificación',
+    'LBL_CHECKLIST_SAVE_FIRST' => 'Guarde el registro para marcar elementos como completados.',
+    'LBL_CHECKLIST' => 'Lista de verificación',
+    'LBL_CHECKLIST_CHANGED' => 'El texto de la lista ha cambiado. Actualice el registro e inténtelo de nuevo.',
+    'LBL_CHECKLIST_ITEM_ADD' => 'Elemento de la lista',
+    'LBL_CHECKLIST_HIDE' => 'Ocultar completados',
+    'LBL_CHECKLIST_SHOW' => 'Mostrar completados',
+    'LBL_CHECKLIST_INVALID_TEXT' => 'Introduzca un texto no vacío dentro de la longitud permitida.',
+    'LBL_CHECKLIST_SAVED' => 'Lista guardada.',
     'LBL_RELATED_RECORDS' => 'Registros relacionados',
     'LBL_RELATED_MODULES' => 'Módulos relacionados',
     'LBL_AI_SETUP' => 'Configurar la IA',

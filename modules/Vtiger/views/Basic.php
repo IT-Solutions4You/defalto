@@ -162,7 +162,7 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return array_merge($jsScriptInstances, $headerScriptInstances, $this->getBlockUiTypeScripts($moduleName));
+        return array_merge($jsScriptInstances, $headerScriptInstances, $this->getModuleUiTypeScripts($moduleName));
     }
 
     function getGuiderModels(Vtiger_Request $request)
