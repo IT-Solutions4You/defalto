@@ -25,7 +25,8 @@ abstract class Core_PaymentDelete_Handler extends VTEventHandler
     }
 
     /**
-     * Handles the after-delete and after-restore events of a payment.
+     * Handles the after-delete and after-restore events of a payment. Deletes in bulk save mode have no events;
+     * Core_PaymentEntity_Model::trash() recalculates the documents then.
      *
      * @param string       $handlerType Event name
      * @param VTEntityData $entityData  Payment entity data

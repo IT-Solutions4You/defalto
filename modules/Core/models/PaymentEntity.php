@@ -41,6 +41,25 @@ abstract class Core_PaymentEntity_Model extends CRMEntity
     }
 
     /**
+     * Deletes the payment. In bulk save mode (Undo Last Import) the core skips the delete events and runs only its
+     * own batch handlers, so the documents of the payment are recalculated here; otherwise the after-delete handler
+     * (Core_PaymentDelete_Handler) does it.
+     *
+     * @param string $module Module name
+     * @param int    $id     Payment record id
+     * @return void
+     * @throws Exception
+     */
+    public function trash($module, $id)
+    {
+        parent::trash($module, $id);
+
+        if (self::isBulkSaveMode()) {
+            $this->getConfig()->getDocumentSyncModel()->recalculateForPayment((int)$id);
+        }
+    }
+
+    /**
      * Related list of the documents of one module that a payment is applied to.
      *
      * @param int $id         Payment record id
