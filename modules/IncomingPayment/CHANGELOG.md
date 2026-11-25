@@ -1,6 +1,6 @@
 # IncomingPayment changelog
 
-## 1.0 - 2026-10-29
+## 1.0 - 2026-11-25
 
 - New module for recording incoming payments with automatic numbering, statuses derived from the payment and due dates and base currency amounts.
 - Payments can be created directly from an invoice with the open amount, currency, due date, organization and contact prefilled, in a quick form from the Add Payment button or in the full form from the More menu.
@@ -21,3 +21,4 @@
 - With the Payments list installed, the header of a payment shows Payments and leads back to the Payments list.
 - The daily system task PaymentStatus, shared by all payment modules, updates payment statuses when payment or due dates arrive.
 - The currency of a payment is chosen with the currency symbol inside the Amount field; searching, filtering and sorting by amount compare the amounts in the base currency.
+- The amount of a payment must be greater than zero; money returned is entered as a refund in the other payment module.
