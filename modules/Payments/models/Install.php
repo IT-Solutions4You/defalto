@@ -27,8 +27,38 @@ class Payments_Install_Model extends Core_Install_Model
     {
         $this->updateToCustomModule();
         $this->updateWebserviceHandler();
+        $this->updateListFilter();
         Core_PaymentWidget_Model::getInstance()->updateDocumentWidgets();
         Core_PaymentMenu_Model::getInstance()->hideModules();
+    }
+
+    /**
+     * Creates the All filter of the Payments list with the default columns when it does not exist yet. Payments
+     * installed before any payment module has no columns to offer, so the first installed payment module calls this
+     * again (Core_PaymentInstall_Model::updatePaymentsListFilter()).
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function updateListFilter(): void
+    {
+        $moduleInstance = Vtiger_Module::getInstance($this->moduleName);
+        $sourceModule = Vtiger_Module_Model::getInstance(Payments_Sources_Helper::getPrimaryModule());
+
+        if (!$moduleInstance || !$sourceModule || Vtiger_Filter::getInstance('All', $moduleInstance)) {
+            return;
+        }
+
+        // the module cache of updateFilters() is filled only while Payments itself installs, so the filter is built here
+        $filterInstance = $this->createFilter('All', $moduleInstance);
+
+        foreach (Payments_Sources_Helper::LIST_FIELDS as $index => $fieldName) {
+            $field = Vtiger_Field_Model::getInstance($fieldName, $sourceModule);
+
+            if ($field) {
+                $filterInstance->addField($field, $index + 1);
+            }
+        }
     }
 
     /**

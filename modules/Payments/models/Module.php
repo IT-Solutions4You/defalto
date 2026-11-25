@@ -29,13 +29,15 @@ class Payments_Module_Model extends Vtiger_Module_Model
     /**
      * Returns the blocks of the primary payment module.
      * The field names are shared by all payment modules, so one module's blocks describe the list columns.
+     * Without an installed payment module (Payments installed first) there are no blocks.
      *
      * @return array<string, Vtiger_Block_Model>
      */
     public function getBlocks()
     {
         if (empty($this->blocks)) {
-            $this->blocks = $this->getPrimarySourceModule()->getBlocks();
+            $primaryModule = $this->getPrimarySourceModule();
+            $this->blocks = $primaryModule ? $primaryModule->getBlocks() : [];
         }
 
         return $this->blocks;
@@ -82,11 +84,14 @@ class Payments_Module_Model extends Vtiger_Module_Model
     /**
      * Returns the payment module that stands in for Payments where one module is required.
      *
-     * @return Vtiger_Module_Model
+     * @return Vtiger_Module_Model|null Null while no payment module is installed
      */
-    public function getPrimarySourceModule(): Vtiger_Module_Model
+    public function getPrimarySourceModule(): ?Vtiger_Module_Model
     {
-        return Vtiger_Module_Model::getInstance(Payments_Sources_Helper::getPrimaryModule());
+        $primaryModule = Payments_Sources_Helper::getPrimaryModule();
+        $moduleModel = '' !== $primaryModule ? Vtiger_Module_Model::getInstance($primaryModule) : false;
+
+        return $moduleModel ?: null;
     }
 
     /**
