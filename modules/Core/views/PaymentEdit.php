@@ -51,7 +51,20 @@ abstract class Core_PaymentEdit_View extends Vtiger_Edit_View
     public function process(Vtiger_Request $request)
     {
         if ($request->isEmpty('record') && !$request->isEmpty('sourceModule') && !$request->isEmpty('sourceRecord')) {
-            Core_PaymentPrefill_Helper::setRequestValues($this->getConfig(), $request, (string)$request->get('sourceModule'), (int)$request->get('sourceRecord'));
+            $sourceModule = (string)$request->get('sourceModule');
+            $sourceRecord = (int)$request->get('sourceRecord');
+
+            if (Core_PaymentPrefill_Helper::isPermittedDocument($sourceModule, $sourceRecord)) {
+                Core_PaymentPrefill_Helper::setRequestValues($this->getConfig(), $request, $sourceModule, $sourceRecord);
+            } else {
+                // a document the user may not view is neither prefilled, mapped nor linked by the core edit view,
+                // which checks only that the source parameters exist (has() is false for null values)
+                foreach (['sourceModule', 'sourceRecord', 'relationOperation'] as $parameter) {
+                    $request->set($parameter, null);
+                }
+
+                $request->set(Core_PaymentConfig_Helper::FIELD_RELATION, '');
+            }
         }
 
         parent::process($request);

@@ -139,7 +139,28 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
         $this->updateCustomLinks();
         $this->getConfig()->getIntegrationModel()->installDefaults();
         $this->updateIntegrations();
+        $this->updatePaymentsListFilter();
         Core_PaymentMenu_Model::getInstance()->hideModules([$this->moduleName]);
+    }
+
+    /**
+     * Lets the Payments list create its All filter when it was installed before this payment module and had no
+     * columns to offer yet (Payments_Install_Model::updateListFilter()).
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function updatePaymentsListFilter(): void
+    {
+        if (!getTabid(Core_PaymentConfig_Helper::PAYMENTS_LIST_MODULE)) {
+            return;
+        }
+
+        $paymentsInstall = Core_Install_Model::getInstance('module.postupdate', Core_PaymentConfig_Helper::PAYMENTS_LIST_MODULE);
+
+        if (method_exists($paymentsInstall, 'updateListFilter')) {
+            $paymentsInstall->updateListFilter();
+        }
     }
 
     /**

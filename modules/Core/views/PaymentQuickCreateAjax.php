@@ -34,7 +34,14 @@ abstract class Core_PaymentQuickCreateAjax_View extends Vtiger_QuickCreateAjax_V
         $relationId = (int)$request->get(Core_PaymentConfig_Helper::FIELD_RELATION);
 
         if ($relationId > 0) {
-            Core_PaymentPrefill_Helper::setRequestValues($this->getConfig(), $request, (string)getSalesEntityType($relationId), $relationId);
+            $sourceModule = (string)getSalesEntityType($relationId);
+
+            if (Core_PaymentPrefill_Helper::isPermittedDocument($sourceModule, $relationId)) {
+                Core_PaymentPrefill_Helper::setRequestValues($this->getConfig(), $request, $sourceModule, $relationId);
+            } else {
+                // a document the user may not view is not linked to the new payment
+                $request->set(Core_PaymentConfig_Helper::FIELD_RELATION, '');
+            }
         }
 
         parent::process($request);

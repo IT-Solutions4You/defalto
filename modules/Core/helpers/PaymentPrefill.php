@@ -33,6 +33,22 @@ class Core_PaymentPrefill_Helper
     }
 
     /**
+     * Tells whether a payment may be opened for the document: it exists, belongs to the module and the current user
+     * may view it. Otherwise the payment form neither prefills its values nor links it.
+     *
+     * @param string $sourceModule Document module name
+     * @param int    $sourceRecord Document record id
+     * @return bool
+     * @throws Exception
+     */
+    public static function isPermittedDocument(string $sourceModule, int $sourceRecord): bool
+    {
+        return $sourceModule !== '' && $sourceRecord > 0 && isRecordExists($sourceRecord)
+            && (string)getSalesEntityType($sourceRecord) === $sourceModule
+            && Users_Privileges_Model::isPermitted($sourceModule, 'DetailView', $sourceRecord);
+    }
+
+    /**
      * Returns the edit-view values for a payment of the given document, in the user's display format.
      *
      * @param Core_PaymentConfig_Helper $paymentConfig Configuration of the payment module
@@ -43,9 +59,7 @@ class Core_PaymentPrefill_Helper
      */
     public static function getValues(Core_PaymentConfig_Helper $paymentConfig, string $sourceModule, int $sourceRecord): array
     {
-        if ($sourceModule === '' || $sourceRecord <= 0 || !isRecordExists($sourceRecord)
-            || (string)getSalesEntityType($sourceRecord) !== $sourceModule
-            || !Users_Privileges_Model::isPermitted($sourceModule, 'DetailView', $sourceRecord)) {
+        if (!self::isPermittedDocument($sourceModule, $sourceRecord)) {
             return [];
         }
 
