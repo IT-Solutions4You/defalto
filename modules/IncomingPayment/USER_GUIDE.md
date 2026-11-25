@@ -11,7 +11,7 @@ Incoming Payments records the money your company receives for invoices (and, whe
 3. Fill in the **Payment Date** when the money arrived. Leave it empty when you only expect the payment.
 4. Save. The payment is listed in the **Incoming Payments** widget and related list of the invoice. Organizations, vendors and contacts also have an **Incoming Payments** related list with the payments that name them.
 
-You can also create payments directly in the Incoming Payments module and pick the invoice in the **Reference** field: choose the module next to the field, type at least two characters of the invoice number or name, or use the magnifier to pick it from a list. Choosing the document does not fill in the organization or the contact; enter them yourself when you need them. A payment references one document; saving a payment with more documents shows a message. The **Reference** filter in the payment list finds payments by the document number or name.
+You can also create payments directly in the Incoming Payments module and pick the invoice in the **Reference** field: choose the module next to the field, type at least two characters of the invoice number or name, or use the magnifier to pick it from a list. Choosing the document does not fill in the organization or the contact; enter them yourself when you need them. A payment can reference several documents (see below). The **Reference** filter in the payment list finds payments by the document number or name.
 
 The detail view of a payment has a tab for every module integrated in Settings, for example **Invoices**, listing the documents the payment is applied to. To change the document, edit the **Reference** field.
 
@@ -52,13 +52,13 @@ Administrators configure the integration in **Settings → Incoming Payments Int
 
 ## Sales orders and opportunities
 - A payment of a sales order also counts on the invoices created from that order (field Sales Order on the invoice), when they have the same organization. With several invoices the order payments go to the invoice with the earliest due date first, each invoice gets at most its open amount and the last one gets the rest. The invoice widget shows them as **Payments of SO…**. The sales order must be switched on in the settings.
+- Opportunities can be switched on in **Settings → Incoming Payments Integration**: the total is the opportunity Amount, the due date of a new payment is the expected close date. The Received and Balance fields are created on the opportunity.
 
 ## Proforma invoices
 - Proforma invoices can be switched on in **Settings → Incoming Payments Integration**. They get the Received and Balance fields and the Paid status when they are paid.
 - A **tax document** created from a paid proforma (Invoice Type Tax Document) counts the proforma payments up to the proforma total, so it is paid as soon as the advance is received.
 - A **final invoice** deducts the proforma total by a minus item. The proforma payments are therefore not counted again; only what was paid above the proforma total counts. The widget shows the advance as **Advance deducted by an item, paid on PINV…**. When all deducted proformas are paid and the rest of the invoice is paid too (or the invoice total is 0), the invoice gets the paid status.
 - Payments never change the statuses Invoiced, Canceled and Cancel, and a status you or an extension change while saving a document stays as it is; only its paid amount and balance are recalculated.
-- Opportunities can be switched on in **Settings → Incoming Payments Integration**: the total is the opportunity Amount, the due date of a new payment is the expected close date. The Received and Balance fields are created on the opportunity.
 
 ## Refunds
 - Money you return to a customer is an outgoing payment on the invoice: click **Add Refund**. The form is prefilled with the paid amount. A received refund lowers the **Received** amount of the invoice, and a fully paid invoice can go back to its unpaid status.
@@ -68,7 +68,7 @@ Administrators configure the integration in **Settings → Incoming Payments Int
 ## Tips
 - With the Payments list installed, the invoice shows the common **Payments** widget with incoming and outgoing payments instead of the Incoming Payments widget, and Incoming Payments is not in the Sales menu: open the payments from **Payments**, from the quick create menu or from a document.
 
-- Create one payment per received transfer. When a transfer pays several invoices, create one payment per invoice for now.
+- Create one payment per received transfer. When a transfer pays several invoices, put all of them into the Reference field or use **Pay selected** in the invoice list.
 - Use the **Transaction ID** field for the bank reference so payments are easy to match with the bank statement.
 - Filters on **Payment Status** and **Due Date** show expected and overdue payments.
 - Payments created by Import get their status and update their invoices the same way as payments entered by hand.

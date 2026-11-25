@@ -23,3 +23,4 @@
 - The daily system task PaymentStatus, shared by all payment modules, updates payment statuses when payment or due dates arrive.
 - The currency of a payment is chosen with the currency symbol inside the Amount field; searching, filtering and sorting by amount compare the amounts in the base currency.
 - The amount of a payment must be greater than zero; money returned is entered as a refund in the other payment module.
+- Undo Last Import of payments updates the paid amount, balance and status of their documents.
