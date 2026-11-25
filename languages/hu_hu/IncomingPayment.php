@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Visszatérítés hozzáadása',
     'LBL_REFUND' => 'Visszatérítés',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Fizetések innen:',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Tétellel levont előleg, fizetve:',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'A fizetések a belőle létrehozott bizonylatokon sem számítanak többé (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Több bizonylat egy fizetésben a fizetős verzióban érhető el.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'a fizetős verzióban egy fizetéssel több bizonylatot rendez.',

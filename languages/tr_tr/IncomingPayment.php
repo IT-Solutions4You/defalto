@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'İade ekle',
     'LBL_REFUND' => 'İade',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Ödemeler:',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Kalemle düşülen avans, ödendiği belge:',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Ödemeler bundan oluşturulan belgelerde de artık hesaba katılmayacak (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Bir ödemede birden fazla belge ücretli sürümde kullanılabilir.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'ücretli sürümde tek ödemeyle birden fazla belgeyi öder.',

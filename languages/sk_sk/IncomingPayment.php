@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Pridať vratku',
     'LBL_REFUND' => 'Vratka',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Platby z',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Záloha odpočítaná položkou, zaplatená na',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Platby sa prestanú započítavať aj do dokladov z neho vystavených (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Viac dokladov v jednej platbe je v platenej verzii.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'v platenej verzii uhradí jednou platbou viac dokladov.',

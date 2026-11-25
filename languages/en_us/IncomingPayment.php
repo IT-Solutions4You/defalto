@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Add Refund',
     'LBL_REFUND' => 'Refund',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Payments of',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Advance deducted by an item, paid on',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'The payments will also stop counting on the documents created from it (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Several documents per payment are available in the paid edition.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'in the paid edition pays several documents with one payment.',

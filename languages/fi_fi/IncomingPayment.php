@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Lisää palautus',
     'LBL_REFUND' => 'Palautus',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Maksut kohteesta',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Ennakko vähennetty rivillä, maksettu kohteeseen',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Maksuja ei myöskään enää lasketa siitä luotuihin asiakirjoihin (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Useita asiakirjoja yhdessä maksussa on maksullisessa versiossa.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'maksaa maksullisessa versiossa useita asiakirjoja yhdellä maksulla.',

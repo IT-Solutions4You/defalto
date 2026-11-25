@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Aggiungi rimborso',
     'LBL_REFUND' => 'Rimborso',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Pagamenti di',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Acconto detratto con una riga, pagato su',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'I pagamenti non verranno più conteggiati nemmeno sui documenti creati da esso (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Più documenti per pagamento sono disponibili nella versione a pagamento.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'nella versione a pagamento salda più documenti con un unico pagamento.',

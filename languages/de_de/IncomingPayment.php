@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Erstattung hinzufügen',
     'LBL_REFUND' => 'Erstattung',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Zahlungen aus',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Anzahlung, per Position abgezogen, bezahlt auf',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Die Zahlungen werden auch nicht mehr auf die daraus erstellten Belege angerechnet (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Mehrere Belege pro Zahlung gibt es in der kostenpflichtigen Version.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'bezahlt in der kostenpflichtigen Version mehrere Belege mit einer Zahlung.',

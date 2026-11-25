@@ -6,6 +6,7 @@
 - Payments can be created directly from an invoice with the open amount, currency, due date, organization and contact prefilled, in a quick form from the Add Payment button or in the full form from the More menu.
 - Invoices show an Incoming Payments widget, a related list and an Add Payment button; their received amount, balance and status are updated automatically from the received payments.
 - The detail view of a payment lists its documents in a tab for every integrated module.
+- Proforma invoices: a tax document counts the payments of its proforma, a final invoice with the advance deducted by an item is paid when the advance is paid, and payments keep the Invoiced, Canceled and Cancel statuses and statuses changed while saving a document.
 - Organizations, vendors and contacts show their incoming payments in a related list.
 - Deleting an invoice with payments warns about the linked payments and removes the link from them; a restored invoice recalculates its received amount and balance without them.
 - Every payment shows its direction (Incoming or Outgoing) in a read-only field.

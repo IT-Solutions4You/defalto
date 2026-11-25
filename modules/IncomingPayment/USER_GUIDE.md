@@ -52,6 +52,12 @@ Administrators configure the integration in **Settings → Incoming Payments Int
 
 ## Sales orders and opportunities
 - A payment of a sales order also counts on the invoices created from that order (field Sales Order on the invoice), when they have the same organization. With several invoices the order payments go to the invoice with the earliest due date first, each invoice gets at most its open amount and the last one gets the rest. The invoice widget shows them as **Payments of SO…**. The sales order must be switched on in the settings.
+
+## Proforma invoices
+- Proforma invoices can be switched on in **Settings → Incoming Payments Integration**. They get the Received and Balance fields and the Paid status when they are paid.
+- A **tax document** created from a paid proforma (Invoice Type Tax Document) counts the proforma payments up to the proforma total, so it is paid as soon as the advance is received.
+- A **final invoice** deducts the proforma total by a minus item. The proforma payments are therefore not counted again; only what was paid above the proforma total counts. The widget shows the advance as **Advance deducted by an item, paid on PINV…**. When all deducted proformas are paid and the rest of the invoice is paid too (or the invoice total is 0), the invoice gets the paid status.
+- Payments never change the statuses Invoiced, Canceled and Cancel, and a status you or an extension change while saving a document stays as it is; only its paid amount and balance are recalculated.
 - Opportunities can be switched on in **Settings → Incoming Payments Integration**: the total is the opportunity Amount, the due date of a new payment is the expected close date. The Received and Balance fields are created on the opportunity.
 
 ## Refunds
