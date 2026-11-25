@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Lägg till återbetalning',
     'LBL_REFUND' => 'Återbetalning',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Betalningar från',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Förskott avdraget med en rad, betalt på',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Betalningarna räknas inte heller längre på dokumenten som skapats från den (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Flera dokument per betalning finns i den betalda versionen.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'betalar i den betalda versionen flera dokument med en betalning.',

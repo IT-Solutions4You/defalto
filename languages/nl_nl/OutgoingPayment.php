@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Terugbetaling toevoegen',
     'LBL_REFUND' => 'Terugbetaling',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Betalingen van',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Voorschot afgetrokken via een regel, betaald op',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'De betalingen tellen ook niet meer mee op de documenten die ervan zijn gemaakt (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Meerdere documenten per betaling zijn beschikbaar in de betaalde versie.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'betaalt in de betaalde versie meerdere documenten met één betaling.',

@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Dodaj zwrot',
     'LBL_REFUND' => 'Zwrot',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Płatności z',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Zaliczka odliczona pozycją, zapłacona na',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Płatności przestaną być również uwzględniane w dokumentach z niego wystawionych (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Kilka dokumentów w jednej płatności jest dostępnych w wersji płatnej.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'w wersji płatnej opłaca kilka dokumentów jedną płatnością.',

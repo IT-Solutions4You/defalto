@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Adaugă rambursare',
     'LBL_REFUND' => 'Rambursare',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Plăți din',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Avans dedus printr-o poziție, plătit pe',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Plățile nu vor mai fi luate în calcul nici pe documentele create din acesta (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Mai multe documente per plată sunt disponibile în versiunea plătită.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'în versiunea plătită achită mai multe documente cu o singură plată.',

@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Ajouter un remboursement',
     'LBL_REFUND' => 'Remboursement',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Paiements de',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Acompte déduit par une ligne, payé sur',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Les paiements ne seront plus non plus comptés sur les documents créés à partir de celui-ci (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Plusieurs documents par paiement sont disponibles dans la version payante.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'dans la version payante règle plusieurs documents avec un seul paiement.',

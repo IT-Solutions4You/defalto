@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'إضافة استرداد',
     'LBL_REFUND' => 'استرداد',
     'LBL_PAYMENTS_FROM_SOURCE' => 'مدفوعات',
+    'LBL_ADVANCE_FROM_SOURCE' => 'دفعة مقدمة مخصومة ببند، مدفوعة في',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'لن تُحتسب المدفوعات أيضًا في المستندات التي أُنشئت منه (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'تتوفر عدة مستندات في دفعة واحدة في الإصدار المدفوع.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'في الإصدار المدفوع يسدد عدة مستندات بدفعة واحدة.',

@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Добавить возврат',
     'LBL_REFUND' => 'Возврат',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Платежи по',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Аванс, вычтенный позицией, оплачен по',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Платежи также перестанут учитываться в документах, созданных на его основе (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Несколько документов в одном платеже доступны в платной версии.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'в платной версии оплачивает несколько документов одним платежом.',

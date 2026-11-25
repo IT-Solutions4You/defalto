@@ -57,6 +57,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Adicionar reembolso',
     'LBL_REFUND' => 'Reembolso',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Pagamentos de',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Adiantamento deduzido por um item, pago em',
     'LBL_DELETE_SOURCE_WITH_TARGETS' => 'Os pagamentos também deixarão de contar nos documentos criados a partir dele (%s).',
     'LBL_SEVERAL_DOCUMENTS_PREMIUM' => 'Vários documentos por pagamento estão disponíveis na versão paga.',
     'LBL_PREMIUM_MODAL_SUBTITLE' => 'na versão paga quita vários documentos com um único pagamento.',
