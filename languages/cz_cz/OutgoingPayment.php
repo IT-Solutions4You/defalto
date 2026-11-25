@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Vyberte doklady, které smíte vidět.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Vybrané doklady musí patřit jedné organizaci.',
     'LBL_BULK_PAYMENT_CREATED' => 'Platba byla vytvořena.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Částka platby musí být větší než nula. Vratku zadejte jako platbu v druhém modulu plateb.',
 ];
 
 $jsLanguageStrings = [

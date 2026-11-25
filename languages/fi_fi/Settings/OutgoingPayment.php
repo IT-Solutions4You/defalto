@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Tämän moduulin maksut ovat asiakirjan palautuksia, ja ne vähennetään maksetusta summasta.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Mikään aktiivinen maksumoduuli ei maksa tätä asiakirjaa; palautuksia ei lasketa.',
     'LBL_TWO_PAYING_MODULES' => 'Toinen maksumoduuli maksaa jo %s. Merkitse toisen moduulin maksut palautuksiksi.',
+    'LBL_NO_PAYING_MODULE' => 'Mikään maksumoduuli ei maksa kohdetta %s. Poista Palautus tästä tai anna toisen maksumoduulin maksaa se.',
 ];
 
 $jsLanguageStrings = [

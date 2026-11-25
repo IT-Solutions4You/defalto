@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Görebileceğiniz belgeleri seçin.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Seçilen belgeler tek bir kuruluşa ait olmalıdır.',
     'LBL_BULK_PAYMENT_CREATED' => 'Ödeme oluşturuldu.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Ödeme tutarı sıfırdan büyük olmalıdır. İadeyi diğer ödeme modülünde ödeme olarak girin.',
 ];
 
 $jsLanguageStrings = [

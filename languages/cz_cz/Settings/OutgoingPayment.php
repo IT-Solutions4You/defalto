@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Platby tohoto modulu jsou vratky k dokladu a odečtou se od zaplacené částky.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Doklad nehradí žádný aktivní modul plateb, vratky se nezapočítají.',
     'LBL_TWO_PAYING_MODULES' => 'Jiný modul plateb už hradí %s. Platby jednoho z nich označte jako vratky.',
+    'LBL_NO_PAYING_MODULE' => 'Žádný modul plateb neuhrazuje %s. Zrušte zde Vratku nebo nastavte, aby ho uhrazoval jiný modul plateb.',
 ];
 
 $jsLanguageStrings = [

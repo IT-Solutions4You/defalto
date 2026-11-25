@@ -4,7 +4,7 @@ Outgoing Payments records the money your company pays, for example to vendors fo
 
 ## Paying a purchase order
 1. Open the purchase order and click **Add Payment** (or **More → Add Payment** for the full form).
-2. The form is prefilled with the open amount, the currency, the due date, the vendor and the contact. Change what you need and save.
+2. The form is prefilled with the open amount, the currency, the due date, the vendor and the contact. Change what you need and save. The amount must be greater than zero; money you get back is a refund.
 3. The purchase order shows the payment in the Outgoing Payments widget; its **Paid** amount and **Balance** are updated. The status of the purchase order does not change.
 
 ## Statuses
@@ -23,7 +23,7 @@ With the Payments list installed, purchase orders show the common **Payments** w
 
 ## Refunds
 - Money a vendor returns on a purchase order is an incoming payment: click **Add Refund** on the purchase order. It lowers the **Paid** amount.
-- Money you return to a customer on an invoice is an outgoing payment marked as a refund (column **Refund** in the settings, invoices, quotes and sales orders by default). Switch the invoice on in the settings first.
+- Money you return to a customer on an invoice is an outgoing payment marked as a refund (column **Refund** in the settings, invoices, quotes and sales orders by default). Switch the invoice on in the settings first. Each document must be paid by exactly one payment module: the settings refuse to save a document marked as a refund in both modules, or paid by both.
 - **Add Payment** prefills the total minus all payments of the document, also the ones not paid yet.
 
 ## Settings

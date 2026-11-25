@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Wählen Sie Belege aus, die Sie sehen dürfen.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Die ausgewählten Belege müssen zu einer Organisation gehören.',
     'LBL_BULK_PAYMENT_CREATED' => 'Die Zahlung wurde erstellt.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Der Zahlungsbetrag muss größer als null sein. Erfassen Sie eine Erstattung als Zahlung im anderen Zahlungsmodul.',
 ];
 
 $jsLanguageStrings = [

@@ -73,6 +73,7 @@ $languageStrings = [
     'LBL_BULK_PAYMENT_NO_DOCUMENTS' => 'Selectați documente pe care le puteți vedea.',
     'LBL_BULK_PAYMENT_ORGANIZATIONS' => 'Documentele selectate trebuie să aparțină unei singure organizații.',
     'LBL_BULK_PAYMENT_CREATED' => 'Plata a fost creată.',
+    'LBL_AMOUNT_GREATER_THAN_ZERO' => 'Suma plății trebuie să fie mai mare decât zero. Introduceți o rambursare ca plată în celălalt modul de plăți.',
 ];
 
 $jsLanguageStrings = [

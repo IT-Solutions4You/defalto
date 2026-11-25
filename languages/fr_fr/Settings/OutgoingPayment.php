@@ -33,6 +33,7 @@ $languageStrings = [
     'LBL_REFUND_HELP' => 'Les paiements de ce module sont des remboursements du document et sont déduits du montant payé.',
     'LBL_REFUND_WITHOUT_PAYING' => 'Aucun module de paiement actif ne règle ce document ; les remboursements ne sont pas pris en compte.',
     'LBL_TWO_PAYING_MODULES' => 'Un autre module de paiement règle déjà %s. Marquez les paiements de l’un d’eux comme remboursements.',
+    'LBL_NO_PAYING_MODULE' => 'Aucun module de paiements ne paie %s. Décochez Remboursement ici ou laissez un autre module de paiements le payer.',
 ];
 
 $jsLanguageStrings = [
