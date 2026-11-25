@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Add Refund',
     'LBL_REFUND' => 'Refund',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Payments of',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Advance deducted by an item, paid on',
 ];
 
 $jsLanguageStrings = [

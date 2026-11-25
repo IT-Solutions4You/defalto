@@ -15,6 +15,7 @@ Payments shows all your payments in one list: incoming payments from customers a
 - Invoices, orders and other integrated documents show one **Payments** widget with the payments of all directions: direction, number, payment date, status and amount.
 - Below the payments the widget shows the Total, Paid and Balance of the document and **Expected**, the payments that are not paid yet.
 - On an invoice created from a sales order the widget also shows **Payments of SO…**: the part of the order payments that counts on this invoice.
+- On a final invoice that deducts a proforma by a minus item the widget shows **Advance deducted by an item, paid on PINV…** with everything paid on the proforma; only the part above the proforma total counts in Paid. A tax document of a proforma shows the proforma payments as **Payments of PINV…**.
 - A refund (money returned on the document) is marked **Refund** in the widget and lowers the Paid amount.
 - **Add Payment** in the widget header opens the payment form prefilled from the document; when the document has refunds switched on you choose **Add Payment** or **Add Refund**.
 

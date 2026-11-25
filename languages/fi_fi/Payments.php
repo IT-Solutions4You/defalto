@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Lisää palautus',
     'LBL_REFUND' => 'Palautus',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Maksut kohteesta',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Ennakko vähennetty rivillä, maksettu kohteeseen',
 ];
 
 $jsLanguageStrings = [

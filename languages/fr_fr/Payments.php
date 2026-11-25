@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Ajouter un remboursement',
     'LBL_REFUND' => 'Remboursement',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Paiements de',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Acompte déduit par une ligne, payé sur',
 ];
 
 $jsLanguageStrings = [

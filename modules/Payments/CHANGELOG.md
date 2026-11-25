@@ -5,6 +5,7 @@
 - Add Incoming Payment and Add Outgoing Payment buttons open the form of the payment module.
 - Export of all payment directions into one file and mass delete.
 - Documents show one Payments widget with the payments of all directions, refunds marked, the totals and the expected amount net of refunds, with Add Payment and Add Refund; an invoice also shows the sales order payments counted on it, opportunities get the widget when they are integrated.
+- The widget of a final invoice shows the paid advances (proforma invoices) deducted by an item, a tax document shows the payments of its proforma.
 - Incoming Payments and Outgoing Payments are hidden in the Sales menu while Payments is installed.
 - Payments can be installed before or after the payment modules.
 - Translations into all supported languages.

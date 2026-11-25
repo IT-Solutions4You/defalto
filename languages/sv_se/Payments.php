@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Lägg till återbetalning',
     'LBL_REFUND' => 'Återbetalning',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Betalningar från',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Förskott avdraget med en rad, betalt på',
 ];
 
 $jsLanguageStrings = [

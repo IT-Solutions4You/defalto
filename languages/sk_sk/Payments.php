@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Pridať vratku',
     'LBL_REFUND' => 'Vratka',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Platby z',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Záloha odpočítaná položkou, zaplatená na',
 ];
 
 $jsLanguageStrings = [

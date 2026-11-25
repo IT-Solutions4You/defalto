@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Adaugă rambursare',
     'LBL_REFUND' => 'Rambursare',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Plăți din',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Avans dedus printr-o poziție, plătit pe',
 ];
 
 $jsLanguageStrings = [

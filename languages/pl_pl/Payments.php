@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Dodaj zwrot',
     'LBL_REFUND' => 'Zwrot',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Płatności z',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Zaliczka odliczona pozycją, zapłacona na',
 ];
 
 $jsLanguageStrings = [

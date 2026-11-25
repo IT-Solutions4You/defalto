@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'Erstattung hinzufügen',
     'LBL_REFUND' => 'Erstattung',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Zahlungen aus',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Anzahlung, per Position abgezogen, bezahlt auf',
 ];
 
 $jsLanguageStrings = [

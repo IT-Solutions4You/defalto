@@ -52,6 +52,7 @@ $languageStrings = [
     'LBL_ADD_REFUND' => 'İade ekle',
     'LBL_REFUND' => 'İade',
     'LBL_PAYMENTS_FROM_SOURCE' => 'Ödemeler:',
+    'LBL_ADVANCE_FROM_SOURCE' => 'Kalemle düşülen avans, ödendiği belge:',
 ];
 
 $jsLanguageStrings = [
