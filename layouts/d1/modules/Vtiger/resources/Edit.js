@@ -372,12 +372,16 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
      * @returns {Object}
      */
     getMultiReferenceSelectConfig: function (form, wrapper, selectElement) {
-        const self = this;
+        const self = this,
+            modal = selectElement.closest('.modal');
 
         return {
             multiple: true,
             theme: 'bootstrap-5',
             width: '100%',
+            // In a modal (quick create) the results must be rendered inside it, as in vtUtils.showSelect2ElementView();
+            // appended to the body they were not shown in Firefox
+            dropdownParent: modal.length ? modal : jQuery(document.body),
             minimumInputLength: 2,
             maximumSelectionLength: parseInt(selectElement.data('maximumRecords')) || 0,
             language: selectElement.data('maximumRecordsMessage') ? {
