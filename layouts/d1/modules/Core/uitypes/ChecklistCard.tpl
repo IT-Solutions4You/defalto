@@ -1,4 +1,5 @@
 <div class="js-checklist-card" data-id="{$CHECKLIST.id}">
+    <div class="js-checklist-completed-count text-secondary mb-2" aria-live="polite">{$CHECKLIST.completed}/{$CHECKLIST.total}</div>
     <div class="js-checklist-items">
         {foreach item=CHECKLIST_ITEM from=$CHECKLIST.items}
             {include file='uitypes/ChecklistItem.tpl'|vtemplate_path:'Core'}

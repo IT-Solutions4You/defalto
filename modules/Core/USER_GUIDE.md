@@ -16,6 +16,8 @@ The **+ List item** control is a single-line input. Paste several lines into it 
 
 Check a box to complete an item; clear it to reopen it. Completed text is crossed out. The small **Hide completed** and **Show completed** control appears when completed items exist and changes only the current display.
 
+A line above the items shows completed items out of the total, for example **3/5**. It updates when items are completed, reopened, added or removed and includes hidden completed items. An empty checklist shows **0/0**. The count is also visible in read-only checklists.
+
 Hover over an item or focus it with the keyboard to highlight its row and reveal the remove icon. The highlighted row identifies the item that the remove icon belongs to. You can also remove that item while editing its text; removal cancels the unfinished text edit.
 
 Select an item's row to edit it, including the empty space beside its text. The checkbox and remove icon retain their own actions. The change saves when you leave the editor or stop typing for two seconds. Enter also saves it; Escape keeps the previous text while the edit is still open. There are no save or cancel buttons. Other items and form fields remain available; selecting another item confirms the current edit and opens the selected one. An empty edit keeps the original item. An item can have up to 1000 characters. Blank lines are ignored. The field remains available after its last item is removed. Additional checklists require additional checklist fields.

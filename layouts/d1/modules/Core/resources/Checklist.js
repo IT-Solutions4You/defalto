@@ -394,6 +394,7 @@ jQuery.Class('Vtiger_Checklist_Js', {
     updateCompletedVisibility: function (card) {
         const rows = card.find('.js-checklist-items > .js-checklist-item'),
             completed = rows.filter(function () { return jQuery(this).find('.js-checklist-check').prop('checked'); }).length;
+        card.find('.js-checklist-completed-count').text(completed + '/' + rows.length);
         card.find('.js-checklist-hide').toggleClass('d-none', !completed);
         rows.each(function () {
             jQuery(this).toggleClass('d-none', !!card.data('hideCompleted') && jQuery(this).find('.js-checklist-check').prop('checked'));

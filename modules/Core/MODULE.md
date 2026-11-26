@@ -2,6 +2,8 @@
 
 ## Checklists
 
+- ChecklistCard.tpl renders a completed/total line above the items from the model's completed and total values. Checklist.js updates it in updateCompletedVisibility() from all item rows, including hidden completed rows, after local drafts and successful AJAX updates. Empty lists show 0/0; read-only cards render the same count.
+
 - Checklist.js only registers its class in vtUtils's field-widget registry; it has no document-ready initializer. Shared Edit/Detail controller initialization and AJAX detail/summary content insertion call vtUtils.initFieldWidgets(container), which invokes initEdit(). Quick Create and other dynamic edit flows reuse the same helper through applyFieldElementsView(). Checklist event registration remains idempotent.
 
 - Vtiger_Link_Model::isChecklistWidgetUnavailable() owns the link-level skip predicate and reads its own URL parameters. Core_Checklist_Model::getSummaryWidgetField() remains the domain resolver that validates field type and visibility for names and legacy ids.
