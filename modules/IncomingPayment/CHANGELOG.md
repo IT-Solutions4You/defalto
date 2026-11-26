@@ -24,3 +24,5 @@
 - The currency of a payment is chosen with the currency symbol inside the Amount field; searching, filtering and sorting by amount compare the amounts in the base currency.
 - The amount of a payment must be greater than zero; money returned is entered as a refund in the other payment module.
 - Undo Last Import of payments updates the paid amount, balance and status of their documents.
+- Documents without payments store 0 as the paid amount and the total as the balance instead of empty values; existing documents are filled when the module is updated or the integration settings are saved.
+- Related lists and the record selection popup show the payment date and the amount again on installations updated from an earlier version.

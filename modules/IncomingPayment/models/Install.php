@@ -66,6 +66,15 @@ class IncomingPayment_Install_Model extends Core_PaymentInstall_Model
     private const FILTER_TABLES = ['vtiger_cvcolumnlist', 'vtiger_cvadvfilter', 'vtiger_cvstdfilter'];
 
     /**
+     * Layout settings that store field names of this module: related list columns with their sort field, and the
+     * columns of the record selection popup.
+     */
+    private const LAYOUT_SETTINGS_TABLES = [
+        Settings_LayoutEditor_RelatedListSettings_Model::TABLE => true,
+        Settings_LayoutEditor_PopupSettings_Model::TABLE => false,
+    ];
+
+    /**
      * Final payment status of earlier installations, replaced by the status shared by all payment modules.
      */
     private const LEGACY_PAID_STATUS = 'Received';
@@ -81,6 +90,7 @@ class IncomingPayment_Install_Model extends Core_PaymentInstall_Model
     {
         $this->dropLegacyRelationIndex();
         $this->renameLegacyFields();
+        $this->renameLayoutSettingsFields();
         $this->migratePaidStatus();
     }
 
@@ -98,6 +108,7 @@ class IncomingPayment_Install_Model extends Core_PaymentInstall_Model
         }
 
         $this->renameLegacyFields();
+        $this->renameLayoutSettingsFields();
         $this->migratePaidStatus();
         $this->migrateAccountingBlock();
         $this->migrateRelationField();
@@ -233,6 +244,53 @@ class IncomingPayment_Install_Model extends Core_PaymentInstall_Model
                 [$prefix, strlen($legacyPrefix) + 1, $this->getFilterColumnPattern($legacyColumn, $legacyName)]
             );
         }
+    }
+
+    /**
+     * Replaces the field names of earlier installations (LEGACY_FIELD_NAMES) in the related list and popup settings
+     * of this module, which keep the names as text. Fields renamed before this step existed kept their old names
+     * there, so the related list silently dropped e.g. the payment date and the amount. Safe to run again.
+     *
+     * @return void
+     */
+    private function renameLayoutSettingsFields(): void
+    {
+        $tabId = (int)getTabid($this->getModuleName());
+
+        if (!$tabId) {
+            return;
+        }
+
+        foreach (self::LAYOUT_SETTINGS_TABLES as $settingsTable => $hasSortField) {
+            $row = $this->db->fetchByAssoc($this->db->pquery(sprintf('SELECT * FROM %s WHERE tabid = ?', $settingsTable), [$tabId]), -1, false);
+
+            if (!$row) {
+                continue;
+            }
+
+            $columns = array_map([$this, 'getCurrentFieldName'], explode(',', (string)$row['columnslist']));
+            $values = ['columnslist' => implode(',', $columns)];
+
+            if ($hasSortField) {
+                $values['sortfield'] = $this->getCurrentFieldName((string)$row['sortfield']);
+            }
+
+            $this->db->pquery(
+                sprintf('UPDATE %s SET %s = ? WHERE tabid = ?', $settingsTable, implode(' = ?, ', array_keys($values))),
+                array_merge(array_values($values), [$tabId])
+            );
+        }
+    }
+
+    /**
+     * Returns the current name of a field: the new name of a field of an earlier installation, otherwise the name.
+     *
+     * @param string $fieldName Field name
+     * @return string
+     */
+    private function getCurrentFieldName(string $fieldName): string
+    {
+        return self::LEGACY_FIELD_NAMES[$fieldName] ?? $fieldName;
     }
 
     /**
