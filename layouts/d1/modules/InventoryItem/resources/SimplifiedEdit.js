@@ -29,9 +29,35 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
 
         const quantity = this.parseNumber(row.find('.simplifiedItemQuantity').val());
         const price = this.parseNumber(row.find('.simplifiedItemPrice').val());
-        const total = Math.round(quantity * price * 100) / 100;
+        const subtotal = Math.round(quantity * price * 100) / 100;
+        // The overall discount of the document is not editable here, but the server applies it to every item
+        const overallDiscount = this.parseNumber(this.getFormValue('overall_discount'));
+        const afterDiscount = subtotal - this.getItemDiscount(row, quantity, subtotal);
+        const net = overallDiscount > 0 ? afterDiscount - Math.round(afterDiscount * overallDiscount) / 100 : afterDiscount;
+        const tax = Math.round(net * this.parseNumber(row.find('.simplifiedItemTax').val())) / 100;
+        const total = Math.round((net + tax) * 100) / 100;
 
+        // The total of the row contains the tax, the same as the price total of the item in the standard block
+        row.data('net', net).data('tax', tax);
         row.find('.simplifiedItemTotal').data('total', total).text(this.formatNumber(total));
+    },
+
+    /**
+     * Discount of the item, set in the standard block. It is not editable here, but it is part of the price of the item.
+     */
+    getItemDiscount: function (row, quantity, subtotal) {
+        const discount = this.parseNumber(row.attr('data-discount'));
+
+        switch (row.attr('data-discount-type')) {
+            case 'Percentage':
+                return subtotal * discount / 100;
+            case 'Direct':
+                return this.parseNumber(row.attr('data-discount-amount'));
+            case 'Discount per Unit':
+                return quantity * discount;
+        }
+
+        return 0;
     },
 
     recalculateTotal: function () {
@@ -41,11 +67,9 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
 
         this.container.find('.simplifiedItemRow:not(.d-none)').each(function () {
             const row = jQuery(this);
-            const total = parseFloat(row.find('.simplifiedItemTotal').data('total')) || 0;
-            const taxPercentage = self.parseNumber(row.find('.simplifiedItemTax').val());
 
-            netTotal += total;
-            taxTotal += Math.round(total * taxPercentage) / 100;
+            netTotal += parseFloat(row.data('net')) || 0;
+            taxTotal += parseFloat(row.data('tax')) || 0;
         });
 
         taxTotal = Math.round(taxTotal * 100) / 100;
@@ -72,9 +96,9 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
     addRow: function (moduleName, label) {
         const nextIndexElement = jQuery('#simplifiedItemsNextIndex');
         const index = parseInt(nextIndexElement.val(), 10);
-        const template = moduleName ? '#simplifiedItemRowTemplate' : '#simplifiedTextRowTemplate';
+        const template = moduleName ? '#simplifiedItemRowTemplate' + moduleName : '#simplifiedTextRowTemplate';
         const html = jQuery(template).html().replace(/__INDEX__/g, index);
-        const row = jQuery(html);
+        const row = jQuery(jQuery.trim(html));
 
         nextIndexElement.val(index + 1);
         row.attr('data-module', moduleName || '');
@@ -83,7 +107,8 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
             row.find('.simplifiedItemText').attr('placeholder', label);
         }
 
-        this.container.find('tbody').append(row);
+        // Before the totals
+        this.container.find('tfoot').before(row);
         this.registerSelect2(row);
         this.registerAutoComplete(row);
         this.recalculateRow(row);
@@ -221,6 +246,10 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         row.find('.simplifiedItemProductId').val(productId);
         row.find('.simplifiedItemText').val(details.name);
         row.find('.simplifiedItemPrice').val(details.listprice);
+        // Not visible: the purchase cost of the product and the price book the price comes from, both are saved with the item
+        row.find('.simplifiedItemPurchaseCost').val(details.purchaseCost === undefined ? '' : details.purchaseCost);
+        row.find('.simplifiedItemPriceBookId').val(details.pricebookid || 0);
+        row.find('.simplifiedItemDescription').val(details.description || '');
 
         if (!this.parseNumber(quantityElement.val())) {
             quantityElement.val(details.quantity);
@@ -238,8 +267,9 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
      *
      * @param {jQuery} row
      * @param {Object} taxes by tax id
+     * @param {string|number} [keepTaxId] tax which stays selected when the product still has it, the first one is selected otherwise
      */
-    fillTaxes: function (row, taxes) {
+    fillTaxes: function (row, taxes, keepTaxId) {
         const select = row.find('.simplifiedItemTax');
 
         if (!select.length) {
@@ -267,7 +297,11 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
             }).appendTo(select);
         });
 
-        select.find('option:eq(1)').prop('selected', true);
+        const kept = keepTaxId ? select.find('option').filter(function () {
+            return String(jQuery(this).data('taxid')) === String(keepTaxId);
+        }).first() : jQuery();
+
+        (kept.length ? kept : select.find('option:eq(1)')).prop('selected', true);
         row.find('.simplifiedItemTaxId').val(select.find('option:selected').data('taxid') || 0);
         // The select2 view shows the new options and the selected one
         select.trigger('change.select2');
@@ -291,6 +325,117 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         }
 
         select.val(option.val()).trigger('change.select2');
+    },
+
+    /**
+     * Currency, tax region and price book of the document, the same as in the standard block: the prices and the taxes of the items
+     * which are selected from a product or service are loaded again for the new value.
+     */
+    registerSettings: function () {
+        const self = this;
+        const currency = jQuery('#simplifiedCurrency');
+        const region = jQuery('#simplifiedRegion');
+        const priceBook = jQuery('#simplifiedPriceBook');
+
+        this.filterPriceBooks();
+
+        const onChange = function (select, message) {
+            select.on('change', function () {
+                const original = String(select.data('original'));
+
+                if (select.val() === original) {
+                    return;
+                }
+
+                const apply = function () {
+                    select.data('original', select.val());
+                    self.filterPriceBooks();
+                    self.reloadItems();
+                };
+                const rows = self.getProductRows();
+
+                if (!rows.length) {
+                    apply();
+
+                    return;
+                }
+
+                app.helper.showConfirmationBox({message: app.vtranslate(message)}).then(apply, function () {
+                    select.val(original).trigger('change.select2');
+                });
+            });
+        };
+
+        onChange(currency, 'JS_CONFIRM_CURRENCY_CHANGE');
+        onChange(region, 'JS_CONFIRM_TAXES_AND_CHARGES_REPLACE');
+        onChange(priceBook, 'JS_CONFIRM_PRICEBOOK_CHANGE');
+    },
+
+    /**
+     * Only the price books of the currency of the document can be selected
+     */
+    filterPriceBooks: function () {
+        const priceBook = jQuery('#simplifiedPriceBook');
+        const currencyId = String(this.getFormValue('currency_id'));
+
+        if (!priceBook.length) {
+            return;
+        }
+
+        priceBook.find('option[data-currency]').each(function () {
+            const option = jQuery(this);
+            const visible = !currencyId || String(option.data('currency')) === currencyId;
+
+            option.prop('disabled', !visible);
+        });
+
+        if (priceBook.find('option:selected').prop('disabled')) {
+            priceBook.val('0').data('original', '0');
+        }
+
+        priceBook.trigger('change.select2');
+    },
+
+    getProductRows: function () {
+        return this.container.find('.simplifiedItemRow:not(.d-none)').filter(function () {
+            return parseInt(jQuery(this).find('.simplifiedItemProductId').val(), 10) > 0;
+        });
+    },
+
+    /**
+     * Prices, purchase costs and taxes of all the selected products and services for the current currency, price book and tax region
+     */
+    reloadItems: function () {
+        const self = this;
+
+        this.getProductRows().each(function () {
+            const row = jQuery(this);
+            const productId = row.find('.simplifiedItemProductId').val();
+            const params = {
+                module: 'InventoryItem',
+                action: 'GetItemDetails',
+                record: productId,
+                currency_id: self.getFormValue('currency_id'),
+                sourceModule: app.getModuleName(),
+                pricebookid: self.getFormValue('pricebookid'),
+            };
+
+            app.request.post({data: params}).then(function (error, data) {
+                const details = !error && data && data[0] ? data[0][productId] : null;
+
+                if (!details) {
+                    return;
+                }
+
+                // The text, the quantity, the unit and the description stay as the user wrote them
+                row.find('.simplifiedItemPrice').val(details.listprice);
+                row.find('.simplifiedItemPurchaseCost').val(details.purchaseCost === undefined ? '' : details.purchaseCost);
+                row.find('.simplifiedItemPriceBookId').val(details.pricebookid || 0);
+                self.fillTaxes(row, details.taxes, row.find('.simplifiedItemTaxId').val());
+                self.recalculateRow(row);
+                self.recalculateTotal();
+            });
+        });
     },
 
     removeRow: function (row) {
@@ -323,9 +468,22 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         this.container.on('change', '.simplifiedItemTax', function () {
             const select = jQuery(this);
 
-            select.closest('.simplifiedItemRow').find('.simplifiedItemTaxId').val(select.find('option:selected').data('taxid') || 0);
+            const row = select.closest('.simplifiedItemRow');
+
+            row.find('.simplifiedItemTaxId').val(select.find('option:selected').data('taxid') || 0);
+            self.recalculateRow(row);
             self.recalculateTotal();
         });
+
+        // The description is one line, it grows to 4 lines while the user writes in it
+        this.container.on('focus', '.simplifiedItemDescription', function () {
+            jQuery(this).attr('rows', 4);
+        });
+        this.container.on('blur', '.simplifiedItemDescription', function () {
+            jQuery(this).attr('rows', 1);
+        });
+
+        this.registerSettings();
 
         this.container.on('click', '.removeSimplifiedItem', function () {
             self.removeRow(jQuery(this).closest('.simplifiedItemRow'));

@@ -33,7 +33,7 @@
                         <td colspan="{$SIMPLIFIED_COLUMNS}">{$ROW['item_text']|escape}</td>
                     </tr>
                 {else}
-                    <tr class="border-bottom">
+                    <tr{if empty($ROW['description'])} class="border-bottom"{/if}>
                         <td>{$ROW['item_text']|escape}</td>
                         <td class="text-end">{$ROW['quantity']}</td>
                         <td>{$SIMPLIFIED_UNITS[$ROW['unit']]|default:$ROW['unit']|escape}</td>
@@ -43,6 +43,11 @@
                         {/if}
                         <td class="text-end">{$ROW['total']}</td>
                     </tr>
+                    {if !empty($ROW['description'])}
+                        <tr class="border-bottom">
+                            <td colspan="{$SIMPLIFIED_COLUMNS}" class="text-muted small pt-0">{$ROW['description']|escape|nl2br}</td>
+                        </tr>
+                    {/if}
                 {/if}
             {foreachelse}
                 <tr>

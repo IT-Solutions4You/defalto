@@ -23,8 +23,8 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
     /**
      * @param int $parentId
      *
-     * @return array rows to show in the form: id, item_text, productid, module, is_text, quantity, unit, price, tax, taxid, total (numbers as strings with a decimal point).
-     *               A text row has no product, quantity, price or tax.
+     * @return array rows to show in the form: id, item_text, description, productid, module, is_text, quantity, unit, price, tax, taxid, purchase_cost, pricebookid, total
+     *               (numbers as strings with a decimal point, the total is with the tax). A text row has no product, quantity, price, tax or description.
      */
     public static function getRows(int $parentId): array
     {
@@ -35,7 +35,10 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
             return $rows;
         }
 
-        foreach (InventoryItem_Module_Model::fetchItemsForId($parentId, true) as $item) {
+        $items = InventoryItem_Module_Model::fetchItemsForId($parentId, true);
+        $descriptions = self::fetchDescriptions(array_column($items, 'inventoryitemid'));
+
+        foreach ($items as $item) {
             $itemText = (string)$item['item_text'];
 
             if ('' === $itemText && !empty($item['productid'])) {
@@ -45,12 +48,15 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
             $productId = (int)($item['productid'] ?? 0);
             $quantity = (float)$item['quantity'];
             $price = (float)$item['price'];
+            // The total of the row as the system calculated it (with the tax and with the discounts of the row, if there are any)
+            $total = (float)$item['price_total'] ?: self::calculateTotal($quantity, $price, (float)$item['tax']);
 
             // Numbers are formatted with a decimal point, the way the edit form posts them
             $isText = !$productId;
             $rows[] = [
                 'id' => (int)$item['inventoryitemid'],
                 'item_text' => $itemText,
+                'description' => $isText ? '' : (string)($descriptions[(int)$item['inventoryitemid']] ?? ''),
                 'productid' => $productId,
                 // Module of the product or service, empty for a text row
                 'module' => $productId ? (string)getSalesEntityType($productId) : '',
@@ -60,11 +66,58 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
                 'price' => $isText ? '' : number_format($price, $decimals['price'] ?? 2, '.', ''),
                 'tax' => $isText ? '' : number_format((float)$item['tax'], 2, '.', ''),
                 'taxid' => $isText ? 0 : (int)($item['tax_id'] ?? 0),
-                'total' => $isText ? '' : number_format(round($quantity * $price, 2), 2, '.', ''),
+                // Not shown in the block, but posted back with the row, so a row which is not changed keeps them
+                // The discount of the item (set in the standard block) is kept, the edit view only uses it for the total of the row
+                'discount_type' => $isText ? '' : (string)$item['discount_type'],
+                'discount' => $isText ? 0 : (float)$item['discount'],
+                'discount_amount' => $isText ? 0 : (float)$item['discount_amount'],
+                'purchase_cost' => $isText ? '' : number_format((float)$item['purchase_cost'], $decimals['price'] ?? 2, '.', ''),
+                'pricebookid' => $isText ? 0 : (int)($item['pricebookid'] ?? 0),
+                'total' => $isText ? '' : number_format($total, 2, '.', ''),
             ];
         }
 
         return $rows;
+    }
+
+    /**
+     * @param array $itemIds
+     *
+     * @return array description by item id
+     */
+    protected static function fetchDescriptions(array $itemIds): array
+    {
+        $itemIds = array_values(array_filter(array_map('intval', $itemIds)));
+        $descriptions = [];
+
+        if (empty($itemIds)) {
+            return $descriptions;
+        }
+
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT crmid, description FROM vtiger_crmentity WHERE crmid IN (' . generateQuestionMarks($itemIds) . ')', $itemIds);
+
+        while ($row = $db->fetchByAssoc($result)) {
+            $descriptions[(int)$row['crmid']] = (string)$row['description'];
+        }
+
+        return $descriptions;
+    }
+
+    /**
+     * The same calculation as InventoryItem_Record_Model::recalculate() does for a row without discounts: the tax is rounded per row
+     *
+     * @param float $quantity
+     * @param float $price
+     * @param float $taxPercentage
+     *
+     * @return float total of the row with the tax
+     */
+    public static function calculateTotal(float $quantity, float $price, float $taxPercentage): float
+    {
+        $subtotal = round($quantity * $price, 2);
+
+        return $subtotal + round($subtotal * $taxPercentage / 100, 2);
     }
 
     /**
@@ -127,13 +180,34 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
         $taxes = self::getTaxes();
 
         $viewer->assign('SIMPLIFIED_UNITS', self::getUnits());
+        $viewer->assign('SIMPLIFIED_UNITS_BY_MODULE', self::getUnitsByModule());
         $viewer->assign('SIMPLIFIED_TAXES', $taxes);
         // Name, quantity, unit, price, [tax], total
         $viewer->assign('SIMPLIFIED_COLUMNS', empty($taxes) ? 5 : 6);
     }
 
     /**
-     * @return array unit value => label
+     * @return array unit value => label of the units of the products and of the services, as the product or service itself offers them
+     */
+    public static function getUnitsByModule(): array
+    {
+        require_once 'modules/PickList/PickListUtils.php';
+
+        $units = ['Products' => [], 'Services' => []];
+
+        foreach (array_keys(getAllPickListValues('usageunit')) as $unit) {
+            $units['Products'][(string)$unit] = InventoryItem_Utils_Helper::getUnitLabel((string)$unit, 'Products');
+        }
+
+        foreach (array_keys(getAllPickListValues('service_usageunit')) as $unit) {
+            $units['Services'][(string)$unit] = InventoryItem_Utils_Helper::getUnitLabel((string)$unit, 'Services');
+        }
+
+        return $units;
+    }
+
+    /**
+     * @return array unit value => label of all the units, for the read-only views
      */
     public static function getUnits(): array
     {
@@ -230,6 +304,10 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
         $sequence = 0;
         $keptIds = [];
         $taxes = self::getTaxes();
+        $currencyId = (int)($entity->column_fields['currency_id'] ?? 0);
+        // The items take the overall discount of the document, the same as the items added in the standard block
+        $overallDiscount = (float)($entity->column_fields['overall_discount'] ?? 0);
+        $purchaseCostEditable = (bool)Vtiger_Module_Model::getInstance('InventoryItem')->getField('purchase_cost')?->isEditable();
 
         foreach ($rows as $row) {
             $itemId = (int)($row['id'] ?? 0);
@@ -256,6 +334,8 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
             $productId = self::getValidProductId($row['productid'] ?? 0);
             $isText = !$productId;
             $taxId = 0;
+            $storedProductId = $itemId ? (int)$itemModel->get('productid') : 0;
+            $productChanged = $productId !== $storedProductId;
 
             $itemModel->set('item_text', $itemText);
             $itemModel->set('productid', $productId);
@@ -266,7 +346,12 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
                 $itemModel->set('price', 0);
                 $itemModel->set('unit', '');
                 $itemModel->set('tax', 0);
+                $itemModel->set('description', '');
+                $itemModel->set('purchase_cost', 0);
+                $itemModel->set('pricebookid', 0);
             } else {
+                $itemModel->set('description', trim((string)($row['description'] ?? '')));
+                self::setPurchaseCostAndPriceBook($itemModel, $row, $productId, $currencyId, $productChanged, $purchaseCostEditable, (int)($entity->column_fields['pricebookid'] ?? 0));
                 $itemModel->set('quantity', self::parseNumber($row['quantity'] ?? 0));
                 $itemModel->set('price', self::parseNumber($row['price'] ?? 0));
                 $itemModel->set('unit', InventoryItem_Utils_Helper::getUnitValue((string)($row['unit'] ?? '')));
@@ -280,6 +365,7 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
             }
 
             $itemModel->set('parentid', $parentId);
+            $itemModel->set('overall_discount', $overallDiscount);
             $itemModel->set('sequence', ++$sequence);
             // The totals of a row are calculated by the system, whatever the profile allows the user to edit
             $itemModel->getEntity()->isWorkFlowFieldUpdate = true;
@@ -298,6 +384,37 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
         }
 
         InventoryItem_ParentEntity_Model::updateTotals($parentId);
+    }
+
+    /**
+     * The purchase cost of the product is saved with the row, the margin of the row is calculated from it. The row posts the cost it
+     * was filled with when the product was selected. A user who cannot edit the purchase cost gets the cost of the product,
+     * and an existing row keeps its stored values unless its product was changed.
+     *
+     * @param Vtiger_Record_Model $itemModel
+     * @param array               $row
+     * @param int                 $productId
+     * @param int                 $currencyId currency of the document
+     * @param bool                $productChanged
+     * @param bool                $purchaseCostEditable
+     * @param int                 $documentPriceBookId
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected static function setPurchaseCostAndPriceBook(Vtiger_Record_Model $itemModel, array $row, int $productId, int $currencyId, bool $productChanged, bool $purchaseCostEditable, int $documentPriceBookId): void
+    {
+        if ($purchaseCostEditable && isset($row['purchase_cost']) && '' !== trim((string)$row['purchase_cost'])) {
+            $itemModel->set('purchase_cost', max(0, self::parseNumber($row['purchase_cost'])));
+        } elseif ($productChanged || '' === (string)$itemModel->get('purchase_cost')) {
+            $itemModel->set('purchase_cost', InventoryItem_Utils_Helper::getItemPurchaseCost($productId, $currencyId));
+        }
+
+        if (isset($row['pricebookid'])) {
+            $itemModel->set('pricebookid', max(0, (int)$row['pricebookid']));
+        } elseif ($productChanged) {
+            $itemModel->set('pricebookid', InventoryItem_Utils_Helper::decideItemPriceAndPriceBook($productId, $currencyId, $documentPriceBookId)['priceBookId']);
+        }
     }
 
     /**

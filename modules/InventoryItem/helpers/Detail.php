@@ -35,14 +35,65 @@ class InventoryItem_Detail_Helper
      */
     public static function fetchPriceBooks(Vtiger_Request $request): array
     {
-        $records = [];
-        $db = PearDatabase::getInstance();
-        $module = $request->get('module');
-        $user = Users_Record_Model::getCurrentUserModel();
+        $recordModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $request->get('module'));
+        $currencyId = (int)$recordModel->get('currency_id');
+        $selectedPriceBookId = (int)$recordModel->get('pricebookid');
 
-        $recordModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $module);
-        $currencyId = $recordModel->get('currency_id');
-        $selectedPriceBookId = $recordModel->get('pricebookid');
+        $records = self::queryPriceBooks($currencyId);
+
+        if ($selectedPriceBookId && !isset($records[$selectedPriceBookId])) {
+            $records[$selectedPriceBookId] = getEntityName('PriceBooks', $selectedPriceBookId)[$selectedPriceBookId];
+        }
+
+        return $records;
+    }
+
+    /**
+     * All the Price Books the user can see, with the currency of each one. The edit view filters them by the currency of the document
+     * in the browser, because the currency can be changed there.
+     *
+     * @param int $selectedPriceBookId price book of the document, added when the user cannot see it in the list
+     *
+     * @return array [id => ['name' => string, 'currency_id' => int]]
+     * @throws Exception
+     */
+    public static function fetchPriceBooksWithCurrency(int $selectedPriceBookId = 0): array
+    {
+        $names = self::queryPriceBooks(0);
+
+        if ($selectedPriceBookId && !isset($names[$selectedPriceBookId])) {
+            $names[$selectedPriceBookId] = getEntityName('PriceBooks', $selectedPriceBookId)[$selectedPriceBookId];
+        }
+
+        $currencies = [];
+
+        if ($names) {
+            $db = PearDatabase::getInstance();
+            $result = $db->pquery(sprintf('SELECT pricebookid, currency_id FROM vtiger_pricebook WHERE pricebookid IN (%s)', generateQuestionMarks(array_keys($names))), array_keys($names));
+
+            while ($row = $db->fetchByAssoc($result)) {
+                $currencies[(int)$row['pricebookid']] = (int)$row['currency_id'];
+            }
+        }
+
+        $records = [];
+
+        foreach ($names as $id => $name) {
+            $records[$id] = ['name' => $name, 'currency_id' => $currencies[$id] ?? 0];
+        }
+
+        return $records;
+    }
+
+    /**
+     * @param int $currencyId only the price books of this currency, 0 for all of them
+     *
+     * @return array [id => name], by the permissions of the user
+     */
+    protected static function queryPriceBooks(int $currencyId): array
+    {
+        $db = PearDatabase::getInstance();
+        $user = Users_Record_Model::getCurrentUserModel();
 
         $pagingModel = new Vtiger_Paging_Model();
         $pagingModel->set('page', 1);
@@ -65,20 +116,14 @@ class InventoryItem_Detail_Helper
         $listViewModel = Vtiger_ListView_Model::getCleanInstance($forModule)->set('query_generator', $queryGenerator)->set('listview_controller', $controller);
 
         if ($currencyId) {
-            $queryGenerator = $listViewModel->get('query_generator');
-            $queryGenerator->addUserSearchConditions(['search_field' => 'currency_id', 'search_text' => $currencyId, 'operator' => 'e']);
+            $listViewModel->get('query_generator')->addUserSearchConditions(['search_field' => 'currency_id', 'search_text' => $currencyId, 'operator' => 'e']);
         }
 
         $records = [];
-        $listViewRecords = $listViewModel->getListViewEntries($pagingModel);
 
-        foreach ($listViewRecords as $listViewRecord) {
+        foreach ($listViewModel->getListViewEntries($pagingModel) as $listViewRecord) {
             $data = $listViewRecord->getData();
             $records[$data['id']] = $data['bookname'];
-        }
-
-        if ($selectedPriceBookId && !isset($records[$selectedPriceBookId])) {
-            $records[$selectedPriceBookId] = getEntityName('PriceBooks', $selectedPriceBookId)[$selectedPriceBookId];
         }
 
         return $records;

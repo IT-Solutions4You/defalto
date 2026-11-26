@@ -35,6 +35,7 @@ class InventoryItem_EditView_Modifier implements Core_Modifier_Interface
         // Same rule as the standard block: the buttons that add items are available when the user can edit the document
         $viewer->assign('ITEMS_EDITABLE', !$recordId || InventoryItem_ParentEntity_Model::isParentEditable($recordId));
         InventoryItem_SimplifiedItems_Model::assignCommon($viewer);
+        $viewer->assign('SIMPLIFIED_PRICEBOOKS', InventoryItem_Detail_Helper::fetchPriceBooksWithCurrency());
         $viewer->assign('SIMPLIFIED_DECIMALS', InventoryItem_Utils_Helper::fetchDecimals());
     }
 
