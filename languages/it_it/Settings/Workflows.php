@@ -17,6 +17,18 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Completa il progetto quando tutte le attività sono completate',
+    'LBL_VTProjectCompletionTask' => 'Completa il progetto quando tutte le attività sono completate',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Come funziona il completamento automatico del progetto',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Imposta lo stato del progetto scelto quando tutte le attività non eliminate hanno uno degli stati selezionati. È richiesta almeno una attività.
+
+Controlla **tutte le attività non eliminate**, anche quelle nascoste. Il solo avanzamento al 100% non basta. Date e avanzamento del progetto non cambiano.
+
+Si esegue **dopo il salvataggio di una attività**. Lo spostamento verifica entrambi i progetti. La cancellazione non avvia questa azione.
+
+Ferma le modifiche automatiche **disattivando questa azione o il flusso di lavoro**. Se le attività non corrispondono agli stati selezionati, lo stato del progetto non cambia.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Stati delle attività completate',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Stato finale del progetto',
     'LBL_PROJECT_PROGRESS_TASK' => 'Calcola avanzamento progetto',
     'LBL_VTProjectProgressTask' => 'Calcola avanzamento progetto',
     'Share with' => 'Condividi con',
@@ -223,6 +235,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Rimuovi le limitazioni delle azioni del record',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Completa il progetto quando tutte le attività sono completate',
     'VTProjectProgressTask' => 'Calcola avanzamento progetto',
     'AddSharing' => 'Condividi con',
     'RemoveSharing' => 'Non condividere con',

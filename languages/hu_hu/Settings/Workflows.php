@@ -17,6 +17,18 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Projekt befejezése az összes feladat befejezésekor',
+    'LBL_VTProjectCompletionTask' => 'Projekt befejezése az összes feladat befejezésekor',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Az automatikus projektbefejezés működése',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Beállítja a választott projektállapotot, ha minden nem törölt feladat a kiválasztott állapotok egyikében van. Legalább egy feladat szükséges.
+
+Ellenőrzi **az összes nem törölt feladatot**, a rejtetteket is. A 100%-os haladás önmagában nem elég. A projekt dátumai és haladása változatlan marad.
+
+**A feladat mentése után** fut. Áthelyezéskor a korábbi és az új projektet is ellenőrzi. A törlés nem indítja el ezt a műveletet.
+
+Az automatikus változtatásokat **a művelet vagy a munkafolyamat kikapcsolásával** állíthatja le. Ha a feladatok állapotai nem felelnek meg a kiválasztottaknak, a projekt állapota nem változik.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Befejezett feladatállapotok',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Projekt célállapota',
     'LBL_PROJECT_PROGRESS_TASK' => 'Projekt előrehaladásának kiszámítása',
     'LBL_VTProjectProgressTask' => 'Projekt előrehaladásának kiszámítása',
     'Share with' => 'Megosztás vele',
@@ -223,6 +235,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Rekordművelet-korlátozások eltávolítása',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Projekt befejezése az összes feladat befejezésekor',
     'VTProjectProgressTask' => 'Projekt előrehaladásának kiszámítása',
     'AddSharing' => 'Megosztás vele',
     'RemoveSharing' => 'Megosztás megszüntetése vele',

@@ -17,6 +17,18 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Tüm görevler tamamlandığında projeyi tamamla',
+    'LBL_VTProjectCompletionTask' => 'Tüm görevler tamamlandığında projeyi tamamla',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Otomatik proje tamamlama nasıl çalışır',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Silinmemiş tüm görevler seçili durumlardan birindeyse seçilen proje durumunu ayarlar. En az bir görev gereklidir.
+
+Gizlenenler dahil **silinmemiş tüm görevleri** kontrol eder. Yalnızca %100 ilerleme yeterli değildir. Proje tarihleri ve ilerlemesi değişmez.
+
+**Görev kaydedildikten sonra** çalışır. Taşıma hem önceki hem yeni projeyi kontrol eder. Silme bu eylemi tetiklemez.
+
+Otomatik değişiklikleri **bu eylemi veya iş akışını devre dışı bırakarak** durdurun. Görevler seçili durumlarla eşleşmezse proje durumu değişmez.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Tamamlanan görev durumları',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Projenin sonuç durumu',
     'LBL_PROJECT_PROGRESS_TASK' => 'Proje ilerlemesini hesapla',
     'LBL_VTProjectProgressTask' => 'Proje ilerlemesini hesapla',
     'Share with' => 'Şununla paylaş',
@@ -223,6 +235,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Kayıt eylemi kısıtlamalarını kaldır',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Tüm görevler tamamlandığında projeyi tamamla',
     'VTProjectProgressTask' => 'Proje ilerlemesini hesapla',
     'AddSharing' => 'Şununla paylaş',
     'RemoveSharing' => 'Şununla paylaşma',

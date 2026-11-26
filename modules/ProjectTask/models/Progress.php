@@ -72,13 +72,7 @@ class ProjectTask_Progress_Model extends Vtiger_Base_Model
 
     public function getProjectIds(int $taskId): array
     {
-        $db = PearDatabase::getInstance();
-        $result = $db->pquery('SELECT projectid FROM vtiger_projecttask WHERE projecttaskid=?', [$taskId]);
-        $projectId = (int)$db->query_result($result, 0, 'projectid');
-        $oldEntity = (new VTEntityDelta())->getOldEntity('ProjectTask', $taskId);
-        $oldProjectId = $oldEntity ? (int)$oldEntity->get('projectid') : 0;
-
-        return array_values(array_unique(array_filter([$projectId, $oldProjectId])));
+        return ProjectTask_Record_Model::getRelatedProjectIds($taskId);
     }
 
     public function updateProjects(int $taskId, object $task): void

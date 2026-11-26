@@ -4,6 +4,17 @@ class ProjectTask_Record_Model extends Vtiger_Record_Model
 {
     protected static array $dateFields = ['startdate', 'enddate'];
 
+    public static function getRelatedProjectIds(int $taskId): array
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT projectid FROM vtiger_projecttask WHERE projecttaskid=?', [$taskId]);
+        $projectId = (int)$db->query_result($result, 0, 'projectid');
+        $oldEntity = (new VTEntityDelta())->getOldEntity('ProjectTask', $taskId);
+        $oldProjectId = $oldEntity ? (int)$oldEntity->get('projectid') : 0;
+
+        return array_values(array_unique(array_filter([$projectId, $oldProjectId])));
+    }
+
     public static function getRecordSnapshots(array $recordIds): array
     {
         $recordIds = array_values(array_unique(array_filter(array_map('intval', $recordIds), static fn(int $id): bool => $id > 0)));

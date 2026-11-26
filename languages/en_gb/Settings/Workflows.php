@@ -17,6 +17,18 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Complete project when all tasks are completed',
+    'LBL_VTProjectCompletionTask' => 'Complete project when all tasks are completed',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'How automatic project completion works',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Sets the selected project status when all non-deleted tasks have one of the selected statuses. At least one task is required.
+
+Checks **all non-deleted tasks**, including tasks hidden from the user. Having 100% progress alone is not enough. Project dates and progress stay unchanged.
+
+Runs **after a task is saved**. Moving a task checks both the previous and new project. Deleting a task does not trigger this action.
+
+Stop automatic changes by **disabling this action or workflow**. If tasks do not match the selected statuses, the project status stays unchanged.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Completed task statuses',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Resulting project status',
     'LBL_PROJECT_PROGRESS_TASK' => 'Calculate project progress',
     'LBL_VTProjectProgressTask' => 'Calculate project progress',
     'Share with' => 'Share with',
@@ -223,6 +235,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Clear record action restrictions',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Complete project when all tasks are completed',
     'VTProjectProgressTask' => 'Calculate project progress',
     'AddSharing' => 'Share with',
     'RemoveSharing' => 'Do not share with',

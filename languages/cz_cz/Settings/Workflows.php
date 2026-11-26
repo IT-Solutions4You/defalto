@@ -9,6 +9,18 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Dokončit projekt po dokončení všech úkolů',
+    'LBL_VTProjectCompletionTask' => 'Dokončit projekt po dokončení všech úkolů',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Jak funguje automatické dokončení projektu',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Nastaví zvolený stav projektu, pokud všechny nesmazané úkoly mají některý z vybraných stavů. Vyžaduje alespoň jeden úkol.
+
+Kontrolují se **všechny nesmazané úkoly**, i ty, které uživatel nevidí. Samotných 100 % pokroku nestačí. Data ani pokrok projektu se nemění.
+
+Kontrola proběhne **po uložení úkolu**. Při přesunu se kontroluje původní i nový projekt. Smazání úkolu tuto akci nespouští.
+
+Automatické změny zastavíte **vypnutím této akce nebo workflow**. Pokud úkoly nesplňují vybrané stavy, stav projektu zůstane nezměněný.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Dokončené stavy úkolů',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Výsledný stav projektu',
     'LBL_PROJECT_PROGRESS_TASK' => 'Přepočítat pokrok projektu',
     'LBL_VTProjectProgressTask' => 'Přepočítat pokrok projektu',
     'Share with' => 'Sdílet s',
@@ -231,6 +243,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Dokončit projekt po dokončení všech úkolů',
     'VTProjectProgressTask' => 'Přepočítat pokrok projektu',
     'AddSharing' => 'Sdílet s',
     'RemoveSharing' => 'Nesdílet s',

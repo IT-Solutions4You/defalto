@@ -20,6 +20,16 @@ The default workflow runs after every task save. Deletion also recalculates the 
 
 Disable the action or entire workflow to stop automatic updates, including deletion updates. Project Progress stays editable; while automation is enabled, later task operations can overwrite a manual value. Re-enabling automation takes effect on the next qualifying operation and does not bulk-update existing projects.
 
+## Completing the project automatically
+
+Select **How automatic project completion works** above the action settings to expand its explanation. Like the project progress action, it is initially collapsed and displays short paragraphs with highlighted key points.
+
+The separate **Complete project when all tasks are completed** workflow runs after each task save. In the action settings, select one or more **Completed task statuses** and a **Resulting project status**. It sets the related project to the selected status only when there is at least one non-deleted task and every non-deleted task has one of the selected statuses. New actions select Completed and Canceled for tasks, with Completed as the resulting project status. Previously saved selections remain unchanged; include or remove Canceled to match your process. Unselected statuses block completion; 100% Progress alone does not complete a task. An empty completed-status selection never completes a project. Tasks hidden from the person saving are also checked.
+
+Moving a task checks both its previous and new project. Restoring a task uses the normal save workflow; deleting a task does not run this completion action. A project already in the selected result status is not saved again. A task outside the selected statuses does not change the project status. Project dates and Progress are not changed by this action.
+
+Administrators can disable this workflow or its action independently of Calculate project progress in **Settings → Workflows → Project Tasks**. Keep its default every-save trigger without conditions to check every task save. Registration preserves existing workflow settings and does not complete existing projects in bulk; the next qualifying save performs the check.
+
 ## Checklists
 
 Administrators can add **Checklist** to task Summary through Settings → Widget editor → Project Tasks. The Summary widget uses the same checklist controls and task edit permissions as Details and Edit. The field label follows the normal layout in each screen; in Edit it has the same text color as Description.

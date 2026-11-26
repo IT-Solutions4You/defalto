@@ -13,10 +13,15 @@ class ProjectTask_Install_Model extends Core_Install_Model
     public array $registerWorkflows = [
         ['ProjectTask', 'VTProjectProgressTask', 'LBL_PROJECT_PROGRESS_TASK', '{"include":["ProjectTask"],"exclude":[]}',
             'modules/ProjectTask/models/ProgressTask.php', 'layouts/d1/modules/ProjectTask/taskforms/Progress.tpl'],
+        ['ProjectTask', 'VTProjectCompletionTask', 'LBL_PROJECT_COMPLETION_TASK', '{"include":["ProjectTask"],"exclude":[]}',
+            'modules/ProjectTask/models/CompletionTask.php', 'layouts/d1/modules/ProjectTask/taskforms/Completion.tpl'],
     ];
     public array $registerWorkflowTasks = [
         ['Calculate project progress', 'ProjectTask', '3', '3', [], [
             ['modules/ProjectTask/models/ProgressTask.php', 'Calculate project progress', 'VTProjectProgressTask', []],
+        ]],
+        ['Complete project when all tasks are completed', 'ProjectTask', '3', '3', [], [
+            ['modules/ProjectTask/models/CompletionTask.php', 'Complete project when all tasks are completed', 'VTProjectCompletionTask', []],
         ]],
     ];
     public array $registerEventHandler = [

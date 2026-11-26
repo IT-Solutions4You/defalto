@@ -23,6 +23,18 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Dokončiť projekt po dokončení všetkých úloh',
+    'LBL_VTProjectCompletionTask' => 'Dokončiť projekt po dokončení všetkých úloh',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Ako funguje automatické dokončenie projektu',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Ak všetky nevymazané úlohy majú niektorý z vybraných stavov, nastaví zvolený stav projektu. Projekt musí mať aspoň jednu úlohu.
+
+Kontrolujú sa **všetky nevymazané úlohy**, aj tie, ktoré používateľ nevidí. Samotných 100 % pokroku nestačí. Dátumy ani pokrok projektu sa nemenia.
+
+Kontrola sa spustí **po uložení úlohy**. Pri presune sa skontroluje pôvodný aj nový projekt. Vymazanie úlohy túto akciu nespúšťa.
+
+Automatické zmeny zastavíte **vypnutím tejto akcie alebo workflow**. Ak úlohy nespĺňajú vybrané stavy, stav projektu zostane nezmenený.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Dokončené stavy úloh',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Výsledný stav projektu',
     'LBL_PROJECT_PROGRESS_TASK' => 'Prepočítať pokrok projektu',
     'LBL_VTProjectProgressTask' => 'Prepočítať pokrok projektu',
     'Share with' => 'Zdieľať s',
@@ -279,6 +291,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Zrušiť obmedzenia akcií záznamu',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Dokončiť projekt po dokončení všetkých úloh',
     'VTProjectProgressTask' => 'Prepočítať pokrok projektu',
     'AddSharing' => 'Zdieľať s',
     'RemoveSharing' => 'Nezdieľať s',

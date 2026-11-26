@@ -16,6 +16,12 @@ When planned hours are missing or zero, the weight uses the inclusive number of 
 
 Project Progress remains editable and accepts whole percentages from 0 to 100. Progress is stored as a whole number. The next qualifying task operation can overwrite a manual value. Disable the workflow or its action in **Settings → Workflows → Project Tasks** to keep managing progress manually; disabling leaves the last value unchanged. Existing projects are not recalculated in bulk during installation or update.
 
+## Automatic completion
+
+The Project Tasks workflow **Complete project when all tasks are completed** sets the project Status to the result selected in its action settings after a task save when every non-deleted task has one of the configured completed statuses. At least one task and one completed status are required. New actions default to Completed and Canceled for tasks and Completed for the project; previously saved selections remain unchanged. Unselected task statuses prevent completion regardless of Progress, including tasks hidden by permissions or filters. Moving a task checks both projects.
+
+When a task falls outside the selected statuses, the workflow leaves the project Status unchanged. It does not change dates or update Progress. It does not run on task deletion or complete existing projects in bulk. Administrators can disable its workflow or action in **Settings → Workflows → Project Tasks** independently of the progress calculation.
+
 ## Summary task table
 
 In All, the task Status column appears before Progress.

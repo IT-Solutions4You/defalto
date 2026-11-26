@@ -17,6 +17,18 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Slutför projektet när alla uppgifter är slutförda',
+    'LBL_VTProjectCompletionTask' => 'Slutför projektet när alla uppgifter är slutförda',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Så fungerar automatisk projektslutföring',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Anger den valda projektstatusen när alla uppgifter som inte är borttagna har en vald status. Minst en uppgift krävs.
+
+Kontrollerar **alla uppgifter som inte är borttagna**, även dolda. Enbart 100 % framsteg räcker inte. Projektets datum och framsteg ändras inte.
+
+Körs **efter att en uppgift sparats**. Flytt kontrollerar både det gamla och det nya projektet. Borttagning utlöser inte åtgärden.
+
+Stoppa automatiska ändringar genom att **inaktivera åtgärden eller arbetsflödet**. Om uppgifterna inte motsvarar valda statusar ändras inte projektstatusen.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Statusar för slutförda uppgifter',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Projektets målstatus',
     'LBL_PROJECT_PROGRESS_TASK' => 'Beräkna projektets framsteg',
     'LBL_VTProjectProgressTask' => 'Beräkna projektets framsteg',
     'Share with' => 'Dela med',
@@ -232,6 +244,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Slutför projektet när alla uppgifter är slutförda',
     'VTProjectProgressTask' => 'Beräkna projektets framsteg',
     'AddSharing' => 'Dela med',
     'RemoveSharing' => 'Dela inte med',
