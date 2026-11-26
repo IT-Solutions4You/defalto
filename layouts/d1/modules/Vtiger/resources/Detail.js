@@ -1413,12 +1413,10 @@ Vtiger.Class("Vtiger_Detail_Js", {
                                 return true;
                             }
                             jQuery('.vt-notification').remove();
-                            let postSaveRecordDetails = response,
-                                displayValue = null;
+                            const postSaveRecordDetails = response,
+                                isHeaderProgress = currentTdElement.hasClass('headerAjaxEdit') && detailViewValue.find('[data-header-progress]').length > 0;
 
-                            if (currentTdElement.hasClass('headerAjaxEdit') && detailViewValue.find('[data-header-progress]').length) {
-                                self.updateHeaderProgressValue(detailViewValue, postSaveRecordDetails[fieldName]);
-                            } else if ('picklist' === fieldBasicData.data('type') && self.isPicklistColorSupported(detailViewValue)) {
+                            if ('picklist' === fieldBasicData.data('type') && self.isPicklistColorSupported(detailViewValue)) {
                                 let style = '',
                                     color = 'undefined' !== typeof postSaveRecordDetails[fieldName].colormap ? postSaveRecordDetails[fieldName].colormap[postSaveRecordDetails[fieldName].value] : false,
                                     picklistHtml;
@@ -1458,11 +1456,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
                                 detailViewValue.html(picklistHtml);
                             } else if (fieldBasicData.data('type') == 'currency' && app.getModuleName() != 'Users') {
                                 detailViewValue.find('.currencyValue').html(postSaveRecordDetails[fieldName].display_value);
-                            } else {
+                            } else if (!isHeaderProgress) {
                                 detailViewValue.html(postSaveRecordDetails[fieldName].display_value);
                             }
 
-                            self.updateHeaderFieldValue(fieldName, detailViewValue.html(), postSaveRecordDetails[fieldName]);
+                            self.updateHeaderFieldValue(fieldName, detailViewValue.html(), postSaveRecordDetails[fieldName], isHeaderProgress ? detailViewValue : null);
 
                             fieldBasicData.data('displayvalue', postSaveRecordDetails[fieldName].display_value);
                             fieldBasicData.data('value', postSaveRecordDetails[fieldName].value);
@@ -1507,11 +1505,12 @@ Vtiger.Class("Vtiger_Detail_Js", {
         progress.find('[data-header-progress-label]').text(displayValue);
         bootstrap.Tooltip.getOrCreateInstance(progress[0]);
     },
-    updateHeaderFieldValue(fieldName, fieldValue, fieldDetails) {
+    updateHeaderFieldValue(fieldName, fieldValue, fieldDetails, sourceValueElement = null) {
         let self = this,
-            container = self.getContainer();
+            container = self.getContainer(),
+            valueElements = container.find('.overlayDetailHeader, .detailViewContainer').find('.' + fieldName).add(sourceValueElement);
 
-        container.find('.overlayDetailHeader, .detailViewContainer').find('.' + fieldName).each(function () {
+        valueElements.each(function () {
             const valueElement = jQuery(this);
 
             if (fieldDetails && valueElement.find('[data-header-progress]').length) {
