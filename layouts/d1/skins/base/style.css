@@ -4856,3 +4856,13 @@ input[type=number] {
     color: inherit !important;
     opacity: .8;
 }
+
+/* Multi reference field (uitype 34): the module list keeps its width, the record search fills the rest of the row */
+.js-multireference-field .referenceModulesList + .select2-container {
+    flex: 0 0 auto;
+}
+
+.js-multireference-field .js-multireference-select + .select2-container {
+    flex: 1 1 0%;
+    min-width: 0;
+}

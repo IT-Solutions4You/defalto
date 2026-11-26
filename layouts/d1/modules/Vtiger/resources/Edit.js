@@ -361,6 +361,14 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
             sourceField.on(Vtiger_Edit_Js.postReferenceSelectionEvent, function (event, result) {
                 self.addMultiReferenceOptions(selectElement, self.getMultiReferencePopupRecords(result.data));
             });
+            // The module list is as wide as the selected module; its options get their own width to stay on one line
+            wrapper.find('select.referenceModulesList').on('select2:opening', function () {
+                const moduleSelect = jQuery(this).data('select2');
+
+                if (moduleSelect) {
+                    moduleSelect.options.set('dropdownAutoWidth', true);
+                }
+            });
         });
     },
 
@@ -378,7 +386,8 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
         return {
             multiple: true,
             theme: 'bootstrap-5',
-            width: '100%',
+            // The skin lets the field fill the space left by the module list (flex), a fixed 100% overflowed it
+            width: 'auto',
             // In a modal (quick create) the results must be rendered inside it, as in vtUtils.showSelect2ElementView();
             // appended to the body they were not shown in Firefox
             dropdownParent: modal.length ? modal : jQuery(document.body),
