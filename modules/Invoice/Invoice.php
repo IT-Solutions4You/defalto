@@ -31,7 +31,7 @@
 
 class Invoice extends CRMEntity
 {
-    public string $moduleVersion = '1.3';
+    public string $moduleVersion = '1.4';
     public string $moduleName = 'Invoice';
     public string $parentName = 'SALES';
 

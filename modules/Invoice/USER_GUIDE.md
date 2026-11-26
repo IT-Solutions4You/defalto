@@ -35,6 +35,10 @@ The invoice summary shows the subtotal, discounts, taxes, grand total, received 
 - **Paid** – payment has been received.
 - **Cancel** – the invoice is no longer valid.
 
+## Invoice type
+
+- **Invoice Type** is set automatically and cannot be edited: **Invoice** for an ordinary invoice, **Tax Document** for a tax document issued for a received advance of a proforma invoice, and **Final Invoice** for the invoice that deducts paid proforma invoices.
+
 ## Read-only invoices
 
 When an invoice is read-only (or you are not allowed to edit it), its item lines are locked as well. See the Inventory Items guide.

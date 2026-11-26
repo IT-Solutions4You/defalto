@@ -619,8 +619,11 @@ class Invoice_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                     'headerfield' => 0,
                     'ajaxeditable' => 0,
+                    // Tax Document and Final Invoice are created from proforma invoices (ProformaInvoice extension)
                     'picklist_values' => [
                         'Invoice',
+                        'Tax Document',
+                        'Final Invoice',
                     ],
                     'defaultvalue' => 'Invoice',
                 ],

@@ -1,0 +1,5 @@
+# Invoice
+
+- Owner: core module `Invoice` (`modules/Invoice`, entity `Invoice`, install model `Invoice_Install_Model`). Inventory items, totals and the Received/Balance handlers follow the shared inventory model.
+- `invoice_type` (uitype 16, displaytype 2, read-only) is set by the code that creates the invoice: `Invoice` by default, `Tax Document` and `Final Invoice` by the ProformaInvoice extension (`ProformaInvoice_SaveInvoice_Action`). Since `Vtiger_Util_Helper::validatePicklistFieldValue()` checks picklist values on save, every value an extension writes must exist in `vtiger_invoice_type`; the values are declared in `Invoice_Install_Model` (`picklist_values`) and added to existing installations by migration `schema/migrations/2026/11/20261126130000.php`, because a module update does not add picklist values of an existing field. The labels are translated in `languages/<locale>/Invoice.php`.
+- Validation: create a tax document (Create Tax Document) and a final invoice (Create Final Invoice) from a proforma invoice and check that `invoice_type` is stored and that the save does not fail on the picklist validation.
