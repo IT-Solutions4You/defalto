@@ -1,5 +1,10 @@
 # Core UI ownership
 
+## Record update formatting
+
+- `Core_RecordUpdate_Model::convertToUserFormat()` owns the tracked date/currency conversion of an already hydrated CRMEntity before an ordinary workflow-style update. It calls the existing DataTransform date converter followed by its currency converter while field tracking is paused, then resumes tracking. The supplied webservice metadata and current execution user must remain those of the caller. It does not retrieve/save records, clear singleton state, decode HTML, change permissions or trigger workflows; those operations retain their caller-specific order.
+- Consumers are Project aggregate persistence and VTUpdateFieldsTask source/reference updates. Preserve saveentity() and ModTracker attribution semantics; do not replace them with a full save() chain.
+
 ## Checklists
 
 - ChecklistCard.tpl renders a completed/total line above the items from the model's completed and total values. Checklist.js updates it in updateCompletedVisibility() from all item rows, including hidden completed rows, after local drafts and successful AJAX updates. Empty lists show 0/0; read-only cards render the same count.
