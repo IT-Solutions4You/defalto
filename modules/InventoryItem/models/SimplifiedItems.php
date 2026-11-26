@@ -121,7 +121,7 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
     }
 
     /**
-     * Totals of the document for the read-only views: total without the tax, the tax and total with the tax
+     * Totals of the document for the read-only views: total without the tax, the tax, total with the tax, adjustment and grand total
      *
      * @param Vtiger_Viewer $viewer
      * @param int           $parentId
@@ -137,7 +137,8 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
         $viewer->assign('PRICE_WITHOUT_VAT_DISPLAY', $recordModel ? (string)$recordModel->getCurrencyDisplayValue('price_after_overall_discount', $user) : '');
         $viewer->assign('VAT_DISPLAY', $recordModel ? (string)$recordModel->getCurrencyDisplayValue('tax_amount', $user) : '');
         $viewer->assign('PRICE_TOTAL_DISPLAY', $recordModel ? (string)$recordModel->getCurrencyDisplayValue('price_total', $user) : '');
-        $viewer->assign('SIMPLIFIED_TOTAL', $recordModel ? (string)$recordModel->getCurrencyDisplayValue('grand_total', $user) : '');
+        $viewer->assign('ADJUSTMENT_DISPLAY', $recordModel ? (string)$recordModel->getCurrencyDisplayValue('adjustment', $user, true) : '');
+        $viewer->assign('GRAND_TOTAL_DISPLAY', $recordModel ? (string)$recordModel->getCurrencyDisplayValue('grand_total', $user) : '');
     }
 
     /**

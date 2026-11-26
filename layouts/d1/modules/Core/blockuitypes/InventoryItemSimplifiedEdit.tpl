@@ -7,10 +7,10 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 
-{* The fields of the block (tax region, totals...) stay in the form as hidden inputs, only the items, the currency, the tax region and the price book are edited here *}
+{* The fields of the block (tax region, totals...) stay in the form as hidden inputs, only the items, the currency, the tax region, the price book and the adjustment are edited here *}
 <div style="display: none;">
     {foreach item=FIELD_MODEL key=FIELD_NAME from=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']}
-        {if $FIELD_NAME neq 'currency_id' && $FIELD_NAME neq 'region_id' && $FIELD_NAME neq 'pricebookid'}
+        {if $FIELD_NAME neq 'currency_id' && $FIELD_NAME neq 'region_id' && $FIELD_NAME neq 'pricebookid' && $FIELD_NAME neq 'adjustment'}
             {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
         {/if}
     {/foreach}
@@ -117,6 +117,7 @@
                     {include file=vtemplate_path('partials/SimplifiedItemRow.tpl', 'InventoryItem') ROW_INDEX=$ROW_INDEX ROW=$ROW}
                 {/foreach}
                 <tfoot>
+                {assign var=ADJUSTMENT_FIELD value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['adjustment']}
                 {if empty($SIMPLIFIED_TAXES)}
                     <tr class="border-top">
                         <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Total', 'InventoryItem')}</td>
@@ -125,21 +126,33 @@
                     </tr>
                 {else}
                     <tr class="border-top">
-                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Price After Overall Discount', 'InventoryItem')}</td>
+                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Total', 'InventoryItem')}</td>
                         <td class="text-end fw-bold simplifiedItemsNetTotal">0</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('VAT', 'Core')}</td>
+                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('VAT', 'InventoryItem')}</td>
                         <td class="text-end fw-bold simplifiedItemsTaxTotal">0</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Price Total', 'InventoryItem')}</td>
+                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Total with VAT', 'InventoryItem')}</td>
                         <td class="text-end fw-bold simplifiedItemsGrandTotal">0</td>
                         <td></td>
                     </tr>
                 {/if}
+                {if $ADJUSTMENT_FIELD}
+                    <tr>
+                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Adjustment', 'InventoryItem')}</td>
+                        <td class="simplifiedItemsAdjustmentCell">{include file=vtemplate_path($ADJUSTMENT_FIELD->getUITypeModel()->getTemplateName(),$MODULE) FIELD_MODEL=$ADJUSTMENT_FIELD FIELD_NAME='adjustment'}</td>
+                        <td></td>
+                    </tr>
+                {/if}
+                <tr class="border-top">
+                    <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
+                    <td class="text-end fw-bold simplifiedItemsFinalTotal">0</td>
+                    <td></td>
+                </tr>
                 </tfoot>
             </table>
         </div>

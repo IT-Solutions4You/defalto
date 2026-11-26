@@ -2,6 +2,8 @@
 
 ## 1.11 - 2026-11-26
 
+- The detail view of the simplified product block looks like the table of the standard block: the item name is bold with an icon next to it which opens the product or service in a new window, the table ends with a thicker line and a Total row, and below the table on the right are the totals Total, VAT, Total with VAT, Adjustment and Grand Total (a company without taxes has only Total, Adjustment and Grand Total). The summary widget shows the same totals.
+- The simplified product block has the Adjustment of the document, which was missing: it is edited in the edit view under the totals, the Grand Total there is recalculated while typing and is saved as the total with the tax plus the adjustment.
 - The simplified product block has the Currency, Tax Region and Price Book selects of the document in the header of the block, with the same look as the standard block (button groups with a dropdown). Changing the currency or the price book asks for a confirmation and reloads the prices of the product and service rows from the price book (new rows take the price from the selected price book); the price book list is filtered by the currency. Changing the tax region reloads the taxes of the rows.
 - The Total column of a row now includes the tax. The row total takes the item discount and the overall discount into account, so the sum of the rows equals the totals of the document. The discounts themselves are not editable in the simplified block, existing values are kept and applied.
 - The unit of a row is a text input like in the standard block (not a select); it is filled with the translated unit of the product or the service when it is selected and any text can be written.

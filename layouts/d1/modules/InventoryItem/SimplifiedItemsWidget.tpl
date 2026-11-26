@@ -53,25 +53,28 @@
         </tbody>
         {if count($SIMPLIFIED_ITEMS)}
             <tfoot>
-            {if empty($SIMPLIFIED_TAXES)}
+            <tr>
+                <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Total', 'InventoryItem')}</td>
+                <td class="font-bold textAlignRight">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
+            </tr>
+            {if !empty($SIMPLIFIED_TAXES)}
                 <tr>
-                    <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Total')}</td>
-                    <td class="font-bold textAlignRight">{$GRAND_TOTAL_DISPLAY}</td>
-                </tr>
-            {else}
-                <tr>
-                    <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Price After Overall Discount', 'InventoryItem')}</td>
-                    <td class="font-bold textAlignRight">{$PRICE_WITHOUT_VAT_DISPLAY}</td>
-                </tr>
-                <tr>
-                    <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('VAT', 'Core')}</td>
+                    <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('VAT', 'InventoryItem')}</td>
                     <td class="font-bold textAlignRight">{$VAT_DISPLAY}</td>
                 </tr>
                 <tr>
-                    <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Price Total', 'InventoryItem')}</td>
+                    <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Total with VAT', 'InventoryItem')}</td>
                     <td class="font-bold textAlignRight">{$PRICE_TOTAL_DISPLAY}</td>
                 </tr>
             {/if}
+            <tr>
+                <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Adjustment', 'InventoryItem')}</td>
+                <td class="font-bold textAlignRight">{$ADJUSTMENT_DISPLAY}</td>
+            </tr>
+            <tr class="border-top">
+                <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Grand Total', 'InventoryItem')}</td>
+                <td class="font-bold textAlignRight">{$GRAND_TOTAL_DISPLAY}</td>
+            </tr>
             </tfoot>
         {/if}
     </table>

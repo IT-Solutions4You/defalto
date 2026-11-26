@@ -78,6 +78,8 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         this.container.find('.simplifiedItemsTaxTotal').text(self.formatNumber(taxTotal));
         // Total with the tax, or the total of the rows when the company does not use taxes
         this.container.find('.simplifiedItemsGrandTotal').text(self.formatNumber(netTotal + taxTotal));
+        // Grand total: the total with the tax and the adjustment, the same as the server saves it
+        this.container.find('.simplifiedItemsFinalTotal').text(self.formatNumber(netTotal + taxTotal + self.parseNumber(self.getFormValue('adjustment'))));
     },
 
     recalculateAll: function () {
@@ -485,6 +487,10 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
 
         this.container.on('input', '.simplifiedItemQuantity, .simplifiedItemPrice', function () {
             self.recalculateRow(jQuery(this).closest('.simplifiedItemRow'));
+            self.recalculateTotal();
+        });
+
+        this.container.on('input change', '[name="adjustment"]', function () {
             self.recalculateTotal();
         });
 
