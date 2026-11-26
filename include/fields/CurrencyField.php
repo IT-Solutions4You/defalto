@@ -270,7 +270,8 @@ class CurrencyField
     }
 
     /**
-     * Static Function that appends the currency symbol to a given currency value, based on the preferred symbol placement
+     * Static Function that appends the currency symbol to a given currency value, based on the preferred symbol placement.
+     * A zero amount ("0") gets the symbol too; only a missing value (null, false or an empty string) stays empty.
      *
      * @param string $currencyValue Number to be formatted
      * @param string $currencySymbol
@@ -282,7 +283,7 @@ class CurrencyField
     {
         global $current_user;
 
-        if (empty($currencyValue)) {
+        if (null === $currencyValue || false === $currencyValue || '' === trim((string)$currencyValue)) {
             return '';
         }
 

@@ -153,11 +153,8 @@ class Core_PaymentCalculation_Helper
         $info = $currencyId > 0 ? Vtiger_Functions::getCurrencySymbolandRate($currencyId) : [];
         $value = CurrencyField::convertToUserFormat($amount, null, true, false, true);
 
-        // appendCurrencySymbol() returns an empty string for "0", so the symbol is placed around a placeholder first.
-        $pattern = CurrencyField::appendCurrencySymbol('#', (string)($info['symbol'] ?? ''));
-
         // Currency symbols are stored HTML-encoded (&euro;); templates escape the result again.
-        return decode_html(str_replace('#', (string)$value, $pattern));
+        return decode_html(CurrencyField::appendCurrencySymbol((string)$value, (string)($info['symbol'] ?? '')));
     }
 
     /**
