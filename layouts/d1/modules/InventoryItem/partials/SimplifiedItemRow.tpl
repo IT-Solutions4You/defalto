@@ -33,16 +33,8 @@
             <input type="text" inputmode="decimal" class="form-control text-end simplifiedItemQuantity" name="simplified_items[{$ROW_INDEX}][quantity]" value="{$ROW['quantity']}" autocomplete="off">
         </td>
         <td>
-            <select class="form-select inputElement select2 simplifiedItemUnit" name="simplified_items[{$ROW_INDEX}][unit]">
-                <option value=""></option>
-                {assign var=UNIT_FOUND value=false}
-                {foreach key=UNIT_VALUE item=UNIT_LABEL from=$ROW_UNITS}
-                    <option value="{$UNIT_VALUE|escape}" {if $UNIT_VALUE eq $ROW['unit']}selected{assign var=UNIT_FOUND value=true}{/if}>{$UNIT_LABEL|escape}</option>
-                {/foreach}
-                {if $ROW['unit'] neq '' && !$UNIT_FOUND}
-                    <option value="{$ROW['unit']|escape}" selected>{$ROW['unit']|escape}</option>
-                {/if}
-            </select>
+            {* A text input like in the standard block: the label of the unit of the product or service is filled in when it is selected, any text can be written. The server converts a label back to the stored value *}
+            <input type="text" class="form-control simplifiedItemUnit" name="simplified_items[{$ROW_INDEX}][unit]" value="{if isset($ROW_UNITS[$ROW['unit']])}{$ROW_UNITS[$ROW['unit']]|escape}{else}{$ROW['unit']|escape}{/if}" autocomplete="off">
         </td>
         <td>
             <input type="text" inputmode="decimal" class="form-control text-end simplifiedItemPrice" name="simplified_items[{$ROW_INDEX}][price]" value="{$ROW['price']}" autocomplete="off">

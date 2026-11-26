@@ -139,7 +139,7 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
     },
 
     /**
-     * Unit and tax selects look the same as the selects of the rest of the system
+     * The tax select looks the same as the selects of the rest of the system
      */
     registerSelect2: function (row) {
         vtUtils.showSelect2ElementView(row.find('select.select2'), {width: '100%'});
@@ -308,23 +308,13 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
     },
 
     /**
-     * @param {jQuery} select
+     * @param {jQuery} input
      * @param {string} label unit as shown to the user, the server converts it back to the stored value
      */
-    selectUnit: function (select, label) {
-        if (!label) {
-            return;
+    selectUnit: function (input, label) {
+        if (label) {
+            input.val(label);
         }
-
-        let option = select.find('option').filter(function () {
-            return jQuery(this).val() === label || jQuery(this).text() === label;
-        }).first();
-
-        if (!option.length) {
-            option = jQuery('<option>').val(label).text(label).appendTo(select);
-        }
-
-        select.val(option.val()).trigger('change.select2');
     },
 
     /**
