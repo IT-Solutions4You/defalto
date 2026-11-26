@@ -55,11 +55,15 @@ class Vtiger_KeyMetrics_Dashboard extends Vtiger_IndexAjax_View
         $metriclists = getMetricList();
 
         foreach ($metriclists as $key => $metriclist) {
+            $customView = new CustomView_Record_Model(['viewname' => $metriclist['name']]);
+            $customView->setModule($metriclist['module']);
+            $metriclists[$key]['name'] = $customView->getDisplayName();
             $metricresult = null;
             $queryGenerator = new EnhancedQueryGenerator($metriclist['module'], $current_user);
             $queryGenerator->initForCustomViewById($metriclist['id']);
             $metricsql = $queryGenerator->getQuery();
             $metricresult = $adb->query(Vtiger_Functions::mkCountQuery($metricsql));
+
             if ($metricresult) {
                 $rowcount = $adb->fetch_array($metricresult);
                 $metriclists[$key]['count'] = $rowcount['count'];

@@ -77,7 +77,7 @@
             {elseif 'user' eq $FIELD_CONFIG['type']}
                 {assign var=ASSIGNED_USER value=Users_Record_Model::getInstanceById($FIELD_VALUE, 'Users')}
                 {assign var=ASSIGNED_USER_IMAGE value=$ASSIGNED_USER->getImageUrl()}
-                <div class="col-xl-2 col-lg-6 {if $IS_EDITABLE}cursorPointer{else}cursorDefault{/if}">
+                <div class="col-xl-2 col-lg-6 order-first order-xl-last {if $IS_EDITABLE}cursorPointer{else}cursorDefault{/if}">
                     <div class="row flex-nowrap align-items-center" data-bs-toggle="dropdown">
                         <div class="col-auto pe-0">
                             <div class="d-inline-block h-3rem w-3rem rounded-circle" data-assigned-user-image=""

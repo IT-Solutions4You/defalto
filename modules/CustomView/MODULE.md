@@ -6,6 +6,8 @@
 
 ## Criteria readback
 
+- `CustomView_Record_Model::getDisplayName()` owns saved-filter display labels: prefer the normalized `CV_*` key, then translate the stored name in the source module (with the language handler's Core fallback), then retain the stored name when no translation exists. List selectors, MiniList titles/wizard and Key Metrics use this contract; never persist the translated label.
+
 - `transformToNewAdvancedFilter()` (advanced criteria readback and Save as filter drafts) preserves each non-empty `column_condition`, including mixed AND/OR rows. Only missing connectors use the group's legacy fallback (first non-empty connector, otherwise `and`); the final row is always connector-free. Do not flatten row connectors to the first operator.
 - Empty advanced criteria normalize to a group with `columns: []` and connector metadata. The shared `AdvanceFilter.tpl` checks the columns to show a single initial blank row; do not remove the metadata to control presentation.
 - Operator presentation for saved views and the quick list filter delegates through `Core_FilterOperator_Model` to the source module's `Core_Filter_Model`. `EditAjax` uses `Vtiger_Field_Model::getDisplayDateFilterTypes()` so date labels and period units are translated consistently. `Core_FilterOperator_Model::isCalendarValue()` excludes relative day/hour quantities and `lastperiod` from date-format conversion in persistence and readback. Readback stays in user display format; both query generators then pass criteria through the same module filter's `getQueryCondition()` as quick filtering. Time criteria keep their existing persistence/display conversion and the `time_start`/`time_end` special handling.

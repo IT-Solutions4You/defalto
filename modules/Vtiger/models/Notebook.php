@@ -25,6 +25,70 @@ class Vtiger_Notebook_Model extends Vtiger_Widget_Model
         return $data['contents'];
     }
 
+    public function isHtmlContent(): bool
+    {
+        $data = Zend_Json::decode(decode_html($this->get('data')));
+
+        return ($data['format'] ?? 'text') === 'html';
+    }
+
+    public function getDisplayContent(): string
+    {
+        if ($this->isHtmlContent()) {
+            return self::getSanitizedContent($this->getContent());
+        }
+
+        return nl2br(htmlspecialchars($this->getContent(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+    }
+
+    public static function getSanitizedContent(string $content): string
+    {
+        static $purifier;
+
+        if (!$purifier) {
+            $config = HTMLPurifier_Config::createDefault();
+            $config->set('Core.Encoding', 'UTF-8');
+            $config->set('Cache.DefinitionImpl', null);
+            $config->set('HTML.Allowed', 'p,br,strong,b,em,i,u,s,strike,sub,sup,ul,ol,li,blockquote,a[href|title]');
+            $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true, 'mailto' => true]);
+            $purifier = new HTMLPurifier($config);
+        }
+
+        return $purifier->purify($content);
+    }
+
+    public static function getNotebookData(Vtiger_Request $request, string $field): string
+    {
+        $format = $request->get('format') === 'html' ? 'html' : 'text';
+        $content = $format === 'html' ? $request->getRaw($field) : $request->get($field);
+
+        if (!is_string($content)) {
+            throw new Exception('Invalid notebook content');
+        }
+
+        if ($format === 'html') {
+            $content = self::getSanitizedContent($content);
+        }
+
+        $db = PearDatabase::getInstance();
+        $date = $db->formatDate(date('Y-m-d H:i:s'), true);
+
+        return Zend_Json::encode((object)['contents' => $content, 'format' => $format, 'lastSavedOn' => $date]);
+    }
+
+    public static function createNotebook(Vtiger_Request $request, $tabId): int
+    {
+        $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $data = self::getNotebookData($request, 'notePadContent');
+        $db->pquery(
+            'INSERT INTO vtiger_module_dashboard_widgets(linkid, userid, filterid, title, data, dashboardtabid) VALUES(?,?,?,?,?,?)',
+            [$request->get('linkId'), $currentUser->getId(), 0, $request->get('notePadName'), $data, $tabId]
+        );
+
+        return (int)$db->getLastInsertID();
+    }
+
     public function getLastSavedDate()
     {
         $data = Zend_Json::decode(decode_html($this->get('data')));
@@ -35,21 +99,14 @@ class Vtiger_Notebook_Model extends Vtiger_Widget_Model
     public function save(Vtiger_Request $request): void
     {
         $noteBookId = $this->get('id');
+
         if (!$noteBookId) {
             throw new Exception('Invalid dashboard widget');
         }
 
         $db = PearDatabase::getInstance();
         $currentUser = Users_Record_Model::getCurrentUserModel();
-        $content = $request->get('contents');
-        $date_var = date("Y-m-d H:i:s");
-        $date = $db->formatDate($date_var, true);
-
-        $dataValue = [];
-        $dataValue['contents'] = $content;
-        $dataValue['lastSavedOn'] = $date;
-
-        $data = Zend_Json::encode((object)$dataValue);
+        $data = self::getNotebookData($request, 'contents');
         $this->set('data', Vtiger_Util_Helper::toSafeHTML($data));
 
         $db->pquery(
@@ -73,6 +130,7 @@ class Vtiger_Notebook_Model extends Vtiger_Widget_Model
         );
 
         $self = new self();
+
         if ($db->num_rows($result)) {
             $row = $db->query_result_rowdata($result, 0);
             $self->setData($row);

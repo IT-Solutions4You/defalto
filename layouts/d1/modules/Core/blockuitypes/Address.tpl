@@ -25,7 +25,7 @@
     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
     {assign var=CAN_EDIT value=$IS_AJAX_ENABLED && $RECORD->isEditable()}
     {if $CAN_EDIT}{assign var=ADDR_EDIT_GROUPS value=Core_Address_BlockUIType::getEditGroups($MODULE_NAME)}{/if}
-    <div class="mt-3 bg-body rounded block block_{$BLOCK_LABEL_KEY} addressBlock" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}" data-address-module="{$MODULE_NAME}">
+    <div class="{$BLOCK_MARGIN_CLASS|default:'mt-3'} bg-body rounded block block_{$BLOCK_LABEL_KEY} addressBlock" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}" data-address-module="{$MODULE_NAME}">
         <div class="p-3">
             <div class="text-truncate d-flex align-items-center">
                 <span class="btn btn-outline-secondary blockToggle {if !$IS_HIDDEN}hide{/if}" data-mode="hide" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>

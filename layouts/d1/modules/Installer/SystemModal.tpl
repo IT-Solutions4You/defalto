@@ -14,6 +14,19 @@
         </div>
         <div class="modal-body h-50vh overflow-auto">
             <div class="downloadInfoContainer">
+                <section class="mb-4 border-bottom pb-3">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <h5 class="mb-0">{vtranslate('LBL_CHANGELOG_INFORMATION', $MODULE)}</h5>
+                        <span class="badge bg-primary">{$SYSTEM_INSTALL->getVersion()|escape}</span>
+                    </div>
+                    {if $SYSTEM_CHANGELOG.status eq 'available'}
+                        <div class="text-break">{$SYSTEM_CHANGELOG.html}</div>
+                    {elseif $SYSTEM_CHANGELOG.status eq 'unavailable'}
+                        <div class="alert alert-warning mb-0" role="status">{vtranslate('LBL_SYSTEM_CHANGELOG_UNAVAILABLE', $MODULE)}</div>
+                    {else}
+                        <div class="alert alert-info mb-0" role="status">{vtranslate('LBL_MISSING_CHANGELOG', $MODULE)}</div>
+                    {/if}
+                </section>
                 <h5>{vtranslate('LBL_SYSTEM_DOWNLOAD_INFO', $MODULE)}</h5>
                 <p>{vtranslate('LBL_SYSTEM_DOWNLOAD_INFO_DESC', $MODULE)}</p>
                 <div class="form-check mb-3">

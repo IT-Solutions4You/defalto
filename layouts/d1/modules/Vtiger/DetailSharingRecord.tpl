@@ -7,9 +7,9 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    <div class="container-fluid">
-        <div class="rounded bg-body mt-3">
-            <form id="detailView" class="form-horizontal" method="POST">
+    <div class="container-fluid m-0">
+        <div class="rounded bg-body m-0">
+            <form id="detailView" class="form-horizontal m-0" method="POST">
                 <div class="container-fluid border-bottom p-3">
                     <div class="row align-items-center">
                         <div class="col">

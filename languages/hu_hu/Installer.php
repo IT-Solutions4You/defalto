@@ -9,6 +9,14 @@
  */
 
 $languageStrings = [
+    'LBL_INSTALLER_UPDATE_REQUIRED' => 'A rendszer vagy a bővítmények telepítése előtt frissítse az Installert.',
+    'LBL_INSTALLER_VERSION_UNAVAILABLE' => 'Nem sikerült ellenőrizni az Installer legújabb verzióját. A rendszer vagy a bővítmények telepítése előtt ismételje meg a frissítések keresését.',
+    'LBL_INSTALLER_PACKAGE_TOO_OLD' => 'Használjon olyan Installer-csomagot, amely legalább olyan új, mint a telepített és a legújabb elérhető verzió.',
+    'LBL_REINSTALL' => 'Újratelepítés',
+    'LBL_EXTENSION_NEWER_VERSION_NOTICE' => 'Újabb verzió lesz telepítve. A folytatás előtt tekintse át a változásokat.',
+    'LBL_EXTENSION_SAME_VERSION_NOTICE' => 'Ez a verzió már telepítve van. A folytatással a fájlok újratelepülnek, és a modul frissítése ismét lefut.',
+    'LBL_EXTENSION_OLDER_VERSION_NOTICE' => 'Régebbi verziót telepít. A meglévő adatok nem feltétlenül kompatibilisek. A folytatás előtt készítsen biztonsági másolatot az adatbázisról és a modul fájljairól.',
+    'LBL_SYSTEM_CHANGELOG_UNAVAILABLE' => 'A változásnapló nem tölthető be a GitHubról. Folytathatja a frissítést.',
     'MyExtension' => 'Saját bővítmény',
     'LBL_SYSTEM_REQUIREMENTS' => 'Rendszerkövetelmények',
     'LBL_BLOCK_SYSTEM_INFORMATION' => 'Rendszerinformáció',

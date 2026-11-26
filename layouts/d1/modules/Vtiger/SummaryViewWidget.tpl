@@ -16,11 +16,10 @@
                 <input type="hidden" name="relatedField" value="{$DETAIL_VIEW_WIDGET->get('relatedField')}"/>
             {/if}
             <h4 class="display-inline-block pull-left">{$WIDGET_LABEL}</h4>
-            {if $DETAIL_VIEW_WIDGET->get('showDetails')}
+            {if $DETAIL_VIEW_WIDGET->get('showDetails') && $DETAIL_VIEW_WIDGET->getLabel() ne 'LBL_KEY_FIELDS'}
                 <div class="pull-right">
                     <button type="button" class="btn btn-sm text-secondary fw-bold" onclick="Vtiger_Detail_Js.openDetail(this);" data-detail-url="{$RECORD->getFullDetailViewUrl()}">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span class="ms-2">{vtranslate('LBL_DETAILS', $QUALIFIED_MODULE)}</span>
+                        <span>{vtranslate('LBL_DETAILS', $QUALIFIED_MODULE)}</span>
                     </button>
                 </div>
             {/if}

@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-<form id="detailView" method="POST" class="container-fluid mt-3">
+<form id="detailView" method="POST" class="container-fluid m-0">
 	{assign var=COMMENT_TEXTAREA_DEFAULT_ROWS value="2"}
 	{assign var=PRIVATE_COMMENT_MODULES value=Vtiger_Functions::getPrivateCommentModules()}
 	{assign var=IS_CREATABLE value=$COMMENTS_MODULE_MODEL->isPermitted('CreateView')}

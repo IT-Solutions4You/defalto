@@ -2610,6 +2610,11 @@ li.dashboardWidget {
 }
 
 .dashBoardContainer .dashBoardTabContents ul li {
+    list-style: inherit;
+    position: static;
+}
+
+.dashBoardContainer .dashBoardTabContents ul > li.dashboardWidget {
     list-style: none;
     position: absolute;
 }
@@ -2675,10 +2680,24 @@ li.dashboardWidget {
     vertical-align: middle;
 }
 
+.dashBoardContainer .dashboard_notebookWidget_view,
+.dashBoardContainer .dashboard_notebookWidget_text {
+    min-width: 0;
+    max-width: 100%;
+}
+
 .dashBoardContainer .dashboard_notebookWidget_viewarea {
-    background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
+    background-color: transparent;
+    border: 0;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     min-height: 150px;
+    overflow-x: auto;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: normal;
 }
 
 .dashBoardContainer .dashboard_notebookWidget_textarea {
@@ -3436,7 +3455,7 @@ div.tooltip-inner {
     background: inherit;
 }
 
-.dashBoardContainer .tab-pane .dashBoardTabContents ul {
+.dashBoardContainer .tab-pane .dashBoardTabContents > div > ul {
     position: relative;
     width: 1260px;
 }
@@ -4796,4 +4815,44 @@ input[type=number] {
 
 [data-bs-theme="dark"] .select2-container--bootstrap-5 .select2-dropdown.defalto-picklist .select2-results__option[aria-disabled="true"] {
   color: var(--bs-secondary-color);
+}
+
+.detailViewContainer .details > .relatedContainer > .bg-body {
+    margin-top: 0 !important;
+}
+
+.record-related-menu .nav-link.active {
+    font-weight: 700;
+}
+
+.record-related-more .dropdown-item.active,
+.record-related-more .dropdown-item:active {
+    background-color: transparent;
+    color: var(--bs-primary-color);
+}
+
+.mention-menu {
+    width: min(22rem, calc(100vw - 2rem));
+    max-height: 18rem;
+    overflow-y: auto;
+}
+
+.mention-menu .mention-avatar {
+    width: 2rem;
+    height: 2rem;
+    object-fit: cover;
+}
+
+.mention-menu .mention-details {
+    min-width: 0;
+}
+
+.mention-menu .active > .dropdown-item {
+    color: var(--bs-dropdown-link-active-color);
+    background-color: var(--bs-dropdown-link-active-bg);
+}
+
+.mention-menu .active .mention-username {
+    color: inherit !important;
+    opacity: .8;
 }

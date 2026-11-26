@@ -64,6 +64,7 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     {
         unset($_SESSION['Installer_SystemInstall']);
         unset($_SESSION['Installer_SystemInstallDate']);
+        unset($_SESSION['Installer_SystemReleases']);
     }
 
     /**
@@ -107,6 +108,67 @@ class Installer_SystemInstall_Model extends Vtiger_Base_Model
     public function getVersion(): string
     {
         return $this->get('version');
+    }
+
+    public function getChangelogPreview(): array
+    {
+        $version = $this->getVersion();
+        $cached = $_SESSION['Installer_SystemReleases'][$version] ?? [];
+
+        if (($cached['expires'] ?? 0) > time()) {
+            $release = $cached['release'];
+        } else {
+            $release = Installer_Api_Model::getInstance()->getSystemRelease($version);
+            $_SESSION['Installer_SystemReleases'][$version] = [
+                'expires' => time() + ('available' === $release['status'] ? 3600 : 300),
+                'release' => $release,
+            ];
+        }
+
+        $release['html'] = '';
+
+        if ('available' === $release['status']) {
+            $parser = new \Michelf\MarkdownExtra();
+            $parser->no_markup = true;
+            $parser->no_entities = true;
+            $config = HTMLPurifier_Config::createDefault();
+            $config->set('Core.Encoding', 'UTF-8');
+            $config->set('Cache.DefinitionImpl', null);
+            $config->set('HTML.Allowed', 'h1,h2,h3,h4,h5,h6,p,br,hr,ul,ol,li,strong,em,blockquote,pre,code,a[href|title],table,thead,tbody,tr,th,td,del');
+            $config->set('URI.AllowedSchemes', ['https' => true, 'http' => true]);
+            $purifier = new HTMLPurifier($config);
+            $release['html'] = $purifier->purify($parser->transform($this->getChangelogMarkdown($release['body'])));
+        }
+
+        return $release;
+    }
+
+    protected function getChangelogMarkdown(string $source): string
+    {
+        $lines = preg_split('/\R/u', $source);
+        $formatted = [];
+        $fence = '';
+        $previousLine = '';
+
+        foreach ($lines as $line) {
+            if (preg_match('/^ {0,3}(`{3,}|~{3,})/', $line, $matches)) {
+                if ('' === $fence) {
+                    $fence = $matches[1];
+                } elseif (preg_match('/^ {0,3}' . preg_quote($fence[0], '/') . '{' . strlen($fence) . ',}\s*$/', $line)) {
+                    $fence = '';
+                }
+            } elseif ('' === $fence && preg_match('/^ {0,3}(?:[-+*]|[0-9]+\.)[ \t]+/', $line)) {
+                // GitHub permits a list directly after a paragraph; Michelf requires a blank line.
+                if ('' !== trim($previousLine) && !preg_match('/^ {0,3}(?:[-+*]|[0-9]+\.)[ \t]+/', $previousLine)) {
+                    $formatted[] = '';
+                }
+            }
+
+            $formatted[] = $line;
+            $previousLine = $line;
+        }
+
+        return implode("\n", $formatted);
     }
 
     /**

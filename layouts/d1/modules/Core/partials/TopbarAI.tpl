@@ -9,9 +9,9 @@
 {strip}
     <li class="ms-2 menubar_container_AI">
         <div>
-            <a href="javascript:vtUtils.showLicenseError();" id="menubar_AI" class="btn border-1 border-secondary text-secondary qc-button btn-outline-secondary" title="AI">
-                <i class="bi bi-stars"></i>
-            </a>
+            <button type="button" id="menubar_AI" class="btn border-1 border-secondary text-secondary qc-button btn-outline-secondary" title="AI" aria-label="AI" aria-haspopup="dialog">
+                <i class="bi bi-stars" aria-hidden="true"></i>
+            </button>
         </div>
     </li>
 {/strip}

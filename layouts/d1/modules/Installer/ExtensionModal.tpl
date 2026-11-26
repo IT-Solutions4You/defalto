@@ -14,6 +14,7 @@
         </div>
         <div class="modal-body h-50vh overflow-auto">
             <div class="extensionChangelog">
+                {include file='modules/Installer/VersionNotice.tpl' VERSION_NOTICE=$EXTENSION_INSTALL->getVersionNotice()}
                 <h5 class="mb-3">{vtranslate('LBL_CHANGELOG_INFORMATION', $QUALIFIED_MODULE)}</h5>
                 {if $EXTENSION_CHANGELOG}
                     {foreach item=CHANGELOG_ENTRY from=$EXTENSION_CHANGELOG name=extensionChangelog}

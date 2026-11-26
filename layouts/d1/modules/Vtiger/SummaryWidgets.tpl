@@ -17,6 +17,6 @@
 		{include file='SummaryWidgetEmpty.tpl'|vtemplate_path:'Vtiger'
 			EMPTY_STATE_LABEL='LBL_NO_RELATED'
 			EMPTY_STATE_MODULE=$MODULE
-			EMPTY_STATE_SUFFIX=$RELATED_MODULE}
+			EMPTY_STATE_SUFFIX=vtranslate($RELATED_MODULE, $RELATED_MODULE)}
 	{/if}
 {/strip}
