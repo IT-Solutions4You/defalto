@@ -42,7 +42,7 @@ class Core_PaymentDocument_Helper
                 continue;
             }
 
-            if (!Core_PaymentCalculation_Helper::isSameAmount((float)$recordModel->get($fieldName), $value)) {
+            if (self::isAmountChanged($recordModel->get($fieldName), $value)) {
                 $amountChanges[$fieldName] = $value;
             }
         }
@@ -60,6 +60,19 @@ class Core_PaymentDocument_Helper
             $recordModel->set('mode', 'edit');
             $recordModel->save();
         }
+    }
+
+    /**
+     * Tells whether a stored amount field must be written: it differs from the calculated value or it is empty,
+     * so a document without payments shows 0 instead of an empty field.
+     *
+     * @param mixed $storedValue Value stored on the document (null or '' when empty)
+     * @param float $value       Calculated value
+     * @return bool
+     */
+    private static function isAmountChanged(mixed $storedValue, float $value): bool
+    {
+        return $storedValue === null || $storedValue === '' || !Core_PaymentCalculation_Helper::isSameAmount((float)$storedValue, $value);
     }
 
     /**

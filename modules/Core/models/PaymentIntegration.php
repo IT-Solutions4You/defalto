@@ -311,6 +311,7 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
 
             if ($register && !$this->isRefundRow($row)) {
                 $this->createAmountFields($module, $row);
+                $this->fillEmptyAmounts($module, $row);
             }
 
             $this->updatePaidFieldAccess($module, $row, $register);
@@ -417,6 +418,57 @@ abstract class Core_PaymentIntegration_Model extends Core_DatabaseData_Model
             $field->masseditable = 0;
             $block->addField($field);
         }
+    }
+
+    /**
+     * Writes 0 into the empty paid amounts and the total minus the paid amount into the empty balances of a document
+     * module, e.g. documents that existed before the amount fields were created. The recalculation writes only
+     * amounts that changed and an empty amount counts as 0, so documents without payments would keep empty fields.
+     * The balance is filled only when the total is in the same table.
+     *
+     * @param string $module Document module name
+     * @param array  $row    Integration configuration
+     * @return void
+     * @throws Exception
+     */
+    private function fillEmptyAmounts(string $module, array $row): void
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance($module);
+        $paidField = $moduleModel ? $moduleModel->getField($this->getValidFieldName($row['paid_field'] ?? '')) : false;
+
+        if (!$paidField) {
+            return;
+        }
+
+        $table = (string)$paidField->get('table');
+        $paidColumn = (string)$paidField->get('column');
+        $db = $this->getDB();
+        $db->pquery('UPDATE ' . $table . ' SET ' . $paidColumn . ' = 0 WHERE ' . $paidColumn . ' IS NULL', []);
+
+        $balanceField = $moduleModel->getField($this->getValidFieldName($row['balance_field'] ?? ''));
+        $totalField = $moduleModel->getField($this->getValidFieldName($row['total_field'] ?? ''));
+
+        if (!$this->isFieldInTable($balanceField, $table) || !$this->isFieldInTable($totalField, $table)) {
+            return;
+        }
+
+        $balanceColumn = (string)$balanceField->get('column');
+        $db->pquery(
+            'UPDATE ' . $table . ' SET ' . $balanceColumn . ' = COALESCE(' . $totalField->get('column') . ', 0) - ' . $paidColumn . ' WHERE ' . $balanceColumn . ' IS NULL',
+            []
+        );
+    }
+
+    /**
+     * Tells whether a field exists and is stored in the given table.
+     *
+     * @param mixed  $field Field model, false or null when the field is missing
+     * @param string $table Table name
+     * @return bool
+     */
+    private function isFieldInTable(mixed $field, string $table): bool
+    {
+        return $field instanceof Vtiger_Field_Model && (string)$field->get('table') === $table;
     }
 
     /**
