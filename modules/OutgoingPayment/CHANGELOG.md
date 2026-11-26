@@ -19,3 +19,4 @@
 - Credit notes are paid by outgoing payments by default (money returned to the customer); incoming payments on a credit note are its refunds.
 - Payments keep the Invoiced, Canceled and Cancel statuses and a status changed while saving a document; the Payments widget labels advances deducted by an item of a final invoice.
 - Undo Last Import of payments updates the paid amount, balance and status of their documents.
+- Documents without payments store 0 as the paid amount and the total as the balance instead of empty values; existing documents are filled when the module is updated or the integration settings are saved.
