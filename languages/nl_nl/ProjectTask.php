@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Wordt gebruikt wanneer de taak geen geplande uren heeft.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Hoeveel uur een taak zonder schatting en volledige datums in de berekening moet vertegenwoordigen.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Taken met deze statussen worden als volledig voltooid beschouwd.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Taken met deze statussen tellen niet mee voor de projectvoortgang.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Hoe projectvoortgang wordt berekend',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Grotere taken** hebben meer invloed op de projectvoortgang.
+
+De berekening gebruikt eerst de **geplande uren**. Ontbreken die, dan gelden de taakdatums en uren per kalenderdag. Zonder volledige datums gelden de **vervangende uren**.
+
+**Voltooide taken** tellen als klaar. **Uitgesloten taken** tellen niet mee. Andere taken gebruiken hun ingevulde voortgang.
+
+De voortgang wordt bijgewerkt wanneer taken veranderen. U kunt deze handmatig aanpassen, maar de **volgende taakwijziging berekent deze opnieuw**.
+
+Schakel **deze actie of het proces** uit om automatische updates te stoppen.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projectvoortgang berekenen',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Uren per kalenderdag',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Uren voor taken zonder schatting en datums',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Voltooide statussen (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Uitgesloten statussen',
+
     'LBL_TASK_ASSIGNEE' => 'Behandelaar',
     'CV_ALL' => 'Alle projecttaken',
     'SINGLE_ProjectTask'           => 'Projecttaak',

@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'حساب تقدم المشروع',
+    'LBL_VTProjectProgressTask' => 'حساب تقدم المشروع',
     'Share with' => 'المشاركة مع',
     'Do not share with' => 'عدم المشاركة مع',
     'LBL_AddSharing' => 'المشاركة مع',
@@ -231,6 +233,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'حساب تقدم المشروع',
     'AddSharing' => 'المشاركة مع',
     'RemoveSharing' => 'عدم المشاركة مع',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'هذا الشرط غير مدعوم عندما يعمل سير العمل عند الإنشاء فقط. اختر «تم تعيينه أو تغييره» أو شرطًا آخر مدعومًا.',

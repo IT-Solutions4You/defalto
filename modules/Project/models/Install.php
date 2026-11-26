@@ -21,18 +21,6 @@ class Project_Install_Model extends Core_Install_Model
         ['Project', 'ModComments', 'module=Project&view=Widget&record=$RECORD$&mode=showComments&relatedModule=ModComments&page=1&limit=5', '', 7],
         ['Project', 'HelpDesk', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=HelpDesk&page=1&limit=5', '', 9],
     ];
-    public static array $progressValues = [
-        '10%' => '10%',
-        '20%' => '20%',
-        '30%' => '30%',
-        '40%' => '40%',
-        '50%' => '50%',
-        '60%' => '60%',
-        '70%' => '70%',
-        '80%' => '80%',
-        '90%' => '90%',
-        '100%' => '100%',
-    ];
 
     /**
      * @var array
@@ -290,11 +278,11 @@ class Project_Install_Model extends Core_Install_Model
                     ],
                 ],
                 'progress' => [
-                    'uitype' => 15,
+                    'uitype' => 9,
                     'column' => 'progress',
                     'table' => 'vtiger_project',
                     'label' => 'Progress',
-                    'picklist_values' => self::$progressValues,
+                    'typeofdata' => 'N~O',
                 ],
                 'targetbudget' => [
                     'uitype' => 71,
@@ -419,7 +407,7 @@ class Project_Install_Model extends Core_Install_Model
             ->createColumn('projectstatus', 'varchar(100) default NULL')
             ->createColumn('projectpriority', 'varchar(100) default NULL')
             ->createColumn('projecttype', 'varchar(100) default NULL')
-            ->createColumn('progress', 'varchar(100) default NULL')
+            ->createColumn('progress', 'int DEFAULT NULL')
             ->createColumn('account_id', self::$COLUMN_INT)
             ->createColumn('contact_id', self::$COLUMN_INT)
             ->createColumn('potentialid', self::$COLUMN_INT)

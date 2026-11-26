@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Beräkna projektets framsteg',
+    'LBL_VTProjectProgressTask' => 'Beräkna projektets framsteg',
     'Share with' => 'Dela med',
     'Do not share with' => 'Dela inte med',
     'LBL_AddSharing' => 'Dela med',
@@ -230,6 +232,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Beräkna projektets framsteg',
     'AddSharing' => 'Dela med',
     'RemoveSharing' => 'Dela inte med',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Det här villkoret stöds inte när workflowen endast körs när posten skapas. Välj ”Har ställts in eller ändrats” eller ett annat villkor som stöds.',

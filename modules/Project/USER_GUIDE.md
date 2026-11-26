@@ -2,6 +2,18 @@
 
 Projects keep project details together with their tasks, milestones and related records. Use the Tasks list to manage work and assignees, and Milestones to record important project dates. Task statuses describe the current stage of work.
 
+## Calculated project progress
+
+The optional **Calculate project progress** workflow in Project Tasks updates the project's Progress after a task is saved, moved to another project, deleted or restored. Moving a task recalculates both projects. The result includes all tasks of the project, even tasks hidden from the person saving the record.
+
+Progress is a weighted average: each task's progress is multiplied by its planned hours, then the total is divided by the total planned hours. The final result is rounded to a whole percentage. A completed 80-hour task and an unstarted 8-hour task give 91%. Completed statuses count as 100%; excluded statuses, initially Canceled, do not contribute. Other statuses use the task's Progress, with an empty value counting as zero. A project without included tasks has 0% progress.
+
+Task Progress also uses whole percentages from 0 to 100. The task table, chart and project calculation use the same whole percentages.
+
+When planned hours are missing or zero, the weight uses the inclusive number of calendar days between task start and end, multiplied by Hours per calendar day (initially 8). Without a valid complete date range it uses the fallback hours (initially 8). Actual worked hours do not change the weight. Adding work or changing estimates can reduce the calculated percentage.
+
+Project Progress remains editable and accepts whole percentages from 0 to 100. Progress is stored as a whole number. The next qualifying task operation can overwrite a manual value. Disable the workflow or its action in **Settings → Workflows → Project Tasks** to keep managing progress manually; disabling leaves the last value unchanged. Existing projects are not recalculated in bulk during installation or update.
+
 ## Summary task table
 
 In All, the task Status column appears before Progress.

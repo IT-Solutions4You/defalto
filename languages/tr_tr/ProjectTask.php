@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Görevde planlanan saatler belirtilmediğinde kullanılır.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Tahmini ve tam tarihleri olmayan bir görevin hesaplamada kaç saati temsil edeceği.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Bu durumlardaki görevler tamamen bitmiş kabul edilir.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Bu durumlardaki görevler proje ilerlemesine dahil edilmez.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Proje ilerlemesi nasıl hesaplanır',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Daha büyük görevler** proje ilerlemesini daha fazla etkiler.
+
+Hesaplama önce **planlanan saatleri** kullanır. Bunlar yoksa görev tarihleri ve takvim günü başına saatler kullanılır. Tam tarihler yoksa **yedek saatler** kullanılır.
+
+**Tamamlanan görevler** bitmiş sayılır. **Hariç tutulan görevler** hesaba katılmaz. Diğerleri girilen ilerleme değerini kullanır.
+
+Görevler değiştiğinde ilerleme güncellenir. Elle düzenleyebilirsiniz, ancak **sonraki görev değişikliği bunu yeniden hesaplar**.
+
+Otomatik güncellemeleri durdurmak için **bu eylemi veya süreci kapatın**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Proje ilerlemesini hesapla',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Takvim günü başına saat',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Tahmini ve tarihleri olmayan görevlerin saatleri',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Tamamlanan durumlar (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Hariç tutulan durumlar',
+
     'LBL_TASK_ASSIGNEE' => 'Sorumlu',
     'CV_ALL' => 'Tüm proje görevleri',
     'SINGLE_ProjectTask'           => "Proje Görevi",

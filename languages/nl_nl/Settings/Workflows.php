@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projectvoortgang berekenen',
+    'LBL_VTProjectProgressTask' => 'Projectvoortgang berekenen',
     'Share with' => 'Delen met',
     'Do not share with' => 'Niet delen met',
     'LBL_AddSharing' => 'Delen met',
@@ -221,6 +223,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Beperkingen van recordacties verwijderen',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Projectvoortgang berekenen',
     'AddSharing' => 'Delen met',
     'RemoveSharing' => 'Niet delen met',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Deze voorwaarde wordt niet ondersteund wanneer de workflow alleen bij het maken wordt uitgevoerd. Selecteer ‘Is ingesteld of gewijzigd’ of een andere ondersteunde voorwaarde.',

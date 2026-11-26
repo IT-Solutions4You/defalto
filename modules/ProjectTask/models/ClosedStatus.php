@@ -15,6 +15,11 @@ class ProjectTask_ClosedStatus_Model extends Core_DatabaseData_Model
         return Vtiger_Utils::CheckTable($this->table);
     }
 
+    public function hasClosedStatuses(): bool
+    {
+        return !empty($this->getClosedStatusTable()->selectData(['statusid'], []));
+    }
+
     public function getOptions(): array
     {
         $this->retrieveDB();

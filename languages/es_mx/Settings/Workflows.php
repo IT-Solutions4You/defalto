@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calcular el progreso del proyecto',
+    'LBL_VTProjectProgressTask' => 'Calcular el progreso del proyecto',
     'Share with' => 'Compartir con',
     'Do not share with' => 'No compartir con',
     'LBL_AddSharing' => 'Compartir con',
@@ -229,6 +231,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Calcular el progreso del proyecto',
     'AddSharing' => 'Compartir con',
     'RemoveSharing' => 'No compartir con',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Esta condición no se admite cuando el flujo de trabajo se ejecuta solo al crear el registro. Seleccione «Se ha establecido o cambiado» u otra condición compatible.',

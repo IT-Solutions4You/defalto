@@ -71,7 +71,7 @@ class Project_Record_Model extends Vtiger_Record_Model
 
             $summaryInfo['projecttaskstatus'] = [
                 'LBL_TASKS_OPEN'      => $tasksOpen,
-                'Progress'            => $this->get('progress'),
+                'Progress'            => $this->getDisplayValue('progress'),
                 'LBL_TASKS_DUE'       => $taskDue,
                 'LBL_TASKS_COMPLETED' => $taskCompleted,
             ];

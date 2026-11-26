@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projektfortschritt berechnen',
+    'LBL_VTProjectProgressTask' => 'Projektfortschritt berechnen',
     'Share with' => 'Teilen mit',
     'Do not share with' => 'Nicht teilen mit',
     'LBL_AddSharing' => 'Teilen mit',
@@ -222,6 +224,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Einschränkungen der Datensatzaktionen entfernen',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Projektfortschritt berechnen',
     'AddSharing' => 'Teilen mit',
     'RemoveSharing' => 'Nicht teilen mit',
     'VTCalendarTask' => 'Kalendereintrag erstellen',

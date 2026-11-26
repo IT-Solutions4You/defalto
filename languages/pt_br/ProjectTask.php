@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Usado quando a tarefa não tem horas planejadas.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Quantas horas uma tarefa sem estimativa e datas completas deve representar no cálculo.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Tarefas nesses status são consideradas totalmente concluídas.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Tarefas nesses status não são incluídas no progresso do projeto.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Como o progresso do projeto é calculado',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Tarefas maiores** têm mais influência no progresso do projeto.
+
+O cálculo usa primeiro as **horas planejadas**. Se não houver, usa as datas da tarefa e as horas por dia corrido. Sem datas completas, usa as **horas alternativas**.
+
+**Tarefas concluídas** contam como finalizadas. As **excluídas** não contam. As demais usam o progresso informado.
+
+O progresso é atualizado quando as tarefas mudam. Você pode editá-lo manualmente, mas a **próxima alteração de uma tarefa o recalculará**.
+
+Para parar as atualizações automáticas, **desative esta ação ou o processo**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calcular progresso do projeto',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Horas por dia corrido',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Horas para tarefas sem estimativa e datas',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Status concluídos (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Status excluídos',
+
     'LBL_TASK_ASSIGNEE' => 'Responsável',
     'CV_ALL' => 'Todas as tarefas do projeto',
     // Basic Strings

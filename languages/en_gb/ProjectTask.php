@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Used when the task has no planned hours.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'How many hours a task without an estimate and complete dates should represent in the calculation.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Tasks in these statuses are considered fully completed.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Tasks in these statuses are not included in project progress.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'How project progress is calculated',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Larger tasks** have a greater effect on project progress.
+
+The calculation uses **Planned Hours** first. If these are missing, it uses task dates and Hours per calendar day. Without complete dates, it uses the **fallback hours**.
+
+**Completed tasks** count as finished. **Excluded tasks** do not count. Other tasks use their entered Progress.
+
+Progress updates when tasks change. You can edit it manually, but the **next task change will recalculate it**.
+
+To stop automatic updates, **disable this action or the workflow**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculate project progress',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Hours per calendar day',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Hours for tasks without an estimate or dates',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Completed statuses (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Excluded statuses',
+
     'LBL_TASK_ASSIGNEE' => 'Assignee',
     'CV_ALL' => 'All Project Tasks',
     'SINGLE_ProjectTask'           => 'Project Task',

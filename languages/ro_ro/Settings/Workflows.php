@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculează progresul proiectului',
+    'LBL_VTProjectProgressTask' => 'Calculează progresul proiectului',
     'Share with' => 'Partajează cu',
     'Do not share with' => 'Nu partaja cu',
     'LBL_AddSharing' => 'Partajează cu',
@@ -221,6 +223,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Elimină restricțiile acțiunilor înregistrării',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Calculează progresul proiectului',
     'AddSharing' => 'Partajează cu',
     'RemoveSharing' => 'Nu partaja cu',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Această condiție nu este acceptată când fluxul de lucru rulează numai la creare. Selectați „A fost setat sau modificat” sau altă condiție acceptată.',

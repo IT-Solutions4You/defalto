@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Рассчитать прогресс проекта',
+    'LBL_VTProjectProgressTask' => 'Рассчитать прогресс проекта',
     'Share with' => 'Поделиться с',
     'Do not share with' => 'Не делиться с',
     'LBL_AddSharing' => 'Поделиться с',
@@ -221,6 +223,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Снять ограничения действий с записью',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Рассчитать прогресс проекта',
     'AddSharing' => 'Поделиться с',
     'RemoveSharing' => 'Не делиться с',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Это условие не поддерживается, если рабочий процесс запускается только при создании. Выберите «Было установлено или изменено» либо другое поддерживаемое условие.',

@@ -9,6 +9,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Přepočítat pokrok projektu',
+    'LBL_VTProjectProgressTask' => 'Přepočítat pokrok projektu',
     'Share with' => 'Sdílet s',
     'Do not share with' => 'Nesdílet s',
     'LBL_AddSharing' => 'Sdílet s',
@@ -229,6 +231,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Přepočítat pokrok projektu',
     'AddSharing' => 'Sdílet s',
     'RemoveSharing' => 'Nesdílet s',
     'VTCalendarTask' => 'Vytvořit záznam v kalendáři',

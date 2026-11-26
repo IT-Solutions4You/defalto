@@ -245,9 +245,7 @@ class Project_Chart_Model extends Vtiger_Base_Model
 
     public function getProgress(string $value): float
     {
-        $value = rtrim(trim($value), '%');
-
-        return is_numeric($value) ? max(0, min(100, (float)$value)) / 100 : 0;
+        return Project_ProgressCalculator_Model::getIntegerPercentage($value) / 100;
     }
 
     public function isOverdue(string $end, string $today, float $progress, bool $closed): bool

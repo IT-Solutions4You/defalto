@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculer la progression du projet',
+    'LBL_VTProjectProgressTask' => 'Calculer la progression du projet',
     'Share with' => 'Partager avec',
     'Do not share with' => 'Ne pas partager avec',
     'LBL_AddSharing' => 'Partager avec',
@@ -221,6 +223,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Supprimer les restrictions des actions de l’enregistrement',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Calculer la progression du projet',
     'AddSharing' => 'Partager avec',
     'RemoveSharing' => 'Ne pas partager avec',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Cette condition n’est pas prise en charge lorsque le workflow s’exécute uniquement à la création. Sélectionnez « A été défini ou modifié » ou une autre condition prise en charge.',

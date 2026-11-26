@@ -17,6 +17,27 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Akkor használatos, ha a feladathoz nincsenek tervezett órák megadva.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Hány órát képviseljen a számításban egy becslés és teljes dátumok nélküli feladat.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Az ilyen állapotú feladatok teljesen befejezettnek számítanak.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Az ilyen állapotú feladatok nem számítanak bele a projekt előrehaladásába.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'A projekt előrehaladásának számítása',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => 'A **nagyobb feladatok** jobban befolyásolják a projekt előrehaladását.
+
+A számítás először a **tervezett órákat** használja. Ha hiányoznak, a feladat dátumait és a naptári naponkénti órákat veszi alapul. Teljes dátumok nélkül a **helyettesítő órák** érvényesek.
+
+A **befejezett feladatok** késznek számítanak. A **kizárt feladatok** nem számítanak bele. A többi a megadott előrehaladását használja.
+
+Az előrehaladás a feladatok változásakor frissül. Kézzel is módosítható, de a **következő feladatmódosítás újraszámítja**.
+
+Az automatikus frissítés leállításához kapcsolja ki **ezt az akciót vagy a folyamatot**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projekt előrehaladásának kiszámítása',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Óra naptári naponként',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Órák becslés és dátumok nélküli feladatokhoz',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Befejezett állapotok (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Kizárt állapotok',
+
     'LBL_TASK_ASSIGNEE' => 'Felelős',
     'CV_ALL' => 'Összes projektfeladat',
     'SINGLE_ProjectTask'           => 'Projekt Feladat',

@@ -145,7 +145,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
                 'id' => $id,
                 'url' => $record->getDetailViewUrl(),
                 'name' => (string)($values['projecttaskname'] ?? ''),
-                'progress' => max(0, min(100, (int)($values['projecttaskprogress'] ?? 0))),
+                'progress' => Project_ProgressCalculator_Model::getIntegerPercentage($values['projecttaskprogress'] ?? 0),
                 'progress_set' => ($values['projecttaskprogress'] ?? '') !== '',
                 'owner' => $owner,
                 'owner_key' => (string)($values['assigned_user_id'] ?? '0'),

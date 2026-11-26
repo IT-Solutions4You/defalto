@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Proje ilerlemesini hesapla',
+    'LBL_VTProjectProgressTask' => 'Proje ilerlemesini hesapla',
     'Share with' => 'Şununla paylaş',
     'Do not share with' => 'Şununla paylaşma',
     'LBL_AddSharing' => 'Şununla paylaş',
@@ -221,6 +223,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Kayıt eylemi kısıtlamalarını kaldır',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Proje ilerlemesini hesapla',
     'AddSharing' => 'Şununla paylaş',
     'RemoveSharing' => 'Şununla paylaşma',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'İş akışı yalnızca kayıt oluşturulduğunda çalışıyorsa bu koşul desteklenmez. “Ayarlanmış veya değiştirilmiş” ya da desteklenen başka bir koşul seçin.',

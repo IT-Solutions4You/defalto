@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projekt előrehaladásának kiszámítása',
+    'LBL_VTProjectProgressTask' => 'Projekt előrehaladásának kiszámítása',
     'Share with' => 'Megosztás vele',
     'Do not share with' => 'Megosztás megszüntetése vele',
     'LBL_AddSharing' => 'Megosztás vele',
@@ -221,6 +223,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Rekordművelet-korlátozások eltávolítása',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Projekt előrehaladásának kiszámítása',
     'AddSharing' => 'Megosztás vele',
     'RemoveSharing' => 'Megosztás megszüntetése vele',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Ez a feltétel nem támogatott, ha a munkafolyamat csak létrehozáskor fut. Válassza a „Be lett állítva vagy módosult” vagy egy másik támogatott feltételt.',

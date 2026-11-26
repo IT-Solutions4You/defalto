@@ -18,6 +18,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculate project progress',
+    'LBL_VTProjectProgressTask' => 'Calculate project progress',
     'Share with' => 'Share with',
     'Do not share with' => 'Do not share with',
     'LBL_AddSharing' => 'Share with',
@@ -233,6 +235,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Calculate project progress',
     'AddSharing' => 'Share with',
     'RemoveSharing' => 'Do not share with',
     'VTCalendarTask' => 'Create Calendar Record',

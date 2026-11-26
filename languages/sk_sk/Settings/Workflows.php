@@ -23,6 +23,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Prepočítať pokrok projektu',
+    'LBL_VTProjectProgressTask' => 'Prepočítať pokrok projektu',
     'Share with' => 'Zdieľať s',
     'Do not share with' => 'Nezdieľať s',
     'LBL_AddSharing' => 'Zdieľať s',
@@ -277,6 +279,7 @@ $languageStrings = [
     'Clear record action restrictions' => 'Zrušiť obmedzenia akcií záznamu',
 ];
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Prepočítať pokrok projektu',
     'AddSharing' => 'Zdieľať s',
     'RemoveSharing' => 'Nezdieľať s',
     'VTCalendarTask' => 'Vytvoriť záznam v kalendári',

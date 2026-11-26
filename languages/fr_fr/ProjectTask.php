@@ -20,6 +20,27 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Utilisé lorsque la tâche ne contient pas d’heures planifiées.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Nombre d’heures qu’une tâche sans estimation ni dates complètes doit représenter dans le calcul.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Les tâches ayant ces statuts sont considérées comme entièrement terminées.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Les tâches ayant ces statuts ne sont pas incluses dans la progression du projet.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Comment la progression du projet est calculée',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => 'Les **tâches les plus importantes** ont plus d’influence sur la progression du projet.
+
+Le calcul utilise d’abord les **heures planifiées**. À défaut, il utilise les dates de la tâche et les heures par jour calendaire. Sans dates complètes, les **heures de remplacement** sont utilisées.
+
+Les **tâches terminées** comptent comme achevées. Les **tâches exclues** ne comptent pas. Les autres utilisent leur progression saisie.
+
+La progression se met à jour lorsque les tâches changent. Vous pouvez la modifier manuellement, mais la **prochaine modification d’une tâche la recalculera**.
+
+**Désactivez cette action ou le processus** pour arrêter les mises à jour automatiques.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculer la progression du projet',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Heures par jour calendaire',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Heures pour les tâches sans estimation ni dates',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Statuts terminés (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Statuts exclus',
+
     'LBL_TASK_ASSIGNEE' => 'Responsable',
     'CV_ALL' => 'Toutes les tâches du projet',
     'SINGLE_ProjectTask'           => "Groupe de projet",

@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Oblicz postęp projektu',
+    'LBL_VTProjectProgressTask' => 'Oblicz postęp projektu',
     'Share with' => 'Udostępnij dla',
     'Do not share with' => 'Nie udostępniaj dla',
     'LBL_AddSharing' => 'Udostępnij dla',
@@ -231,6 +233,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Oblicz postęp projektu',
     'AddSharing' => 'Udostępnij dla',
     'RemoveSharing' => 'Nie udostępniaj dla',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Ten warunek nie jest obsługiwany, gdy workflow jest uruchamiany tylko podczas tworzenia. Wybierz „Zostało ustawione lub zmienione” albo inny obsługiwany warunek.',

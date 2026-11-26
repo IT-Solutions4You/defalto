@@ -17,6 +17,8 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calcular progresso do projeto',
+    'LBL_VTProjectProgressTask' => 'Calcular progresso do projeto',
     'Share with' => 'Compartilhar com',
     'Do not share with' => 'Não compartilhar com',
     'LBL_AddSharing' => 'Compartilhar com',
@@ -231,6 +233,7 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectProgressTask' => 'Calcular progresso do projeto',
     'AddSharing' => 'Compartilhar com',
     'RemoveSharing' => 'Não compartilhar com',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Esta condição não é compatível quando o workflow é executado somente na criação. Selecione “Foi definido ou alterado” ou outra condição compatível.',
