@@ -1,6 +1,6 @@
 <?php
 /** Defalto CRM. Licensed under the GNU AGPL v3 License. */
-class Project_Percentage_UIType extends Vtiger_Percentage_UIType
+class Project_Percentage_UIType extends Core_Progress_UIType
 {
     public function getDisplayValue($value, $record = false, $recordInstance = false): string
     {

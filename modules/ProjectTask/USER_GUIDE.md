@@ -1,5 +1,7 @@
 # Project Tasks
 
+The record header shows Progress as a compact bar matching the project task widget. Hover over or focus it to see the percentage. Zero shows an empty track; an unset value stays blank. Use the pencil when available to edit the percentage; the bar refreshes after saving.
+
 Project tasks describe work within a project, with an assignee, status, priority, progress and optional start and end dates. A task may also be associated with a project milestone. Use the task list or record detail to review and update the work.
 
 Enter Progress as a whole percentage from 0 to 100, for example 33; the screen displays the percent sign. You can enter any whole percentage instead of choosing ten-percent steps. Fractional values are rejected. Progress is stored as a whole number. The project task table, chart and project calculation use the same whole percentage.

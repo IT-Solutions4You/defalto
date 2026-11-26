@@ -1,3 +1,7 @@
+# Record header progress
+
+Project and Project Task headers show Progress as a bar with the percentage visible beside it. Together they occupy 80% of the header field width, leaving space around the indicator. The bar uses the same appearance as the task widget. Zero progress shows an empty track with 0%; an unset value stays blank. Where inline editing is allowed, the pencil still edits the percentage and the bar updates after saving.
+
 # Checklists
 
 Each **Checklist** field is one checklist and can be placed in any ordinary block. No special checklist block is needed. Administrators can add this field type through the module Layout Editor. The field contains only the item texts, one item per line; completion states are stored separately.

@@ -363,3 +363,44 @@
         min-width: 0;
     }
 }
+
+.overlayDetailHeader .recordBasicInfo .fieldLabel .action,
+.detailview-header .recordBasicInfo .fieldLabel .action {
+    display: inline-block;
+    visibility: hidden;
+}
+
+.overlayDetailHeader .recordBasicInfo .fieldLabel:hover .action,
+.detailview-header .recordBasicInfo .fieldLabel:hover .action,
+.overlayDetailHeader .recordBasicInfo .fieldLabel:focus-within .action,
+.detailview-header .recordBasicInfo .fieldLabel:focus-within .action {
+    visibility: visible;
+}
+
+/* Shared progress field presentation in record headers. */
+.core-header-progress {
+    width: 80%;
+}
+progress.core-field-progress {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 0;
+    height: .5rem;
+    border: 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--bs-secondary-bg);
+    accent-color: var(--bs-primary-color);
+}
+progress.core-field-progress::-webkit-progress-bar {
+    background: var(--bs-secondary-bg);
+    border-radius: 1rem;
+}
+progress.core-field-progress::-webkit-progress-value {
+    background: var(--bs-primary-color);
+}
+progress.core-field-progress::-moz-progress-bar {
+    background: var(--bs-primary-color);
+}

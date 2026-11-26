@@ -1,5 +1,13 @@
 # Core UI ownership
 
+## Header field templates
+
+- The shared skin retains header action columns during hover and reveals them through visibility only; progress width must not depend on whether the edit pencil is visible.
+
+- UI-type models own `getHeaderViewTemplateName(): string`; the base implementation returns the existing detail template and specialized types override it. Templates use the ordinary module/Core/Vtiger lookup and receive FIELD_MODEL, RECORD and MODULE. Header configuration and field permissions remain owned by the existing module/detail flow.
+- `Core_Progress_UIType` extends the ordinary percentage UI type and selects `uitypes/ProgressHeader.tpl`: a native progress bar beside a nonwrapping visible percentage, together occupying 80% of the header field width, with an accessible translated field label and percentage tooltip, including zero; empty values remain blank. The shared skin owns its flexible geometry and theme colors. Project's percentage UI type inherits it, also covering ProjectTask through its existing inheritance.
+- SaveAjax adds `header_display_value` only for viewable fields whose UI type returns a header template different from its detail template. Detail.js uses it for header edits and header synchronization after ordinary inline edits; `display_value` stays unchanged for other consumers. The header Smarty template includes the UI type header template directly. getHeaderDisplayValue(value, record, recordInstance) formats only a value and never instantiates a viewer. ProgressHeader.tpl keeps a data-header-progress shell even for empty values (hidden with d-none), escapes the formatted label and raw value, and Detail.js updates its existing progress/label/tooltip nodes after AJAX instead of replacing template markup.
+
 ## Record update formatting
 
 - `Core_RecordUpdate_Model::convertToUserFormat()` owns the tracked date/currency conversion of an already hydrated CRMEntity before an ordinary workflow-style update. It calls the existing DataTransform date converter followed by its currency converter while field tracking is paused, then resumes tracking. The supplied webservice metadata and current execution user must remain those of the caller. It does not retrieve/save records, clear singleton state, decode HTML, change permissions or trigger workflows; those operations retain their caller-specific order.

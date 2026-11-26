@@ -1,5 +1,11 @@
 # Vtiger shared runtime
 
+- Header field rendering calls the UI-type model's `getHeaderViewTemplateName()` directly. The base implementation returns the detail template; specialized types override it. SaveAjax supplies an optional formatted header value alongside the existing display value. Detail.js updates existing header progress nodes for both header edits and synchronization from ordinary inline edits; Smarty alone owns header markup.
+
+- Vtiger_Base_UIType::getHeaderDisplayValue($value, $record = false, $recordInstance = false) delegates to getDisplayValue() by default and may be specialized by UI types. It formats values without calling a viewer or rendering templates. DetailViewHeaderFieldsView.tpl includes getHeaderViewTemplateName() directly. SaveAjax adds header_display_value only for viewable fields with a distinct header template. No separate header-field helper is used.
+
+- Header action columns remain in layout with `display: inline-block` and `visibility: hidden`; hover or focus within the field changes visibility only, in both full detail and overlay headers. `DetailViewHeaderFieldsView.tpl` also reserves a minimum width with `w-2rem` when Detail.js hides the pencil during inline editing. Never toggle the action column's display on hover: it changes the width of percentage bars and other header values.
+
 - vtUtils.initFieldWidgets(container) initializes registered field widget instances without reinitializing select/date controls. Edit registerBasicEvents() and Detail registerBasicEvents()/loadContents()/loadWidget() call it for full pages, overlays, quick preview and AJAX content. applyFieldElementsView() delegates its field-widget pass to the same helper, covering Quick Create and other dynamic forms. Widget initEdit() methods must remain safe on repeated calls.
 
 - Basic pages, edit/detail overlays, QuickCreateAjax and detail quick preview call Core_Controller_View::getModuleUiTypeScripts(), which merges existing block resources and optional field-owned getScriptNames() resources. Quick preview loads these after base Detail/RelatedList and before Core QuickPreview. Checklist therefore works in an ordinary block without global header registration.

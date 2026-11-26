@@ -1,5 +1,7 @@
 # ProjectTask runtime ownership
 
+- The existing ProjectTask → Project percentage UI-type inheritance selects Core's optional header progress-bar template. Header inline saves update the existing progress, label and tooltip nodes; detail/edit values and workflow calculation stay numeric percentages.
+
 - registerSummaryWidgets declares the default Checklist widget with the stable field name checklists and right-column sequence 5. Core_Install_Model::updateSummaryWidgets() owns normal install/update registration, preserving existing disabled block:// URLs and customer sequence. No migration or separate registration path is added. Core supplies value rendering and permissions, accepting both field names and legacy numeric ids; ProjectTask adds no separate summary controller or persistence path.
 
 - `ProjectTask_Install_Model` registers the optional `checklists` UI-type-34 MEDIUMTEXT field in the base table `vtiger_projecttask`, after `description` in the ordinary Description block through its standard field configuration. It defines no Checklist block, block-conversion migration or content transfer from the custom-field table. The field contains one checklist as plain item text, one line per item. Core owns metadata, record/field permissions, the matching detail/edit widget, AJAX and normal-save reconciliation. ProjectTask has no separate checklist save path or module version. Completion never changes task status or `projecttaskprogress`.

@@ -1,5 +1,7 @@
 # Projects
 
+The record header shows Progress as a compact bar matching the task widget. Hover over or focus it to see the percentage. Zero shows an empty track; an unset value stays blank. Use the pencil when available to edit the percentage; the bar refreshes after saving.
+
 Projects keep project details together with their tasks, milestones and related records. Use the Tasks list to manage work and assignees, and Milestones to record important project dates. Task statuses describe the current stage of work.
 
 ## Calculated project progress

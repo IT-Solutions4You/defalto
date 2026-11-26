@@ -1,5 +1,9 @@
 # Navigation from filtered lists
 
+Progress in Project and Project Task record headers appears as a compact bar with the percentage available on hover or keyboard focus. Inline percentage edits refresh the bar after saving; field and record permissions still control editing.
+
+Hovering over a header field reveals its pencil without moving or resizing the value or progress bar. The same stable spacing applies to keyboard focus and while an inline edit is open.
+
 Checklist fields use the normal field label and value layout in Details and Edit. The same checklist controls can also appear as a field-specific Summary widget configured by an administrator in Widget editor. Editing remains subject to record and field permissions in every view.
 
 When opening a record from a filtered list, previous and next record navigation retains the list's conditions, including calendar date ranges. Changing filter values refreshes the available navigation records.

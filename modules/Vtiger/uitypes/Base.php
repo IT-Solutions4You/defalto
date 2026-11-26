@@ -210,6 +210,16 @@ class Vtiger_Base_UIType extends Vtiger_Base_Model
         return 'uitypes/StringDetailView.tpl';
     }
 
+    public function getHeaderViewTemplateName(): string
+    {
+        return $this->getDetailViewTemplateName();
+    }
+
+    public function getHeaderDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        return $this->getDisplayValue($value, $record, $recordInstance);
+    }
+
     /**
      * Function to get Display value for RelatedList
      *

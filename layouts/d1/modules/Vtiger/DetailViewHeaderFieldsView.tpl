@@ -20,7 +20,7 @@
                 {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
                 {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get($FIELD_NAME))}
                 {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
-                {assign var=DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_VALUE)}
+                {assign var=DISPLAY_VALUE value=$FIELD_MODEL->getUITypeModel()->getHeaderDisplayValue($FIELD_VALUE, $RECORD->getId(), $RECORD)}
                 {assign var=IS_EDITABLE value=$FIELD_MODEL->isEditable() && $FIELD_MODEL->isAjaxEditable() && (!isset($LIST_PREVIEW) || $LIST_PREVIEW neq true) && $IS_AJAX_ENABLED eq true && $REQUEST_INSTANCE->get('displayMode') neq 'overlay'}
             {/if}
             {if 'field' eq $FIELD_CONFIG['type']}
@@ -32,7 +32,7 @@
                         </div>
                         <div class="row position-relative h-2rem align-items-center">
                             <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
-                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getHeaderViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
                             {if $IS_EDITABLE}
                                 <div class="edit col hide">
@@ -43,7 +43,7 @@
                                         <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($DISPLAY_VALUE)}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
                                     {/if}
                                 </div>
-                                <div class="action col-auto p-0">
+                                <div class="action col-auto p-0 w-2rem">
                                     <a href="#" onclick="return false;" class="editAction bg-body p-2">
                                         <i class="fa fa-pencil"></i>
                                     </a>
@@ -68,7 +68,7 @@
                                 </div>
                             {else}
                                 <div class="col value fw-semibold fs-inherit bg-inherit h-100 word-break-all {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
-                                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getHeaderViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                                 </div>
                             {/if}
                         </div>

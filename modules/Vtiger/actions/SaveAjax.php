@@ -62,6 +62,12 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action
                     } else {
                         $result[$fieldName] = ['value' => $fieldValue, 'display_value' => $displayValue];
                     }
+
+                    $uiType = $fieldModel->getUITypeModel();
+
+                    if ($uiType->getHeaderViewTemplateName() !== $uiType->getDetailViewTemplateName()) {
+                        $result[$fieldName]['header_display_value'] = $uiType->getHeaderDisplayValue($recordFieldValue, $recordModel->getId(), $recordModel);
+                    }
                 }
             }
 

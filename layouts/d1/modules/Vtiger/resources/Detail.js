@@ -1416,7 +1416,9 @@ Vtiger.Class("Vtiger_Detail_Js", {
                             let postSaveRecordDetails = response,
                                 displayValue = null;
 
-                            if ('picklist' === fieldBasicData.data('type') && self.isPicklistColorSupported(detailViewValue)) {
+                            if (currentTdElement.hasClass('headerAjaxEdit') && detailViewValue.find('[data-header-progress]').length) {
+                                self.updateHeaderProgressValue(detailViewValue, postSaveRecordDetails[fieldName]);
+                            } else if ('picklist' === fieldBasicData.data('type') && self.isPicklistColorSupported(detailViewValue)) {
                                 let style = '',
                                     color = 'undefined' !== typeof postSaveRecordDetails[fieldName].colormap ? postSaveRecordDetails[fieldName].colormap[postSaveRecordDetails[fieldName].value] : false,
                                     picklistHtml;
@@ -1460,7 +1462,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
                                 detailViewValue.html(postSaveRecordDetails[fieldName].display_value);
                             }
 
-                            self.updateHeaderFieldValue(fieldName, detailViewValue.html());
+                            self.updateHeaderFieldValue(fieldName, detailViewValue.html(), postSaveRecordDetails[fieldName]);
 
                             fieldBasicData.data('displayvalue', postSaveRecordDetails[fieldName].display_value);
                             fieldBasicData.data('value', postSaveRecordDetails[fieldName].value);
@@ -1489,12 +1491,35 @@ Vtiger.Class("Vtiger_Detail_Js", {
             }
         });
     },
-    updateHeaderFieldValue(fieldName, fieldValue) {
+    updateHeaderProgressValue(valueElement, fieldDetails) {
+        const progress = valueElement.find('[data-header-progress]'),
+            value = fieldDetails.value,
+            displayValue = fieldDetails.header_display_value ?? fieldDetails.display_value,
+            isEmpty = value === '' || value === null,
+            tooltip = bootstrap.Tooltip.getInstance(progress[0]);
+
+        if (tooltip) {
+            tooltip.dispose();
+        }
+
+        progress.toggleClass('d-none', isEmpty).attr('title', displayValue);
+        progress.find('progress').attr('value', isEmpty ? 0 : value).text(displayValue);
+        progress.find('[data-header-progress-label]').text(displayValue);
+        bootstrap.Tooltip.getOrCreateInstance(progress[0]);
+    },
+    updateHeaderFieldValue(fieldName, fieldValue, fieldDetails) {
         let self = this,
             container = self.getContainer();
 
-        container.find('.overlayDetailHeader').find('.' + fieldName).html(fieldValue)
-        container.find('.detailViewContainer').find('.' + fieldName).html(fieldValue)
+        container.find('.overlayDetailHeader, .detailViewContainer').find('.' + fieldName).each(function () {
+            const valueElement = jQuery(this);
+
+            if (fieldDetails && valueElement.find('[data-header-progress]').length) {
+                self.updateHeaderProgressValue(valueElement, fieldDetails);
+            } else {
+                valueElement.html(fieldValue);
+            }
+        });
     },
     handlePickListDependencyMap: function (sourcePicklistName) {
         var container = this.getForm();
