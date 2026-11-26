@@ -288,13 +288,15 @@ abstract class Core_PaymentInstall_Model extends Core_Install_Model
                 $this->getConfig()->getAddMoreLinkTemplate(),
             ];
 
-            // Bulk payment of the selected documents, only from the module that pays the document module
+            // Bulk payment of the selected documents, only from the module that pays the document module, with the
+            // icon of that module (incoming or outgoing direction)
             if (!$register || $integrationModel->isPaying($moduleName)) {
                 $this->registerCustomLinks[] = [
                     $moduleName,
                     'LISTVIEWMASSACTION',
                     $config::BULK_PAYMENT_LABEL,
                     $config->getBulkPaymentUrl($moduleName),
+                    $config->getIcon(),
                 ];
             }
         }

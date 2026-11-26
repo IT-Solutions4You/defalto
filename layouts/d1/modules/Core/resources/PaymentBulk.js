@@ -53,10 +53,15 @@ jQuery.Class('Core_PaymentBulk_Js', {
 }, {
     modal: null,
 
+    /**
+     * Reads an amount typed in the window: a plain number like in the edit forms (replaceCommaWithDot), so a comma
+     * is the decimal separator too and spaces are ignored.
+     * @param {string} value
+     * @returns {number}
+     */
     parseAmount: function (value) {
-        let text = String(value || '').split(app.getGroupingSeparator()).join('');
-        text = text.replace(app.getDecimalSeparator(), '.').replace(/[^0-9.-]/g, '');
-        const amount = parseFloat(text);
+        const text = String(value || '').replace(/\s/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''),
+            amount = parseFloat(text);
 
         return isNaN(amount) ? 0 : amount;
     },
@@ -72,20 +77,37 @@ jQuery.Class('Core_PaymentBulk_Js', {
     },
 
     /**
-     * Formats an amount in the user format; trailing decimal zeros are dropped when the user truncates them,
-     * so 6094.5100 shows as 6094.51 like in the detail view.
+     * Formats an amount for the inputs of the window like the edit forms: a dot as the decimal separator, no
+     * grouping (the save reads the values with CurrencyField::convertToDBFormat(), which does not remove grouping
+     * separators, so "2 288.55" was saved as 2) and the user's number of decimals; trailing decimal zeros are
+     * dropped when the user truncates them, so 6094.5100 shows as 6094.51.
      * @param {number} amount
      * @returns {string}
      */
     formatAmount: function (amount) {
-        const value = app.convertCurrencyToUserFormat(amount),
-            decimalSeparator = app.getDecimalSeparator();
+        const decimals = parseInt(app.getNumberOfDecimals()),
+            value = (Number(amount) || 0).toFixed(isNaN(decimals) ? 2 : decimals);
 
-        if (_USERMETA.truncateTrailingZeros != '1' || value.indexOf(decimalSeparator) === -1) {
+        if (_USERMETA.truncateTrailingZeros != '1' || value.indexOf('.') === -1) {
             return value;
         }
 
-        return value.replace(/0+$/, '').replace(new RegExp('\\' + decimalSeparator + '$'), '');
+        return value.replace(/0+$/, '').replace(/\.$/, '');
+    },
+
+    /**
+     * Rewrites the typed amounts as plain numbers before the save, e.g. a comma as the decimal separator.
+     */
+    normalizeAmounts: function () {
+        const self = this;
+
+        this.modal.find('.paymentBulkAmount, .paymentBulkPart').each(function () {
+            const input = jQuery(this);
+
+            if (input.val().trim() !== '') {
+                input.val(self.formatAmount(self.parseAmount(input.val())));
+            }
+        });
     },
 
     /**
@@ -155,6 +177,7 @@ jQuery.Class('Core_PaymentBulk_Js', {
         const self = this,
             form = this.modal.find('.paymentBulkForm');
 
+        this.normalizeAmounts();
         app.helper.showProgress();
         app.request.post({data: form.serializeFormData()}).then(function (error, data) {
             app.helper.hideProgress();
