@@ -20,19 +20,27 @@
                     <div class="alert alert-warning mb-0">{$ERROR|escape}</div>
                 {else}
                     <div class="row g-3 mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">{vtranslate('Amount', $MODULE)}</label>
-                            <input type="text" class="form-control text-end paymentBulkAmount" name="amount" value="">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">{vtranslate('LBL_CURRENCY', $MODULE)}</label>
-                            <select class="form-select paymentBulkCurrency" name="currency_id">
+                            {* Amount with its currency as in the payment form (uitype 35): Vtiger_Index_Js::registerAmountCurrencyEvents() handles the menu *}
+                            <div class="input-group">
                                 {foreach item=CURRENCY from=$CURRENCIES}
-                                    <option value="{$CURRENCY.currency_id}" data-rate="{$CURRENCY.conversionrate}"{if $CURRENCY.currency_id eq $CURRENCY_ID} selected{/if}>{decode_html($CURRENCY.currencylabel)|escape} ({decode_html($CURRENCY.currencysymbol)|escape})</option>
+                                    {if $CURRENCY.currency_id eq $CURRENCY_ID}
+                                        <button class="btn btn-outline-secondary dropdown-toggle d-inline-flex align-items-center gap-2 amountCurrencyToggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{vtranslate('LBL_CURRENCY', $MODULE)}">{decode_html($CURRENCY.currencysymbol)|escape}</button>
+                                    {/if}
                                 {/foreach}
-                            </select>
+                                <ul class="dropdown-menu">
+                                    {foreach item=CURRENCY from=$CURRENCIES}
+                                        <li>
+                                            <a class="dropdown-item amountCurrencyOption{if $CURRENCY.currency_id eq $CURRENCY_ID} active{/if}" href="#" data-value="{$CURRENCY.currency_id}" data-symbol="{decode_html($CURRENCY.currencysymbol)|escape}" data-rate="{$CURRENCY.conversionrate}">{decode_html($CURRENCY.currencysymbol)|escape} {decode_html($CURRENCY.currencylabel)|escape}</a>
+                                        </li>
+                                    {/foreach}
+                                </ul>
+                                <input type="hidden" class="amountCurrencySelect paymentBulkCurrency" name="currency_id" value="{$CURRENCY_ID}">
+                                <input type="text" class="form-control text-end paymentBulkAmount" name="amount" value="">
+                            </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">{vtranslate('Payment Date', $MODULE)}</label>
                             <div class="input-group">
                                 <input type="text" class="form-control dateField" name="payment_date" value="{$PAYMENT_DATE|escape}" data-date-format="{$USER_MODEL->get('date_format')}">

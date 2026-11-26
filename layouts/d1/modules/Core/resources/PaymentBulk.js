@@ -61,8 +61,31 @@ jQuery.Class('Core_PaymentBulk_Js', {
         return isNaN(amount) ? 0 : amount;
     },
 
+    /**
+     * Returns the rate of the payment currency chosen in the currency menu of the amount.
+     * @returns {number}
+     */
     getPaymentRate: function () {
-        return parseFloat(this.modal.find('.paymentBulkCurrency option:selected').data('rate')) || 1;
+        const currencyId = this.modal.find('.paymentBulkCurrency').val();
+
+        return parseFloat(this.modal.find('.amountCurrencyOption[data-value="' + currencyId + '"]').data('rate')) || 1;
+    },
+
+    /**
+     * Formats an amount in the user format; trailing decimal zeros are dropped when the user truncates them,
+     * so 6094.5100 shows as 6094.51 like in the detail view.
+     * @param {number} amount
+     * @returns {string}
+     */
+    formatAmount: function (amount) {
+        const value = app.convertCurrencyToUserFormat(amount),
+            decimalSeparator = app.getDecimalSeparator();
+
+        if (_USERMETA.truncateTrailingZeros != '1' || value.indexOf(decimalSeparator) === -1) {
+            return value;
+        }
+
+        return value.replace(/0+$/, '').replace(new RegExp('\\' + decimalSeparator + '$'), '');
     },
 
     /**
@@ -87,7 +110,7 @@ jQuery.Class('Core_PaymentBulk_Js', {
             total += self.getOpenAmount(jQuery(this));
         });
 
-        this.modal.find('.paymentBulkAmount').val(app.convertCurrencyToUserFormat(total));
+        this.modal.find('.paymentBulkAmount').val(this.formatAmount(total));
     },
 
     /**
@@ -109,7 +132,7 @@ jQuery.Class('Core_PaymentBulk_Js', {
         jQuery.each(payOffRows.concat(otherRows), function (index, row) {
             const part = Math.max(0, Math.min(remaining, self.getOpenAmount(row)));
 
-            row.find('.paymentBulkPart').val(app.convertCurrencyToUserFormat(part));
+            row.find('.paymentBulkPart').val(self.formatAmount(part));
             remaining -= part;
         });
 
@@ -125,7 +148,7 @@ jQuery.Class('Core_PaymentBulk_Js', {
             remaining -= self.parseAmount(jQuery(this).val());
         });
 
-        label.text(label.data('label') + ': ' + app.convertCurrencyToUserFormat(remaining));
+        label.text(label.data('label') + ': ' + this.formatAmount(remaining));
     },
 
     save: function (listInstance) {
