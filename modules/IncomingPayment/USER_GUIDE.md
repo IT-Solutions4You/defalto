@@ -48,7 +48,7 @@ Administrators configure the integration in **Settings → Incoming Payments Int
 
 ## One payment for several invoices
 - Add more invoices to the **Reference** field of a payment. Below the field the payment form shows the amount for each invoice: the invoice with the earliest due date gets its open amount first, the last one gets the rest. You can change the amounts; what is not split goes to the last invoice when you save.
-- **Pay selected** in the invoice list creates one payment for the selected invoices. They must belong to one organization. In the window enter the amount, currency and payment date; mark **Pay off** for invoices that should be paid first and change the amounts per invoice if needed.
+- **Pay selected** in the invoice list creates one payment for the selected invoices. They must belong to one organization. In the window enter the amount (choose another currency with the symbol inside the field, as in the payment form) and the payment date; mark **Pay off** for invoices that should be paid first and change the amounts per invoice if needed.
 
 ## Sales orders and opportunities
 - A payment of a sales order also counts on the invoices created from that order (field Sales Order on the invoice), when they have the same organization. With several invoices the order payments go to the invoice with the earliest due date first, each invoice gets at most its open amount and the last one gets the rest. The invoice widget shows them as **Payments of SO…**. The sales order must be switched on in the settings.
