@@ -16,52 +16,88 @@
     {/foreach}
 </div>
 <div id="{$BLOCK->getEditViewId()}" class="fieldBlockContainer mb-3 border-bottom simplifiedItemsBlock" data-block="{$BLOCK_LABEL}" data-select-message="{vtranslate('LBL_SELECT_ITEM_FROM_LIST', 'InventoryItem')|escape}">
-    <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
-    <div class="px-4 pb-3">
-        <input type="hidden" name="simplifiedItemsPosted" value="1">
-        {assign var=CURRENCY_FIELD value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['currency_id']}
-        {assign var=REGION_FIELD value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
-        {assign var=PRICEBOOK_FIELD value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['pricebookid']}
-        <div class="row g-3 mb-3 simplifiedItemsSettings">
-            {if $CURRENCY_FIELD}
-                {assign var=CURRENCY_VALUE value=$CURRENCY_FIELD->get('fieldvalue')}
-                {assign var=CURRENCY_INFO value=$CURRENCY_FIELD->getFieldInfo()}
-                <div class="col-sm-4">
-                    <label class="form-label fw-bold" for="simplifiedCurrency">{vtranslate($CURRENCY_FIELD->get('label'), $MODULE)}</label>
-                    <select class="form-select inputElement select2" id="simplifiedCurrency" name="currency_id" data-original="{$CURRENCY_VALUE}">
-                        {foreach item=CURRENCY_LABEL key=CURRENCY_ID from=$CURRENCY_INFO['currencyList']}
-                            <option value="{$CURRENCY_ID}" {if $CURRENCY_ID eq $CURRENCY_VALUE}selected{/if}>{$CURRENCY_LABEL|escape}</option>
-                        {/foreach}
-                    </select>
-                </div>
-            {/if}
-            {if $REGION_FIELD}
-                {assign var=REGION_VALUE value=$REGION_FIELD->get('fieldvalue')}
-                {assign var=REGION_INFO value=$REGION_FIELD->getFieldInfo()}
-                <div class="col-sm-4">
-                    <label class="form-label fw-bold" for="simplifiedRegion">{vtranslate($REGION_FIELD->get('label'), $MODULE)}</label>
-                    <select class="form-select inputElement select2" id="simplifiedRegion" name="region_id" data-original="{$REGION_VALUE}">
-                        <option value="0">{vtranslate('LBL_DEFAULT', 'Core')}</option>
-                        {foreach item=REGION_LABEL key=REGION_ID from=$REGION_INFO['editablepicklistvalues']}
-                            <option value="{$REGION_ID}" {if $REGION_ID eq $REGION_VALUE}selected{/if}>{$REGION_LABEL|escape}</option>
-                        {/foreach}
-                    </select>
-                </div>
-            {/if}
+    {assign var=CURRENCY_FIELD value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['currency_id']}
+    {assign var=REGION_FIELD value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['region_id']}
+    {assign var=PRICEBOOK_FIELD value=$RECORD_STRUCTURE['LBL_ITEM_DETAILS']['pricebookid']}
+    {* The same buttons as the header of the standard block. The values are kept in the hidden selects (they are posted), the buttons only change them *}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 py-3 px-4">
+        <h4 class="fieldBlockHeader fw-bold m-0 p-0">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
+        <div class="d-flex flex-wrap justify-content-end gap-2 simplifiedItemsSettings">
             {if $PRICEBOOK_FIELD}
                 {assign var=PRICEBOOK_VALUE value=$PRICEBOOK_FIELD->get('fieldvalue')}
-                <div class="col-sm-4">
-                    <label class="form-label fw-bold" for="simplifiedPriceBook">{vtranslate($PRICEBOOK_FIELD->get('label'), $MODULE)}</label>
-                    {* The price books of the currency of the document are offered, the list is filtered when the currency changes *}
-                    <select class="form-select inputElement select2" id="simplifiedPriceBook" name="pricebookid" data-original="{$PRICEBOOK_VALUE}">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" tabindex="-1">{vtranslate('SINGLE_PriceBooks', 'PriceBooks')}</button>
+                    <select class="d-none" id="simplifiedPriceBook" name="pricebookid" data-original="{$PRICEBOOK_VALUE}">
                         <option value="0">{vtranslate('LBL_NONE', 'InventoryItem')}</option>
                         {foreach item=PRICEBOOK key=PRICEBOOK_ID from=$SIMPLIFIED_PRICEBOOKS}
                             <option value="{$PRICEBOOK_ID}" data-currency="{$PRICEBOOK['currency_id']}" {if $PRICEBOOK_ID eq $PRICEBOOK_VALUE}selected{/if}>{$PRICEBOOK['name']|escape}</option>
                         {/foreach}
                     </select>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary simplifiedSettingButton" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                        <ul class="dropdown-menu dropdown-menu-end simplifiedSettingMenu" data-select="#simplifiedPriceBook">
+                            <li><a class="dropdown-item" data-value="0">{vtranslate('LBL_NONE', 'InventoryItem')}</a></li>
+                            {foreach item=PRICEBOOK key=PRICEBOOK_ID from=$SIMPLIFIED_PRICEBOOKS}
+                                <li><a class="dropdown-item" data-value="{$PRICEBOOK_ID}" data-currency="{$PRICEBOOK['currency_id']}">{$PRICEBOOK['name']|escape}</a></li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+            {/if}
+            {if $CURRENCY_FIELD}
+                {assign var=CURRENCY_VALUE value=$CURRENCY_FIELD->get('fieldvalue')}
+                {assign var=CURRENCY_INFO value=$CURRENCY_FIELD->getFieldInfo()}
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" tabindex="-1">{vtranslate($CURRENCY_FIELD->get('label'), $MODULE)}</button>
+                    <select class="d-none" id="simplifiedCurrency" name="currency_id" data-original="{$CURRENCY_VALUE}">
+                        {foreach item=CURRENCY_LABEL key=CURRENCY_ID from=$CURRENCY_INFO['currencyList']}
+                            <option value="{$CURRENCY_ID}" {if $CURRENCY_ID eq $CURRENCY_VALUE}selected{/if}>{$CURRENCY_LABEL|escape}</option>
+                        {/foreach}
+                    </select>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary simplifiedSettingButton" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                        <ul class="dropdown-menu dropdown-menu-end simplifiedSettingMenu" data-select="#simplifiedCurrency">
+                            {foreach item=CURRENCY_LABEL key=CURRENCY_ID from=$CURRENCY_INFO['currencyList']}
+                                <li><a class="dropdown-item" data-value="{$CURRENCY_ID}">{$CURRENCY_LABEL|escape}</a></li>
+                            {/foreach}
+                            {if $CURRENT_USER_MODEL->isAdminUser()}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?module=Currency&parent=Settings&view=List"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
+                            {/if}
+                        </ul>
+                    </div>
+                </div>
+            {/if}
+            {if $REGION_FIELD}
+                {assign var=REGION_VALUE value=$REGION_FIELD->get('fieldvalue')}
+                {assign var=REGION_INFO value=$REGION_FIELD->getFieldInfo()}
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" tabindex="-1">{vtranslate($REGION_FIELD->get('label'), $MODULE)}</button>
+                    <select class="d-none" id="simplifiedRegion" name="region_id" data-original="{$REGION_VALUE}">
+                        <option value="0">{vtranslate('Default', 'InventoryItem')}</option>
+                        {foreach item=REGION_LABEL key=REGION_ID from=$REGION_INFO['editablepicklistvalues']}
+                            <option value="{$REGION_ID}" {if $REGION_ID eq $REGION_VALUE}selected{/if}>{$REGION_LABEL|escape}</option>
+                        {/foreach}
+                    </select>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-bd-light dropdown-toggle btn-outline-secondary simplifiedSettingButton" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                        <ul class="dropdown-menu dropdown-menu-end simplifiedSettingMenu" data-select="#simplifiedRegion">
+                            <li><a class="dropdown-item" data-value="0">{vtranslate('Default', 'InventoryItem')}</a></li>
+                            {foreach item=REGION_LABEL key=REGION_ID from=$REGION_INFO['editablepicklistvalues']}
+                                <li><a class="dropdown-item" data-value="{$REGION_ID}">{$REGION_LABEL|escape}</a></li>
+                            {/foreach}
+                            {if $CURRENT_USER_MODEL->isAdminUser()}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?module=Core&parent=Settings&view=Taxes&mode=regions"><span class="fa fa-cog module-icon dt-menu-icon"></span>&nbsp;&nbsp;{vtranslate('Settings')}</a></li>
+                            {/if}
+                        </ul>
+                    </div>
                 </div>
             {/if}
         </div>
+    </div>
+    <div class="px-4 pb-3">
+        <input type="hidden" name="simplifiedItemsPosted" value="1">
         <div class="table-responsive">
             <table class="table table-borderless align-middle mb-2" id="simplifiedItemsTable">
                 <thead>

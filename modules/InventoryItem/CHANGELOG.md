@@ -2,7 +2,7 @@
 
 ## 1.11 - 2026-11-26
 
-- The simplified product block has the Currency, Tax Region and Price Book selects of the document above the items, the same as the standard block. Changing the currency or the price book asks for a confirmation and reloads the prices of the product and service rows from the price book (new rows take the price from the selected price book); the price book list is filtered by the currency. Changing the tax region reloads the taxes of the rows.
+- The simplified product block has the Currency, Tax Region and Price Book selects of the document in the header of the block, with the same look as the standard block (button groups with a dropdown). Changing the currency or the price book asks for a confirmation and reloads the prices of the product and service rows from the price book (new rows take the price from the selected price book); the price book list is filtered by the currency. Changing the tax region reloads the taxes of the rows.
 - The Total column of a row now includes the tax. The row total takes the item discount and the overall discount into account, so the sum of the rows equals the totals of the document. The discounts themselves are not editable in the simplified block, existing values are kept and applied.
 - The unit of a row is a select (the units of the product or the service, translated) and is filled when a product or service is selected, like in the standard block.
 - Every product and service row has a description on its own line: a textarea of one line which grows to 4 lines when it has focus and shrinks back when it loses it. Text rows have no description. The detail view and the summary widget show the description under the item.

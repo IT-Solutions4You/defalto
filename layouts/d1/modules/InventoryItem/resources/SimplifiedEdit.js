@@ -337,6 +337,7 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         const region = jQuery('#simplifiedRegion');
         const priceBook = jQuery('#simplifiedPriceBook');
 
+        this.registerSettingMenus();
         this.filterPriceBooks();
 
         const onChange = function (select, message) {
@@ -369,6 +370,38 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         onChange(currency, 'JS_CONFIRM_CURRENCY_CHANGE');
         onChange(region, 'JS_CONFIRM_TAXES_AND_CHARGES_REPLACE');
         onChange(priceBook, 'JS_CONFIRM_PRICEBOOK_CHANGE');
+    },
+
+    /**
+     * The buttons in the header (as in the standard block) show the value of the hidden select and change it
+     */
+    registerSettingMenus: function () {
+        const container = this.container;
+
+        container.find('.simplifiedSettingMenu').each(function () {
+            const menu = jQuery(this);
+            const select = jQuery(menu.data('select'));
+            const button = menu.siblings('.simplifiedSettingButton');
+            const sync = function () {
+                const value = String(select.val());
+
+                button.text(select.find('option:selected').text());
+                menu.find('a.dropdown-item[data-value]').each(function () {
+                    const item = jQuery(this);
+                    const hidden = item.data('currency') !== undefined && String(item.data('currency')) !== String(container.find('#simplifiedCurrency').val());
+
+                    item.closest('li').toggleClass('d-none', hidden);
+                    item.toggleClass('current', String(item.data('value')) === value);
+                });
+            };
+
+            select.on('change.select2', sync);
+            container.find('#simplifiedCurrency').on('change.select2', sync);
+            menu.on('click', 'a.dropdown-item[data-value]', function () {
+                select.val(String(jQuery(this).data('value'))).trigger('change');
+            });
+            sync();
+        });
     },
 
     /**
