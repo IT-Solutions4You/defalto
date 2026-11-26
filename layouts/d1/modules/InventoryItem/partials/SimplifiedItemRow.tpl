@@ -26,7 +26,12 @@
             <input type="hidden" class="simplifiedItemPurchaseCost" name="simplified_items[{$ROW_INDEX}][purchase_cost]" value="{$ROW['purchase_cost']|default:''}">
             <input type="hidden" class="simplifiedItemPriceBookId" name="simplified_items[{$ROW_INDEX}][pricebookid]" value="{$ROW['pricebookid']|default:0}">
         {/if}
-        <input type="text" class="form-control simplifiedItemText" placeholder="{if !$IS_TEXT_ROW}{vtranslate($ROW['module'], $ROW['module'])}{else}{vtranslate('TEXT', 'InventoryItem')}{/if}" name="simplified_items[{$ROW_INDEX}][item_text]" value="{$ROW['item_text']|escape}" data-rule-required="true" autocomplete="off">
+        {* The row is moved by dragging the handle, the position is saved with the item *}
+        <input type="hidden" class="simplifiedItemPosition" name="simplified_items[{$ROW_INDEX}][position]" value="{$ROW_INDEX}">
+        <div class="d-flex align-items-center gap-2">
+            <a class="simplifiedItemHandle text-secondary" style="cursor: move;" title="{vtranslate('LBL_DRAG', 'InventoryItem')}"><i class="fa fa-arrows-v fa-fw"></i></a>
+            <input type="text" class="form-control simplifiedItemText" placeholder="{if !$IS_TEXT_ROW}{vtranslate($ROW['module'], $ROW['module'])}{else}{vtranslate('TEXT', 'InventoryItem')}{/if}" name="simplified_items[{$ROW_INDEX}][item_text]" value="{$ROW['item_text']|escape}" data-rule-required="true" autocomplete="off">
+        </div>
     </td>
     {if !$IS_TEXT_ROW}
         <td>

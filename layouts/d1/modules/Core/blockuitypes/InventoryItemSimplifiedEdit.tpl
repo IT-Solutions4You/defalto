@@ -148,7 +148,7 @@
                         <td></td>
                     </tr>
                 {/if}
-                <tr class="border-top">
+                <tr>
                     <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
                     <td class="text-end fw-bold simplifiedItemsFinalTotal">0</td>
                     <td></td>

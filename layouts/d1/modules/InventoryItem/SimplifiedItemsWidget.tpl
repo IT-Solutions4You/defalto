@@ -71,7 +71,7 @@
                 <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Adjustment', 'InventoryItem')}</td>
                 <td class="font-bold textAlignRight">{$ADJUSTMENT_DISPLAY}</td>
             </tr>
-            <tr class="border-top">
+            <tr>
                 <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="font-bold textAlignRight">{vtranslate('Grand Total', 'InventoryItem')}</td>
                 <td class="font-bold textAlignRight">{$GRAND_TOTAL_DISPLAY}</td>
             </tr>

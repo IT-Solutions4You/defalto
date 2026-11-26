@@ -310,6 +310,10 @@ class InventoryItem_SimplifiedItems_Model extends Vtiger_Base_Model
         $overallDiscount = (float)($entity->column_fields['overall_discount'] ?? 0);
         $purchaseCostEditable = (bool)Vtiger_Module_Model::getInstance('InventoryItem')->getField('purchase_cost')?->isEditable();
 
+        // The order of the rows is the position set by dragging them (the sort is stable, rows without a position keep the posted order)
+        $rows = array_values($rows);
+        usort($rows, static fn($a, $b) => (int)($a['position'] ?? 0) <=> (int)($b['position'] ?? 0));
+
         foreach ($rows as $row) {
             $itemId = (int)($row['id'] ?? 0);
 

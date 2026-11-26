@@ -82,6 +82,48 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         this.container.find('.simplifiedItemsFinalTotal').text(self.formatNumber(netTotal + taxTotal + self.parseNumber(self.getFormValue('adjustment'))));
     },
 
+    /**
+     * The position of every row is saved with it, so the order the user sees is the order of the items of the document
+     */
+    updatePositions: function () {
+        this.container.find('.simplifiedItemRow').each(function (index) {
+            jQuery(this).find('.simplifiedItemPosition').val(index);
+        });
+    },
+
+    /**
+     * The rows are moved up and down by dragging the handle, the same as in the standard block
+     */
+    registerSortable: function () {
+        const self = this;
+        const table = this.container.find('#simplifiedItemsTable');
+
+        if (!jQuery.fn.sortable) {
+            return;
+        }
+
+        table.sortable({
+            items: 'tbody.simplifiedItemRow',
+            handle: '.simplifiedItemHandle',
+            axis: 'y',
+            tolerance: 'pointer',
+            cancel: 'input,textarea,select,button',
+            // The cells keep their width while the row is dragged
+            helper: function (event, element) {
+                element.children().children().each(function () {
+                    jQuery(this).children().each(function () {
+                        jQuery(this).width(jQuery(this).width());
+                    });
+                });
+
+                return element;
+            },
+            update: function () {
+                self.updatePositions();
+            },
+        });
+    },
+
     recalculateAll: function () {
         const self = this;
 
@@ -111,6 +153,7 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
 
         // Before the totals
         this.container.find('tfoot').before(row);
+        this.updatePositions();
         this.registerSelect2(row);
         this.registerAutoComplete(row);
         this.recalculateRow(row);
@@ -513,6 +556,7 @@ Vtiger.Class('InventoryItem_SimplifiedEdit_Js', {}, {
         });
 
         this.registerSettings();
+        this.registerSortable();
 
         this.container.on('click', '.removeSimplifiedItem', function () {
             self.removeRow(jQuery(this).closest('.simplifiedItemRow'));

@@ -64,11 +64,14 @@
                 </tbody>
                 {if count($SIMPLIFIED_ITEMS)}
                     <tfoot>
-                    {* The thicker line which ends the table and the row with the sum of the Total column *}
-                    <tr style="height: 2px;"><td colspan="{$SIMPLIFIED_COLUMNS}" class="p-0 bg-secondary-subtle"></td></tr>
-                    <tr class="bg-light-subtle">
-                        <td colspan="{$SIMPLIFIED_COLUMNS - 1}" class="text-end fw-bold">{vtranslate('Total', 'InventoryItem')}</td>
-                        <td class="text-end fw-bold">{if empty($SIMPLIFIED_TAXES)}{$PRICE_WITHOUT_VAT_DISPLAY}{else}{$PRICE_TOTAL_DISPLAY}{/if}</td>
+                    {* The thicker line which ends the table and the row with the sum of the Total column, the same as in the standard block *}
+                    <tr>
+                        <td colspan="{$SIMPLIFIED_COLUMNS}" class="p-0 border-0" style="height: 2px; line-height: 0; background-color: var(--bs-border-color-translucent);"></td>
+                    </tr>
+                    <tr class="border-bottom bg-light-subtle">
+                        <td class="fw-semibold">{vtranslate('Total', 'InventoryItem')}</td>
+                        <td colspan="{$SIMPLIFIED_COLUMNS - 2}"></td>
+                        <td class="text-end fw-semibold">{if empty($SIMPLIFIED_TAXES)}{$PRICE_WITHOUT_VAT_DISPLAY}{else}{$PRICE_TOTAL_DISPLAY}{/if}</td>
                     </tr>
                     </tfoot>
                 {/if}
@@ -98,7 +101,7 @@
                             <td class="text-end fw-bold">{vtranslate('Adjustment', 'InventoryItem')}</td>
                             <td class="text-end fw-bold">{$ADJUSTMENT_DISPLAY}</td>
                         </tr>
-                        <tr class="border-top">
+                        <tr>
                             <td class="text-end fw-bold">{vtranslate('Grand Total', 'InventoryItem')}</td>
                             <td class="text-end fw-bold">{$GRAND_TOTAL_DISPLAY}</td>
                         </tr>
