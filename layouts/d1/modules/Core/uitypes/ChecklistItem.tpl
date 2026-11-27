@@ -1,3 +1,12 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o.
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
+
 <div class="js-checklist-item d-flex align-items-center gap-3 py-2 rounded" data-id="{$CHECKLIST_ITEM.id}">
     <label class="js-checklist-check-target d-inline-flex align-items-center justify-content-center flex-shrink-0 mb-0">
         <input type="checkbox" class="form-check-input js-checklist-check mt-0" {if $CHECKLIST_ITEM.checked}checked{/if} {if !$CHECKLIST_EDITABLE || !$RECORD->getId()}disabled{/if} aria-label="{$CHECKLIST_ITEM.text|escape:'html'}" />

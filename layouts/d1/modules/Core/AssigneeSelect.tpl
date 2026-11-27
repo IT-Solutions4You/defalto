@@ -1,3 +1,12 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o.
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
+
 {* Shared user/group selector. The caller supplies permission-filtered ASSIGNEE_OPTIONS. *}
 <div class="core-assignee-select dropdown" data-current-user="{$ASSIGNEE_OPTIONS['current_user']|escape:'html'}" data-all-label="{vtranslate('LBL_ALL_USERS', 'Core')|escape:'html'}" data-users-label="{vtranslate('LBL_USERS', 'Core')|escape:'html'}">
     <select class="core-assignee-value d-none {$ASSIGNEE_CLASS|default:''|escape:'html'}" {if !isset($ASSIGNEE_MULTIPLE) || $ASSIGNEE_MULTIPLE}multiple{/if} {if !empty($ASSIGNEE_NAME)}name="{$ASSIGNEE_NAME|escape:'html'}"{/if} aria-label="{vtranslate('Assigned To', 'Core')|escape:'html'}">
