@@ -6,6 +6,8 @@ Hovering over a header field reveals its pencil without moving or resizing the v
 
 Checklist fields use the normal field label and value layout in Details and Edit. The same checklist controls can also appear as a field-specific Summary widget configured by an administrator in Widget editor. Editing remains subject to record and field permissions in every view.
 
+Checklist fields enabled in Quick Create open with the new record's draft items. Add, edit or remove item texts before saving the record; completion checkboxes become available after the first save.
+
 When opening a record from a filtered list, previous and next record navigation retains the list's conditions, including calendar date ranges. Changing filter values refreshes the available navigation records.
 
 # Header menu
