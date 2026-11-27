@@ -76,25 +76,28 @@ Vtiger_List_Js('Vtiger_AdvanceSearchList_Js', {}, {
     registerDeleteRecordClickEvent: function () {
         var thisInstance = this;
         jQuery('#searchResults-container').off('click');
-        jQuery('#searchResults-container').on('click', '.deleteRecordButton', function (e) {
-            var elem = jQuery(e.currentTarget);
-            var parent = elem;
-            var params = {};
+        jQuery('#searchResults-container').off('click.vtigerDeleteRecord', '.deleteRecordButton')
+            .on('click.vtigerDeleteRecord', '.deleteRecordButton', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var elem = jQuery(e.currentTarget);
+                var parent = elem;
+                var params = {};
 
-            var originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
-            if (originalDropDownMenu && typeof originalDropDownMenu != 'undefined') {
-                parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
+                var originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
+                if (originalDropDownMenu && typeof originalDropDownMenu != 'undefined') {
+                    parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
 
-                var moduleName = jQuery('#searchModuleList').val();
-                if (moduleName && typeof moduleName != 'undefined') {
-                    params['module'] = moduleName;
+                    var moduleName = jQuery('#searchModuleList').val();
+                    if (moduleName && typeof moduleName != 'undefined') {
+                        params['module'] = moduleName;
+                    }
                 }
-            }
 
-            var recordId = parent.closest('tr').data('id');
-            thisInstance.deleteRecord(recordId, params);
-//			e.stopPropagation();
-        });
+                var recordId = parent.closest('tr').data('id');
+                thisInstance.deleteRecord(recordId, params);
+    //			e.stopPropagation();
+            });
     },
 
     registerDropdownPosition: function () {

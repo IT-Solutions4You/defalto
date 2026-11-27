@@ -17,6 +17,28 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Se folosește când sarcina nu are ore planificate.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Câte ore trebuie să reprezinte în calcul o sarcină fără estimare și date complete.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Sarcinile cu aceste stări sunt considerate complet finalizate.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Sarcinile cu aceste stări nu sunt incluse în progresul proiectului.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Cum se calculează progresul proiectului',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Sarcinile mai mari** au o influență mai mare asupra progresului proiectului.
+
+Calculul folosește mai întâi **orele planificate**. Dacă lipsesc, folosește datele sarcinii și orele pe zi calendaristică. Fără date complete, folosește **orele de rezervă**.
+
+**Sarcinile finalizate** sunt considerate terminate. Cele **excluse** nu se iau în calcul. Celelalte folosesc progresul introdus.
+
+Progresul se actualizează când se schimbă sarcinile. Îl puteți modifica manual, dar **următoarea schimbare a unei sarcini îl va recalcula**.
+
+Pentru a opri actualizările automate, **dezactivați această acțiune sau procesul**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculează progresul proiectului',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Ore pe zi calendaristică',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Ore pentru sarcini fără estimare și date',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Stări finalizate (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Stări excluse',
+
+    'LBL_TASK_ASSIGNEE' => 'Responsabil',
     'CV_ALL' => 'Toate sarcinile proiectului',
     'SINGLE_ProjectTask'           => "Activitate de proiect",
     'LBL_ADD_RECORD'               => "Adauga echipei de proiect",

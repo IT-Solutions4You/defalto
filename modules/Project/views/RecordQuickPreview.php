@@ -10,13 +10,4 @@
 
 class Project_RecordQuickPreview_View extends Vtiger_RecordQuickPreview_View
 {
-    public function process(Vtiger_Request $request)
-    {
-        $recordModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $request->get('module'));
-
-        $viewer = $this->getViewer($request);
-        $viewer->assign('SUMMARY_INFORMATION', $recordModel->getSummaryInfo());
-
-        parent::process($request);
-    }
 }

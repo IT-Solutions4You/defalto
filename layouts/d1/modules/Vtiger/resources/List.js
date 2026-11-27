@@ -1965,26 +1965,29 @@ Vtiger.Class("Vtiger_List_Js", {
     registerDeleteRecordClickEvent: function () {
         let thisInstance = this;
 
-        $('#page').on('click', '.deleteRecordButton', function (e) {
-            let elem = jQuery(e.currentTarget),
-                parent = elem,
-                params = {},
-                originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
+        jQuery('#page').off('click.vtigerDeleteRecord', '.deleteRecordButton')
+            .on('click.vtigerDeleteRecord', '.deleteRecordButton', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                let elem = jQuery(e.currentTarget),
+                    parent = elem,
+                    params = {},
+                    originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
 
-            if (originalDropDownMenu && typeof originalDropDownMenu != 'undefined') {
-                parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
+                if (originalDropDownMenu && typeof originalDropDownMenu != 'undefined') {
+                    parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
 
-                let moduleName = jQuery('#searchModuleList').val();
+                    let moduleName = jQuery('#searchModuleList').val();
 
-                if (moduleName && typeof moduleName != 'undefined') {
-                    params['module'] = moduleName;
+                    if (moduleName && typeof moduleName != 'undefined') {
+                        params['module'] = moduleName;
+                    }
                 }
-            }
 
-            let recordId = parent.closest('tr').data('id');
+                let recordId = parent.closest('tr').data('id');
 
-            thisInstance.deleteRecord(recordId, params);
-        });
+                thisInstance.deleteRecord(recordId, params);
+            });
     },
     _deleteRecord: function (recordId, extraParams) {
         var thisInstance = this;

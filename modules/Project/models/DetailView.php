@@ -18,6 +18,8 @@
 
 class Project_DetailView_Model extends Vtiger_DetailView_Model
 {
+    public array $skipDetailLinkByLabel = [];
+
     /**
      * Function to get the detail view related links
      * @return <array> - list of links parameters
@@ -25,14 +27,14 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model
     public function getDetailViewRelatedLinks()
     {
         $relatedLinks = parent::getDetailViewRelatedLinks();
-        $recordModel = $this->getRecord();
-        $moduleName = $recordModel->getModuleName();
-        $relatedLinks[] = [
-            'linktype'  => 'DETAILVIEWTAB',
-            'linklabel' => vtranslate('LBL_CHART', $moduleName),
-            'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=showChart',
-            'linkicon'  => '<i class="fa-solid fa-chart-gantt"></i>'
-        ];
+        $registeredLinks = Vtiger_Link_Model::getAllByType($this->getModule()->getId(), ['DETAILVIEWTAB'], [
+            'MODULE' => $this->getModuleName(),
+            'RECORD' => $this->getRecord()->getId(),
+        ]);
+
+        foreach ($registeredLinks['DETAILVIEWTAB'] ?? [] as $link) {
+            $relatedLinks[] = get_object_vars($link);
+        }
 
         return $relatedLinks;
     }

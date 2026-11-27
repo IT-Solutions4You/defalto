@@ -12,26 +12,11 @@ class Project_Install_Model extends Core_Install_Model
 {
     public bool $registerDefaultSummaryWidgets = false;
     public array $registerSummaryWidgets = [
-        ['Project', 'LBL_KEY_METRICS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyMetrics', '', 0],
-        ['Project', 'LBL_TASKS', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectTask&page=1&limit=5', '', 1],
         ['Project', 'LBL_KEY_FIELDS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyFields&showDetails=1', '', 2],
-        ['Project', 'LBL_MILESTONES', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectMilestone&page=1&limit=5', '', 3],
         ['Project', 'Documents', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=Documents&page=1&limit=5', '', 6],
         ['Project', 'Appointments', 'module=Project&view=Widget&record=$RECORD$&mode=showAppointments&relatedModule=Appointments&page=1&limit=5', '', 5],
         ['Project', 'ModComments', 'module=Project&view=Widget&record=$RECORD$&mode=showComments&relatedModule=ModComments&page=1&limit=5', '', 7],
         ['Project', 'HelpDesk', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=HelpDesk&page=1&limit=5', '', 9],
-    ];
-    public static array $progressValues = [
-        '10%' => '10%',
-        '20%' => '20%',
-        '30%' => '30%',
-        '40%' => '40%',
-        '50%' => '50%',
-        '60%' => '60%',
-        '70%' => '70%',
-        '80%' => '80%',
-        '90%' => '90%',
-        '100%' => '100%',
     ];
 
     /**
@@ -54,23 +39,76 @@ class Project_Install_Model extends Core_Install_Model
      * @return array
      */
     public array $registerCustomLinks = [
+        ['Project', 'DETAILVIEWWIDGET', 'LBL_KEY_METRICS', 'delete:link'],
+        ['Project', 'DETAILVIEWBASIC', 'Add Project Task', 'delete:link'],
+        ['Project', 'DETAILVIEWBASIC', 'View History', 'delete:link'],
+        ['Project', 'DETAILVIEWWIDGET', 'LBL_MILESTONES', 'delete:link'],
         [
             'Project',
-            'DETAILVIEWBASIC',
-            'Add Project Task',
-            'index.php?module=ProjectTask&action=EditView&projectid=$RECORD$&return_module=Project&return_action=DetailView&return_id=$RECORD$',
-            '<i class="fa-solid fa-clipboard-check"></i>',
-            0,
-            ['path' => 'modules/ProjectTask/ProjectTask.php', 'class' => 'ProjectTask', 'method' => 'isLinkPermitted',],
+            'DETAILVIEWWIDGET',
+            'LBL_TASKS',
+            'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectTask&page=1&limit=5&template=TaskSummaryWidget.tpl',
+            '',
+            1,
         ],
         [
             'Project',
-            'DETAILVIEWBASIC',
-            'Add Note',
-            'index.php?module=Documents&action=EditView&return_module=Project&return_action=DetailView&return_id=$RECORD$&parent_id=$RECORD$',
-            '<i class="fa-solid fa-file"></i>',
+            'DETAILVIEWADVANCED',
+            'Add Project Task',
+            'javascript:Vtiger_Detail_Js.getInstanceByModuleName("Project").createSummaryRecord(this, "ProjectTask", "index.php?module=ProjectTask&view=QuickCreateAjax&projectid=$RECORD$")',
+            '<i class="fa-solid fa-clipboard-check"></i>',
             0,
-            ['path' => 'modules/Documents/Documents.php', 'class' => 'Documents', 'method' => 'isLinkPermitted',],
+            [
+                'path' => 'modules/Project/models/SummaryTask.php',
+                'class' => 'Project_SummaryTask_Model',
+                'method' => 'processCreateTaskLink',
+            ],
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Project Task',
+            'index.php?module=ProjectTask&view=Edit&projectid=$RECORD$&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail',
+            '<i class="vicon-projecttask"></i>',
+            10,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Project Milestone',
+            'index.php?module=ProjectMilestone&view=Edit&projectid=$RECORD$&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail',
+            '<i class="vicon-projectmilestone"></i>',
+            20,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Project Team',
+            'index.php?module=ProjectTeam&view=Edit&projectid=$RECORD$&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail&relationOperation=true&sourceModule=Project&sourceRecord=$RECORD$',
+            '<i class="fa-solid fa-users"></i>',
+            30,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Ticket',
+            'index.php?module=HelpDesk&view=Edit&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail&relationOperation=true&sourceModule=Project&sourceRecord=$RECORD$',
+            '<i class="fa-solid fa-headphones"></i>',
+            40,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        ['Project', 'DETAILVIEWTAB', 'LBL_CHART', 'index.php?module=Project&view=Detail&record=$RECORD$&mode=showChart', '<i class="fa-solid fa-chart-gantt"></i>', 0],
+        [
+            'Project',
+            'LISTVIEWQUICK',
+            'Tasks List',
+            'index.php?module=Project&view=List',
+            '',
+            0,
+            ['path' => 'modules/Project/models/SummaryTask.php', 'class' => 'Project_SummaryTask_Model', 'method' => 'isTaskListLinkPermitted']
         ],
     ];
 
@@ -144,8 +182,8 @@ class Project_Install_Model extends Core_Install_Model
         $this->updateNumbering();
         $this->updateComments();
         $this->updateRelatedList();
-        $this->updateCustomLinks();
         $this->updateHistory();
+        $this->updateCustomLinks();
         $this->addRelatedListCharts();
         $this->addModuleToCustomerPortal();
     }
@@ -290,11 +328,11 @@ class Project_Install_Model extends Core_Install_Model
                     ],
                 ],
                 'progress' => [
-                    'uitype' => 15,
+                    'uitype' => 9,
                     'column' => 'progress',
                     'table' => 'vtiger_project',
                     'label' => 'Progress',
-                    'picklist_values' => self::$progressValues,
+                    'typeofdata' => 'N~O',
                 ],
                 'targetbudget' => [
                     'uitype' => 71,
@@ -324,7 +362,7 @@ class Project_Install_Model extends Core_Install_Model
                     'uitype' => 53,
                     'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
-                    'label' => 'Assigned To',
+                    'label' => 'LBL_PROJECT_MANAGER',
                     'typeofdata' => 'V~M',
                     'quickcreate' => 1,
                     'summaryfield' => 0,
@@ -381,6 +419,8 @@ class Project_Install_Model extends Core_Install_Model
         return [
             'vtiger_project',
             'vtiger_projectcf',
+            'df_project_dependency',
+            'df_project_chart_preference',
         ];
     }
 
@@ -390,6 +430,19 @@ class Project_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        $this->getTable('df_project_chart_preference', 'id')->createTable('id')
+            ->createColumn('projectid', 'int(19) NOT NULL')
+            ->createColumn('userid', 'int(19) NOT NULL')
+            ->createColumn('settings', 'text NOT NULL')
+            ->createKey('UNIQUE KEY IF NOT EXISTS project_chart_user (projectid, userid)');
+
+        $this->getTable('df_project_dependency', 'id')
+            ->createTable('id', 'int(19) NOT NULL AUTO_INCREMENT PRIMARY KEY')
+            ->createColumn('projectid', 'int(19) NOT NULL')
+            ->createColumn('sourceid', 'int(19) NOT NULL')
+            ->createColumn('targetid', 'int(19) NOT NULL')
+            ->createKey('UNIQUE KEY IF NOT EXISTS project_dependency (projectid, sourceid, targetid)');
+
         $this->getTable('vtiger_project', null)
             ->createTable('projectid')
             ->renameColumn('accountid', 'account_id')
@@ -404,7 +457,7 @@ class Project_Install_Model extends Core_Install_Model
             ->createColumn('projectstatus', 'varchar(100) default NULL')
             ->createColumn('projectpriority', 'varchar(100) default NULL')
             ->createColumn('projecttype', 'varchar(100) default NULL')
-            ->createColumn('progress', 'varchar(100) default NULL')
+            ->createColumn('progress', 'int DEFAULT NULL')
             ->createColumn('account_id', self::$COLUMN_INT)
             ->createColumn('contact_id', self::$COLUMN_INT)
             ->createColumn('potentialid', self::$COLUMN_INT)

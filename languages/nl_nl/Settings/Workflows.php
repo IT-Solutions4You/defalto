@@ -17,6 +17,20 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Project voltooien zodra alle taken voltooid zijn',
+    'LBL_VTProjectCompletionTask' => 'Project voltooien zodra alle taken voltooid zijn',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Hoe automatische projectvoltooiing werkt',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Stelt de gekozen projectstatus in als alle niet-verwijderde taken een geselecteerde status hebben. Minstens één taak is vereist.
+
+Controleert **alle niet-verwijderde taken**, ook verborgen taken. Alleen 100% voortgang is onvoldoende. Projectdatums en voortgang blijven gelijk.
+
+Werkt **na het opslaan van een taak**. Verplaatsen controleert het oude en nieuwe project. Verwijderen activeert deze actie niet.
+
+Stop automatische wijzigingen door **deze actie of workflow uit te schakelen**. Als taken niet aan de gekozen statussen voldoen, blijft de projectstatus gelijk.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Statussen van voltooide taken',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Resulterende projectstatus',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projectvoortgang berekenen',
+    'LBL_VTProjectProgressTask' => 'Projectvoortgang berekenen',
     'Share with' => 'Delen met',
     'Do not share with' => 'Niet delen met',
     'LBL_AddSharing' => 'Delen met',
@@ -221,6 +235,8 @@ $languageStrings = [
     'Clear record action restrictions' => 'Beperkingen van recordacties verwijderen',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Project voltooien zodra alle taken voltooid zijn',
+    'VTProjectProgressTask' => 'Projectvoortgang berekenen',
     'AddSharing' => 'Delen met',
     'RemoveSharing' => 'Niet delen met',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Deze voorwaarde wordt niet ondersteund wanneer de workflow alleen bij het maken wordt uitgevoerd. Selecteer ‘Is ingesteld of gewijzigd’ of een andere ondersteunde voorwaarde.',

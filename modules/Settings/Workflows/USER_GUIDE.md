@@ -2,6 +2,18 @@
 
 Workflows run configured actions when records meet the selected trigger and conditions. Open a workflow to review its name, description, execution settings, conditions and actions before saving. Conditions decide which records qualify; actions decide what happens to those records or to related records.
 
+## Calculate project progress
+
+Project Tasks provides a **Calculate project progress** action and a default workflow that runs on every save. Configure completed and excluded statuses, hours per calendar day and fallback hours in its action editor. The action updates the related project's editable Progress using a weighted average of all its tasks; planned hours are the preferred weight, followed by calendar duration and fallback hours.
+
+Disable the workflow or the action to stop recalculation and retain the current project value. The same switch controls task deletion updates for every-save/on-modify workflows. Restoring tasks follows the normal workflow trigger. Existing settings and disabled workflows are preserved by module updates. See the Projects and Project Tasks guides for calculation details.
+
+## Complete project when all tasks are completed
+
+Select **How automatic project completion works** above the action settings to show the explanation of qualifying statuses, included tasks, triggers and disabling. This section starts collapsed, matching the project progress action.
+
+Project Tasks provides a separate action and an every-save workflow with this name. In the action editor, select one or more **Completed task statuses** and a **Resulting project status** from the current picklists. The action requires at least one non-deleted task and checks that every non-deleted task has one of the selected statuses, including hidden tasks. It then changes only the related project Status to the chosen result. New actions default to Completed and Canceled for tasks and Completed for the project. Previously saved selections remain unchanged. Remove Canceled if it should block completion. An empty selection never matches. Tasks outside the selection do not change the project status. The action does not run on task deletion. Moving a task checks both projects. Disable this workflow or action to stop automatic completion; existing projects are not updated in bulk.
+
 ## Conditions
 
 The condition editor works like the saved-list filter editor. Use Add condition to add a blank rule to a group and choose its field, comparison and value. Use Group to add another group, and the trash buttons to remove a rule or a group other than the first. Some comparisons, such as "is empty" or "has changed", need no value. For inventory documents, the main record blocks are listed first and the Item Details fields last.

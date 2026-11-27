@@ -18,6 +18,7 @@ class Core_Widget_View extends Vtiger_IndexAjax_View
         $this->exposeMethod('showComments');
         $this->exposeMethod('showRelatedRecords');
         $this->exposeMethod('showList');
+        $this->exposeMethod('showChecklist');
     }
 
     /**
@@ -119,6 +120,23 @@ class Core_Widget_View extends Vtiger_IndexAjax_View
         $viewer->assign('RELATED_MODULE', $targetModule);
 
         return $viewer->view('WidgetList.tpl', 'Core', true);
+    }
+
+    public function showChecklist(Vtiger_Request $request): string
+    {
+        $moduleName = $request->getModule();
+        $module = Vtiger_Module_Model::getInstance($moduleName);
+        $field = Core_Checklist_Model::getInstance()->getSummaryWidgetField($module, (string)$request->get('field'));
+
+        if (!$field) {
+            throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('FIELD_MODEL', $field)
+            ->assign('RECORD', Vtiger_Record_Model::getInstanceById($request->getRecord(), $moduleName));
+
+        return $viewer->view('uitypes/ChecklistDetailView.tpl', 'Core', true);
     }
 
     protected function getDetailView(string $moduleName): Vtiger_Detail_View

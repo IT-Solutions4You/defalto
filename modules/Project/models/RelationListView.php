@@ -18,6 +18,25 @@
 
 class Project_RelationListView_Model extends Vtiger_RelationListView_Model
 {
+    public static function isCreateLinkPermitted(Vtiger_LinkData $linkData): bool
+    {
+        $link = Vtiger_Link_Model::getInstanceFromLinkObject($linkData->getLink());
+        $parameters = $link->getUrlParameters();
+        $relatedModule = Vtiger_Module_Model::getInstance((string)($parameters['module'] ?? ''));
+
+        if (!$relatedModule || !$relatedModule->isActive()) {
+            return false;
+        }
+
+        if (!Users_Privileges_Model::isPermitted($relatedModule->getName(), 'CreateView')) {
+            return false;
+        }
+
+        $relation = Vtiger_Relation_Model::getInstance(Vtiger_Module_Model::getInstance('Project'), $relatedModule);
+
+        return $relation && (int)$relation->get('presence') !== 1 && $relation->isAddActionSupported();
+    }
+
     public function getCreateViewUrl()
     {
         $createViewUrl = parent::getCreateViewUrl();

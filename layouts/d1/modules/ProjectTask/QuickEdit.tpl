@@ -19,9 +19,9 @@
                 {if !empty($PICKIST_DEPENDENCY_DATASOURCE)}
                     <input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
                 {/if}
+                <input type="hidden" class="project-task-field-info" value="{Vtiger_Util_Helper::toSafeHTML($FIELDS_INFO)}">
                 <input type="hidden" name="module" value="{$MODULE}">
                 <input type="hidden" name="record" value="{$RECORD}">
-                <input type="hidden" name="action" value="SaveTask">
                 <div class="quickCreateContent">
                     <div class="modal-body">
                         <div class="container-fluid">
@@ -32,7 +32,11 @@
                                         {if $FIELD_MODEL->isMandatory() eq true}<span class="text-danger ms-2">*</span>{/if}
                                     </div>
                                     <div class="fieldValue col-lg-8">
-                                        {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
+                                        {if $FIELD_MODEL->isEditable()}
+                                            {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
+                                        {else}
+                                            {$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD)|strip_tags|escape:'html':'UTF-8':false}
+                                        {/if}
                                     </div>
                                 </div>
                             {/foreach}
@@ -43,36 +47,6 @@
                 {include file="partials/EditViewReturn.tpl"|vtemplate_path:$MODULE}
             </form>
         </div>
-        {if $FIELDS_INFO neq null}
-            <script type="text/javascript">
-                var quickcreate_uimeta = (function() {
-                    var fieldInfo  = {$FIELDS_INFO};
-                    return {
-                        field: {
-                            get: function(name, property) {
-                                if(name && property === undefined) {
-                                    return fieldInfo[name];
-                                }
-                                if(name && property) {
-                                    return fieldInfo[name][property]
-                                }
-                            },
-                            isMandatory : function(name){
-                                if(fieldInfo[name]) {
-                                    return fieldInfo[name].mandatory;
-                                }
-                                return false;
-                            },
-                            getType : function(name){
-                                if(fieldInfo[name]) {
-                                    return fieldInfo[name].type
-                                }
-                                return false;
-                            }
-                        },
-                    };
-                })();
-            </script>
-        {/if}
+
     </div>
 {/strip}

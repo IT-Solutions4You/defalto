@@ -76,6 +76,22 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
     editViewContainer: false,
     formValidatorInstance: false,
 
+    getValidationMeta(form) {
+        const fields = JSON.parse(form.find('.record-field-info').val() || '{}');
+
+        return {field: {
+            get(name, property) {
+                return property === undefined ? fields[name] : fields[name]?.[property];
+            },
+            isMandatory(name) {
+                return Boolean(fields[name]?.mandatory);
+            },
+            getType(name) {
+                return fields[name]?.type || false;
+            }
+        }};
+    },
+
     getEditViewContainer: function () {
         if (this.editViewContainer === false) {
             this.editViewContainer = jQuery('.editViewPageDiv');
@@ -324,6 +340,7 @@ Vtiger_Index_Js("Vtiger_Edit_Js", {
      * @returns {undefined}
      */
     registerBasicEvents: function (form) {
+        vtUtils.initFieldWidgets(form);
         app.event.on('post.editView.load', function (event, container) {
         });
         this.registerEventForPicklistDependencySetup(form);

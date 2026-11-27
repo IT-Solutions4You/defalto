@@ -18,6 +18,28 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Wird verwendet, wenn für die Aufgabe keine geplanten Stunden angegeben sind.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Wie viele Stunden eine Aufgabe ohne Schätzung und vollständige Termine in der Berechnung darstellen soll.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Aufgaben mit diesen Status gelten als vollständig abgeschlossen.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Aufgaben mit diesen Status werden beim Projektfortschritt nicht berücksichtigt.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Berechnung des Projektfortschritts',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Größere Aufgaben** haben mehr Einfluss auf den Projektfortschritt.
+
+Zuerst gelten die **geplanten Stunden**. Fehlen sie, werden die Aufgabentermine und Stunden pro Kalendertag verwendet. Ohne vollständige Termine gelten die **Ersatzstunden**.
+
+**Abgeschlossene Aufgaben** zählen als fertig. **Ausgeschlossene Aufgaben** zählen nicht. Andere Aufgaben verwenden ihren eingetragenen Fortschritt.
+
+Der Fortschritt wird bei Aufgabenänderungen aktualisiert. Sie können ihn manuell ändern; die **nächste Aufgabenänderung berechnet ihn erneut**.
+
+Deaktivieren Sie **diese Aktion oder den Workflow**, um automatische Aktualisierungen zu stoppen.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projektfortschritt berechnen',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Stunden pro Kalendertag',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Stunden für Aufgaben ohne Schätzung und Termine',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Abgeschlossene Status (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Ausgeschlossene Status',
+
+    'LBL_TASK_ASSIGNEE' => 'Bearbeiter',
     'CV_ALL' => 'Alle Projektaufgaben',
     'Assigned To' => 'zuständig',
     'Canceled' => 'abgebrochen',

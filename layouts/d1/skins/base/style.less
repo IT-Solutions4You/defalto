@@ -327,3 +327,80 @@
     color: inherit !important;
     opacity: .8;
 }
+
+/* Shared assignee selector */
+.core-assignee-select { min-width: 15rem; max-width: 100%; }
+.core-assignee-toggle { width: 100%; max-width: 22rem; }
+.core-assignee-summary { display: inline-flex; align-items: center; gap: .4rem; }
+.core-assignee-menu { width: 19rem; max-width: calc(100vw - 2rem); }
+.core-assignee-options { max-height: 16rem; }
+.core-assignee-avatar { width: 24px; height: 24px; min-width: 24px; max-width: 24px; min-height: 24px; max-height: 24px; flex: 0 0 24px; font-size: .7rem; }
+.core-assignee-avatar img { display: block; width: 24px; height: 24px; max-width: 24px; object-fit: cover; }
+.core-assignee-row { cursor: pointer; }
+.core-assignee-row:hover { background: var(--bs-tertiary-bg); }
+
+/* Shared checklist touch controls keep their icons at the normal size. */
+@media (max-width: 767.98px), (pointer: coarse) {
+    .js-checklists .js-checklist-item {
+        gap: .5rem !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        min-height: 44px;
+    }
+    .js-checklists .js-checklist-check-target,
+    .js-checklists .js-checklist-item-delete {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+    }
+    .js-checklists .js-checklist-item-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        visibility: visible !important;
+    }
+    .js-checklists .js-checklist-item-editor {
+        min-width: 0;
+    }
+}
+
+.overlayDetailHeader .recordBasicInfo .fieldLabel .action,
+.detailview-header .recordBasicInfo .fieldLabel .action {
+    display: inline-block;
+    visibility: hidden;
+}
+
+.overlayDetailHeader .recordBasicInfo .fieldLabel:hover .action,
+.detailview-header .recordBasicInfo .fieldLabel:hover .action,
+.overlayDetailHeader .recordBasicInfo .fieldLabel:focus-within .action,
+.detailview-header .recordBasicInfo .fieldLabel:focus-within .action {
+    visibility: visible;
+}
+
+/* Shared progress field presentation in record headers. */
+.core-header-progress {
+    width: 80%;
+}
+progress.core-field-progress {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 0;
+    height: .5rem;
+    border: 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--bs-secondary-bg);
+    accent-color: var(--bs-primary-color);
+}
+progress.core-field-progress::-webkit-progress-bar {
+    background: var(--bs-secondary-bg);
+    border-radius: 1rem;
+}
+progress.core-field-progress::-webkit-progress-value {
+    background: var(--bs-primary-color);
+}
+progress.core-field-progress::-moz-progress-bar {
+    background: var(--bs-primary-color);
+}

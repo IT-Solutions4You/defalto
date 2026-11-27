@@ -101,7 +101,8 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
             'TextArea',
             'MultiSelectCombo',
             'Skype',
-            'Time'
+            'Time',
+            'Checklist'
         ];
     }
 
@@ -296,6 +297,11 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model
             case 'TextArea' :
                 $uitype = 21;
                 $type = "TEXT"; //adodb type
+                $uichekdata = 'V~O';
+                break;
+            case 'Checklist':
+                $uitype = Core_Checklist_Model::UI_TYPE;
+                $type = 'MEDIUMTEXT';
                 $uichekdata = 'V~O';
                 break;
             case 'MultiSelectCombo' :

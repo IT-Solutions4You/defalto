@@ -1,4 +1,42 @@
+# Record header progress
+
+Project and Project Task headers show Progress as a bar with the percentage visible beside it. Together they occupy 80% of the header field width, leaving space around the indicator. The bar uses the same appearance as the task widget. Zero progress shows an empty track with 0%; an unset value stays blank. Where inline editing is allowed, the pencil still edits the percentage and the bar updates after saving.
+
+# Checklists
+
+In a project's Summary task table, a counter beside the task name shows completed checklist items out of the total, such as **3/4**. It combines the task's Checklist fields you can view; empty checklists show no counter. Refresh the table after checklist changes to update the count.
+
+Each **Checklist** field is one checklist and can be placed in any ordinary block. No special checklist block is needed. Administrators can add this field type through the module Layout Editor. The field contains only the item texts, one item per line; completion states are stored separately.
+
+The field name uses the normal field layout and label style in Details and Edit. In Edit it has the same text color as Description. On small screens, the label appears above the items.
+
+On phones and touch devices, the checkbox and remove icon have larger touch areas while their visual size stays compact. The remove icon is visible without hovering. Tapping the space around a checkbox toggles that checkbox; tapping the item row opens its text editor.
+
+Modules can provide a Summary widget for a specific Checklist field. Project Tasks provides its Checklist widget in the right column by default. Administrators can enable, hide or rearrange it through Settings, under Widget editor. Module updates retain a hidden widget and its saved position. Adding another Checklist field does not automatically register another widget. The widget uses the same controls and permissions as Details and Edit.
+
+Details and editing use the same simple list, similar to Google Keep: a checkbox beside each item and a **+ List item** row below. There is no frame, large heading, percentage counter or progress bar. Enter text and press Enter to add an item and continue with the next one. For a new record, item texts are drafts until the record is saved; completion becomes available after that first save.
+
+Pressing Enter turns the entered text into an item with a checkbox and moves the cursor into the empty text area below it. After confirming a text edit with Enter or the idle timer, the cursor also returns to the add row. Leaving the editor keeps focus where you clicked. Blank Enter presses do not add empty items.
+
+The **+ List item** control is a single-line input. Paste several lines into it to create one checklist item per non-empty line immediately. Their order and repeated entries are retained. Each item can contain up to 1000 characters. If saving fails, the pasted batch is kept for retry; typing in the input replaces it with the newly edited text. This works in Details, Edit and Summary, including drafts on a new record.
+
+Check a box to complete an item; clear it to reopen it. Completed text is crossed out. The small **Hide completed** and **Show completed** control appears when completed items exist and changes only the current display.
+
+A line above the items shows completed items out of the total, for example **3/5**. It updates when items are completed, reopened, added or removed and includes hidden completed items. An empty checklist shows **0/0**. The count is also visible in read-only checklists.
+
+Hover over an item or focus it with the keyboard to highlight its row and reveal the remove icon. The highlighted row identifies the item that the remove icon belongs to. You can also remove that item while editing its text; removal cancels the unfinished text edit.
+
+Select an item's row to edit it, including the empty space beside its text. The checkbox and remove icon retain their own actions. The change saves when you leave the editor or stop typing for two seconds. Enter also saves it; Escape keeps the previous text while the edit is still open. There are no save or cancel buttons. Other items and form fields remain available; selecting another item confirms the current edit and opens the selected one. An empty edit keeps the original item. An item can have up to 1000 characters. Blank lines are ignored. The field remains available after its last item is removed. Additional checklists require additional checklist fields.
+
+For saved records, checklist changes save immediately from either Details or Edit without reloading the page. Wait for a pending save before starting another change, and finish or cancel an item edit before saving the parent form. If saving fails, the entered text stays available for correction or retry. If someone changed the checklist text after you opened it, refresh the record before trying again. The server checks record and field edit access for every operation; locked or read-only records and fields show a read-only checklist in both views.
+
+Editing an item in the widget preserves its completion. If another supported save path changes the field text, unchanged or reordered lines retain their completion; new or changed lines start unchecked. Identical lines are matched in occurrence order. Copying a record copies its checklist text and starts the copied items unchecked.
+
+Checklist completion is independent of the parent record's status and completion percentage. Items have no due dates or assignees. Moving a record to the recycle bin retains its checklist for restoration; permanently deleting the record removes its metadata too.
+
 # Record navigation
+
+Project task and milestone date validation accepts the calendar date format configured in your user preferences. Dates stay on the selected calendar day.
 
 The Key fields card in Summary shows its title without a Details shortcut. Open the Details tab to view all record fields.
 
@@ -89,3 +127,17 @@ Monthly appointments keep the selected local start time when daylight-saving tim
 Address labels in the record edit form use the normal theme text color, including the combined postal code and city label.
 
 The Related records dropdown looks like the other record tabs. When one of its related modules is selected, its label is blue and underlined; clicking it still opens the list of related modules. Menu items use the navigation text size and spacing, and the selected item has bold primary-colored text without a background. In the desktop sidebar, only the currently open module is highlighted using the application's original primary theme colors and bold text. Its count uses a rounded badge, and selection stays synchronized with the dropdown.
+
+Related-record selection lists open above the edit window and return a selected record to that window. Repeated opening retains one selection action.
+
+## User and group selection
+
+Screens using the shared assignee selector let you search permitted users and groups, select several entries and choose Apply. All shows the unfiltered view; My selects your user when available. Clear removes the filter. Closing without applying keeps the previous selection. Photos or initials use fixed-size avatars.
+
+# Link action names
+
+Link Settings shows translated action names in the selected application language. Shared actions include View History, which opens the record history where available.
+
+In Link Settings, default links have a green check when installed and a red check when not yet installed. Neither can be deleted because installation updates manage these links.
+
+Module setup can remove obsolete action buttons declared by the module while retaining their replacement actions and existing record history. Removal instructions are excluded from default-link lists and missing installation requirements.

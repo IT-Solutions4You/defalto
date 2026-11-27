@@ -1,5 +1,13 @@
 # Navigation from filtered lists
 
+Progress in Project and Project Task record headers appears as a compact bar with the percentage available on hover or keyboard focus. Inline percentage edits refresh the bar after saving; field and record permissions still control editing.
+
+Hovering over a header field reveals its pencil without moving or resizing the value or progress bar. The same stable spacing applies to keyboard focus and while an inline edit is open.
+
+Checklist fields use the normal field label and value layout in Details and Edit. The same checklist controls can also appear as a field-specific Summary widget configured by an administrator in Widget editor. Editing remains subject to record and field permissions in every view.
+
+Checklist fields enabled in Quick Create open with the new record's draft items. Add, edit or remove item texts before saving the record; completion checkboxes become available after the first save.
+
 When opening a record from a filtered list, previous and next record navigation retains the list's conditions, including calendar date ranges. Changing filter values refreshes the available navigation records.
 
 # Header menu
@@ -7,6 +15,8 @@ When opening a record from a filtered list, previous and next record navigation 
 The header menu contains Defalto settings available to administrators, the current user's preferences and sign-out action, and links registered by installed extensions. It does not show links to upstream vtiger feedback, documentation, videos, or marketing pages. Defalto website and help links use the application's redirect page so their destinations stay centrally managed.
 
 # Record actions
+
+Deleting a record from a list or search result asks for confirmation once per click, including after refreshing the displayed records.
 
 Beside Comments, the Related records button opens a dropdown of related modules that contain records, including their counts. These shortcuts appear or disappear as related records are added or removed. The desktop Related modules panel retains the full list, including empty relations. On mobile, the sidebar and its toggle are hidden; populated relations remain available through Related records.
 
@@ -97,3 +107,13 @@ Saved formatted notes appear as HTML content without an input border. Bulleted, 
 Field labels in the full record edit form use the normal theme text color for easier reading, including address labels. This also applies when the same form creates or duplicates a record. Required fields retain their red asterisk, and restricted fields retain their lock indicator.
 
 The Related records dropdown looks like the other record tabs. When one of its related modules is selected, its label is blue and underlined; clicking it still opens the list of related modules. Menu items use the navigation text size and spacing, and the selected item has bold primary-colored text without a background. In the desktop sidebar, only the currently open module is highlighted using the application's original primary theme colors and bold text. Its count uses a rounded badge, and selection stays synchronized with the dropdown.
+
+Relationship selectors in edit windows use the record being edited. Select a result to fill the relationship, or clear it to search again. Suggestions remain visible above the edit window. Reopening a selection list does not multiply selection actions.
+
+Screens using the shared user/group selector show fixed-size avatars, searchable users and groups, and All/My shortcuts. Apply confirms checkbox changes; closing discards the draft.
+
+## Registered application links
+
+Administrators can review and remove a module's registered links under **Settings → Module Manager → Link Settings**. Removing a link does not delete its related CRM records. Links declared by the module's installation configuration are marked Default and cannot be deleted in this editor.
+
+Registered summary widget links can select their own presentation while keeping the standard access checks for the linked and related modules.

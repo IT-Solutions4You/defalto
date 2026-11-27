@@ -9,7 +9,12 @@
 
 ## Language contract
 
+- `LBL_PROJECT_COMPLETION_TITLE` and `LBL_PROJECT_COMPLETION_HELP` provide the ProjectTask completion action's closed explanation disclosure. Keep its translated Markdown paragraphs aligned with configurable statuses, all-active-task scope, save/move triggers, deletion exclusion and independent disabling.
+
+- ProjectTask also owns `VTProjectCompletionTask`, its completed-task-status multiselect, target-project-status select and default every-save workflow. This module supplies the selector/list/JavaScript labels, settings labels and action explanation in every locale; all-task evaluation and Project persistence belong to Project, with no workflow-engine changes.
+
 - Every task type needs three identifiers in `languages/<locale>/Settings/Workflows.php`: the persisted task-type `label` (action selector and task list), `LBL_<tasktypename>` (workflow list summary) and `<tasktypename>` in `$jsLanguageStrings` (AJAX task rendering). Core and extension-owned task types (`VTCalendarTask`, `VTEMAILMakerMailTask`, `VTReadonly`) follow the same contract.
+- ProjectTask owns the `VTProjectProgressTask` implementation, registration and task form. Workflows supplies only its selector/list/JavaScript translations; configuration and execution remain in ProjectTask and the weighted aggregate in Project. Standard action/workflow disabling is authoritative, including the ProjectTask deletion hook.
 - Keep every full locale file that owns `Settings/Workflows.php` key-compatible with `en_us`.
 - Comparator labels come from the `Settings:Workflows` translation scope supplied by the editor model; stored operator identifiers are never translated. `sk_sk` defines the full `Field_Model::getAdvancedFilterOptions()` map itself instead of inheriting Core labels.
 

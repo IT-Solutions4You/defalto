@@ -18,6 +18,20 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Projekt abschließen, wenn alle Aufgaben abgeschlossen sind',
+    'LBL_VTProjectCompletionTask' => 'Projekt abschließen, wenn alle Aufgaben abgeschlossen sind',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'So funktioniert der automatische Projektabschluss',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Setzt den gewählten Projektstatus, wenn alle nicht gelöschten Aufgaben einen gewählten Status haben. Mindestens eine Aufgabe ist erforderlich.
+
+Prüft **alle nicht gelöschten Aufgaben**, auch für den Benutzer unsichtbare. 100 % Fortschritt allein reichen nicht aus. Projektdaten und Fortschritt bleiben unverändert.
+
+Läuft **nach dem Speichern einer Aufgabe**. Beim Verschieben werden das bisherige und das neue Projekt geprüft. Löschen löst diese Aktion nicht aus.
+
+Stoppen Sie automatische Änderungen durch **Deaktivieren dieser Aktion oder des Workflows**. Passen die Aufgaben nicht zu den gewählten Status, bleibt der Projektstatus unverändert.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Abgeschlossene Aufgabenstatus',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Zielstatus des Projekts',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Projektfortschritt berechnen',
+    'LBL_VTProjectProgressTask' => 'Projektfortschritt berechnen',
     'Share with' => 'Teilen mit',
     'Do not share with' => 'Nicht teilen mit',
     'LBL_AddSharing' => 'Teilen mit',
@@ -222,6 +236,8 @@ $languageStrings = [
     'Clear record action restrictions' => 'Einschränkungen der Datensatzaktionen entfernen',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Projekt abschließen, wenn alle Aufgaben abgeschlossen sind',
+    'VTProjectProgressTask' => 'Projektfortschritt berechnen',
     'AddSharing' => 'Teilen mit',
     'RemoveSharing' => 'Nicht teilen mit',
     'VTCalendarTask' => 'Kalendereintrag erstellen',

@@ -9,7 +9,7 @@
 {strip}
     <div class="left-block col-xl-5">
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET']}
-            {if $DETAIL_VIEW_WIDGET->get('sequence') % 2 == 0}
+            {if !in_array($DETAIL_VIEW_WIDGET->getLabel(), ['LBL_MILESTONES', 'LBL_KEY_METRICS']) && $DETAIL_VIEW_WIDGET->get('sequence') % 2 == 0}
                 {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
             {/if}
         {/foreach}
@@ -17,7 +17,7 @@
 
     <div class="right-block col-xl-7">
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET']}
-            {if $DETAIL_VIEW_WIDGET->get('sequence') % 2 != 0}
+            {if !in_array($DETAIL_VIEW_WIDGET->getLabel(), ['LBL_MILESTONES', 'LBL_KEY_METRICS']) && $DETAIL_VIEW_WIDGET->get('sequence') % 2 != 0}
                 {include file=$DETAIL_VIEW_WIDGET->getWidgetTemplate()|vtemplate_path:$MODULE_NAME}
             {/if}
         {/foreach}

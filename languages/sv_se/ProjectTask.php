@@ -17,6 +17,28 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Används när uppgiften saknar planerade timmar.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Hur många timmar en uppgift utan uppskattning och fullständiga datum ska motsvara i beräkningen.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Uppgifter med dessa statusar betraktas som helt slutförda.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Uppgifter med dessa statusar räknas inte med i projektets framsteg.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Så beräknas projektets framsteg',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Större uppgifter** påverkar projektets framsteg mer.
+
+Beräkningen använder först **planerade timmar**. Om de saknas används uppgiftens datum och timmar per kalenderdag. Utan fullständiga datum används **ersättningstimmarna**.
+
+**Slutförda uppgifter** räknas som klara. **Undantagna uppgifter** räknas inte. Övriga använder sina angivna framsteg.
+
+Framstegen uppdateras när uppgifter ändras. Du kan ändra dem manuellt, men **nästa uppgiftsändring räknar om dem**.
+
+Inaktivera **denna åtgärd eller processen** för att stoppa automatiska uppdateringar.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Beräkna projektets framsteg',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Timmar per kalenderdag',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Timmar för uppgifter utan uppskattning och datum',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Slutförda statusar (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Undantagna statusar',
+
+    'LBL_TASK_ASSIGNEE' => 'Ansvarig',
     'CV_ALL' => 'Alla projektuppgifter',
     // Basic Strings
     'SINGLE_ProjectTask'           => 'Projekt Uppgift',

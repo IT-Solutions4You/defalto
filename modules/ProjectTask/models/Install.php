@@ -10,17 +10,27 @@
 
 class ProjectTask_Install_Model extends Core_Install_Model
 {
-    public static array $progressValues = [
-        '10%' => '10%',
-        '20%' => '20%',
-        '30%' => '30%',
-        '40%' => '40%',
-        '50%' => '50%',
-        '60%' => '60%',
-        '70%' => '70%',
-        '80%' => '80%',
-        '90%' => '90%',
-        '100%' => '100%',
+    public array $registerWorkflows = [
+        ['ProjectTask', 'VTProjectProgressTask', 'LBL_PROJECT_PROGRESS_TASK', '{"include":["ProjectTask"],"exclude":[]}',
+            'modules/ProjectTask/models/ProgressTask.php', 'layouts/d1/modules/ProjectTask/taskforms/Progress.tpl'],
+        ['ProjectTask', 'VTProjectCompletionTask', 'LBL_PROJECT_COMPLETION_TASK', '{"include":["ProjectTask"],"exclude":[]}',
+            'modules/ProjectTask/models/CompletionTask.php', 'layouts/d1/modules/ProjectTask/taskforms/Completion.tpl'],
+    ];
+    public array $registerWorkflowTasks = [
+        ['Calculate project progress', 'ProjectTask', '3', '3', [], [
+            ['modules/ProjectTask/models/ProgressTask.php', 'Calculate project progress', 'VTProjectProgressTask', []],
+        ]],
+        ['Complete project when all tasks are completed', 'ProjectTask', '3', '3', [], [
+            ['modules/ProjectTask/models/CompletionTask.php', 'Complete project when all tasks are completed', 'VTProjectCompletionTask', []],
+        ]],
+    ];
+    public array $registerEventHandler = [
+        [['vtiger.entity.beforedelete', 'vtiger.entity.afterdelete'], 'modules/ProjectTask/handlers/Progress.php',
+            'ProjectTask_Progress_Handler', '[]', ['ProjectTask']],
+    ];
+    public array $registerClosedStatuses = ['Completed', 'Canceled'];
+    public array $registerSummaryWidgets = [
+        ['ProjectTask', 'LBL_CHECKLIST', 'module=ProjectTask&view=Widget&record=$RECORD$&mode=showChecklist&field=checklists', '', 5],
     ];
 
     /**
@@ -37,17 +47,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
      * [module, type, label, url, icon, sequence, handlerInfo]
      * @return array
      */
-    public array $registerCustomLinks = [
-        [
-            'ProjectTask',
-            'DETAILVIEWBASIC',
-            'Add Note',
-            'index.php?module=Documents&action=EditView&return_module=ProjectTask&return_action=DetailView&return_id=$RECORD$&parent_id=$RECORD$',
-            '<i class="fa-solid fa-clipboard-check"></i>',
-            0,
-            ['path' => 'modules/Documents/Documents.php', 'class' => 'Documents', 'method' => 'isLinkPermitted'],
-        ],
-    ];
+    public array $registerCustomLinks = [];
 
     /**
      * @var array
@@ -158,6 +158,11 @@ class ProjectTask_Install_Model extends Core_Install_Model
         $this->updateHistory();
         $this->updateToStandardModule();
         $this->addModuleToCustomerPortal();
+        $this->updateWorkflows();
+        $this->updateWorkflowTasks();
+        $this->updateEventHandler();
+
+        $this->registerDefaultClosedStatuses();
     }
 
     /**
@@ -170,6 +175,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
         $this->updateRelatedList(false);
         $this->updateComments(false);
         $this->updateHistory(false);
+        $this->updateEventHandler(false);
     }
 
     /**
@@ -281,12 +287,11 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'summaryfield' => 0,
                 ],
                 'projecttaskprogress' => [
-                    'uitype' => 15,
+                    'uitype' => 9,
                     'column' => 'projecttaskprogress',
                     'table' => 'vtiger_projecttask',
                     'label' => 'Progress',
-                    'picklist_values' => self::$progressValues,
-                    'picklist_overwrite' => 1,
+                    'typeofdata' => 'N~O',
                     'summaryfield' => 0,
                 ],
                 'planed_hours' => [
@@ -307,7 +312,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'uitype' => 53,
                     'column' => 'assigned_user_id',
                     'table' => 'vtiger_crmentity',
-                    'label' => 'Assigned To',
+                    'label' => 'LBL_TASK_ASSIGNEE',
                     'typeofdata' => 'V~M',
                     'quickcreate' => 1,
                     'summaryfield' => 0,
@@ -319,6 +324,16 @@ class ProjectTask_Install_Model extends Core_Install_Model
                     'column' => 'description',
                     'table' => 'vtiger_crmentity',
                     'label' => 'description',
+                ],
+                'checklists' => [
+                    'uitype' => Core_Checklist_Model::UI_TYPE,
+                    'column' => 'checklists',
+                    'table' => 'vtiger_projecttask',
+                    'label' => 'LBL_CHECKLIST',
+                    'typeofdata' => 'V~O',
+                    'quickcreate' => 3,
+                    'masseditable' => 0,
+                    'ajaxeditable' => 0,
                 ],
             ],
             'LBL_SYSTEM_INFORMATION' => [
@@ -345,6 +360,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
         return [
             'vtiger_projecttask',
             'vtiger_projecttaskcf',
+            'df_projecttask_closed_status',
         ];
     }
 
@@ -354,21 +370,41 @@ class ProjectTask_Install_Model extends Core_Install_Model
      */
     public function installTables(): void
     {
+        $this->getTable('df_projecttask_closed_status', null)
+            ->createTable('statusid', 'int(19) NOT NULL PRIMARY KEY');
+
         $this->getTable('vtiger_projecttask', null)
             ->createTable('projecttaskid')
             ->createColumn('projecttaskname', 'varchar(255) default NULL')
             ->createColumn('projecttask_no', 'varchar(100) default NULL')
             ->createColumn('projecttasktype', 'varchar(100) default NULL')
             ->createColumn('projecttaskpriority', 'varchar(100) default NULL')
-            ->createColumn('projecttaskprogress', 'varchar(100) default NULL')
+            ->createColumn('projecttaskprogress', 'int DEFAULT NULL')
             ->createColumn('projecttaskhours', 'decimal(11,2) default NULL')
             ->createColumn('startdate', 'date default NULL')
             ->createColumn('enddate', 'date default NULL')
             ->createColumn('projectid', 'varchar(100) default NULL')
             ->createColumn('projecttasknumber', 'int(11) default NULL')
-            ->createColumn('planed_hours', 'decimal(11,1) default NULL');
+            ->createColumn('planed_hours', 'decimal(11,1) default NULL')
+            ->createColumn('checklists', 'MEDIUMTEXT DEFAULT NULL');
 
         $this->getTable('vtiger_projecttaskcf', '')
             ->createTable('projecttaskid');
+    }
+
+    public function registerDefaultClosedStatuses(): void
+    {
+        if (!$this->registerClosedStatuses) {
+            return;
+        }
+
+        if ((new ProjectTask_ClosedStatus_Model())->hasClosedStatuses()) {
+            return;
+        }
+
+        $this->retrieveDB();
+        $this->getDB()->pquery('INSERT IGNORE INTO df_projecttask_closed_status (statusid)'
+            . ' SELECT projecttaskstatusid FROM vtiger_projecttaskstatus WHERE projecttaskstatus IN ('
+            . generateQuestionMarks($this->registerClosedStatuses) . ')', $this->registerClosedStatuses);
     }
 }

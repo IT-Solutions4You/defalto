@@ -17,6 +17,28 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Używane, gdy zadanie nie ma podanych planowanych godzin.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Ile godzin ma reprezentować w obliczeniu zadanie bez szacunku i pełnych dat.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Zadania w tych statusach są uznawane za całkowicie ukończone.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Zadania w tych statusach nie są uwzględniane w postępie projektu.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Jak obliczany jest postęp projektu',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Większe zadania** mają większy wpływ na postęp projektu.
+
+Najpierw używane są **planowane godziny**. Jeśli ich brakuje, używane są daty zadania i godziny na dzień kalendarzowy. Bez pełnych dat używane są **godziny zastępcze**.
+
+**Ukończone zadania** liczą się jako gotowe. **Wykluczone zadania** nie są liczone. Pozostałe używają wpisanego postępu.
+
+Postęp jest aktualizowany przy zmianach zadań. Można go zmienić ręcznie, ale **następna zmiana zadania obliczy go ponownie**.
+
+Aby zatrzymać automatyczne aktualizacje, **wyłącz tę akcję lub proces**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Oblicz postęp projektu',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Godziny na dzień kalendarzowy',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Godziny dla zadań bez szacunku i dat',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Statusy ukończone (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Statusy wykluczone',
+
+    'LBL_TASK_ASSIGNEE' => 'Wykonawca',
     'CV_ALL' => 'Wszystkie zadania projektu',
     // Basic Strings
     'SINGLE_ProjectTask'           => 'Zadanie Projektu',

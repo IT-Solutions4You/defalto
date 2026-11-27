@@ -1,0 +1,130 @@
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o.
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
+.project-task-summary {
+    --project-summary-accent: var(--bs-primary-color);
+    overflow: visible;
+}
+.project-task-summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.project-task-summary-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.project-summary-add {
+    display: inline-flex;
+    align-items: center;
+    gap: .65rem;
+    white-space: nowrap;
+}
+.project-task-summary progress {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    border-radius: 1rem;
+    height: .5rem;
+    background: var(--bs-secondary-bg);
+    accent-color: var(--project-summary-accent);
+    overflow: hidden;
+}
+.project-task-summary progress::-webkit-progress-bar { background: var(--bs-secondary-bg); border-radius: 1rem; }
+.project-task-summary progress::-webkit-progress-value { background: var(--project-summary-accent); }
+.project-task-summary progress::-moz-progress-bar { background: var(--project-summary-accent); }
+.project-summary-table { table-layout: fixed; min-width: 760px; }
+.project-summary-table > thead > tr > th {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-secondary-color);
+    font-weight: 600;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+.project-summary-table > tbody > tr > td {
+    padding: .65rem .75rem;
+    border-color: var(--bs-border-color);
+    overflow-wrap: anywhere;
+}
+.project-summary-table > thead > tr > th:first-child,
+.project-summary-table > tbody > tr > td:first-child { padding-left: 1rem; }
+.project-summary-table > thead > tr > th:last-child,
+.project-summary-table > tbody > tr > td:last-child { padding-right: 1rem; }
+.project-summary-column-projecttaskname { width: auto; }
+.project-summary-column-projecttaskprogress { width: 110px; }
+.project-summary-table > thead > tr > th.project-summary-column-projecttaskprogress,
+.project-summary-table > tbody > tr > td.project-summary-column-projecttaskprogress { padding-left: 6px; padding-right: 6px; }
+.project-summary-column-milestoneid { width: 20%; }
+.project-summary-column-assigned_user_id { width: 70px; }
+.project-summary-column-dates { width: 150px; }
+.project-summary-column-projecttaskstatus { width: 115px; }
+.project-summary-table.project-summary-all { min-width: 900px; }
+.project-summary-table col.project-summary-column-actions,
+.project-summary-table > thead > tr > th.project-summary-column-actions,
+.project-summary-table > tbody > tr > td.project-summary-column-actions { width: 2.75rem; padding-left: .25rem; padding-right: .25rem; }
+.project-summary-status-tabs { flex-wrap: nowrap; flex-shrink: 0; border: 0; }
+.project-summary-status-tabs .nav-link {
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    background: transparent;
+}
+.project-summary-status-tabs .nav-link:hover,
+.project-summary-status-tabs .nav-link:focus { border-color: transparent; }
+.project-summary-status-tabs .nav-link.active {
+    border-bottom-color: var(--bs-primary-color);
+    background: transparent;
+}
+.project-summary-status-marker { width: .5rem; height: .5rem; border-radius: 50%; flex-shrink: 0; }
+.project-summary-task-name { color: var(--bs-body-color); font-weight: 600; }
+.project-summary-task-name:hover, .project-summary-task-name:focus { color: var(--bs-body-color); text-decoration: underline; }
+.project-summary-task-progress { display: flex; align-items: center; gap: 6px; }
+.project-summary-task-progress progress { width: 56px; flex: 0 0 56px; }
+.project-summary-column-dates .text-nowrap { white-space: normal !important; }
+.project-summary-milestone { display: inline-flex; align-items: center; gap: .6rem; }
+.project-summary-task-label { display: flex; align-items: flex-start; gap: .5rem; min-width: 0; }
+.project-summary-priority { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 20px; flex: 0 0 16px; }
+.project-summary-milestone { color: var(--bs-primary-color); }
+.project-summary-milestone > span:first-child { color: var(--bs-primary-color); font-size: .8rem; }
+.project-summary-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bs-secondary-bg);
+    color: var(--bs-secondary-color);
+    font-size: .8rem;
+}
+.project-summary-closed { color: var(--bs-secondary-color); }
+.project-summary-closed .project-summary-task-name { color: var(--bs-secondary-color); text-decoration: line-through; font-weight: 400; }
+.project-summary-closed .project-summary-avatar { background: var(--bs-secondary-bg); }
+.project-summary-status-edit { opacity: 0; }
+.project-summary-table tr:hover .project-summary-status-edit,
+.project-summary-status-edit:focus-within,
+.project-summary-status-edit:has(.show) { opacity: 1; }
+@media (hover: none) { .project-summary-status-edit { opacity: 1; } }
+@media (max-width: 767px) {
+    .project-task-summary-actions { gap: 1rem; }
+}
+
+.project-task-summary [hidden] { display: none !important; }
+.project-summary-toolbar { min-width: 0; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; }
+.project-summary-filter-menu { width: 290px; max-width: calc(100vw - 2rem); }
+.project-summary-filter-options { max-height: 280px; overflow-y: auto; }
+.project-summary-filter-menu .dropdown-item { white-space: normal; cursor: pointer; }
+.project-summary-filter-options label:has(input:checked) { background: var(--bs-secondary-bg); font-weight: 600; }

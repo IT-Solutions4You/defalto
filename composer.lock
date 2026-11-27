@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c70ee4aa815067875bc9d5cf6e62359f",
+    "content-hash": "118688f948711ba380675e5dd9bf19b5",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -374,6 +374,25 @@
                 "url": "https://github.com/IT-Solutions4You/defalto/archive/refs/heads/libraries.zip"
             },
             "type": "library"
+        },
+        {
+            "name": "dhtmlx/gantt",
+            "version": "10.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DHTMLX/gantt.git",
+                "reference": "67d4425db50009705fbe41538d75c8f5f5ac9276"
+            },
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/dhtmlx-gantt/-/dhtmlx-gantt-10.0.3.tgz",
+                "reference": "67d4425db50009705fbe41538d75c8f5f5ac9276",
+                "shasum": "4c1c896b9d465892e72647cff335bf755d0ca910"
+            },
+            "type": "library",
+            "license": [
+                "MIT"
+            ]
         },
         {
             "name": "doctrine/inflector",

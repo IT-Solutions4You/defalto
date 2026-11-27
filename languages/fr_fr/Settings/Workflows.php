@@ -17,6 +17,20 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Terminer le projet lorsque toutes les tâches sont terminées',
+    'LBL_VTProjectCompletionTask' => 'Terminer le projet lorsque toutes les tâches sont terminées',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Comment fonctionne la clôture automatique du projet',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Applique le statut de projet choisi lorsque toutes les tâches non supprimées ont un des statuts sélectionnés. Au moins une tâche est requise.
+
+Vérifie **toutes les tâches non supprimées**, même celles masquées. Un avancement de 100 % ne suffit pas. Les dates et la progression du projet restent inchangées.
+
+Se déclenche **après chaque enregistrement de tâche**. Un déplacement vérifie les deux projets. Supprimer une tâche ne déclenche pas cette action.
+
+Arrêtez les changements automatiques en **désactivant cette action ou le workflow**. Si les tâches ne correspondent pas aux statuts choisis, le statut du projet reste inchangé.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Statuts des tâches terminées',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Statut cible du projet',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculer la progression du projet',
+    'LBL_VTProjectProgressTask' => 'Calculer la progression du projet',
     'Share with' => 'Partager avec',
     'Do not share with' => 'Ne pas partager avec',
     'LBL_AddSharing' => 'Partager avec',
@@ -221,6 +235,8 @@ $languageStrings = [
     'Clear record action restrictions' => 'Supprimer les restrictions des actions de l’enregistrement',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Terminer le projet lorsque toutes les tâches sont terminées',
+    'VTProjectProgressTask' => 'Calculer la progression du projet',
     'AddSharing' => 'Partager avec',
     'RemoveSharing' => 'Ne pas partager avec',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Cette condition n’est pas prise en charge lorsque le workflow s’exécute uniquement à la création. Sélectionnez « A été défini ou modifié » ou une autre condition prise en charge.',

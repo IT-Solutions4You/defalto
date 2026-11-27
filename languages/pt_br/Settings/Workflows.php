@@ -17,6 +17,20 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Concluir projeto quando todas as tarefas estiverem concluídas',
+    'LBL_VTProjectCompletionTask' => 'Concluir projeto quando todas as tarefas estiverem concluídas',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Como funciona a conclusão automática do projeto',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Define o status de projeto escolhido quando todas as tarefas não excluídas têm um dos status selecionados. É necessária pelo menos uma tarefa.
+
+Verifica **todas as tarefas não excluídas**, inclusive as ocultas. Apenas 100% de progresso não basta. As datas e o progresso do projeto não mudam.
+
+Executa **após salvar uma tarefa**. Ao mover a tarefa, verifica os dois projetos. Excluir uma tarefa não aciona esta ação.
+
+Interrompa as alterações automáticas **desativando esta ação ou o fluxo de trabalho**. Se as tarefas não corresponderem aos status selecionados, o status do projeto não muda.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Status de tarefas concluídas',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Status resultante do projeto',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calcular progresso do projeto',
+    'LBL_VTProjectProgressTask' => 'Calcular progresso do projeto',
     'Share with' => 'Compartilhar com',
     'Do not share with' => 'Não compartilhar com',
     'LBL_AddSharing' => 'Compartilhar com',
@@ -231,6 +245,8 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Concluir projeto quando todas as tarefas estiverem concluídas',
+    'VTProjectProgressTask' => 'Calcular progresso do projeto',
     'AddSharing' => 'Compartilhar com',
     'RemoveSharing' => 'Não compartilhar com',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Esta condição não é compatível quando o workflow é executado somente na criação. Selecione “Foi definido ou alterado” ou outra condição compatível.',

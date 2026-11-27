@@ -1413,8 +1413,8 @@ Vtiger.Class("Vtiger_Detail_Js", {
                                 return true;
                             }
                             jQuery('.vt-notification').remove();
-                            let postSaveRecordDetails = response,
-                                displayValue = null;
+                            const postSaveRecordDetails = response,
+                                isHeaderProgress = currentTdElement.hasClass('headerAjaxEdit') && detailViewValue.find('[data-header-progress]').length > 0;
 
                             if ('picklist' === fieldBasicData.data('type') && self.isPicklistColorSupported(detailViewValue)) {
                                 let style = '',
@@ -1456,11 +1456,11 @@ Vtiger.Class("Vtiger_Detail_Js", {
                                 detailViewValue.html(picklistHtml);
                             } else if (fieldBasicData.data('type') == 'currency' && app.getModuleName() != 'Users') {
                                 detailViewValue.find('.currencyValue').html(postSaveRecordDetails[fieldName].display_value);
-                            } else {
+                            } else if (!isHeaderProgress) {
                                 detailViewValue.html(postSaveRecordDetails[fieldName].display_value);
                             }
 
-                            self.updateHeaderFieldValue(fieldName, detailViewValue.html());
+                            self.updateHeaderFieldValue(fieldName, detailViewValue.html(), postSaveRecordDetails[fieldName], isHeaderProgress ? detailViewValue : null);
 
                             fieldBasicData.data('displayvalue', postSaveRecordDetails[fieldName].display_value);
                             fieldBasicData.data('value', postSaveRecordDetails[fieldName].value);
@@ -1489,12 +1489,36 @@ Vtiger.Class("Vtiger_Detail_Js", {
             }
         });
     },
-    updateHeaderFieldValue(fieldName, fieldValue) {
-        let self = this,
-            container = self.getContainer();
+    updateHeaderProgressValue(valueElement, fieldDetails) {
+        const progress = valueElement.find('[data-header-progress]'),
+            value = fieldDetails.value,
+            displayValue = fieldDetails.header_display_value ?? fieldDetails.display_value,
+            isEmpty = value === '' || value === null,
+            tooltip = bootstrap.Tooltip.getInstance(progress[0]);
 
-        container.find('.overlayDetailHeader').find('.' + fieldName).html(fieldValue)
-        container.find('.detailViewContainer').find('.' + fieldName).html(fieldValue)
+        if (tooltip) {
+            tooltip.dispose();
+        }
+
+        progress.toggleClass('d-none', isEmpty).attr('title', displayValue);
+        progress.find('progress').attr('value', isEmpty ? 0 : value).text(displayValue);
+        progress.find('[data-header-progress-label]').text(displayValue);
+        bootstrap.Tooltip.getOrCreateInstance(progress[0]);
+    },
+    updateHeaderFieldValue(fieldName, fieldValue, fieldDetails, sourceValueElement = null) {
+        let self = this,
+            container = self.getContainer(),
+            valueElements = container.find('.overlayDetailHeader, .detailViewContainer').find('.' + fieldName).add(sourceValueElement);
+
+        valueElements.each(function () {
+            const valueElement = jQuery(this);
+
+            if (fieldDetails && valueElement.find('[data-header-progress]').length) {
+                self.updateHeaderProgressValue(valueElement, fieldDetails);
+            } else {
+                valueElement.html(fieldValue);
+            }
+        });
     },
     handlePickListDependencyMap: function (sourcePicklistName) {
         var container = this.getForm();
@@ -1675,6 +1699,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
         app.request.post(params).then(function (error, response) {
             detailContentsHolder.html(response);
             self.setForm(detailContentsHolder.find('form#detailView').first());
+            vtUtils.initFieldWidgets(detailContentsHolder);
             self.registerBlockStatusCheckOnLoad();
             aDeferred.resolve(response);
             app.helper.hideProgress();
@@ -2129,6 +2154,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
             }
 
             contentContainer.html(data);
+            vtUtils.initFieldWidgets(contentContainer);
             widgetContainer.data('summaryWidgetLoaded', true);
             widgetContainer.data('summaryWidgetLoading', false);
             contentContainer.trigger(thisInstance.widgetPostLoad);
@@ -3556,6 +3582,7 @@ Vtiger.Class("Vtiger_Detail_Js", {
     //Events common for DetailView and OverlayDetailView
     registerBasicEvents: function () {
         var self = this;
+        vtUtils.initFieldWidgets(this.getContainer());
         this.registerAjaxEditEvent();
         this.registerAjaxEditSaveEvent();
         this.registerAjaxEditCancelEvent();

@@ -25,7 +25,9 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
     {
         $moduleName = $request->getModule();
 
-        if (!(Users_Privileges_Model::isPermitted($moduleName, 'EditView'))) {
+        $recordId = (int)$request->get('record');
+
+        if (!ProjectTask_Record_Model::isQuickEditPermitted($recordId)) {
             throw new Exception(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
         }
 
@@ -54,10 +56,18 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
         $requestFieldList = array_intersect_key($request->getAll(), $fieldList);
 
         if ($projectId) {
+            if ($recordId && (int)$recordModel->get('projectid') !== (int)$projectId) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+
             $recordModel->set('projectid', $projectId);
         }
 
         $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, 'GanttQuickEdit');
+        $structure = Core_RecordActionPermission_Model::getInstance()->applyLockedFields(
+            [$recordStructureInstance->getStructure()],
+            (int)$recordId
+        )[0];
         $picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 
         $viewer = $this->getViewer($request);
@@ -68,10 +78,10 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
         $viewer->assign('SINGLE_MODULE', 'SINGLE_' . $moduleName);
         $viewer->assign('MODULE_MODEL', $moduleModel);
         $viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
-        $viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
+        $viewer->assign('RECORD_STRUCTURE', $structure);
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
-        $viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
+        $viewer->assign('SCRIPTS', $request->get('chart') ? [] : $this->getHeaderScripts($request));
 
         $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
         $viewer->assign('MAX_UPLOAD_LIMIT', vglobal('upload_maxsize') * 1048576);
@@ -93,7 +103,9 @@ class ProjectTask_QuickEditAjax_View extends Vtiger_IndexAjax_View
     {
         $moduleName = $request->getModule();
         $jsFileNames = [
-            "modules.$moduleName.resources.Edit"
+            'modules.Vtiger.resources.Edit',
+            'modules.ProjectTask.resources.Edit',
+            'modules.ProjectTask.resources.QuickEdit',
         ];
 
         Core_Modifiers_Model::modifyVariableForClass(get_class($this), 'getHeaderScripts', $request->getModule(), $jsFileNames, $request);

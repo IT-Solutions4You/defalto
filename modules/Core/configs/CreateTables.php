@@ -37,6 +37,8 @@ class Core_CreateTables_Config
         'Settings_PostalCodes_Record_Model',
         'Settings_Country_AddressMap_Model',
         'Core_TemplateRelation_Model',
+        'Core_Checklist_Model',
+        'Core_ChecklistItem_Model',
     ];
 
     public static function getAll(): array

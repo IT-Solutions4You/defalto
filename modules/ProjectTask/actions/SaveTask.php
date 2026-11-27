@@ -18,32 +18,24 @@
 
 class ProjectTask_SaveTask_Action extends Vtiger_Save_Action
 {
-    public function process(Vtiger_Request $request)
+    protected function getRecordModelFromRequest($request)
     {
-        $response = new Vtiger_Response();
-        try {
-            $recordModel = $this->saveRecord($request);
-            $response->setResult(['record' => $recordModel->getId(), 'module' => $recordModel->getModuleName()]);
-        } catch (DuplicateException $e) {
-            $response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
-        } catch (Exception $e) {
-            $response->setError($e->getMessage());
+        $module = Vtiger_Module_Model::getInstance('ProjectTask');
+
+        foreach ($module->getFields() as $name => $field) {
+            if ($request->has($name) && !$field->isEditable()) {
+                throw new Exception(vtranslate('LBL_PERMISSION_DENIED'));
+            }
         }
-        $response->emit();
+
+        return parent::getRecordModelFromRequest($request);
     }
 
-    /**
-     * Function to save record
-     *
-     * @param <Vtiger_Request> $request - values of the record
-     *
-     * @return <RecordModel> - record Model of saved record
-     */
-    public function saveRecord($request)
+    public function process(Vtiger_Request $request)
     {
-        $recordModel = $this->getRecordModelFromRequest($request);
-        $recordModel->save();
-
-        return $recordModel;
+        $recordModel = $this->saveRecord($request);
+        $response = new Vtiger_Response();
+        $response->setResult(['record' => $recordModel->getId(), 'module' => $recordModel->getModuleName()]);
+        $response->emit();
     }
 }

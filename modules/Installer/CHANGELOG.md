@@ -1,6 +1,8 @@
 # Installer changelog
 
-## 1.63 - 2026-11-20
+## 1.63 - 2026-11-27
+
+- Excludes obsolete-link removal instructions from missing link requirements.
 
 - Displays the available Installer version and up-to-date status together on one line.
 - Explains disabled system and extension installation buttons with a tooltip when Installer needs updating or its latest version cannot be verified.

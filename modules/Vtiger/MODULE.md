@@ -1,6 +1,20 @@
 # Vtiger shared runtime
 
+- Header field rendering calls the UI-type model's `getHeaderViewTemplateName()` directly. The base implementation returns the detail template; specialized types override it. SaveAjax supplies an optional formatted header value alongside the existing display value. Detail.js updates existing header progress nodes for both header edits and synchronization from ordinary inline edits; Smarty alone owns header markup.
+
+- Vtiger_Base_UIType::getHeaderDisplayValue($value, $record = false, $recordInstance = false) delegates to getDisplayValue() by default and may be specialized by UI types. It formats values without calling a viewer or rendering templates. DetailViewHeaderFieldsView.tpl includes getHeaderViewTemplateName() directly. SaveAjax adds header_display_value only for viewable fields with a distinct header template. No separate header-field helper is used. Inline-save callbacks preserve the header progress shell and route updates only through updateHeaderFieldValue(); its optional source element is merged with synchronized targets using jQuery.add(), so each DOM node and tooltip is updated once.
+
+- Header action columns remain in layout with `display: inline-block` and `visibility: hidden`; hover or focus within the field changes visibility only, in both full detail and overlay headers. `DetailViewHeaderFieldsView.tpl` also reserves a minimum width with `w-2rem` when Detail.js hides the pencil during inline editing. Never toggle the action column's display on hover: it changes the width of percentage bars and other header values.
+
+- vtUtils.initFieldWidgets(container) initializes registered field widget instances without reinitializing select/date controls. Edit registerBasicEvents() and Detail registerBasicEvents()/loadContents()/loadWidget() call it for full pages, overlays, quick preview and AJAX content. applyFieldElementsView() delegates its field-widget pass to the same helper, covering Quick Create and other dynamic forms. Widget initEdit() methods must remain safe on repeated calls.
+
+- Basic pages, edit/detail overlays, QuickCreateAjax and detail quick preview call Core_Controller_View::getModuleUiTypeScripts(), which merges existing block resources and optional field-owned getScriptNames() resources. Quick preview loads these after base Detail/RelatedList and before Core QuickPreview. Checklist therefore works in an ordinary block without global header registration.
+- QuickCreateAjax assigns its clean, request-prefilled record model as `RECORD` before rendering. Shared field templates such as Checklist require this model even for an unsaved record; never substitute the underlying page's record or a related source record.
+- Shared blocks/Fields.tpl uses the normal label/value layout for Checklist fields, including read-only fields. Locked checklists render the same value template with controls disabled by Core permissions instead of raw field text. Vtiger_Field_Model::isTableFullWidth() recognizes the checklist data type. Core owns the value widget; standard detail/edit layouts own its label and columns.
+
 This module holds shared base behavior inherited by other modules. It has no standalone installable module version; the sections below only record the invariants that are easy to break.
+
+- List, SearchList and AdvanceSearchList delete-button delegates use the `click.vtigerDeleteRecord` namespace and replace their own handler on registration. Search handlers stop bubbling to the enclosing page delegate, so one click opens one confirmation even after repeated controller initialization. Do not remove unrelated click handlers.
 
 - The comment AI button and the top bar share the Core availability dialog. The common application startup registers `Vtiger_Index_Js`'s delegated click handler for every view. The listener runs before inline handlers because the installed AI extension replaces the top bar control. Keep the comment trigger distinct so opening chat can pass the draft and use the existing comment prompt schema.
 
@@ -14,6 +28,10 @@ This module holds shared base behavior inherited by other modules. It has no sta
 - Verify single and multiple selections in both themes through create, edit, quick create, inline edit and filter conditions. Check keyboard highlighting and disabled options, and confirm record labels in lists, details and related lists.
 
 ## Summary widgets
+
+- Link objects expose isChecklistWidgetUnavailable($module) so detail widget discovery asks the link directly whether its Checklist field is unavailable. The link reads its own URL parameters and delegates field validation to Core; other widget modes skip that lookup.
+
+- Checklist widget links use mode=showChecklist with a stable field name or legacy numeric field id. getWidgets() omits links whose field is absent, inaccessible or no longer a Checklist. The consuming module's install configuration owns its widget declaration; Core supplies shared value rendering and record/field mutation permissions.
 
 - Related-list cards use the shared skin's zero-top-margin rule, including module-specific templates. The desktop related-navigation column has no outer top padding; internal menu padding remains.
 
@@ -139,3 +157,13 @@ This module holds shared base behavior inherited by other modules. It has no sta
 # Record action permissions
 
 - `Save`/`SaveAjax` (`saveRecord()`), `MassSave`, `MassDelete`, the list row actions, `Detail` and `Edit` (locked fields in `blocks/Fields.tpl`, denied picklist values in `uitypes/Picklist.tpl`, a denied form shown as `Core/RecordActionDeniedPage.tpl` in the layout, a refused full save shown again in the form) apply `Core_RecordActionPermission_Model` rules; see `modules/Core/MODULE.md` (Record action permissions) for the owner, the checks and the validation scenario.
+
+## Form-scoped reference selection
+
+- Reference popup source module/record and autocomplete base record come from the nearest recordEditView form, including new records with an empty id. Never reuse the underlying detail record for an overlay. Autocomplete results append inside their modal. Reference clear/popup/module delegates replace their own namespace, and clearing emits change on the hidden source field.
+- Popup initialization uses one namespaced post.Popup.Load listener. The shared popup helper inserts HTML once and initializes controls before showing the modal, avoiding duplicate script execution.
+- Standard OverlayEditView carries escaped field JSON in `.record-field-info`; Vtiger_Edit_Js.getValidationMeta(form) exposes it to vtValidate without global related_uimeta. Chart overlay submit handlers use this metadata and SaveAjax, retaining module validators and keeping failures in the form.
+
+- JSResources loads the Core-owned Vtiger_AssigneeSelect_Js globally. vtUtils.applyFieldElementsView registers shared assignee controls within the supplied container; registration is idempotent and preserves ordinary owner field widgets.
+
+- Link::getWidgetTemplate() honors an explicit runtime link_template first, then the template query parameter of the stored widget link, and otherwise uses SummaryViewWidget.tpl. Widget URL parsing and relation/module permission checks remain in the shared DetailView discovery flow.

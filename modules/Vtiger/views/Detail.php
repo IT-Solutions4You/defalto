@@ -408,7 +408,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View
         ];
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 
-        return array_merge($jsScriptInstances, $this->getBlockUiTypeScripts($moduleName));
+        return array_merge($jsScriptInstances, $this->getModuleUiTypeScripts($moduleName));
     }
 
     public function getQuickPreviewHeaderScripts(Vtiger_Request $request)
@@ -419,10 +419,13 @@ class Vtiger_Detail_View extends Vtiger_Index_View
             "modules.$moduleName.resources.Detail",
             "modules.Vtiger.resources.RelatedList",
             "modules.$moduleName.resources.RelatedList",
-            'modules.Core.resources.QuickPreview',
         ];
 
-        return $this->checkAndConvertJsScripts($jsFileNames);
+        return array_merge(
+            $this->checkAndConvertJsScripts($jsFileNames),
+            $this->getModuleUiTypeScripts($moduleName),
+            $this->checkAndConvertJsScripts(['modules.Core.resources.QuickPreview'])
+        );
     }
 
     function showModuleSummaryView($request)

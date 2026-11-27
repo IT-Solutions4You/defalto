@@ -435,7 +435,7 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
      */
     public array $registerCron = [];
     /**
-     * [module, type, label, url, icon, sequence, handlerInfo]
+     * [module, type, label, url, icon, sequence, handlerInfo]. A delete: URL removes the registration.
      * @return array
      */
     public array $registerCustomLinks = [];
@@ -1412,6 +1412,10 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
     public function updateCustomLinks($register = true)
     {
         foreach ($this->registerCustomLinks as $customLink) {
+            if (self::isCustomLinkDeletion($customLink)) {
+                continue;
+            }
+
             [$moduleName, $type, $label, $url, $icon, $sequence, $handler] = array_pad($customLink, 7, null);
             $module = Vtiger_Module::getInstance($moduleName);
             $url = str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url);
@@ -1424,6 +1428,25 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
                 }
             }
         }
+
+        // Apply removals last so a legacy registration cannot be recreated by an earlier declaration.
+        foreach ($this->registerCustomLinks as $customLink) {
+            if (!self::isCustomLinkDeletion($customLink)) {
+                continue;
+            }
+
+            [$moduleName, $type, $label] = $customLink;
+            $module = Vtiger_Module::getInstance($moduleName);
+
+            if ($module) {
+                $module->deleteLink($type, $label);
+            }
+        }
+    }
+
+    public static function isCustomLinkDeletion(array $definition): bool
+    {
+        return str_starts_with((string)($definition[3] ?? ''), 'delete:');
     }
 
     public function getSummaryWidgets(): array

@@ -16,3 +16,5 @@ Administrators maintain the company name, contact and bank information, descript
 ## Summary widgets
 
 Administrators can arrange the summary widgets shown on each module's record detail pages in Settings, under Widget editor in the Module Manager section. Widgets sit in a left or right column and can be reordered, disabled or, for custom list widgets, removed.
+
+Administrators can open **Settings → Module Manager → Link Settings** directly. Choose a module to see its registered Detail and List actions. Link Settings is a standalone editor, alongside Widget editor, and is no longer a Layout Editor tab. Changing the module refreshes the action list while keeping the editor open.

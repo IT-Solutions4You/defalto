@@ -9,6 +9,28 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Použije sa, keď úloha nemá vyplnené plánované hodiny.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Koľko hodín má vo výpočte predstavovať úloha bez odhadu a úplných dátumov.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Úlohy v týchto stavoch sa považujú za úplne hotové.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Úlohy v týchto stavoch sa do pokroku projektu nezapočítajú.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Ako sa počíta pokrok projektu',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => '**Väčšie úlohy** majú väčší vplyv na pokrok projektu.
+
+Najprv sa použijú **Plánované hodiny**. Ak chýbajú, použijú sa dátumy úlohy a Hodiny na kalendárny deň. Bez úplných dátumov sa použijú **náhradné hodiny**.
+
+**Dokončené úlohy** sa počítajú ako hotové. **Vylúčené úlohy** sa nepočítajú. Pri ostatných sa použije ich vyplnený Progres.
+
+Pokrok sa aktualizuje pri zmenách úloh. Môžete ho upraviť aj ručne, ale **ďalšia zmena úlohy ho prepočíta**.
+
+Automatický prepočet zastavíte **vypnutím tejto akcie alebo workflow**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Prepočítať pokrok projektu',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Hodiny na kalendárny deň',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Hodiny pre úlohy bez odhadu a dátumov',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Dokončené stavy (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Vylúčené stavy',
+
+    'LBL_TASK_ASSIGNEE' => 'Riešiteľ',
     'CV_ALL' => 'Všetky úlohy projektu',
     'SINGLE_ProjectTask' => 'Projektová úloha',
     'LBL_ADD_RECORD' => 'Pridať projektovú úlohu',

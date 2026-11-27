@@ -17,6 +17,20 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Zakończ projekt po zakończeniu wszystkich zadań',
+    'LBL_VTProjectCompletionTask' => 'Zakończ projekt po zakończeniu wszystkich zadań',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Jak działa automatyczne kończenie projektu',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Ustawia wybrany status projektu, gdy wszystkie nieusunięte zadania mają jeden z wybranych statusów. Wymagane jest co najmniej jedno zadanie.
+
+Sprawdza **wszystkie nieusunięte zadania**, także niewidoczne. Sam postęp 100% nie wystarcza. Daty i postęp projektu nie zmieniają się.
+
+Działa **po zapisaniu zadania**. Przeniesienie sprawdza poprzedni i nowy projekt. Usunięcie zadania nie uruchamia tej akcji.
+
+Zatrzymaj automatyczne zmiany przez **wyłączenie tej akcji lub procesu**. Jeśli zadania nie pasują do wybranych statusów, status projektu pozostaje bez zmian.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Statusy zakończonych zadań',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Docelowy status projektu',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Oblicz postęp projektu',
+    'LBL_VTProjectProgressTask' => 'Oblicz postęp projektu',
     'Share with' => 'Udostępnij dla',
     'Do not share with' => 'Nie udostępniaj dla',
     'LBL_AddSharing' => 'Udostępnij dla',
@@ -231,6 +245,8 @@ $languageStrings = [
 ];
 
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Zakończ projekt po zakończeniu wszystkich zadań',
+    'VTProjectProgressTask' => 'Oblicz postęp projektu',
     'AddSharing' => 'Udostępnij dla',
     'RemoveSharing' => 'Nie udostępniaj dla',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Ten warunek nie jest obsługiwany, gdy workflow jest uruchamiany tylko podczas tworzenia. Wybierz „Zostało ustawione lub zmienione” albo inny obsługiwany warunek.',

@@ -413,11 +413,9 @@ class Vtiger_Link_Model extends Vtiger_Link
      */
     public function getWidgetTemplate(): string
     {
-        if (empty($this->get('link_template'))) {
-            return 'SummaryViewWidget.tpl';
-        }
+        $template = $this->get('link_template') ?: ($this->getUrlParameters()['template'] ?? '');
 
-        return (string)$this->get('link_template');
+        return (string)($template ?: 'SummaryViewWidget.tpl');
     }
 
     /**
@@ -436,6 +434,14 @@ class Vtiger_Link_Model extends Vtiger_Link
         parse_str($query, $parameters);
 
         return $parameters;
+    }
+
+    public function isChecklistWidgetUnavailable(Vtiger_Module_Model $module): bool
+    {
+        $urlParameters = $this->getUrlParameters();
+
+        return ($urlParameters['mode'] ?? '') === 'showChecklist'
+            && Core_Checklist_Model::getInstance()->getSummaryWidgetField($module, (string)($urlParameters['field'] ?? '')) === null;
     }
 
     public function isSummaryFirst(): bool

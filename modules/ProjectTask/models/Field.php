@@ -18,12 +18,4 @@
 
 class ProjectTask_Field_Model extends Vtiger_Field_Model
 {
-    public function getPicklistValues()
-    {
-        if ('projecttaskprogress' === $this->getName()) {
-            return ProjectTask_Install_Model::$progressValues;
-        }
-
-        return parent::getPicklistValues();
-    }
 }

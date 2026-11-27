@@ -54,6 +54,10 @@ class Installer_ModuleRequirements_Model extends Vtiger_Base_Model
         $info = [];
 
         foreach ($this->customLinks as $customLink) {
+            if (Core_Install_Model::isCustomLinkDeletion($customLink)) {
+                continue;
+            }
+
             [$moduleName, $type, $label, $url, $icon, $sequence, $handlerInfo] = array_pad($customLink, 7, null);
 
             $data = [

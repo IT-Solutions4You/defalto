@@ -17,6 +17,28 @@
  */
 
 $languageStrings = [
+    'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Usato quando l’attività non ha ore pianificate.',
+    'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Quante ore deve rappresentare nel calcolo un’attività senza stima e date complete.',
+    'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Le attività in questi stati sono considerate completamente terminate.',
+    'LBL_PROGRESS_EXCLUDED_STATUSES_HELP' => 'Le attività in questi stati non sono incluse nell’avanzamento del progetto.',
+
+    'LBL_PROJECT_PROGRESS_CALCULATION_TITLE' => 'Come viene calcolato l’avanzamento del progetto',
+    'LBL_PROJECT_PROGRESS_CALCULATION' => 'Le **attività più grandi** influiscono maggiormente sull’avanzamento del progetto.
+
+Il calcolo usa prima le **ore pianificate**. Se mancano, usa le date dell’attività e le ore per giorno di calendario. Senza date complete usa le **ore sostitutive**.
+
+Le **attività completate** contano come finite. Quelle **escluse** non contano. Le altre usano l’avanzamento inserito.
+
+L’avanzamento si aggiorna quando cambiano le attività. Può essere modificato manualmente, ma la **prossima modifica a un’attività lo ricalcolerà**.
+
+Per fermare gli aggiornamenti automatici, **disattivare questa azione o il processo**.',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calcola avanzamento progetto',
+    'LBL_PROGRESS_HOURS_PER_DAY' => 'Ore per giorno di calendario',
+    'LBL_PROGRESS_FALLBACK_HOURS' => 'Ore per attività senza stima e date',
+    'LBL_PROGRESS_COMPLETED_STATUSES' => 'Stati completati (100%)',
+    'LBL_PROGRESS_EXCLUDED_STATUSES' => 'Stati esclusi',
+
+    'LBL_TASK_ASSIGNEE' => 'Assegnatario',
     'CV_ALL' => 'Tutte le attività del progetto',
     'SINGLE_ProjectTask'           => "Attività del progetto",
     'LBL_ADD_RECORD'               => "Aggiungi attività di progetto",

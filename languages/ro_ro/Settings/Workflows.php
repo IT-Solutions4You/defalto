@@ -17,6 +17,20 @@
  */
 
 $languageStrings = [
+    'LBL_PROJECT_COMPLETION_TASK' => 'Finalizează proiectul când toate sarcinile sunt finalizate',
+    'LBL_VTProjectCompletionTask' => 'Finalizează proiectul când toate sarcinile sunt finalizate',
+    'LBL_PROJECT_COMPLETION_TITLE' => 'Cum funcționează finalizarea automată a proiectului',
+    'LBL_PROJECT_COMPLETION_HELP' => 'Setează starea de proiect aleasă când toate sarcinile neșterse au una dintre stările selectate. Este necesară cel puțin o sarcină.
+
+Verifică **toate sarcinile neșterse**, inclusiv cele ascunse. Progresul de 100% nu este suficient. Datele și progresul proiectului rămân neschimbate.
+
+Rulează **după salvarea unei sarcini**. Mutarea verifică proiectul vechi și cel nou. Ștergerea nu declanșează această acțiune.
+
+Opriți modificările automate **dezactivând această acțiune sau fluxul de lucru**. Dacă sarcinile nu corespund stărilor selectate, starea proiectului rămâne neschimbată.',
+    'LBL_COMPLETION_TASK_STATUSES' => 'Stările sarcinilor finalizate',
+    'LBL_COMPLETION_PROJECT_STATUS' => 'Starea rezultată a proiectului',
+    'LBL_PROJECT_PROGRESS_TASK' => 'Calculează progresul proiectului',
+    'LBL_VTProjectProgressTask' => 'Calculează progresul proiectului',
     'Share with' => 'Partajează cu',
     'Do not share with' => 'Nu partaja cu',
     'LBL_AddSharing' => 'Partajează cu',
@@ -221,6 +235,8 @@ $languageStrings = [
     'Clear record action restrictions' => 'Elimină restricțiile acțiunilor înregistrării',
 ];
 $jsLanguageStrings = [
+    'VTProjectCompletionTask' => 'Finalizează proiectul când toate sarcinile sunt finalizate',
+    'VTProjectProgressTask' => 'Calculează progresul proiectului',
     'AddSharing' => 'Partajează cu',
     'RemoveSharing' => 'Nu partaja cu',
     'JS_WORKFLOW_CREATION_CONDITION_INVALID' => 'Această condiție nu este acceptată când fluxul de lucru rulează numai la creare. Selectați „A fost setat sau modificat” sau altă condiție acceptată.',

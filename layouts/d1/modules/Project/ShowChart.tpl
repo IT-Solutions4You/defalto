@@ -1,246 +1,114 @@
-{**
- * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
- *
- * (c) IT-Solutions4You s.r.o
- *
- * This file is licensed under the GNU AGPL v3 License.
- * See LICENSE-AGPLv3.txt for more details.
- *}
 {strip}
-    <div class="container-fluid pt-3">
-        <div class="bg-body rounded p-3">
-            <style>
-                {foreach from=$TASK_STATUS_COLOR item=COLOR key=STATUS}
-                    {Project_Record_Model::getGanttStatusCss($STATUS, $COLOR)}
-                    {Project_Record_Model::getGanttSvgStatusCss($STATUS, $COLOR)}
-                {/foreach}
-            </style>
-            {if !empty($PROJECT_TASKS['tasks'])}
-                <div class="text-end">
-                    <button class="btn btn-outline-secondary textual zoomOut me-2" title="zoom out">
-                        <span class="teamworkIcon">)</span>
-                    </button>
-                    <button class="btn btn-outline-secondary textual zoomIn me-2" title="zoom in">
-                        <span class="teamworkIcon">(</span>
-                    </button>
-                    <a href="index.php?module=Project&view=ExportChart&record={$PARENT_ID}" target="_blank" class="btn btn-outline-secondary reportActions">
-                        <span>{vtranslate('LBL_PRINT', 'Project')}</span>
-                    </a>
-                </div>
-                <br />
-                <br />
-                <input id="projecttasks"  type="hidden" value="{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($PROJECT_TASKS))}">
-                <input id="originalprojecttasks" type="hidden" value="{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($PROJECT_TASKS))}">
-                <input id="userDateFormat" type="hidden" value="{$USER_DATE_FORMAT}">
-                <div id="workSpace" style="padding:0px;border:1px solid #e5e5e5;position:relative;margin:0 5px"></div>
-                <div id="gantEditorTemplates" style="display:none;">
-                    <div class="__template__" type="TASKSEDITHEAD"><!--
-                    <table class="gdfTable" cellspacing="0" cellpadding="0">
-                      <thead>
-                      <tr style='height:50px'>
-                        <th class="gdfColHeader" style="width:35px;"></th>
-                        <th class="gdfColHeader" style="width:50px;" >{vtranslate('LBL_STATUS', $MODULE)}</th>
-                        <th class="gdfColHeader cursorPointer" style="width:80px;" data-name="name" data-text="{vtranslate('LBL_TASK_NAME', $MODULE)}">{vtranslate('LBL_TASK_NAME', $MODULE)}</th>
-                        <th class="gdfColHeader cursorPointer" style="width:80px;" data-name="startdate" data-text="{vtranslate('LBL_START_DATE', $MODULE)}" >{vtranslate('LBL_START_DATE', $MODULE)}</th>
-                        <th class="gdfColHeader cursorPointer" style="width:80px;" data-name="enddate" data-text="{vtranslate('LBL_END_DATE', $MODULE)}" >{vtranslate('LBL_END_DATE', $MODULE)}</th>
-                        <th class="gdfColHeader cursorPointer" style="width:80px;" data-name="duration" data-text="{vtranslate('LBL_DURATION', $MODULE)}">{vtranslate('LBL_DURATION', $MODULE)}</th>
-                      </tr>
-                      </thead>
-                    </table>
-                    --></div>
-
-                    <div class="__template__" type="TASKROW"><!--
-                    <tr taskId="(#=obj.id#)" class="taskEditRow" level="(#=level#)">
-                      <th class="gdfCell editTask" align="right" style="cursor:pointer;" data-recordid="(#=obj.recordid#)"><span class="taskRowIndex">(#=obj.getRow()+1#)</span> <span class="teamworkIcon" style="font-size:12px;" >e</span></th>
-                      <td class="gdfCell noClip" align="center"><div class="taskStatus cvcColorSquare" status="(#=obj.status#)"></div></td>
-                      <td class="gdfCell indentCell" style="padding-left:(#=obj.level*10#)px;">
-                        <div class="(#=obj.isParent()?'exp-controller expcoll exp':'exp-controller'#)" align="center"></div>
-                        (#=obj.name#)
-                      </td>
-
-                      <td class="gdfCell" name="start"></td>
-                      <td class="gdfCell" name="end"></td>
-                      <td class="gdfCell" name="durationtext">(#=obj.duration#)</td>
-                    </tr>
-                    --></div>
-
-                    <div class="__template__" type="TASKEMPTYROW"><!--
-                    <tr class="taskEditRow emptyRow" >
-                      <th class="gdfCell" align="right"></th>
-                      <td class="gdfCell noClip" align="center"></td>
-                      <td class="gdfCell"></td>
-                      <td class="gdfCell"></td>
-                      <td class="gdfCell"></td>
-                      <td class="gdfCell"></td>
-                    </tr>
-                    --></div>
-
-                    <div class="__template__" type="TASKBAR"><!--
-                    <div class="taskBox taskBoxDiv" taskId="(#=obj.id#)" >
-                      <div class="layout (#=obj.hasExternalDep?'extDep':''#)">
-                        <div class="taskStatus" status="(#=obj.status#)"></div>
-                        <div class="taskProgress" style="width:(#=obj.progress>100?100:obj.progress#)%; background-color:(#=obj.progress>100?'red':'rgb(153,255,51);'#);"></div>
-                        <div class="milestone (#=obj.startIsMilestone?'active':''#)" ></div>
-
-                        <div class="taskLabel"></div>
-                        <div class="milestone end (#=obj.endIsMilestone?'active':''#)" ></div>
-                      </div>
-                    </div>
-                    --></div>
-
-                    <div class="__template__" type="CHANGE_STATUS"><!--
-                      <div class="taskStatusBox">
-                        <div class="taskStatus cvcColorSquare" status="STATUS_ACTIVE" title="active"></div>
-                        <div class="taskStatus cvcColorSquare" status="STATUS_DONE" title="completed"></div>
-                        <div class="taskStatus cvcColorSquare" status="STATUS_FAILED" title="failed"></div>
-                        <div class="taskStatus cvcColorSquare" status="STATUS_SUSPENDED" title="suspended"></div>
-                        <div class="taskStatus cvcColorSquare" status="STATUS_UNDEFINED" title="undefined"></div>
-                      </div>
-                    --></div>
-
-
-                    <div class="__template__" type="TASK_EDITOR"><!--
-                    <div class="ganttTaskEditor">
-                    <table width="100%">
-                      <tr>
-                        <td>
-                          <table cellpadding="5">
-                            <tr>
-                              <td><label for="code">code/short name</label><br><input type="text" name="code" id="code" value="" class="formElements"></td>
-                             </tr><tr>
-                              <td><label for="name">name</label><br><input type="text" name="name" id="name" value=""  size="35" class="formElements"></td>
-                            </tr>
-                            <tr></tr>
-                              <td>
-                                <label for="description">description</label><br>
-                                <textarea rows="5" cols="30" id="description" name="description" class="formElements"></textarea>
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                        <td valign="top">
-                          <table cellpadding="5">
-                            <tr>
-                            <td colspan="2"><label for="status">status</label><br><div id="status" class="taskStatus" status=""></div></td>
-                            <tr>
-                            <td colspan="2"><label for="progress">progress</label><br><input type="text" name="progress" id="progress" value="" size="3" class="formElements"></td>
-                            </tr>
-                            <tr>
-                            <td><label for="start">start</label><br><input type="text" name="start" id="start"  value="" class="date" size="10" class="formElements"><input type="checkbox" id="startIsMilestone"> </td>
-                            <td rowspan="2" class="graph" style="padding-left:50px"><label for="duration">dur.</label><br><input type="text" name="duration" id="duration" value=""  size="5" class="formElements"></td>
-                          </tr><tr>
-                            <td><label for="end">end</label><br><input type="text" name="end" id="end" value="" class="date"  size="10" class="formElements"><input type="checkbox" id="endIsMilestone"></td>
-                          </table>
-                        </td>
-                      </tr>
-                      </table>
-
-                    <h2>assignments</h2>
-                    <table  cellspacing="1" cellpadding="0" width="100%" id="assigsTable">
-                      <tr>
-                        <th style="width:100px;">name</th>
-                        <th style="width:70px;">role</th>
-                        <th style="width:30px;">est.wklg.</th>
-                        <th style="width:30px;" id="addAssig"><span class="teamworkIcon" style="cursor: pointer">+</span></th>
-                      </tr>
-                    </table>
-
-                    <div style="text-align: right; padding-top: 20px"><button id="saveButton" class="button big">save</button></div>
-                    </div>
-                    --></div>
-
-
-                    <div class="__template__" type="ASSIGNMENT_ROW"><!--
-                    <tr taskId="(#=obj.task.id#)" assigId="(#=obj.assig.id#)" class="assigEditRow" >
-                      <td ><select name="resourceId"  class="formElements" (#=obj.assig.id.indexOf("tmp_")==0?"":"disabled"#) ></select></td>
-                      <td ><select type="select" name="roleId"  class="formElements"></select></td>
-                      <td ><input type="text" name="effort" value="(#=getMillisInHoursMinutes(obj.assig.effort)#)" size="5" class="formElements"></td>
-                      <td align="center"><span class="teamworkIcon delAssig" style="cursor: pointer">d</span></td>
-                    </tr>
-                    --></div>
-
-
-                    <div class="__template__" type="RESOURCE_EDITOR"><!--
-                    <div class="resourceEditor" style="padding: 5px;">
-
-                      <h2>Project team</h2>
-                      <table  cellspacing="1" cellpadding="0" width="100%" id="resourcesTable">
-                        <tr>
-                          <th style="width:100px;">name</th>
-                          <th style="width:30px;" id="addResource"><span class="teamworkIcon" style="cursor: pointer">+</span></th>
-                        </tr>
-                      </table>
-
-                      <div style="text-align: right; padding-top: 20px"><button id="resSaveButton" class="button big">save</button></div>
-                    </div>
-                    --></div>
-
-
-                    <div class="__template__" type="RESOURCE_ROW"><!--
-                    <tr resId="(#=obj.id#)" class="resRow" >
-                      <td ><input type="text" name="name" value="(#=obj.name#)" style="width:100%;" class="formElements"></td>
-                      <td align="center"><span class="teamworkIcon delRes" style="cursor: pointer">d</span></td>
-                    </tr>
-                    --></div>
-                </div>
-                <div class="row" style="margin-top: 10px; padding: 5px;">
-                    <div class="col-lg-4">
-                        <table class="table table-condensed table-striped table-bordered ">
-                            <thead>
-                                <tr>
-                                    <td></td>
-                                    <td><b>{vtranslate('LBL_STATUS', $MODULE)}</b></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {foreach from=$TASK_STATUS item=STATUS_NAME}
-                                    {assign var=STATUS_NAME value=trim($STATUS_NAME)}
-                                    <tr>
-                                        <td>
-                                            <div class="row">
-                                                <div class="col-lg-3"> &nbsp; </div>
-                                                <div class="col-lg-3">
-                                                    <div status="{Project_Record_Model::getGanttStatus($STATUS_NAME)}" class="taskStatus cvcColorSquare"></div>
-                                                </div>
-                                                {if $STATUS_FIELD_MODEL->isEditable()}
-                                                    <div class="col-lg-3">
-                                                        <a onclick="javascript:Project_Detail_Js.showEditColorModel('index.php?module={$MODULE}&view=EditAjax&mode=editColor&status={$STATUS_NAME}', this)" data-status="{$STATUS_NAME}" data-color="{$TASK_STATUS_COLOR[$STATUS_NAME]}"><i title="{vtranslate('LBL_EDIT_COLOR', $MODULE)}" class="fa fa-pencil alignMiddle"></i></a>&nbsp;
-                                                    </div>
-                                                {/if}
-                                            </div>
-                                        </td>
-                                        <td>{vtranslate($STATUS_NAME,'ProjectTask')}</td>
-                                    </tr>
-                                {/foreach}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-lg-8">
-                        <div style="position: relative;width:93%" class="row alert-info well">
-                            <span class="span alert-info">
-                                <span style="padding: 1%"><b>{vtranslate('LBL_INFO',$MODULE)}</b></span>
-                                <ul>
-                                    <li>{vtranslate('LBL_GANTT_INFO1', $MODULE)}</li>
-                                    <li>{vtranslate('LBL_GANTT_INFO2', $MODULE)}</li>
-                                </ul>
-                            </span>
+<div class="container-fluid">
+    <div class="project-chart bg-body rounded p-3"
+         data-record="{$PARENT_ID}" data-print="{if $CHART_PRINT}true{else}false{/if}"
+         data-locale="{$CHART_LOCALE|escape:'html'}" data-date-format="{$USER_DATE_FORMAT|escape:'html'}"
+         data-range-warning="{vtranslate('LBL_OUTSIDE_PROJECT_RANGE', 'Project')|escape:'html'}"
+         data-dependency-warning="{vtranslate('LBL_DEPENDENCY_VIOLATION', 'Project')|escape:'html'}"
+         data-milestone-warning="{vtranslate('LBL_TASK_AFTER_MILESTONE', 'Project')|escape:'html'}"
+         data-dependency-help="{vtranslate('LBL_DEPENDENCY_HELP', 'Project')|escape:'html'}"
+         data-overdue-label="{vtranslate('LBL_CHART_OVERDUE', 'Project')|escape:'html'}"
+         data-today-label="{vtranslate('LBL_TODAY', 'Core')|escape:'html'}"
+         data-print-from="{if $CHART_PRINT}{$PRINT_VIEW['from']|escape:'html'}{/if}"
+         data-print-to="{if $CHART_PRINT}{$PRINT_VIEW['to']|escape:'html'}{/if}"
+         data-print-scale="{if $CHART_PRINT}{$PRINT_VIEW['scale']}{/if}"
+         data-filter-search="{if $CHART_PRINT}{$CHART_FILTERS['search']|escape:'html'}{/if}"
+         data-filter-owner="{if $CHART_PRINT}{$CHART_FILTERS['owner']|escape:'html'}{/if}"
+         data-filter-status="{if $CHART_PRINT}{$CHART_FILTERS['status']|escape:'html'}{/if}"
+         data-task-label="{vtranslate('SINGLE_ProjectTask', 'ProjectTask')|escape:'html'}"
+         data-owner-label="{vtranslate('Assigned To')|escape:'html'}"
+         data-start-label="{vtranslate('LBL_CHART_START', 'Project')|escape:'html'}"
+         data-end-label="{vtranslate('LBL_CHART_END', 'Project')|escape:'html'}"
+         data-warning-label="{vtranslate('LBL_WARNING', 'Core')|escape:'html'}"
+         data-close-label="{vtranslate('LBL_CLOSE', 'Core')|escape:'html'}"
+         data-range-remedy="{vtranslate('LBL_CHART_RANGE_REMEDY', 'Project')|escape:'html'}"
+         data-dependency-remedy="{vtranslate('LBL_CHART_DEPENDENCY_REMEDY', 'Project')|escape:'html'}"
+         data-milestone-remedy="{vtranslate('LBL_CHART_MILESTONE_REMEDY', 'Project')|escape:'html'}"
+         data-overdue-remedy="{vtranslate('LBL_CHART_OVERDUE_REMEDY', 'Project')|escape:'html'}"
+         data-days-label="{vtranslate('LBL_CHART_DAY_COUNT', 'Project')|escape:'html'}">
+        <input type="hidden" class="project-chart-data" value="{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($PROJECT_CHART))}">
+        <div class="project-chart-warnings mb-2">
+            {if !$PROJECT_CHART['dependencies_ready'] && !$CHART_PRINT}<p class="text-secondary">{vtranslate('LBL_DEPENDENCY_SETUP', 'Project')}</p>{/if}
+            {if !$PROJECT_CHART['preferences_ready'] && !$CHART_PRINT}<p class="text-secondary">{vtranslate('LBL_CHART_SETTINGS_SETUP', 'Project')}</p>{/if}
+        </div>
+        {if !empty($PROJECT_CHART['data']) || !empty($PROJECT_CHART['unscheduled'])}
+            <div class="project-chart-toolbar d-flex flex-wrap align-items-end gap-3 mb-3">
+                {if !empty($PROJECT_CHART['has_records']) && !$CHART_PRINT}
+                    <div class="project-chart-filters d-flex flex-wrap gap-3 me-auto">
+                        <div class="input-group w-auto">
+                            <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+                            <input type="search" class="project-chart-filter-search form-control" placeholder="{vtranslate('LBL_SEARCH')|escape:'html'}" aria-label="{vtranslate('LBL_SEARCH')|escape:'html'}" />
+                        </div>
+                        {include file='AssigneeSelect.tpl'|vtemplate_path:'Core' ASSIGNEE_OPTIONS=$PROJECT_CHART['assignees'] ASSIGNEE_CLASS='project-chart-filter-owner'}
+                        <div class="input-group w-auto">
+                            <span class="input-group-text"><i class="fa fa-filter" aria-hidden="true"></i></span>
+                            <select class="project-chart-filter-status form-select" aria-label="{vtranslate('LBL_STATUS')|escape:'html'}"><option value="">{vtranslate('LBL_STATUS')}: {vtranslate('LBL_ALL')}</option></select>
                         </div>
                     </div>
+                {/if}
+                <div class="d-flex gap-2 ms-auto">
+                    {if !$CHART_PRINT}
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{vtranslate('LBL_HELP', 'Core')|escape:'html'}" title="{vtranslate('LBL_HELP', 'Core')|escape:'html'}"><i class="fa fa-circle-info" aria-hidden="true"></i></button>
+                            <div class="dropdown-menu dropdown-menu-end p-3 text-body project-chart-help">
+                                <h6 class="fw-bold mb-2">{vtranslate('SINGLE_ProjectMilestone', 'ProjectMilestone')}</h6>
+                                <p class="small mb-3">{vtranslate('LBL_MILESTONE_RANGE_HELP', 'Project')}</p>
+                                <hr class="my-3" />
+                                <h6 class="fw-bold mb-2">{vtranslate('LBL_HELP', 'Core')}</h6>
+                                <p class="small mb-0">{vtranslate('LBL_DEPENDENCY_HELP', 'Project')}</p>
+                            </div>
+                        </div>
+                    {/if}
+                    {if !empty($PROJECT_CHART['data'])}
+                        <button type="button" class="btn btn-outline-secondary project-chart-zoom-out" aria-label="−">−</button>
+                        <button type="button" class="btn btn-outline-secondary project-chart-zoom-in" aria-label="+">+</button>
+                    {/if}
+                    {if $CHART_PRINT}
+                        <button type="button" class="project-chart-print btn btn-outline-secondary">{vtranslate('LBL_PRINT')}</button>
+                    {else}
+                        {if !empty($PROJECT_CHART['data'])}
+                            <button type="button" class="project-chart-grid-toggle btn btn-outline-secondary" aria-expanded="true" aria-label="{vtranslate('LBL_CHART_TABLE', 'Project')|escape:'html'}" title="{vtranslate('LBL_CHART_TABLE', 'Project')|escape:'html'}"><i class="fa fa-list" aria-hidden="true"></i></button>
+                        {/if}
+                        <a href="index.php?module=Project&amp;view=ExportChart&amp;record={$PARENT_ID}" target="_blank" rel="noopener" class="project-chart-print-link btn btn-outline-secondary">{vtranslate('LBL_PRINT')}</a>
+                    {/if}
                 </div>
-            {else}
-                <table class="emptyRecordsDiv">
-                    <tbody>
-                        <tr>
-                            <td>
-                                {assign var="PROJECT_TASK_MODEL" value=Vtiger_Module_Model::getInstance('ProjectTask')}
-                                {assign var="IS_MODULE_EDITABLE" value=$PROJECT_TASK_MODEL->isPermitted('CreateView')}
-                                {assign var=SINGLE_MODULE value="SINGLE_ProjectTask"}
-                                {vtranslate('LBL_NO')} {vtranslate('ProjectTask', 'ProjectTask')} {vtranslate('LBL_FOUND')} {vtranslate('LBL_NO_DATE_VALUE_MSG', 'ProjectTask')}.{if $IS_MODULE_EDITABLE} <a href="{$PROJECT_TASK_MODEL->getCreateRecordUrl()}&projectid={$PARENT_ID}"> {vtranslate('LBL_CREATE')} </a>{/if}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            {/if}
-        </div>
+            </div>
+        {/if}
+        {if !empty($PROJECT_CHART['data'])}
+            <div class="project-chart-canvas"></div>
+        {/if}
+        {if empty($PROJECT_CHART['data']) || empty($PROJECT_CHART['has_records'])}
+            <div class="text-center py-5">
+                <p class="text-secondary">{vtranslate('LBL_EMPTY_PROJECT_CHART', 'Project')}</p>
+                {if !$CHART_PRINT && empty($PROJECT_CHART['unscheduled']) && !empty($PROJECT_CHART['create_task_url'])}
+                    <a class="btn btn-primary" href="{$PROJECT_CHART['create_task_url']|escape:'html'}">{vtranslate('LBL_ADD_RECORD', 'ProjectTask')}</a>
+                {/if}
+            </div>
+        {/if}
+        {if !empty($PROJECT_CHART['unscheduled'])}
+            <section class="project-chart-unscheduled border rounded p-3 mt-3">
+                <h5 class="mb-3">{vtranslate('LBL_UNSCHEDULED_TASKS', 'Project')} <span class="project-chart-unscheduled-count badge bg-secondary">{count($PROJECT_CHART['unscheduled'])}</span></h5>
+                <div class="list-group list-group-flush">
+                    {foreach item=TASK from=$PROJECT_CHART['unscheduled']}
+                        <div class="project-chart-unscheduled-row list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2 px-0" data-task-id="{$TASK['id']|escape:'html'}">
+                            <div>
+                                {if $CHART_PRINT}
+                                    <span>{$TASK['text']|escape:'html'}</span>
+                                {else}
+                                    <button type="button" class="project-chart-unscheduled-task btn btn-link p-0 text-start" data-task-id="{$TASK['id']|escape:'html'}">{$TASK['text']|escape:'html'}</button>
+                                {/if}
+                                {if !empty($TASK['owner'])}<div class="small text-secondary">{$TASK['owner']|escape:'html'}</div>{/if}
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                {if $TASK['missing_start']}<span class="badge text-bg-warning">{vtranslate('LBL_MISSING_START_DATE', 'Project')}</span>{/if}
+                                {if $TASK['missing_end']}<span class="badge text-bg-warning">{vtranslate('LBL_MISSING_END_DATE', 'Project')}</span>{/if}
+                                {if !$TASK['missing_start'] && !$TASK['missing_end']}<span class="badge text-bg-warning">{vtranslate('LBL_INVALID_DATE_RANGE', 'Project')}</span>{/if}
+                            </div>
+                        </div>
+                    {/foreach}
+                </div>
+            </section>
+        {/if}
     </div>
+</div>
 {/strip}

@@ -67,11 +67,8 @@ class VTUpdateFieldsTask extends VTTask
             $entityCache = new VTEntityCache($entity->user ?? $current_user);
 
             // The data is transformed from db format to user format, there is a chance that date and currency fields might get tracked for changes which should be avoided
-            $focus->column_fields->pauseTracking();
-            $focus->column_fields = DataTransform::sanitizeDateFieldsForInsert($focus->column_fields, $handlerMeta);
-            $focus->column_fields = DataTransform::sanitizeCurrencyFieldsForInsert($focus->column_fields, $handlerMeta);
+            Core_RecordUpdate_Model::convertToUserFormat($focus, $handlerMeta);
             $entityFields = $referenceEntityFields = false;
-            $focus->column_fields->resumeTracking();
 
             foreach ($fieldValueMapping as $fieldInfo) {
                 $fieldName = $fieldInfo['fieldname'];
@@ -485,10 +482,7 @@ class VTUpdateFieldsTask extends VTTask
 
             $referenceModuleHandler = vtws_getModuleHandlerFromName($referencedModule, $current_user);
             $referenceHandlerMeta = $referenceModuleHandler->getMeta();
-            $referenceRecordFocus->column_fields->pauseTracking();
-            $referenceRecordFocus->column_fields = DataTransform::sanitizeDateFieldsForInsert($referenceRecordFocus->column_fields, $referenceHandlerMeta);
-            $referenceRecordFocus->column_fields = DataTransform::sanitizeCurrencyFieldsForInsert($referenceRecordFocus->column_fields, $referenceHandlerMeta);
-            $referenceRecordFocus->column_fields->resumeTracking();
+            Core_RecordUpdate_Model::convertToUserFormat($referenceRecordFocus, $referenceHandlerMeta);
             $this->referenceFieldFocusList[$referenceField][$referenceRecordId] = $referenceRecordFocus;
         }
 
