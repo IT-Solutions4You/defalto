@@ -71,7 +71,7 @@
 .project-summary-table col.project-summary-column-actions,
 .project-summary-table > thead > tr > th.project-summary-column-actions,
 .project-summary-table > tbody > tr > td.project-summary-column-actions { width: 2.75rem; padding-left: .25rem; padding-right: .25rem; }
-.project-summary-status-tabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; border: 0; }
+.project-summary-status-tabs { flex-wrap: nowrap; flex-shrink: 0; border: 0; }
 .project-summary-status-tabs .nav-link {
     white-space: nowrap;
     flex-shrink: 0;
@@ -123,8 +123,7 @@
 }
 
 .project-task-summary [hidden] { display: none !important; }
-.project-summary-toolbar { min-width: 0; }
-.project-summary-toolbar .project-summary-status-tabs { min-width: 0; }
+.project-summary-toolbar { min-width: 0; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; }
 .project-summary-filter-menu { width: 290px; max-width: calc(100vw - 2rem); }
 .project-summary-filter-options { max-height: 280px; overflow-y: auto; }
 .project-summary-filter-menu .dropdown-item { white-space: normal; cursor: pointer; }

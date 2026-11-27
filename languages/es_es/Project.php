@@ -25,6 +25,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Añadir hito del proyecto',
+    'Add Project Team' => 'Añadir equipo del proyecto',
+    'Add Ticket' => 'Añadir incidencia',
     'LBL_PROJECT_MANAGER' => 'Jefe de proyecto',
     'LBL_SUMMARY_FILTER' => 'Filtro',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Borrar filtros',
@@ -74,7 +77,7 @@ $languageStrings = [
     'Add Project Task' => 'Añadir tarea de proyecto',
     'Project Milestone Name' => 'Nombre Hito',
     'Milestone Date' => 'Fecha Hito',
-    'Project Task Name' => 'Project Task Name',
+    'Project Task Name' => 'Nombre de la tarea del proyecto',
     'Is Converted From Opportunity' => 'Convertido de una oportunidad',
     '10%' => '10%',
     '20%' => '20%',

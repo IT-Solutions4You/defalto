@@ -17,6 +17,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Projektmérföldkő hozzáadása',
+    'Add Project Team' => 'Projektcsapat hozzáadása',
+    'Add Ticket' => 'Kérés hozzáadása',
     'LBL_PROJECT_MANAGER' => 'Projektvezető',
     'LBL_SUMMARY_FILTER' => 'Szűrő',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Szűrők törlése',
@@ -66,7 +69,7 @@ $languageStrings = [
     'Add Project Task' => 'Projektfeladat hozzáadása',
     'Project Milestone Name' => 'Mérföldkő megnevezése',
     'Milestone Date' => 'Mérföldkő dátuma',
-    'Project Task Name' => 'Project Task Name',
+    'Project Task Name' => 'Projektfeladat neve',
     'Is Converted From Opportunity' => 'Lehetőségből átalakítva',
     '10%' => '10%',
     '20%' => '20%',
@@ -154,7 +157,7 @@ $jsLanguageStrings = [
     'JS_LBL_SELECT_PROGRESS' => 'Haladás - Minden',
     'JS_START_DATE' => 'kezdő dátum',
     'JS_END_DATE' => 'A befejezés dátuma',
-    'JS_PROJECT_TASKS' => 'Tasks',
+    'JS_PROJECT_TASKS' => 'Feladatok',
     'JS_TASK_NAME' => 'feladat neve',
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Color sikeresen mentve',
 ];

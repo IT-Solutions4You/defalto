@@ -17,6 +17,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Lägg till projektmilstolpe',
+    'Add Project Team' => 'Lägg till projektgrupp',
+    'Add Ticket' => 'Lägg till ärende',
     'LBL_PROJECT_MANAGER' => 'Projektledare',
     'LBL_SUMMARY_FILTER' => 'Filter',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Rensa filter',

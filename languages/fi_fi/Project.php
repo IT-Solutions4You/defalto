@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Lisää projektin virstanpylväs',
+    'Add Project Team' => 'Lisää projektitiimi',
+    'Add Ticket' => 'Lisää tukipyyntö',
     'LBL_PROJECT_MANAGER' => 'Projektipäällikkö',
     'LBL_SUMMARY_FILTER' => 'Suodatin',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Tyhjennä suodattimet',

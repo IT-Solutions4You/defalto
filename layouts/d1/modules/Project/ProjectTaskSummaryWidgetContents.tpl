@@ -23,7 +23,7 @@
             </div>
             {if $TASK_SUMMARY['filters']}
                 <div class="dropdown project-summary-filter-dropdown p-2 flex-shrink-0">
-                    <button type="button" class="btn btn-sm btn-outline-secondary project-summary-filter-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"><i class="fa fa-filter me-2" aria-hidden="true"></i>{vtranslate('LBL_SUMMARY_FILTER', 'Project')|escape:'html'}<span class="badge text-bg-secondary ms-2 project-summary-filter-count" hidden>0</span></button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary text-nowrap project-summary-filter-toggle" data-bs-toggle="dropdown" data-bs-config='{literal}{"popperConfig":{"strategy":"fixed"}}{/literal}' data-bs-auto-close="outside" aria-expanded="false"><i class="fa fa-filter me-2" aria-hidden="true"></i>{vtranslate('LBL_SUMMARY_FILTER', 'Project')|escape:'html'}<span class="badge text-bg-secondary ms-2 project-summary-filter-count" hidden>0</span></button>
                     <div class="dropdown-menu dropdown-menu-end project-summary-filter-menu p-2">
                         <div data-filter-panel="main">
                             {foreach key=KEY item=FILTER from=$TASK_SUMMARY['filters']}<button type="button" class="dropdown-item d-flex justify-content-between align-items-center py-2" data-filter-open="{$KEY}" aria-expanded="false"><span>{$FILTER['label']|escape:'html'}</span><i class="fa fa-chevron-right" aria-hidden="true"></i></button>{/foreach}
@@ -101,7 +101,7 @@
                                                     {if $ROW['can_edit_status']}
                                                         {assign var=FIELD_MODEL value=$ROW['status_field']}
                                                         <div class="dropdown project-summary-status-edit">
-                                                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="dropdown" aria-label="{vtranslate('Status', 'ProjectTask')|escape:'html'}"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></button>
+                                                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="dropdown" data-bs-config='{literal}{"popperConfig":{"strategy":"fixed"}}{/literal}' aria-expanded="false" aria-label="{vtranslate('Status', 'ProjectTask')|escape:'html'}"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></button>
                                                             <ul class="dropdown-menu dropdown-menu-end widgetsList" data-recordid="{$ROW['id']}" data-fieldname="projecttaskstatus" data-old-value="{$ROW['status']|escape:'html'}" data-mandatory="{$FIELD_MODEL->isMandatory()}">
                                                                 {if !$FIELD_MODEL->isMandatory()}<li class="editTaskDetails emptyOption" data-value=""><button type="button" class="dropdown-item">{vtranslate('LBL_SELECT_OPTION', 'Project')|escape:'html'}</button></li>{/if}
                                                                 {assign var=DENIED_VALUES value=$FIELD_MODEL->get('record_action_denied_values')}

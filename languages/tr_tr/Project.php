@@ -17,6 +17,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Proje kilometre taşı ekle',
+    'Add Project Team' => 'Proje ekibi ekle',
+    'Add Ticket' => 'Destek talebi ekle',
     'LBL_PROJECT_MANAGER' => 'Proje yöneticisi',
     'LBL_SUMMARY_FILTER' => 'Filtre',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Filtreleri temizle',

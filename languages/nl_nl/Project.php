@@ -17,6 +17,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Projectmijlpaal toevoegen',
+    'Add Project Team' => 'Projectteam toevoegen',
+    'Add Ticket' => 'Ticket toevoegen',
     'LBL_PROJECT_MANAGER' => 'Projectleider',
     'LBL_SUMMARY_FILTER' => 'Filter',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Filters wissen',
@@ -66,7 +69,7 @@ $languageStrings = [
     'Add Project Task' => 'Projecttaak toevoegen',
     'Project Milestone Name' => 'Mijlpaal Naam',
     'Milestone Date' => 'Mijlpaal Datum',
-    'Project Task Name' => 'Project Task Name',
+    'Project Task Name' => 'Naam projecttaak',
     'Is Converted From Opportunity' => 'Omgezet vanuit verkoopkans',
     '10%' => '10%',
     '20%' => '20%',
@@ -154,7 +157,7 @@ $jsLanguageStrings = [
     'JS_LBL_SELECT_PROGRESS' => 'Progress - Alle',
     'JS_START_DATE' => 'startdatum',
     'JS_END_DATE' => 'einddatum',
-    'JS_PROJECT_TASKS' => 'Tasks',
+    'JS_PROJECT_TASKS' => 'Taken',
     'JS_TASK_NAME' => 'taak naam',
     'JS_COLOR_SAVED_SUCESSFULLY' => 'Kleur Opgeslagen succesvol',
 ];

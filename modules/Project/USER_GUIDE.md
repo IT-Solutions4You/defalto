@@ -24,6 +24,8 @@ When a task falls outside the selected statuses, the workflow leaves the project
 
 ## Summary task table
 
+Status tabs and the Filter button stay on one line. When the row is wider than the widget, scroll it horizontally to reach the remaining statuses and Filter. The filter menu opens outside the scrolling row.
+
 Tasks with checklist items show completed/total beside their name, for example **3/4**. The counter combines Checklist fields you can view and is hidden when they have no items. Refresh the task table to see saved checklist changes. Checklist completion remains independent of task Progress and Status.
 
 In All, the task Status column appears before Progress.
@@ -127,3 +129,17 @@ Click the warning button beside the day count or on the timeline bar to open a c
 ## Responsibility
 
 The **Project manager** field identifies the user or group responsible for the project. Select the responsible person or group when creating or editing a project; existing assignments and access rules stay the same.
+
+## Related record actions
+
+Use Add Project Task on the right, immediately before More, to open Quick Create with this project selected. The standard header action keeps the task icon and opens the same project-prefilled form as the Tasks widget. Saving refreshes the Tasks widget. The Tasks widget also offers Add Project Task and Add Project Milestone for Quick Create with the project selected. If Quick Create is unavailable for Project Tasks, the button opens the full form. More offers full forms for related records you may create, including Project Tasks, Project Milestones, Project Team and Tickets when the corresponding relation permits adding records. Available actions follow your permissions and enabled relations.
+
+New installations no longer register the separate Add Document header button. Existing buttons remain available according to normal permissions. Add files with document drag-and-drop. Existing related documents remain available. Quotes remains an optional relation for selecting existing quotations.
+
+The status menu beside a task opens over surrounding content so all available statuses remain visible even when the widget has only one task or the table is scrolled horizontally. Choose a permitted status to update that task.
+
+Administrators can inspect all registered Project actions in Settings → Module Manager → Link Settings. Quick Create is in Detail → Special actions; full forms for tasks, milestones, project teams and tickets are in Detail → More. Available buttons follow active relations and permissions. The Chart tab and task-list shortcut also use registered links; navigation links remain outside the action-link settings overview. Module updates can register these defaults again.
+
+Module setup and updates remove the old basic Add Project Task and View History buttons. The current task creation actions remain available, and project change tracking continues.
+
+The Tasks summary widget is installed as a registered widget link. It includes the permitted task and milestone creation actions. The obsolete separate Milestones widget is removed during link registration; milestone records and their related list remain available.

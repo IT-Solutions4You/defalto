@@ -10,6 +10,37 @@
 
 class Project_SummaryTask_Model extends Vtiger_Base_Model
 {
+    public static function isTaskListLinkPermitted(Vtiger_LinkData $linkData): bool
+    {
+        $module = Vtiger_Module_Model::getInstance('ProjectTask');
+
+        return $module && Users_Privileges_Model::getCurrentUserPrivilegesModel()->hasModulePermission($module->getId());
+    }
+
+    public static function processCreateTaskLink(Vtiger_LinkData $linkData): bool
+    {
+        // Link handlers run before the framework substitutes record parameters.
+        $project = Vtiger_Record_Model::getCleanInstance('Project')->setId(0);
+        $action = self::getCreateActions($project)['ProjectTask'] ?? null;
+
+        if (!$action) {
+            return false;
+        }
+
+        $link = $linkData->getLink();
+        $link->linklabel = $action['label'];
+
+        if (!$action['quick_url']) {
+            $link->linkurl = preg_replace(
+                '/([?&](?:returnrecord|projectid)=)0(?=&|$)/',
+                '$1\$RECORD\$',
+                $action['url']
+            );
+        }
+
+        return true;
+    }
+
     public function getHeaders(): array
     {
         $module = Vtiger_Module_Model::getInstance('ProjectTask');
@@ -316,7 +347,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
             && Users_Privileges_Model::isPermitted('ProjectMilestone', 'DetailView');
     }
 
-    public function getCreateActions(Project_Record_Model $project): array
+    public static function getCreateActions(Project_Record_Model $project): array
     {
         $actions = [];
 

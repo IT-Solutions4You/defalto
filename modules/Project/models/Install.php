@@ -13,9 +13,7 @@ class Project_Install_Model extends Core_Install_Model
     public bool $registerDefaultSummaryWidgets = false;
     public array $registerSummaryWidgets = [
         ['Project', 'LBL_KEY_METRICS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyMetrics', '', 0],
-        ['Project', 'LBL_TASKS', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectTask&page=1&limit=5', '', 1],
         ['Project', 'LBL_KEY_FIELDS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyFields&showDetails=1', '', 2],
-        ['Project', 'LBL_MILESTONES', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectMilestone&page=1&limit=5', '', 3],
         ['Project', 'Documents', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=Documents&page=1&limit=5', '', 6],
         ['Project', 'Appointments', 'module=Project&view=Widget&record=$RECORD$&mode=showAppointments&relatedModule=Appointments&page=1&limit=5', '', 5],
         ['Project', 'ModComments', 'module=Project&view=Widget&record=$RECORD$&mode=showComments&relatedModule=ModComments&page=1&limit=5', '', 7],
@@ -42,23 +40,75 @@ class Project_Install_Model extends Core_Install_Model
      * @return array
      */
     public array $registerCustomLinks = [
+        ['Project', 'DETAILVIEWBASIC', 'Add Project Task', 'delete:link'],
+        ['Project', 'DETAILVIEWBASIC', 'View History', 'delete:link'],
+        ['Project', 'DETAILVIEWWIDGET', 'LBL_MILESTONES', 'delete:link'],
         [
             'Project',
-            'DETAILVIEWBASIC',
-            'Add Project Task',
-            'index.php?module=ProjectTask&action=EditView&projectid=$RECORD$&return_module=Project&return_action=DetailView&return_id=$RECORD$',
-            '<i class="fa-solid fa-clipboard-check"></i>',
-            0,
-            ['path' => 'modules/ProjectTask/ProjectTask.php', 'class' => 'ProjectTask', 'method' => 'isLinkPermitted',],
+            'DETAILVIEWWIDGET',
+            'LBL_TASKS',
+            'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=ProjectTask&page=1&limit=5&template=TaskSummaryWidget.tpl',
+            '',
+            1,
         ],
         [
             'Project',
-            'DETAILVIEWBASIC',
-            'Add Note',
-            'index.php?module=Documents&action=EditView&return_module=Project&return_action=DetailView&return_id=$RECORD$&parent_id=$RECORD$',
-            '<i class="fa-solid fa-file"></i>',
+            'DETAILVIEWADVANCED',
+            'Add Project Task',
+            'javascript:Vtiger_Detail_Js.getInstanceByModuleName("Project").createSummaryRecord(this, "ProjectTask", "index.php?module=ProjectTask&view=QuickCreateAjax&projectid=$RECORD$")',
+            '<i class="fa-solid fa-clipboard-check"></i>',
             0,
-            ['path' => 'modules/Documents/Documents.php', 'class' => 'Documents', 'method' => 'isLinkPermitted',],
+            [
+                'path' => 'modules/Project/models/SummaryTask.php',
+                'class' => 'Project_SummaryTask_Model',
+                'method' => 'processCreateTaskLink',
+            ],
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Project Task',
+            'index.php?module=ProjectTask&view=Edit&projectid=$RECORD$&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail',
+            '<i class="vicon-projecttask"></i>',
+            10,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Project Milestone',
+            'index.php?module=ProjectMilestone&view=Edit&projectid=$RECORD$&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail',
+            '<i class="vicon-projectmilestone"></i>',
+            20,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Project Team',
+            'index.php?module=ProjectTeam&view=Edit&projectid=$RECORD$&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail&relationOperation=true&sourceModule=Project&sourceRecord=$RECORD$',
+            '<i class="fa-solid fa-users"></i>',
+            30,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        [
+            'Project',
+            'DETAILVIEW',
+            'Add Ticket',
+            'index.php?module=HelpDesk&view=Edit&returnmodule=Project&returnrecord=$RECORD$&returnview=Detail&relationOperation=true&sourceModule=Project&sourceRecord=$RECORD$',
+            '<i class="fa-solid fa-headphones"></i>',
+            40,
+            ['path' => 'modules/Project/models/RelationListView.php', 'class' => 'Project_RelationListView_Model', 'method' => 'isCreateLinkPermitted']
+        ],
+        ['Project', 'DETAILVIEWTAB', 'LBL_CHART', 'index.php?module=Project&view=Detail&record=$RECORD$&mode=showChart', '<i class="fa-solid fa-chart-gantt"></i>', 0],
+        [
+            'Project',
+            'LISTVIEWQUICK',
+            'Tasks List',
+            'index.php?module=Project&view=List',
+            '',
+            0,
+            ['path' => 'modules/Project/models/SummaryTask.php', 'class' => 'Project_SummaryTask_Model', 'method' => 'isTaskListLinkPermitted']
         ],
     ];
 
@@ -132,8 +182,8 @@ class Project_Install_Model extends Core_Install_Model
         $this->updateNumbering();
         $this->updateComments();
         $this->updateRelatedList();
-        $this->updateCustomLinks();
         $this->updateHistory();
+        $this->updateCustomLinks();
         $this->addRelatedListCharts();
         $this->addModuleToCustomerPortal();
     }

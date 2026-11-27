@@ -119,6 +119,40 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         this.registerTaskSummaryEvents();
     },
 
+    createSummaryRecord: function (element, module, url) {
+        const self = this,
+            button = jQuery(element),
+            container = this.getContainer(),
+            parentWidget = button.closest('[class^="widgetContainer_"]'),
+            widget = parentWidget.length ? parentWidget : container.find('.project-task-summary [data-name="LBL_TASKS"]'),
+            quickCreate = jQuery('#quickCreateModules').find('[data-name="' + module + '"]');
+
+        if (!quickCreate.length) {
+            app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
+            return;
+        }
+
+        // The standard Quick Create saves the project reference without an additional relation write.
+        this.setWidgetContainer(false);
+        quickCreate.trigger('click', {
+            data: app.convertUrlToDataParams(url),
+            noCache: false,
+            callbackFunction: function (data, error) {
+                if (error) {
+                    return;
+                }
+
+                if (widget.closest('body').length) {
+                    self.loadWidget(widget);
+                }
+
+                if (Project_Detail_Js.gantt) {
+                    Project_Detail_Js.gantt.refreshChart();
+                }
+            }
+        });
+    },
+
     registerTaskSummaryEvents: function () {
         const self = this,
             container = this.getContainer();
@@ -136,27 +170,9 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             });
         container.off('click.projectSummaryCreate', '.project-summary-create')
             .on('click.projectSummaryCreate', '.project-summary-create', function (event) {
-                const button = jQuery(event.currentTarget),
-                    widget = button.closest('[class^="widgetContainer_"]'),
-                    module = button.data('module'),
-                    quickCreate = jQuery('#quickCreateModules').find('[data-name="' + module + '"]');
+                const button = jQuery(event.currentTarget);
 
-                if (!quickCreate.length) {
-                    app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
-                    return;
-                }
-
-                // Both modules save their project reference in standard Quick Create; no extra relation write is needed.
-                self.setWidgetContainer(false);
-                quickCreate.trigger('click', {
-                    data: app.convertUrlToDataParams(button.data('url')),
-                    noCache: false,
-                    callbackFunction: function (data, error) {
-                        if (!error && widget.closest('body').length) {
-                            self.loadWidget(widget);
-                        }
-                    }
-                });
+                self.createSummaryRecord(button, button.data('module'), button.data('url'));
             });
         container.off('click.projectTaskTabs', '.project-summary-status-tabs [role="tab"]')
             .on('click.projectTaskTabs', '.project-summary-status-tabs [role="tab"]', function (event) {

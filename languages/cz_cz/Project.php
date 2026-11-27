@@ -9,6 +9,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Přidat projektový milník',
+    'Add Project Team' => 'Přidat projektový tým',
+    'Add Ticket' => 'Přidat požadavek',
     'LBL_PROJECT_MANAGER' => 'Projektový manažer',
     'LBL_SUMMARY_FILTER' => 'Filtr',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Zrušit filtry',

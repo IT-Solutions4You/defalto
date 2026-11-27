@@ -18,26 +18,7 @@
 
 class Project_DetailView_Model extends Vtiger_DetailView_Model
 {
-    public function getWidgets()
-    {
-        $widgets = [];
-
-        foreach (parent::getWidgets() as $widget) {
-            if ($widget->getLabel() === 'LBL_MILESTONES') {
-                continue;
-            }
-
-            if ($widget->getLabel() === 'LBL_TASKS') {
-                $widget->set('action', false);
-                $widget->set('link_template', 'TaskSummaryWidget.tpl');
-                $widget->set('summary_actions', (new Project_SummaryTask_Model())->getCreateActions($this->getRecord()));
-            }
-
-            $widgets[] = $widget;
-        }
-
-        return $widgets;
-    }
+    public array $skipDetailLinkByLabel = [];
 
     /**
      * Function to get the detail view related links
@@ -46,14 +27,14 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model
     public function getDetailViewRelatedLinks()
     {
         $relatedLinks = parent::getDetailViewRelatedLinks();
-        $recordModel = $this->getRecord();
-        $moduleName = $recordModel->getModuleName();
-        $relatedLinks[] = [
-            'linktype'  => 'DETAILVIEWTAB',
-            'linklabel' => vtranslate('LBL_CHART', $moduleName),
-            'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=showChart',
-            'linkicon'  => '<i class="fa-solid fa-chart-gantt"></i>'
-        ];
+        $registeredLinks = Vtiger_Link_Model::getAllByType($this->getModule()->getId(), ['DETAILVIEWTAB'], [
+            'MODULE' => $this->getModuleName(),
+            'RECORD' => $this->getRecord()->getId(),
+        ]);
+
+        foreach ($registeredLinks['DETAILVIEWTAB'] ?? [] as $link) {
+            $relatedLinks[] = get_object_vars($link);
+        }
 
         return $relatedLinks;
     }

@@ -18,6 +18,9 @@
  */
 
 $languageStrings = [
+    'Add Project Milestone' => 'Add Project Milestone',
+    'Add Project Team' => 'Add Project Team',
+    'Add Ticket' => 'Add Ticket',
     'LBL_PROJECT_MANAGER' => 'Project manager',
     'LBL_SUMMARY_FILTER' => 'Filter',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Clear filters',
