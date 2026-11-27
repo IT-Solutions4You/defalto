@@ -196,33 +196,10 @@ class InventoryItem_SaveFromPopup_Action extends Vtiger_SaveAjax_Action
         }
 
         if ($protectPurchaseCost) {
-            $itemModel->set('purchase_cost', $productChanged ? $this->getItemPurchaseCost($productId, $currencyId) : $storedItem->get('purchase_cost'));
+            $itemModel->set('purchase_cost', $productChanged ? InventoryItem_Utils_Helper::getItemPurchaseCost($productId, $currencyId) : $storedItem->get('purchase_cost'));
         }
 
         $itemModel->getEntity()->isWorkFlowFieldUpdate = true;
-    }
-
-    /**
-     * Purchase cost of the product or service converted to the currency of the parent record
-     *
-     * @param int $itemId
-     * @param int $currencyId
-     *
-     * @return float
-     * @throws Exception
-     */
-    protected function getItemPurchaseCost(int $itemId, int $currencyId): float
-    {
-        $recordModel = Vtiger_Record_Model::getInstanceById($itemId);
-        $purchaseCost = (float)$recordModel->get('purchase_cost');
-        $itemCurrencyId = method_exists($recordModel, 'fetchCurrencyId') ? (int)$recordModel->fetchCurrencyId() : $currencyId;
-
-        if ($itemCurrencyId && $itemCurrencyId !== $currencyId) {
-            $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
-            $purchaseCost = $purchaseCost / $currenciesConversionTable[$itemCurrencyId] * $currenciesConversionTable[$currencyId];
-        }
-
-        return round($purchaseCost, getCurrencyDecimalPlaces());
     }
 
     /**

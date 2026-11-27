@@ -14,6 +14,7 @@ Settings_Vtiger_Index_Js("Settings_InventoryItem_Index_Js", {}, {
         this.makeColumnListSortable();
         this.registerModuleChange();
         this.registerConversionsSave();
+        this.registerProductBlockSave();
         this.registerConversionMapping();
     },
 
@@ -182,6 +183,26 @@ Settings_Vtiger_Index_Js("Settings_InventoryItem_Index_Js", {}, {
                 }
 
                 app.helper.showSuccessNotification({message: app.vtranslate('JS_CONVERSIONS_SAVED')});
+            });
+        });
+    },
+
+    registerProductBlockSave: function () {
+        const form = jQuery('#productBlockForm');
+
+        form.on('submit', function (e) {
+            e.preventDefault();
+            app.helper.showProgress();
+            app.request.post({data: form.serializeFormData()}).then(function (error) {
+                app.helper.hideProgress();
+
+                if (error) {
+                    app.helper.showErrorNotification({message: error.message});
+
+                    return;
+                }
+
+                app.helper.showSuccessNotification({message: app.vtranslate('JS_PRODUCT_BLOCK_SAVED')});
             });
         });
     },

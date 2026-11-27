@@ -59,13 +59,18 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
         return parent::fetchCurrencyId();
     }
 
-    private function recalculate()
+    /**
+     * Calculates the totals of the row (subtotal, discounts, tax, price total) from its quantity and price
+     *
+     * @return void
+     */
+    public function recalculate()
     {
         $quantity = (float)$this->get('quantity');
         $price = (float)$this->get('price');
         $subtotal = round($quantity * $price, 2);
         $discountType = $this->get('discount_type');
-        $discount = $this->get('discount');
+        $discount = (float)$this->get('discount');
         $discountAmount = 0;
 
         switch ($discountType) {
@@ -73,14 +78,14 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
                 $discountAmount = $subtotal * $discount / 100;
                 break;
             case 'Direct':
-                $discountAmount = $this->get('discount_amount');
+                $discountAmount = (float)$this->get('discount_amount');
                 break;
             case 'Discount per Unit':
                 $discountAmount = $quantity * $discount;
         }
 
         $priceAfterDiscount = $subtotal - $discountAmount;
-        $overallDiscount = $this->get('overall_discount');
+        $overallDiscount = (float)$this->get('overall_discount');
         $overallDiscountAmount = 0;
 
         if ($overallDiscount > 0) {
@@ -103,7 +108,7 @@ class InventoryItem_Record_Model extends Vtiger_Record_Model
 
         $marginCombined = InventoryItem_Utils_Helper::buildMarginCombinedValue($marginAmount, $margin);
 
-        $tax = $this->get('tax');
+        $tax = (float)$this->get('tax');
         $taxAmount = round($priceAfterOverallDiscount * $tax / 100, 2);
         $priceTotal = $priceAfterOverallDiscount + $taxAmount;
 

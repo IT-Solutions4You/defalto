@@ -31,6 +31,16 @@ class InventoryItem_DetailView_Modifier implements Core_Modifier_Interface
     public function modifyShowModuleDetailView(Vtiger_Viewer $viewer, Vtiger_Request $request)
     {
         $recordId = (int)$request->get('record');
+
+        if (InventoryItem_Module_Model::isSimplifiedBlock()) {
+            // Simplified block is read-only here, items are changed in the edit view
+            $viewer->assign('SIMPLIFIED_ITEMS', InventoryItem_SimplifiedItems_Model::getRows($recordId));
+            InventoryItem_SimplifiedItems_Model::assignCommon($viewer);
+            InventoryItem_SimplifiedItems_Model::assignTotals($viewer, $recordId);
+
+            return;
+        }
+
         $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
         $viewer->assign('EXCLUDED_FIELDS', InventoryItem_Field_Model::excludedFields);
         $viewer->assign('TOTAL_FIELDS', InventoryItem_Field_Model::totalFields);

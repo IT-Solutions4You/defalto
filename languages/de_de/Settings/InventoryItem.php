@@ -29,7 +29,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Von %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Zuordnung hinzufügen',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Nicht kopiert',
+    'LBL_PRODUCT_BLOCK' => 'Produktblock',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Art des Produktblocks',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Standard-Produktblock',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Positionen werden in der Detailansicht des Datensatzes mit allen Positionsfeldern, Rabatten, Steuern und Preislisten hinzugefügt und bearbeitet.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Vereinfachter Produktblock',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Positionen werden in der Bearbeitungsansicht des Datensatzes hinzugefügt und bearbeitet. Angezeigt werden nur Positionsname, Menge, Einheit, Preis und Summe, die Detailansicht ist schreibgeschützt.',
 ];
 $jsLanguageStrings = [
+    'JS_PRODUCT_BLOCK_SAVED' => 'Einstellung des Produktblocks gespeichert',
     'JS_CONVERSIONS_SAVED' => 'Konvertierungseinstellungen gespeichert',
 ];

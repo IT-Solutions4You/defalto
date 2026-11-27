@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.11 - 2026-11-26
+
+- The rows of the simplified product block can be reordered in the edit view: drag the handle (arrows icon) at the start of the item name up or down. The order is saved with the document (the `position` of every row is posted and `InventoryItem_SimplifiedItems_Model::saveRows()` sorts the rows by it before it sets the sequence); a new row is added at the end. The detail view and the summary widget show the saved order.
+- In the detail view the Total row of the table has the label in the item name column (like in the standard block) and there is no extra line between Adjustment and Grand Total.
+- The detail view of the simplified product block looks like the table of the standard block: the item name is bold with an icon next to it which opens the product or service in a new window, the table ends with a thicker line and a Total row, and below the table on the right are the totals Total, VAT, Total with VAT, Adjustment and Grand Total (a company without taxes has only Total, Adjustment and Grand Total). The summary widget shows the same totals.
+- The simplified product block has the Adjustment of the document, which was missing: it is edited in the edit view under the totals, the Grand Total there is recalculated while typing and is saved as the total with the tax plus the adjustment.
+- The simplified product block has the Currency, Tax Region and Price Book selects of the document in the header of the block, with the same look as the standard block (button groups with a dropdown). Changing the currency or the price book asks for a confirmation and reloads the prices of the product and service rows from the price book (new rows take the price from the selected price book); the price book list is filtered by the currency. Changing the tax region reloads the taxes of the rows.
+- The Total column of a row now includes the tax. The row total takes the item discount and the overall discount into account, so the sum of the rows equals the totals of the document. The discounts themselves are not editable in the simplified block, existing values are kept and applied.
+- The unit of a row is a text input like in the standard block (not a select); it is filled with the translated unit of the product or the service when it is selected and any text can be written.
+- Every product and service row has a description on its own line: a textarea of one line which grows to 4 lines when it has focus and shrinks back when it loses it. Text rows have no description. The detail view and the summary widget show the description under the item.
+- The purchase cost of the product is stored in the item when a product is selected (converted to the currency of the document) and the margin is calculated on save. The purchase cost and the price book of each row are saved together with the item although they are not visible. The totals of the document (price after discount, tax, purchase cost, margin, grand total) are recalculated from the items on every save.
+
+## 1.10 - 2026-11-22
+
+- New setting Settings > Inventory Items > Product block: switch between the standard product block and the simplified product block.
+- In the simplified product block the items are added, edited and removed directly in the edit view of the record (item name, quantity, unit, price and total only). The detail view and the summary widget show the same five columns read-only, without the Add menu or editing.
+- The new table `df_inventoryitem_settings` stores the setting; it is created on install and module update.
+- Saving the product block setting shows the standard success notification in the top right corner (the page is no longer reloaded).
+- The edit view of the simplified product block has the same Text / Products / Services buttons as the standard block, shown by the same rule (the user can edit the document and the module is an active item module). A button adds a row instead of opening a dialog.
+- A Products or Services row has the ajax autocomplete of the standard block: choosing a record fills the item name, quantity (when empty), unit and price (by the currency and price book of the document), and keeps the link to the record. This also works when the document is created.
+- A new document starts with no row: the user chooses whether the first row is a text, a product or a service.
+- A text row has the full width of the table and only the text (no quantity, unit, price or total).
+- A Products or Services row must be chosen from the list of records; the document cannot be saved with an unselected row.
+- Taxes defined in Settings are carried over to the simplified block. When the company uses taxes, the rows get a Tax column (the taxes of the selected product, depending on the tax region of the document, or no tax) and the totals show the price without VAT, the VAT and the price with VAT. The tax of a row is saved the same way as in the standard block. A company without taxes keeps the five columns and a single total.
+- The unit and tax selects of the rows use select2 (searchable), like the selects in the rest of the system.
+
 ## 1.9 - 2026-11-06
 
 - Discounts in the items block and in the item dialog now follow the profile permissions of the Inventory Items fields: a discount can be hidden completely, shown read-only, or left editable for each profile.

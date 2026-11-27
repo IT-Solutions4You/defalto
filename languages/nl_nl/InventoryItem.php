@@ -38,6 +38,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'Het item hoort niet bij het bronrecord.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Hoeveelheid en prijs moeten getallen zijn.',
     'LBL_CONVERSION_NO_ITEMS' => 'Er moet minstens één item overblijven.',
+    'Item name' => 'Artikelnaam',
+    'LBL_ADD_ITEM' => 'Artikel toevoegen',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Selecteer het product of de dienst uit de lijst met suggesties.',
+    'No Tax' => 'Geen belasting',
 ];
 
 $jsLanguageStrings = [

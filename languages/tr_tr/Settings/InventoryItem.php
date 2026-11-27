@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Kaynak: %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Eşleme ekle',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Kopyalanmaz',
+    'LBL_PRODUCT_BLOCK' => 'Ürün bloğu',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Ürün bloğu türü',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Standart ürün bloğu',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Kalemler, tüm kalem alanları, indirimler, vergiler ve fiyat listeleriyle birlikte kaydın ayrıntı görünümünde eklenir ve düzenlenir.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Basitleştirilmiş ürün bloğu',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Kalemler kaydın düzenleme görünümünde eklenir ve düzenlenir. Yalnızca kalem adı, miktar, birim, fiyat ve toplam gösterilir, ayrıntı görünümü salt okunurdur.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Dönüşüm ayarları kaydedildi',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Ürün bloğu ayarı kaydedildi',
 ];

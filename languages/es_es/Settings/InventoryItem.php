@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Desde %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Añadir asignación',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'No se copia',
+    'LBL_PRODUCT_BLOCK' => 'Bloque de productos',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Tipo de bloque de productos',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Bloque de productos estándar',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Los artículos se añaden y editan en la vista de detalle del registro, con todos los campos del artículo, descuentos, impuestos y listas de precios.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Bloque de productos simplificado',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Los artículos se añaden y editan en la vista de edición del registro. Solo se muestran el nombre del artículo, la cantidad, la unidad, el precio y el total; la vista de detalle es de solo lectura.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Configuración de conversión guardada',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Configuración del bloque de productos guardada',
 ];

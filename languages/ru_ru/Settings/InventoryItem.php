@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Из %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Добавить сопоставление',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Не копируется',
+    'LBL_PRODUCT_BLOCK' => 'Блок товаров',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Тип блока товаров',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Стандартный блок товаров',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Позиции добавляются и редактируются в подробном просмотре записи, со всеми полями позиции, скидками, налогами и прайс-листами.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Упрощённый блок товаров',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Позиции добавляются и редактируются в режиме редактирования записи. Отображаются только название позиции, количество, единица, цена и итого, подробный просмотр доступен только для чтения.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Настройки преобразования сохранены',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Настройка блока товаров сохранена',
 ];

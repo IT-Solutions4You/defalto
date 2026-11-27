@@ -38,6 +38,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'A tétel nem tartozik a forrásrekordhoz.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'A mennyiségnek és az árnak számnak kell lennie.',
     'LBL_CONVERSION_NO_ITEMS' => 'Legalább egy tételnek maradnia kell.',
+    'Item name' => 'Tétel neve',
+    'LBL_ADD_ITEM' => 'Tétel hozzáadása',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Válassza ki a terméket vagy szolgáltatást a javaslatok listájából.',
+    'No Tax' => 'Adó nélkül',
 ];
 
 $jsLanguageStrings = [

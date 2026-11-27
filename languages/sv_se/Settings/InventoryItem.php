@@ -24,7 +24,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Från %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Lägg till mappning',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Kopieras inte',
+    'LBL_PRODUCT_BLOCK' => 'Produktblock',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Typ av produktblock',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Standardproduktblock',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Artiklar läggs till och redigeras i postens detaljvy, med alla artikelfält, rabatter, skatter och prislistor.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Förenklat produktblock',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Artiklar läggs till och redigeras i postens redigeringsvy. Endast artikelnamn, kvantitet, enhet, pris och summa visas, och detaljvyn är skrivskyddad.',
 ];
 $jsLanguageStrings = [
     'JS_CONVERSIONS_SAVED' => 'Konverteringsinställningar sparade',
+    'JS_PRODUCT_BLOCK_SAVED' => 'Inställningen för produktblock sparades',
 ];

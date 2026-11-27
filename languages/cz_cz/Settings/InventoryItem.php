@@ -29,7 +29,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'Z dokladu %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Přidat mapování',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Nekopíruje se',
+    'LBL_PRODUCT_BLOCK' => 'Produktový blok',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Typ produktového bloku',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Standardní produktový blok',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Položky se přidávají a upravují v detailu záznamu, se všemi poli položky, slevami, daněmi a ceníky.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Zjednodušený produktový blok',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Položky se přidávají a upravují v editaci záznamu. Zobrazuje se jen název položky, množství, měrná jednotka, cena a celkem, detail je pouze pro čtení.',
 ];
 $jsLanguageStrings = [
+    'JS_PRODUCT_BLOCK_SAVED' => 'Nastavení produktového bloku bylo uloženo',
     'JS_CONVERSIONS_SAVED' => 'Nastavení konverze bylo uloženo',
 ];

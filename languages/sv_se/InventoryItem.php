@@ -38,6 +38,10 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'Artikeln tillhör inte källposten.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Kvantitet och pris måste vara siffror.',
     'LBL_CONVERSION_NO_ITEMS' => 'Minst en artikel måste finnas kvar.',
+    'Item name' => 'Artikelnamn',
+    'LBL_ADD_ITEM' => 'Lägg till artikel',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Välj produkten eller tjänsten från listan med förslag.',
+    'No Tax' => 'Ingen skatt',
 ];
 
 $jsLanguageStrings = [

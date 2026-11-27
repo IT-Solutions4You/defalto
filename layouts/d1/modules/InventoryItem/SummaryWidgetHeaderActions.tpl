@@ -7,7 +7,7 @@
  * See LICENSE-AGPLv3.txt for more details.
  *}
 {strip}
-    {if empty($LIST_PREVIEW) && InventoryItem_ParentEntity_Model::isParentEditable($RECORD->getId(), $MODULE_NAME)}
+    {if empty($LIST_PREVIEW) && !InventoryItem_Module_Model::isSimplifiedBlock() && InventoryItem_ParentEntity_Model::isParentEditable($RECORD->getId(), $MODULE_NAME)}
         <div class="float-end dropdown inventoryItemWidgetAdd"{foreach from=InventoryItem_ParentEntity_Model::getItemPopupValues($RECORD) key=VALUE_NAME item=VALUE} data-{$VALUE_NAME}="{$VALUE|escape}"{/foreach}>
             <button type="button" class="btn btn-sm text-secondary fw-bold dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-plus"></i>

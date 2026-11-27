@@ -345,6 +345,29 @@ class InventoryItem_Utils_Helper
     }
 
     /**
+     * Purchase cost of the product or service converted to the currency of the document
+     *
+     * @param int $itemId
+     * @param int $currencyId
+     *
+     * @return float
+     * @throws Exception
+     */
+    public static function getItemPurchaseCost(int $itemId, int $currencyId): float
+    {
+        $recordModel = Vtiger_Record_Model::getInstanceById($itemId);
+        $purchaseCost = (float)$recordModel->get('purchase_cost');
+        $itemCurrencyId = method_exists($recordModel, 'fetchCurrencyId') ? (int)$recordModel->fetchCurrencyId() : $currencyId;
+
+        if ($itemCurrencyId && $currencyId && $itemCurrencyId !== $currencyId) {
+            $currenciesConversionTable = self::getCurrenciesConversionTable();
+            $purchaseCost = $purchaseCost / $currenciesConversionTable[$itemCurrencyId] * $currenciesConversionTable[$currencyId];
+        }
+
+        return round($purchaseCost, getCurrencyDecimalPlaces());
+    }
+
+    /**
      * @return array
      */
     public static function fetchDecimals(): array

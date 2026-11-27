@@ -26,10 +26,21 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
         $parentRecordId = $request->get('parent_id');
         $parentModuleName = $request->get('parent_module');
 
-        $baseRecordId = $request->get('base_record');
-        $baseRecordModel = Vtiger_Record_Model::getInstanceById($baseRecordId);
-        $baseModuleName = $baseRecordModel->getModuleName();
-        $currencyInfo = getCurrencySymbolandCRate($baseRecordModel->get('currency_id'));
+        $baseRecordId = (int)$request->get('base_record');
+
+        if ($baseRecordId) {
+            $baseRecordModel = Vtiger_Record_Model::getInstanceById($baseRecordId);
+            $baseModuleName = $baseRecordModel->getModuleName();
+            $currencyId = (int)$baseRecordModel->get('currency_id');
+            $priceBookId = (int)$baseRecordModel->get('pricebookid');
+        } else {
+            // A document which is not saved yet (simplified product block in the create view) sends its own values
+            $baseModuleName = (string)$request->get('base_module');
+            $currencyId = (int)$request->get('currency_id');
+            $priceBookId = (int)$request->get('pricebookid');
+        }
+
+        $currencyInfo = getCurrencySymbolandCRate($currencyId);
         $currencySymbol = $currencyInfo['symbol'];
 
         $searchModuleModel = Vtiger_Module_Model::getInstance($searchModule);
@@ -87,7 +98,6 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
             }
         }
 
-        $baseRecordId = $request->get('base_record');
         $result = [];
 
         foreach ($records as $recordModels) {
@@ -108,12 +118,12 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
                         if ($baseModuleName === 'PurchaseOrder') {
                             $itemCurrencyId = $recordModel->fetchCurrencyId();
 
-                            if ($itemCurrencyId == $baseRecordModel->get('currency_id')) {
+                            if ($itemCurrencyId == $currencyId) {
                                 $purchaseCosts = round((float)$recordModel->get('purchase_cost'), $decimalPlaces);
                             } else {
                                 $currenciesConversionTable = InventoryItem_Utils_Helper::getCurrenciesConversionTable();
                                 $toBaseCurrency = 1 / $currenciesConversionTable[$itemCurrencyId];
-                                $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$baseRecordModel->get('currency_id')];
+                                $toNewCurrency = $toBaseCurrency * $currenciesConversionTable[$currencyId];
                                 $purchaseCosts = round((float)$recordModel->get('purchase_cost') * (float)$toNewCurrency, $decimalPlaces);
                             }
 
@@ -121,8 +131,8 @@ class InventoryItem_PopupBasicAjax_Action extends Vtiger_BasicAjax_Action
                         } else {
                             $priceData = InventoryItem_Utils_Helper::decideItemPriceAndPriceBook(
                                 (int)$recordModel->getId(),
-                                (int)$baseRecordModel->get('currency_id'),
-                                (int)$baseRecordModel->get('pricebookid')
+                                $currencyId,
+                                $priceBookId
                             );
                             $recordLabel .= round((float)$priceData['price'], $decimalPlaces);
                         }

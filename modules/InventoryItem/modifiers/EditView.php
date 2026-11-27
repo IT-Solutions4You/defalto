@@ -15,6 +15,28 @@ class InventoryItem_EditView_Modifier implements Core_Modifier_Interface
      */
     public function modifyProcess(Vtiger_Viewer $viewer, Vtiger_Request $request): void
     {
+        $isSimplified = InventoryItem_Module_Model::isSimplifiedBlock();
+        $viewer->assign('SIMPLIFIED_BLOCK', $isSimplified);
+
+        if (!$isSimplified) {
+            return;
+        }
+
+        $recordId = (int)$request->get('record');
+        $rows = InventoryItem_SimplifiedItems_Model::getRows($recordId ?: InventoryItem_SimplifiedItems_Model::getSourceRecordId($request));
+
+        if (!$recordId) {
+            // Items copied from another document become new rows of the new document
+            $rows = array_map(static fn(array $row) => array_merge($row, ['id' => 0]), $rows);
+        }
+
+        $viewer->assign('SIMPLIFIED_ITEMS', $rows);
+        $viewer->assign('ITEM_MODULES', InventoryItem_ItemModules_Model::getItemModules());
+        // Same rule as the standard block: the buttons that add items are available when the user can edit the document
+        $viewer->assign('ITEMS_EDITABLE', !$recordId || InventoryItem_ParentEntity_Model::isParentEditable($recordId));
+        InventoryItem_SimplifiedItems_Model::assignCommon($viewer);
+        $viewer->assign('SIMPLIFIED_PRICEBOOKS', InventoryItem_Detail_Helper::fetchPriceBooksWithCurrency());
+        $viewer->assign('SIMPLIFIED_DECIMALS', InventoryItem_Utils_Helper::fetchDecimals());
     }
 
     /**
@@ -30,6 +52,11 @@ class InventoryItem_EditView_Modifier implements Core_Modifier_Interface
         $myJsFileNames = [
             'modules.InventoryItem.resources.InventoryItemEdit',
         ];
+
+        if (InventoryItem_Module_Model::isSimplifiedBlock()) {
+            $myJsFileNames[] = 'modules.InventoryItem.resources.SimplifiedEdit';
+        }
+
         $jsFileNames = array_merge($jsFileNames, $myJsFileNames);
     }
 }

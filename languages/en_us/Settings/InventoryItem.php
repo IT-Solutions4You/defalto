@@ -29,7 +29,14 @@ $languageStrings = [
     'LBL_CONVERSION_MAPPING_SOURCE' => 'From %s',
     'LBL_CONVERSION_MAPPING_ADD' => 'Add mapping',
     'LBL_CONVERSION_MAPPING_NOT_COPIED' => 'Not copied',
+    'LBL_PRODUCT_BLOCK' => 'Product block',
+    'LBL_PRODUCT_BLOCK_TYPE' => 'Product block type',
+    'LBL_PRODUCT_BLOCK_STANDARD' => 'Standard product block',
+    'LBL_PRODUCT_BLOCK_STANDARD_DESCRIPTION' => 'Items are added and edited in the detail view of the record, with all item fields, discounts, taxes and price books.',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED' => 'Simplified product block',
+    'LBL_PRODUCT_BLOCK_SIMPLIFIED_DESCRIPTION' => 'Items are added and edited in the edit view of the record. Only item name, quantity, unit, price and total are shown, the detail view is read-only.',
 ];
 $jsLanguageStrings = [
+    'JS_PRODUCT_BLOCK_SAVED' => 'Product block setting saved',
     'JS_CONVERSIONS_SAVED' => 'Conversion settings saved',
 ];

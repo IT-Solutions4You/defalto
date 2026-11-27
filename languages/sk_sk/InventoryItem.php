@@ -59,6 +59,9 @@ $languageStrings = [
     'LBL_CONVERSION_INVALID_ITEM' => 'Položka nepatrí k zdrojovému záznamu.',
     'LBL_CONVERSION_INVALID_NUMBER' => 'Množstvo a cena musia byť čísla.',
     'LBL_CONVERSION_NO_ITEMS' => 'Musí zostať aspoň jedna položka.',
+    'Item name' => 'Názov položky',
+    'LBL_ADD_ITEM' => 'Pridať položku',
+    'LBL_SELECT_ITEM_FROM_LIST' => 'Vyberte produkt alebo službu zo zoznamu návrhov.',
 ];
 $jsLanguageStrings = [
     'JS_PRODUCT_LINE_SAVE_ERROR' => 'Chyba pri ukladaní položky',
