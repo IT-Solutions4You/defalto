@@ -12,7 +12,6 @@ class Project_Install_Model extends Core_Install_Model
 {
     public bool $registerDefaultSummaryWidgets = false;
     public array $registerSummaryWidgets = [
-        ['Project', 'LBL_KEY_METRICS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyMetrics', '', 0],
         ['Project', 'LBL_KEY_FIELDS', 'module=Project&view=Widget&record=$RECORD$&mode=showKeyFields&showDetails=1', '', 2],
         ['Project', 'Documents', 'module=Project&view=Widget&record=$RECORD$&mode=showRelatedRecords&relatedModule=Documents&page=1&limit=5', '', 6],
         ['Project', 'Appointments', 'module=Project&view=Widget&record=$RECORD$&mode=showAppointments&relatedModule=Appointments&page=1&limit=5', '', 5],
@@ -40,6 +39,7 @@ class Project_Install_Model extends Core_Install_Model
      * @return array
      */
     public array $registerCustomLinks = [
+        ['Project', 'DETAILVIEWWIDGET', 'LBL_KEY_METRICS', 'delete:link'],
         ['Project', 'DETAILVIEWBASIC', 'Add Project Task', 'delete:link'],
         ['Project', 'DETAILVIEWBASIC', 'View History', 'delete:link'],
         ['Project', 'DETAILVIEWWIDGET', 'LBL_MILESTONES', 'delete:link'],

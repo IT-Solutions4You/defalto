@@ -19,68 +19,6 @@
 class Project_Record_Model extends Vtiger_Record_Model
 {
     /**
-     * Function to get the summary information for module
-     * @return <array> - values which need to be shown as summary
-     */
-    public function getSummaryInfo()
-    {
-        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-        $projectTaskInstance = Vtiger_Module_Model::getInstance('ProjectTask');
-
-        if ($userPrivilegesModel->hasModulePermission($projectTaskInstance->getId())) {
-            $adb = PearDatabase::getInstance();
-
-            $query = 'SELECT assigned_user_id,enddate,projecttaskstatus
-					FROM vtiger_projecttask
-							INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_projecttask.projecttaskid
-								AND vtiger_crmentity.deleted=0
-							WHERE vtiger_projecttask.projectid = ? ';
-
-            $result = $adb->pquery($query, [$this->getId()]);
-
-            $tasksOpen = $taskCompleted = $taskDue = $taskDeferred = $numOfPeople = 0;
-            $currentDate = date('Y-m-d');
-            $inProgressStatus = ['Open', 'In Progress'];
-            $usersList = [];
-
-            while ($row = $adb->fetchByAssoc($result)) {
-                $projectTaskStatus = $row['projecttaskstatus'];
-
-                switch ($projectTaskStatus) {
-                    case 'Open'        :
-                        $tasksOpen++;
-                        break;
-                    case 'Deferred'    :
-                        $taskDeferred++;
-                        break;
-                    case 'Completed':
-                        $taskCompleted++;
-                        break;
-                }
-
-                if (!empty($row['enddate']) && (strtotime($row['enddate']) < strtotime($currentDate)) &&
-                    (in_array($row['projecttaskstatus'], $inProgressStatus))) {
-                    $taskDue++;
-                }
-
-                $usersList[] = $row['assigned_user_id'];
-            }
-
-            $usersList = array_unique($usersList);
-            $numOfPeople = php7_count($usersList);
-
-            $summaryInfo['projecttaskstatus'] = [
-                'LBL_TASKS_OPEN'      => $tasksOpen,
-                'Progress'            => $this->getDisplayValue('progress'),
-                'LBL_TASKS_DUE'       => $taskDue,
-                'LBL_TASKS_COMPLETED' => $taskCompleted,
-            ];
-        }
-
-        return $summaryInfo;
-    }
-
-    /**
      * Function to get the project task for a project
      * @return <Array> - $projectTasks
      */

@@ -13,6 +13,7 @@ $languageStrings = [
     'Add Project Team' => 'Pridať projektový tím',
     'Add Ticket' => 'Pridať novú požiadavku',
     'LBL_PROJECT_MANAGER' => 'Projektový manažér',
+    'LBL_SUMMARY_OVERDUE' => 'Po termíne',
     'LBL_SUMMARY_FILTER' => 'Filter',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Zrušiť filtre',
     'LBL_SUMMARY_DATE_FROM' => 'Dátum od',

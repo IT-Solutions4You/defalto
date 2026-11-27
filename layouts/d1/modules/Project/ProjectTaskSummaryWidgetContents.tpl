@@ -20,6 +20,9 @@
                         <span>{$GROUP['label']|escape:'html'}</span><span class="badge bg-body-secondary text-body">{$GROUP['count']}</span>
                     </button>
                 {/foreach}
+                {if $TASK_SUMMARY['overdue_count']}
+                    <button type="button" id="tab_project_summary_overdue" class="nav-link d-flex align-items-center gap-2 text-danger" role="tab" aria-selected="false" tabindex="-1" aria-controls="project-summary-task-panel" data-summary-group="overdue"><span>{vtranslate('LBL_SUMMARY_OVERDUE', 'Project')|escape:'html'}</span><span class="badge text-bg-danger">{$TASK_SUMMARY['filtered_overdue_count']}</span></button>
+                {/if}
             </div>
             {if $TASK_SUMMARY['filters']}
                 <div class="dropdown project-summary-filter-dropdown p-2 flex-shrink-0">

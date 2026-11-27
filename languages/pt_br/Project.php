@@ -21,6 +21,7 @@ $languageStrings = [
     'Add Project Team' => 'Adicionar equipe do projeto',
     'Add Ticket' => 'Adicionar chamado',
     'LBL_PROJECT_MANAGER' => 'Gestor de projeto',
+    'LBL_SUMMARY_OVERDUE' => 'Em atraso',
     'LBL_SUMMARY_FILTER' => 'Filtro',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Limpar filtros',
     'LBL_SUMMARY_DATE_FROM' => 'Data de',

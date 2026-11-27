@@ -21,6 +21,7 @@ $languageStrings = [
     'Add Project Team' => 'Adăugați echipă de proiect',
     'Add Ticket' => 'Adăugați tichet',
     'LBL_PROJECT_MANAGER' => 'Manager de proiect',
+    'LBL_SUMMARY_OVERDUE' => 'Întârziate',
     'LBL_SUMMARY_FILTER' => 'Filtru',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Șterge filtrele',
     'LBL_SUMMARY_DATE_FROM' => 'De la data',

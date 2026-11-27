@@ -22,6 +22,7 @@ $languageStrings = [
     'Add Project Team' => 'إضافة فريق مشروع',
     'Add Ticket' => 'إضافة تذكرة',
     'LBL_PROJECT_MANAGER' => 'مدير المشروع',
+    'LBL_SUMMARY_OVERDUE' => 'متأخرة',
     'LBL_SUMMARY_FILTER' => 'تصفية',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'مسح عوامل التصفية',
     'LBL_SUMMARY_DATE_FROM' => 'من تاريخ',

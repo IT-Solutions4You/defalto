@@ -113,6 +113,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
                 'priority' => isset($headers['projecttaskpriority']) ? $headers['projecttaskpriority']->getDisplayValue($priority) : '',
                 'start_date' => (string)(Core_DateOnly_Helper::convertToDBFormat((string)($values['startdate'] ?? '')) ?? ''),
                 'end_date' => (string)(Core_DateOnly_Helper::convertToDBFormat((string)($values['enddate'] ?? '')) ?? ''),
+                'overdue_days' => $daysOverdue,
             ];
             $count++;
             $activeCount += isset($headers['projecttaskstatus']) && !$closed ? 1 : 0;
@@ -123,6 +124,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
         $filterDefinitions = $this->getFilterDefinitions($headers, $groups);
         $matchingIds = [];
         $filteredCount = 0;
+        $filteredOverdueCount = 0;
         $pageSize = max(1, (int)(new Vtiger_Paging_Model())->getPageLimit());
         $offset = max(0, $offset);
 
@@ -136,8 +138,9 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
 
                 $group['count']++;
                 $filteredCount++;
+                $filteredOverdueCount += $row['overdue_days'] > 0 ? 1 : 0;
 
-                if ($activeGroup === 'all' || $activeGroup === $key) {
+                if ($this->isActiveGroupMatch($row, $key, $activeGroup)) {
                     $matchingIds[] = $id;
                 }
             }
@@ -236,7 +239,17 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
             'active_count' => $activeCount,
             'status_visible' => isset($headers['projecttaskstatus']),
             'overdue_count' => $overdueCount,
+            'filtered_overdue_count' => $filteredOverdueCount,
         ];
+    }
+
+    protected function isActiveGroupMatch(array $row, string $group, string $activeGroup): bool
+    {
+        if ($activeGroup === 'overdue') {
+            return $row['overdue_days'] > 0;
+        }
+
+        return $activeGroup === 'all' || $activeGroup === $group;
     }
 
     protected function isFilterMatch(array $row, string $group, array $filters, array $definitions): bool

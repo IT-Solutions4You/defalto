@@ -206,9 +206,15 @@ Vtiger_Detail_Js('Project_Detail_Js', {
         return ['Project', 'taskSummary', 'activeStatusOpen', app.getUserId(), record].join('.');
     },
 
+    isTaskSummaryOverviewGroup: function (group) {
+        return group === 'all' || group === 'overdue';
+    },
+
     setTaskSummaryActiveTab: function (button) {
-        const content = button.closest('.project-task-summary-content'),
-            group = button.data('summary-group');
+        const self = this,
+            content = button.closest('.project-task-summary-content'),
+            group = button.data('summary-group'),
+            overview = this.isTaskSummaryOverviewGroup(group);
 
         content.find('.project-summary-status-tabs [role="tab"]').each(function () {
             const tab = jQuery(this),
@@ -217,10 +223,10 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             tab.toggleClass('active', selected).attr('aria-selected', String(selected)).attr('tabindex', selected ? '0' : '-1');
         });
         content.find('.project-summary-group-rows').each(function () {
-            this.hidden = group !== 'all' && this.id !== group;
+            this.hidden = !self.isTaskSummaryOverviewGroup(group) && this.id !== group;
         });
-        content.find('[data-summary-all-only]').prop('hidden', group !== 'all');
-        content.find('.project-summary-table').toggleClass('project-summary-all', group === 'all');
+        content.find('[data-summary-all-only]').prop('hidden', !overview);
+        content.find('.project-summary-table').toggleClass('project-summary-all', overview);
         content.find('[role="tabpanel"]').attr('aria-labelledby', button.attr('id'));
         this.updateTaskSummaryFilters(content);
         app.storage.set(this.getTaskSummaryTabStorageKey(content), group);
@@ -239,7 +245,7 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             let tabs = jQuery(this).find('[role="tab"]'),
                 selected = app.storage.get(self.getTaskSummaryTabStorageKey(jQuery(this))),
                 matching = tabs.filter(function () { return jQuery(this).data('summary-group') === selected; }),
-                defaultTab = tabs.filter('[data-summary-status="Open"]');
+                defaultTab = selected === 'overdue' ? tabs.filter('[data-summary-group="all"]') : tabs.filter('[data-summary-status="Open"]');
 
             if (!defaultTab.length) {
                 defaultTab = tabs.filter('[data-summary-status="In Progress"]');
@@ -414,7 +420,20 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             }
 
             const response = jQuery('<div>').html(data).find('.project-task-summary-content'),
-                bodies = content.find('.project-summary-group-rows');
+                bodies = content.find('.project-summary-group-rows'),
+                overdueTab = response.find('[data-summary-group="overdue"]'),
+                currentOverdueTab = content.find('[data-summary-group="overdue"]');
+
+            if (!overdueTab.length) {
+                currentOverdueTab.remove();
+
+                if (group === 'overdue') {
+                    self.setTaskSummaryActiveTab(content.find('[data-summary-group="all"]'));
+                    return;
+                }
+            } else if (!currentOverdueTab.length) {
+                content.find('.project-summary-status-tabs').append(overdueTab.clone());
+            }
 
             if (!append) {
                 bodies.empty();
@@ -435,8 +454,8 @@ Vtiger_Detail_Js('Project_Detail_Js', {
             content.data('summary-next-offset', Number(response.attr('data-summary-next-offset') || 0))
                 .data('summary-has-more', response.attr('data-summary-has-more') === '1');
             content.find('[data-summary-load-more-container]').prop('hidden', !content.data('summary-has-more'));
-            content.find('.project-summary-group-rows').each(function () { this.hidden = group !== 'all' && this.id !== group; });
-            content.find('[data-summary-all-only]').prop('hidden', group !== 'all');
+            content.find('.project-summary-group-rows').each(function () { this.hidden = !self.isTaskSummaryOverviewGroup(group) && this.id !== group; });
+            content.find('[data-summary-all-only]').prop('hidden', !self.isTaskSummaryOverviewGroup(group));
             content.find('.project-summary-filter-empty').prop('hidden', content.find('[data-summary-filter-row]').length > 0)
                 .find('td').attr('colspan', content.find('thead th').filter(function () { return !this.hidden; }).length);
             self.updateTaskSummaryAvatars(content);

@@ -36,7 +36,6 @@ class Project_Detail_View extends Vtiger_Detail_View
 		$viewer = $this->getViewer($request);
 		$viewer->assign('RECORD', $recordModel);
 		$viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
-		$viewer->assign('SUMMARY_INFORMATION', $recordModel->getSummaryInfo());
 		$viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStrucure->getStructure());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->assign('MODULE_NAME', $moduleName);

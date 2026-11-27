@@ -128,9 +128,3 @@
 .project-summary-filter-options { max-height: 280px; overflow-y: auto; }
 .project-summary-filter-menu .dropdown-item { white-space: normal; cursor: pointer; }
 .project-summary-filter-options label:has(input:checked) { background: var(--bs-secondary-bg); font-weight: 600; }
-.project-key-metric { min-width: 0; }
-
-@media (max-width: 991.98px) {
-    .project-key-metric::before { display: none; }
-    .project-key-metric > * { position: static; }
-}

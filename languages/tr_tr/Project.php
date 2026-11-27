@@ -21,6 +21,7 @@ $languageStrings = [
     'Add Project Team' => 'Proje ekibi ekle',
     'Add Ticket' => 'Destek talebi ekle',
     'LBL_PROJECT_MANAGER' => 'Proje yöneticisi',
+    'LBL_SUMMARY_OVERDUE' => 'Gecikmiş',
     'LBL_SUMMARY_FILTER' => 'Filtre',
     'LBL_SUMMARY_CLEAR_FILTERS' => 'Filtreleri temizle',
     'LBL_SUMMARY_DATE_FROM' => 'Başlangıç tarihi',
