@@ -1467,18 +1467,18 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
                                 detailViewValue.html(picklistHtml);
                             } else if (fieldBasicData.data('type') == 'currency' && app.getModuleName() != 'Users') {
-                                detailViewValue.find('.currencyValue').html(postSaveRecordDetails[fieldName].display_value);
+                                const currencyElement = detailViewValue.find('.currencyValue');
 
                                 if (isAmountCurrencyChanged) {
-                                    const currencySymbol = amountCurrencySelect.attr('data-symbol');
-
                                     amountCurrencySelect.data('value', amountCurrencySelect.val());
-                                    detailViewValue.find('.currencyValue')
-                                        .attr('data-currency-symbol', currencySymbol)
+                                    currencyElement
+                                        .attr('data-currency-symbol', amountCurrencySelect.attr('data-symbol'))
                                         .attr('data-currency-id', amountCurrencySelect.val())
-                                        .data('currency-id', amountCurrencySelect.val())
-                                        .html(currencySymbol + ' ' + postSaveRecordDetails[fieldName].display_value);
+                                        .data('currency-id', amountCurrencySelect.val());
                                 }
+
+                                // The detail shows the amount with the symbol of its currency, as CurrencyField::appendCurrencySymbol()
+                                currencyElement.html(self.appendCurrencySymbol(postSaveRecordDetails[fieldName].display_value, currencyElement.attr('data-currency-symbol')));
                             } else {
                                 detailViewValue.html(postSaveRecordDetails[fieldName].display_value);
                             }
@@ -1486,7 +1486,8 @@ Vtiger.Class("Vtiger_Detail_Js", {
                             self.updateHeaderFieldValue(fieldName, detailViewValue.html());
 
                             fieldBasicData.data('displayvalue', postSaveRecordDetails[fieldName].display_value);
-                            fieldBasicData.data('value', postSaveRecordDetails[fieldName].value);
+                            // edit_value: the value in the edit format of the form (Vtiger_Field_Model::getInlineEditValue())
+                            fieldBasicData.data('value', undefined !== postSaveRecordDetails[fieldName].edit_value ? postSaveRecordDetails[fieldName].edit_value : postSaveRecordDetails[fieldName].value);
                             jQuery(currentTdElement).find('.input-group-addon').removeClass("disabled");
 
                             detailViewValue.css('display', 'inline-block');
@@ -1518,6 +1519,20 @@ Vtiger.Class("Vtiger_Detail_Js", {
 
         container.find('.overlayDetailHeader').find('.' + fieldName).html(fieldValue)
         container.find('.detailViewContainer').find('.' + fieldName).html(fieldValue)
+    },
+    /**
+     * Places a currency symbol by the user's symbol placement, like CurrencyField::appendCurrencySymbol():
+     * an empty value stays empty, a zero gets the symbol.
+     * @param {string} value Formatted amount
+     * @param {string} symbol Currency symbol
+     * @returns {string}
+     */
+    appendCurrencySymbol: function (value, symbol) {
+        if (null === value || undefined === value || '' === String(value).trim() || !symbol) {
+            return null === value || undefined === value ? '' : String(value);
+        }
+
+        return '1.0$' === app.getUserCurrencySymbolPlacement() ? value + ' ' + symbol : symbol + ' ' + value;
     },
     handlePickListDependencyMap: function (sourcePicklistName) {
         var container = this.getForm();

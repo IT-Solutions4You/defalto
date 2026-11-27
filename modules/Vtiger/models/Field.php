@@ -1481,6 +1481,23 @@ class Vtiger_Field_Model extends Vtiger_Field
     }
 
     /**
+     * Returns the value the inline editor of the detail view starts with (data-value of .fieldBasicData): the stored
+     * value, for currency fields in the edit format of the form (the user's decimals, a dot, no grouping) instead of
+     * the database format such as 2000.00000000.
+     *
+     * @param mixed $value Stored value
+     * @return mixed
+     */
+    public function getInlineEditValue(mixed $value): mixed
+    {
+        if ('currency' === $this->getFieldDataType()) {
+            return $this->getEditViewDisplayValue($value);
+        }
+
+        return $value;
+    }
+
+    /**
      * Function to retrieve display value in edit view
      *
      * @param <String> $value - value which need to be converted to display value

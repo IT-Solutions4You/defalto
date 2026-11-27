@@ -38,9 +38,9 @@
                                 <div class="edit col hide">
                                     {assign var=HEADER_FIELD_NAME value=$FIELD_MODEL->get('name')}
                                     {if $FIELD_DATA_TYPE eq 'multipicklist'}
-                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}[]" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($DISPLAY_VALUE)}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
+                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}[]" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($DISPLAY_VALUE)}" data-value="{$FIELD_MODEL->getInlineEditValue($FIELD_MODEL->get('fieldvalue'))}" />
                                     {else}
-                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($DISPLAY_VALUE)}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
+                                        <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($DISPLAY_VALUE)}" data-value="{$FIELD_MODEL->getInlineEditValue($FIELD_MODEL->get('fieldvalue'))}" />
                                     {/if}
                                 </div>
                                 <div class="action col-auto p-0">

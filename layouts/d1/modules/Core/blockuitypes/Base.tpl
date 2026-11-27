@@ -83,9 +83,9 @@
                                                 <span class="action"><a href="#" onclick="return false;" class="editAction fa fa-pencil"></a></span>
                                                 <div class="hide edit">
                                                     {if $fieldDataType eq 'multipicklist'}
-                                                        <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}" />
+                                                        <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_MODEL->getInlineEditValue($FIELD_VALUE)}" />
                                                     {else}
-                                                        <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_VALUE}" />
+                                                        <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}' data-type="{$fieldDataType}" data-displayvalue='{$FIELD_DISPLAY_VALUE}' data-value="{$FIELD_MODEL->getInlineEditValue($FIELD_VALUE)}" />
                                                     {/if}
                                                 </div>
                                             {/if}

@@ -62,6 +62,9 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action
                     } else {
                         $result[$fieldName] = ['value' => $fieldValue, 'display_value' => $displayValue];
                     }
+
+                    // The inline editor starts with this value next time (currency fields in the edit format)
+                    $result[$fieldName]['edit_value'] = $fieldModel->getInlineEditValue($fieldValue);
                 }
             }
 
