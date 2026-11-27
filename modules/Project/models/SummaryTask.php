@@ -109,15 +109,24 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
         unset($group);
         $pageIds = $loadRows ? array_slice($matchingIds, $offset, $pageSize) : [];
         $pageRows = [];
+        $checklistFields = [];
 
         if ($pageIds) {
+            foreach ($module->getFields() as $name => $field) {
+                if ((int)$field->get('uitype') === Core_Checklist_Model::UI_TYPE && $field->isViewableInDetailView()) {
+                    $checklistFields[$name] = $field;
+                }
+            }
+
             $pageQuery = Core_QueryGenerator_Model::getInstance('ProjectTask');
-            $pageQuery->setFields(['id', ...array_keys($headers)]);
+            $pageQuery->setFields(['id', ...array_keys($headers), ...array_keys($checklistFields)]);
             $pageQuery->addFieldColumnCondition('projectid', '=', $project->getId());
             $pageQuery->addRecordIdsCondition($pageIds);
             $pageQuery->setLimit($pageSize);
             $pageRows = $pageQuery->getProjectedRows();
         }
+
+        $checklistSummaries = Core_Checklist_Model::getInstance()->getRecordSummaries($pageRows, $checklistFields);
 
         foreach ($pageIds as $id) {
             if (!isset($pageRows[$id])) {
@@ -145,6 +154,7 @@ class Project_SummaryTask_Model extends Vtiger_Base_Model
                 'id' => $id,
                 'url' => $record->getDetailViewUrl(),
                 'name' => (string)($values['projecttaskname'] ?? ''),
+                'checklist' => $checklistSummaries[$id] ?? ['completed' => 0, 'total' => 0],
                 'progress' => Project_ProgressCalculator_Model::getIntegerPercentage($values['projecttaskprogress'] ?? 0),
                 'progress_set' => ($values['projecttaskprogress'] ?? '') !== '',
                 'owner' => $owner,

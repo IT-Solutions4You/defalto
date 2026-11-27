@@ -67,7 +67,10 @@
                                                     <span class="project-summary-priority text-{if $ROW['priority_type'] eq 'high'}danger{else}secondary{/if}" {if $ROW['priority']}title="{$ROW['priority']|escape:'html'}" role="img" aria-label="{$ROW['priority']|escape:'html'}"{else}aria-hidden="true"{/if}>
                                                         {if $ROW['priority'] && $ROW['priority_type'] neq 'normal'}<svg width="14" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 22V3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 3C9 0 14 6 20 3V15C14 18 9 12 4 15Z" fill="{if $ROW['priority_type'] eq 'high'}currentColor{else}none{/if}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>{/if}
                                                     </span>
-                                                    <a class="project-summary-task-name" data-record="{$ROW['id']}" data-module="ProjectTask" href="{$ROW['url']|escape:'html'}">{$ROW['name']|escape:'html'}</a>
+                                                    <span>
+                                                        <a class="project-summary-task-name" data-record="{$ROW['id']}" data-module="ProjectTask" href="{$ROW['url']|escape:'html'}">{$ROW['name']|escape:'html'}</a>
+                                                        {if $ROW['checklist']['total']} <span class="text-secondary text-nowrap ms-1" title="{vtranslate('Checklist', 'Core')|escape:'html'}">{$ROW['checklist']['completed']}/{$ROW['checklist']['total']}</span>{/if}
+                                                    </span>
                                                 </div>
                                             {elseif $NAME eq 'projecttaskstatus'}
                                                 <span class="d-inline-flex align-items-center gap-2"><span class="project-summary-status-marker" style="background-color: {$GROUP['color']|escape:'html'}" aria-hidden="true"></span><span>{$GROUP['label']|escape:'html'}</span></span>

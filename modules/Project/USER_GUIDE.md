@@ -24,6 +24,8 @@ When a task falls outside the selected statuses, the workflow leaves the project
 
 ## Summary task table
 
+Tasks with checklist items show completed/total beside their name, for example **3/4**. The counter combines Checklist fields you can view and is hidden when they have no items. Refresh the task table to see saved checklist changes. Checklist completion remains independent of task Progress and Status.
+
 In All, the task Status column appears before Progress.
 
 The table uses the same records-per-page limit as standard lists. Only the requested batch is loaded into the table. Select Show more to fetch the next batch from the server without leaving the project. The button disappears when all matching tasks are shown. Switching status tabs or changing filters starts again with one batch; tab counts always include every matching task.
