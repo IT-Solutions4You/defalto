@@ -38,6 +38,34 @@ class Core_ChecklistItem_Model extends Core_DatabaseData_Model
             $metadata[] = $row;
         }
 
+        return $this->getItemsFromMetadata($lines, $metadata);
+    }
+
+    /**
+     * Retrieve raw item metadata grouped by checklist ID; records remain in database order.
+     *
+     * @param int[] $checklistIds
+     * @return array<int, list<array{id: int|string, checklist_id: int|string, text_hash: string, sequence: int|string, checked: int|string}>>
+     */
+    public function getChecklistMetadata(array $checklistIds): array
+    {
+        if (!$checklistIds) {
+            return [];
+        }
+
+        $table = $this->getChecklistItemTable();
+        $result = $table->selectResult([], ['checklist_id' => $checklistIds]);
+        $items = [];
+
+        while ($row = $table->getDB()->fetchByAssoc($result, -1, false)) {
+            $items[(int)$row['checklist_id']][] = $row;
+        }
+
+        return $items;
+    }
+
+    public function getItemsFromMetadata(array $lines, array $metadata): array
+    {
         usort($metadata, static fn(array $a, array $b): int => [$a['sequence'], $a['id']] <=> [$b['sequence'], $b['id']]);
         $states = [];
 

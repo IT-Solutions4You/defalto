@@ -164,6 +164,46 @@ class Core_Checklist_Model extends Core_DatabaseData_Model
         ];
     }
 
+    /** Summarize already authorized projected records and visible Checklist fields without writes. */
+    public function getRecordSummaries(array $records, array $fields): array
+    {
+        if (!$records || !$fields) {
+            return [];
+        }
+
+        $table = $this->getChecklistTable();
+        $result = $table->selectResult([], [
+            'record_id' => array_keys($records),
+            'field_id' => array_map(static fn(Vtiger_Field_Model $field): int => (int)$field->getId(), array_values($fields)),
+        ]);
+        $checklists = [];
+        $checklistIds = [];
+
+        while ($row = $table->getDB()->fetchByAssoc($result, -1, false)) {
+            $checklists[(int)$row['record_id']][(int)$row['field_id']] = (int)$row['id'];
+            $checklistIds[] = (int)$row['id'];
+        }
+
+        $itemModel = Core_ChecklistItem_Model::getInstance();
+        $metadata = $itemModel->getChecklistMetadata($checklistIds);
+        $summaries = [];
+
+        foreach ($records as $id => $values) {
+            $summaries[$id] = ['completed' => 0, 'total' => 0];
+
+            foreach ($fields as $name => $field) {
+                $checklistId = $checklists[$id][(int)$field->getId()] ?? 0;
+                $items = $itemModel->getItemsFromMetadata(
+                    $this->getLines((string)($values[$name] ?? '')), $metadata[$checklistId] ?? []
+                );
+                $summaries[$id]['total'] += count($items);
+                $summaries[$id]['completed'] += count(array_filter($items, static fn(array $item): bool => $item['checked']));
+            }
+        }
+
+        return $summaries;
+    }
+
     public function validateText(mixed $text): string
     {
         if (!is_string($text) || trim($text) === '' || strpbrk($text, "\r\n") !== false || mb_strlen(trim($text), 'UTF-8') > 1000) {

@@ -15,6 +15,8 @@
 
 ## Checklists
 
+- getRecordSummaries() accepts already authorized projected records and visible Checklist field models from its caller. It batch-loads checklist/item metadata and aggregates current field lines without writes. ChecklistItem getChecklistMetadata() returns raw rows grouped by checklist ID; getItemsFromMetadata() is the shared hash-and-occurrence matcher for ordinary reads and summary counts. Stale metadata is never counted without a matching current line. Missing metadata means unchecked items.
+
 - ChecklistCard.tpl renders a completed/total line above the items from the model's completed and total values. Checklist.js updates it in updateCompletedVisibility() from all item rows, including hidden completed rows, after local drafts and successful AJAX updates. Empty lists show 0/0; read-only cards render the same count.
 
 - Checklist.js only registers its class in vtUtils's field-widget registry; it has no document-ready initializer. Shared Edit/Detail controller initialization and AJAX detail/summary content insertion call vtUtils.initFieldWidgets(container), which invokes initEdit(). Quick Create and other dynamic edit flows reuse the same helper through applyFieldElementsView(). Checklist event registration remains idempotent.

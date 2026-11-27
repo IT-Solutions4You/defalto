@@ -4,6 +4,8 @@ Project and Project Task headers show Progress as a bar with the percentage visi
 
 # Checklists
 
+In a project's Summary task table, a counter beside the task name shows completed checklist items out of the total, such as **3/4**. It combines the task's Checklist fields you can view; empty checklists show no counter. Refresh the table after checklist changes to update the count.
+
 Each **Checklist** field is one checklist and can be placed in any ordinary block. No special checklist block is needed. Administrators can add this field type through the module Layout Editor. The field contains only the item texts, one item per line; completion states are stored separately.
 
 The field name uses the normal field layout and label style in Details and Edit. In Edit it has the same text color as Description. On small screens, the label appears above the items.
