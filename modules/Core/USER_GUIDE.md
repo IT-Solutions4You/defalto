@@ -133,3 +133,9 @@ Related-record selection lists open above the edit window and return a selected 
 ## User and group selection
 
 Screens using the shared assignee selector let you search permitted users and groups, select several entries and choose Apply. All shows the unfiltered view; My selects your user when available. Clear removes the filter. Closing without applying keeps the previous selection. Photos or initials use fixed-size avatars.
+
+# Link action names
+
+Link Settings shows translated action names in the selected application language. Shared actions include View History, which opens the record history where available.
+
+In Link Settings, default links have a green check when installed and a red check when not yet installed. Neither can be deleted because installation updates manage these links.

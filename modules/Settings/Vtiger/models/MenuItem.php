@@ -37,6 +37,7 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model
             ['LBL_EDIT_FIELDS', 'index.php?module=LayoutEditor&parent=Settings&view=Index', 'LBL_LAYOUT_EDITOR_DESCRIPTION'],
             ['LBL_CUSTOMIZE_MODENT_NUMBER', 'index.php?module=Vtiger&parent=Settings&view=CustomRecordNumbering', 'LBL_CUSTOMIZE_MODENT_NUMBER_DESCRIPTION'],
             ['LBL_SUMMARY_WIDGET_EDITOR', 'index.php?parent=Settings&module=Vtiger&view=SummaryWidgets', 'LBL_SUMMARY_WIDGET_EDITOR_DESCRIPTION'],
+            ['LBL_LINK_SETTINGS', 'index.php?module=LayoutEditor&parent=Settings&view=LinkSettings', 'LBL_LINK_SETTINGS_HELP'],
         ],
         'LBL_AUTOMATION' => [
             1 => ['Webforms', 'index.php?module=Webforms&parent=Settings&view=List', 'LBL_WEBFORMS_DESCRIPTION'],

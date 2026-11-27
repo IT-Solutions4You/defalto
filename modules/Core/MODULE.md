@@ -271,3 +271,11 @@ class Example_Filter_Model extends Core_Filter_Model
 - This is a shared field component, not a replacement for domain validation or assignee permissions. Each consuming module owns its filter semantics, persistence and save lifecycle. SalesFunnel in the extensions checkout is the interaction reference; this component has no dependency on that extension.
 
 - Vtiger_AssigneeSelect_Js.getInitials(label) owns the shared initials format for selector avatars and consuming modules: first/last word initials, or the first two letters of a single word.
+
+- Link Settings labels are shared Core translations across all locales; Settings/LayoutEditor owns the six detail/list action groups, installation-default markers, read-only runtime definitions and administrative deletion flow.
+
+- Link metadata captions (identifier, destination, icon, order, handler and parent/target fields) are central Core labels in all locales; LayoutEditor owns value formatting and strict icon-class extraction.
+
+- The legacy registered action label `View History` is translated centrally in Core so module-context link captions resolve it through the standard language fallback.
+
+- Core owns the installed/missing default-link status captions used by LayoutEditor check icons in every locale.

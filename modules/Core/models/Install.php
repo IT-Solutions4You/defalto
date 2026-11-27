@@ -1426,6 +1426,11 @@ abstract class Core_Install_Model extends Core_DatabaseData_Model
         }
     }
 
+    public static function isCustomLinkDeletion(array $definition): bool
+    {
+        return str_starts_with((string)($definition[3] ?? ''), 'delete:');
+    }
+
     public function getSummaryWidgets(): array
     {
         $widgets = [];

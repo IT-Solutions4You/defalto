@@ -21,3 +21,5 @@
 ## Validation
 
 - Run `php -l` on changed PHP and the existing ScriptsValidator on changed resource JavaScript. For migrations, check repeat execution and preservation of unrelated settings items.
+
+- The Settings Module Manager menu declares LBL_LINK_SETTINGS and installs it through MenuItem::installLink() in migration 20261127143000. Its distinct LayoutEditor LinkSettings view is independent of the field editor tabs. LinkSettingsPage.tpl owns the heading and module selector; LinkSettings.js owns selection and deletion events, inherits only shared Vtiger components and keeps view=LinkSettings in the URL. Module selection requests contentsOnly=1, replaces only the action list, and disables selection/deletion during loading. The default is the first translated module in alphabetical order; explicit unsupported module names retain the model permission error. LayoutEditor Index no longer exposes or renders a link-settings tab. Shared labels remain in Core locales. The standalone view sets its persisted menu field/block before shared preprocessing, preventing the LayoutEditor module-name fallback from selecting the field editor entry.
