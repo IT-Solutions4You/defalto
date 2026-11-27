@@ -1,4 +1,11 @@
-/** Defalto CRM. Licensed under the GNU AGPL v3 License. */
+/**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o.
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ */
 Vtiger_Edit_Js('ProjectTask_Edit_Js', {}, {
     registerBasicEvents(form) {
         this._super(form);

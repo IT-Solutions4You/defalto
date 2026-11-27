@@ -1,3 +1,12 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o.
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
+
 {strip}
 <details class="border-bottom mb-4 pb-3">
     <summary class="fw-semibold">{vtranslate('LBL_PROJECT_PROGRESS_CALCULATION_TITLE', 'ProjectTask')|escape:'html'}</summary>

@@ -1,3 +1,12 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o.
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
+
 <div class="container-fluid p-3">
     <div class="bg-body rounded p-3">
         <h4>{vtranslate('LBL_CLOSED_TASK_STATUSES', 'Project')}</h4>
