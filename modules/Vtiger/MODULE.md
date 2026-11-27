@@ -165,3 +165,5 @@ This module holds shared base behavior inherited by other modules. It has no sta
 - Standard OverlayEditView carries escaped field JSON in `.record-field-info`; Vtiger_Edit_Js.getValidationMeta(form) exposes it to vtValidate without global related_uimeta. Chart overlay submit handlers use this metadata and SaveAjax, retaining module validators and keeping failures in the form.
 
 - JSResources loads the Core-owned Vtiger_AssigneeSelect_Js globally. vtUtils.applyFieldElementsView registers shared assignee controls within the supplied container; registration is idempotent and preserves ordinary owner field widgets.
+
+- Link::getWidgetTemplate() honors an explicit runtime link_template first, then the template query parameter of the stored widget link, and otherwise uses SummaryViewWidget.tpl. Widget URL parsing and relation/module permission checks remain in the shared DetailView discovery flow.

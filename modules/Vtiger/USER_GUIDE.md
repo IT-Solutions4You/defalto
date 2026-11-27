@@ -111,3 +111,9 @@ The Related records dropdown looks like the other record tabs. When one of its r
 Relationship selectors in edit windows use the record being edited. Select a result to fill the relationship, or clear it to search again. Suggestions remain visible above the edit window. Reopening a selection list does not multiply selection actions.
 
 Screens using the shared user/group selector show fixed-size avatars, searchable users and groups, and All/My shortcuts. Apply confirms checkbox changes; closing discards the draft.
+
+## Registered application links
+
+Administrators can review and remove a module's registered links under **Settings → Module Manager → Link Settings**. Removing a link does not delete its related CRM records. Links declared by the module's installation configuration are marked Default and cannot be deleted in this editor.
+
+Registered summary widget links can select their own presentation while keeping the standard access checks for the linked and related modules.

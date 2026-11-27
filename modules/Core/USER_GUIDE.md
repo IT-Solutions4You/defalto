@@ -139,3 +139,5 @@ Screens using the shared assignee selector let you search permitted users and gr
 Link Settings shows translated action names in the selected application language. Shared actions include View History, which opens the record history where available.
 
 In Link Settings, default links have a green check when installed and a red check when not yet installed. Neither can be deleted because installation updates manage these links.
+
+Module setup can remove obsolete action buttons declared by the module while retaining their replacement actions and existing record history. Removal instructions are excluded from default-link lists and missing installation requirements.

@@ -279,3 +279,5 @@ class Example_Filter_Model extends Core_Filter_Model
 - The legacy registered action label `View History` is translated centrally in Core so module-context link captions resolve it through the standard language fallback.
 
 - Core owns the installed/missing default-link status captions used by LayoutEditor check icons in every locale.
+
+- Core_Install_Model::registerCustomLinks accepts a delete:link URL as a removal directive [module, type, label, URL]. updateCustomLinks() applies normal registrations first, then all delete: directives through the standard module deleteLink(type, label) API; deletion therefore wins independently of declaration order and is idempotent. isCustomLinkDeletion() owns protocol recognition and is reused by default-link presentation and Installer diagnostics so directives are never treated as installable defaults. History registration must precede custom-link updates when it creates a removed legacy action. No CRM content or record history is deleted.
