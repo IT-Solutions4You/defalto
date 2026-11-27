@@ -118,3 +118,5 @@ Installer manages licenses, Defalto system updates and extension packages. The i
 - Index.js showInstallationLog renders system and extension progress as a Markdown-style list using text nodes, emphasizes error entries, and preserves extension completion metadata for the existing redirect flow.
 
 - Extension failures show a role=alert Bootstrap danger status above the collapsed log disclosure; both HTTP failures and responses missing the completion marker use showInstallationError.
+
+- ModuleRequirements::getCustomLinks() uses Core_Install_Model::isCustomLinkDeletion() to omit delete: removal directives from required link diagnostics. These entries must never be reported as missing installable links; execution remains owned by Core module setup.

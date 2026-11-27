@@ -53,3 +53,5 @@ If an extension installation fails, the progress dialog shows the specific packa
 Installation logs use a Markdown-style list with one step per item. Errors are emphasized in red; server output is displayed as text.
 
 System updates install the dependency versions supplied with the release, replacing the previous dependency lock file together with the dependency requirements. If an update fails, both files are restored through the update rollback. If the log reports a mismatch between `composer.json` and `composer.lock`, use a corrected complete release package before retrying.
+
+Module requirements list active link definitions. Instructions that remove obsolete links during an update are excluded, so a removed legacy action is not reported as a missing installation requirement.
