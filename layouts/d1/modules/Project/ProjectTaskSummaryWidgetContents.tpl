@@ -1,3 +1,12 @@
+{**
+ * This file is part of Defalto – a CRM software developed by IT-Solutions4You s.r.o.
+ *
+ * (c) IT-Solutions4You s.r.o.
+ *
+ * This file is licensed under the GNU AGPL v3 License.
+ * See LICENSE-AGPLv3.txt for more details.
+ *}
+
 {strip}
     <div class="project-task-summary-content" data-summary-page-size="{$TASK_SUMMARY['page_size']}" data-summary-next-offset="{$TASK_SUMMARY['next_offset']}" data-summary-has-more="{$TASK_SUMMARY['has_more']}">
         <input type="hidden" name="relatedModule" value="ProjectTask">
