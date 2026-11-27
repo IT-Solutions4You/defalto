@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'Project Task Name' => 'Nombre de la tarea del proyecto',
     'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Se usa cuando la tarea no tiene horas planificadas.',
     'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Cuántas horas debe representar en el cálculo una tarea sin estimación ni fechas completas.',
     'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Las tareas en estos estados se consideran totalmente completadas.',

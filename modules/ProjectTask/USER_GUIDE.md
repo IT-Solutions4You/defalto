@@ -69,3 +69,7 @@ The milestone date is the last allowed day for a linked task. The chart calculat
 ## Responsibility
 
 The **Assignee** field (Riešiteľ in Slovak) identifies the user or group responsible for the task. Select the responsible person or group when creating or editing a task; existing assignments and access rules stay the same.
+
+## Documents
+
+New installations no longer register the separate Add Document header button. Existing buttons remain available according to normal permissions. Use document drag-and-drop to add files; existing related documents remain available.

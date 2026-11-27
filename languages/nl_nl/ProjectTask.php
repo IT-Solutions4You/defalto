@@ -49,7 +49,7 @@ Schakel **deze actie of het proces** uit om automatische updates te stoppen.',
     'LBL_MILESTONES_LIST'          => 'Mijlpalen Lijst',
 
     //Field Labels
-    'Project Task Name'            => 'Project Task Name',
+    'Project Task Name' => 'Naam projecttaak',
     'Project Task No'              => 'Project Task No',
     'Project Task Number'          => 'Project Task Number',
     'Status'                       => 'Status',

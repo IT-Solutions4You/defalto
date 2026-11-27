@@ -9,6 +9,7 @@
  */
 
 $languageStrings = [
+    'Project Task Name' => 'Projektitehtävän nimi',
     'LBL_PROGRESS_HOURS_PER_DAY_HELP' => 'Käytetään, kun tehtävälle ei ole annettu suunniteltuja tunteja.',
     'LBL_PROGRESS_FALLBACK_HOURS_HELP' => 'Kuinka monta tuntia tehtävän ilman arviota ja täydellisiä päivämääriä tulisi edustaa laskennassa.',
     'LBL_PROGRESS_COMPLETED_STATUSES_HELP' => 'Näissä tiloissa olevat tehtävät katsotaan täysin valmiiksi.',

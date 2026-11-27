@@ -47,17 +47,7 @@ class ProjectTask_Install_Model extends Core_Install_Model
      * [module, type, label, url, icon, sequence, handlerInfo]
      * @return array
      */
-    public array $registerCustomLinks = [
-        [
-            'ProjectTask',
-            'DETAILVIEWBASIC',
-            'Add Note',
-            'index.php?module=Documents&action=EditView&return_module=ProjectTask&return_action=DetailView&return_id=$RECORD$&parent_id=$RECORD$',
-            '<i class="fa-solid fa-clipboard-check"></i>',
-            0,
-            ['path' => 'modules/Documents/Documents.php', 'class' => 'Documents', 'method' => 'isLinkPermitted'],
-        ],
-    ];
+    public array $registerCustomLinks = [];
 
     /**
      * @var array

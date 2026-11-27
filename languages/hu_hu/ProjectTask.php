@@ -49,7 +49,7 @@ Az automatikus frissítés leállításához kapcsolja ki **ezt az akciót vagy 
     'LBL_MILESTONES_LIST'          => 'Mérföldkövek listája',
 
     //Field Labels
-    'Project Task Name'            => 'Project Task Name',
+    'Project Task Name' => 'Projektfeladat neve',
     'Project Task No'              => 'Project Task No',
     'Project Task Number'          => 'Project Task Number',
     'Status'                       => 'Status',

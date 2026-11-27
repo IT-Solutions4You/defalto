@@ -42,3 +42,5 @@
 - `ProjectTask_Install_Model::getBlocks()` owns the `assigned_user_id` field label `LBL_TASK_ASSIGNEE`; module language files translate it as Assignee (Riešiteľ in Slovak). Core installation/update applies the label to existing fields without changing assignment storage or permissions.
 
 - The VARCHAR-to-INT schema conversion uses the existing non-strict PearDatabase session: numeric percent prefixes retain their integer value, empty text becomes zero and NULL remains NULL. It introduces no separate content UPDATE, global SQL-mode change or progress recalculation. Validate stored values before applying this conversion to another installation.
+
+- ProjectTask_DetailView_Model inherits the standard Vtiger detail model without filtering existing Add Note document links; document drag-and-drop and related lists remain owned by the standard document flow. Installation no longer registers that obsolete custom link.

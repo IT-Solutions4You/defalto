@@ -57,7 +57,7 @@ Para detener las actualizaciones automáticas, **desactive esta acción o el pro
     'LBL_MILESTONES_LIST'          => 'Lista de Hitos',
 
     //Field Labels
-    'Project Task Name'            => 'Project Task Name',
+    'Project Task Name' => 'Nombre de la tarea del proyecto',
     'Project Task No'              => 'Project Task No',
     'Project Task Number'          => 'Project Task Number',
     'Status'                       => 'Status',
